@@ -37,7 +37,7 @@ type PostItem = {
     dislikes: number;
   };
   views: number;
-  userId: number;
+  author: User;
 }
 
 type Post = {
@@ -127,12 +127,13 @@ const PostsManager = () => {
       .then((response) => response.json())
       .then((userData) => {
         setUserList(userData);
-        const postsWithUserId = postList.posts.map((post: PostItem) => ({
-          ...post,
-          author: userList.find((user) => user.id === post.userId),
-        }))
-        setPostList((prev) => ({ ...prev, posts: postsWithUserId }))
-        setTotal(postList.total)
+        const postsWithUserId = postList.posts.map((post: PostItem) => {
+          const findAuthor = userData.find((user: User) => user.id === post.author.id);
+          if (!findAuthor) return post;
+          return { ...post, author: findAuthor };
+        });
+        setPostList((prev) => ({ ...prev, posts: postsWithUserId }));
+        setTotal(postList.total);
       })
       .catch((error) => {
         console.error("게시물 가져오기 오류:", error)
@@ -188,7 +189,7 @@ const PostsManager = () => {
 
       const postsWithUsers = postsData.posts.map((post: PostItem) => ({
         ...post,
-        author: usersData.users.find((user: User) => user.id === post.userId),
+        author: usersData.users.find((user: User) => user.id === post.author.id),
       }))
 
       setPostList(postsWithUsers)
@@ -409,7 +410,7 @@ const PostsManager = () => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {posts.map((post) => (
+        {postList.posts.map((post) => (
           <TableRow key={post.id}>
             <TableCell>{post.id}</TableCell>
             <TableCell>
