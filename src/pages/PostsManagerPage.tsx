@@ -57,6 +57,7 @@ const posts = atom<Post>({ posts: [], total: 0, skip: 0, limit: 0 });
 const users = atom<User[]>([]);
 const total = atom(0);
 const tags = atom<string[]>([]);
+const newPost = atom({ title: "", body: "", userId: 1 });
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -68,6 +69,7 @@ const PostsManager = () => {
   const [userList, setUserList] = useAtom(users);
   const setTotal = useSetAtom(total);
   const [tagList, setTagList] = useAtom(tags);
+  const setNewPost = useSetAtom(newPost);
   const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"))
   const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"))
   const [searchQuery, setSearchQuery] = useState(queryParams.get("search") || "")
@@ -76,7 +78,7 @@ const PostsManager = () => {
   const [sortOrder, setSortOrder] = useState(queryParams.get("sortOrder") || "asc")
   const [showAddDialog, setShowAddDialog] = useState(false)
   const [showEditDialog, setShowEditDialog] = useState(false)
-  const [newPost, setNewPost] = useState({ title: "", body: "", userId: 1 })
+  // const [newPost, setNewPost] = useState({ title: "", body: "", userId: 1 })
   const [loading, setLoading] = useState(false)
   const [selectedTag, setSelectedTag] = useState(queryParams.get("tag") || "")
   const [comments, setComments] = useState({})
@@ -195,7 +197,7 @@ const PostsManager = () => {
         body: JSON.stringify(newPost),
       })
       const data = await response.json()
-      setPosts([data, ...posts])
+      setPostList((prev) => ({ ...prev, posts: data }))
       setShowAddDialog(false)
       setNewPost({ title: "", body: "", userId: 1 })
     } catch (error) {
