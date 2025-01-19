@@ -28,6 +28,8 @@ import {
 
 import { Post, PostWithAuther, Tag, User, Comment, NewComment, getPosts, getUsers } from "@entities/index";
 import { getParams } from "@shared/lib";
+import { getComments } from "@entities/comment/model";
+import { getTags } from "@entities/tag/model";
 
 const PostsManager = () => {
   const navigate = useNavigate();
@@ -83,13 +85,8 @@ const PostsManager = () => {
 
   // 태그 가져오기
   const fetchTags = async () => {
-    try {
-      const response = await fetch("/api/posts/tags");
-      const data = await response.json();
-      setTags(data);
-    } catch (error) {
-      console.error("태그 가져오기 오류:", error);
-    }
+    const data = await getTags();
+    setTags(data);
   };
 
   // 게시물 검색
@@ -188,8 +185,7 @@ const PostsManager = () => {
   const fetchComments = async (postId: number) => {
     if (comments[postId]) return; // 이미 불러온 댓글이 있으면 다시 불러오지 않음
     try {
-      const response = await fetch(`/api/comments/post/${postId}`);
-      const data = await response.json();
+      const data = await getComments(postId);
       setComments((prev) => ({ ...prev, [postId]: data.comments }));
     } catch (error) {
       console.error("댓글 가져오기 오류:", error);

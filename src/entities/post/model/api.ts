@@ -1,4 +1,4 @@
-import { PostsResponseDto } from "@entities/post";
+import { PostsResponseDto } from "./types";
 
 export const getPosts = async ({ limit, skip }: { limit: number; skip: number }): Promise<PostsResponseDto> =>
   fetch(`/api/posts?limit=${limit}&skip=${skip}`)

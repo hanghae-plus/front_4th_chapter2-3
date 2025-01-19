@@ -1,4 +1,4 @@
-import { UsersResponseDto } from "@entities/user";
+import { UsersResponseDto } from "./types";
 
 export const getUsers = async (): Promise<UsersResponseDto> =>
   fetch("/api/users?limit=0&select=username,image")
