@@ -26,18 +26,11 @@ import {
   Textarea,
 } from '../shared/ui'
 import { Post, User, Comment, Tag, NewComment, NewPost } from '../legacy/models/types'
-import { PostListRes, TagListRes, UserListRes } from '../legacy/models/dto.types'
-import {
-  deletePost,
-  getPostList,
-  getPostListBySearch,
-  getPostListByTag,
-  getPostTags,
-  postPost,
-  putPost,
-} from '../legacy/service/post.service'
+import { TagListRes } from '../legacy/models/dto.types'
+import { getPostTags } from '../legacy/service/post.service'
 import { deleteComment, getComments, patchComment, postComment, putComment } from '../legacy/service/comments.service'
-import { getUser, getUserList } from '../legacy/service/user.service'
+import { getUser } from '../legacy/service/user.service'
+import { usePost } from '../legacy/hooks/usePost'
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -45,8 +38,6 @@ const PostsManager = () => {
   const queryParams = new URLSearchParams(location.search)
 
   // 상태 관리
-  const [posts, setPosts] = useState<Post[]>([])
-  const [total, setTotal] = useState(0)
   const [skip, setSkip] = useState(parseInt(queryParams.get('skip') || '0'))
   const [limit, setLimit] = useState(parseInt(queryParams.get('limit') || '10'))
   const [searchQuery, setSearchQuery] = useState(queryParams.get('search') || '')
@@ -56,7 +47,6 @@ const PostsManager = () => {
   const [showAddDialog, setShowAddDialog] = useState(false)
   const [showEditDialog, setShowEditDialog] = useState(false)
   const [newPost, setNewPost] = useState<NewPost>({ title: '', body: '', userId: 1 })
-  const [loading, setLoading] = useState(false)
   const [tags, setTags] = useState<Tag[]>([])
   const [selectedTag, setSelectedTag] = useState(queryParams.get('tag') || '')
   const [comments, setComments] = useState<Record<number, Comment[]>>({})
@@ -67,6 +57,12 @@ const PostsManager = () => {
   const [showPostDetailDialog, setShowPostDetailDialog] = useState(false)
   const [showUserModal, setShowUserModal] = useState(false)
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
+
+  // 커스텀 hook으로 분리
+  const { posts, loading, total, fetchPosts, searchPosts, fetchPostsByTag, updatePost, deletedPost, addPost } = usePost(
+    limit,
+    skip,
+  )
 
   // URL 업데이트 함수
   const updateURL = () => {
@@ -80,29 +76,6 @@ const PostsManager = () => {
     navigate(`?${params.toString()}`)
   }
 
-  // 게시물 가져오기
-  const fetchPosts = async () => {
-    setLoading(true)
-    try {
-      const [postsData, usersData]: [PostListRes, UserListRes] = await Promise.all([
-        getPostList(limit, skip),
-        getUserList(),
-      ])
-
-      const postsWithUsers = postsData.posts.map((post) => ({
-        ...post,
-        author: usersData.users.find((user) => user.id === post.userId),
-      }))
-
-      setPosts(postsWithUsers)
-      setTotal(postsData.total)
-    } catch (error) {
-      console.error('게시물 가져오기 오류:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
   // 태그 가져오기
   const fetchTags = async () => {
     try {
@@ -110,83 +83,6 @@ const PostsManager = () => {
       setTags(data)
     } catch (error) {
       console.error('태그 가져오기 오류:', error)
-    }
-  }
-
-  // 게시물 검색
-  const searchPosts = async () => {
-    if (!searchQuery) {
-      fetchPosts()
-      return
-    }
-    setLoading(true)
-    try {
-      const data: PostListRes = await getPostListBySearch(searchQuery)
-      setPosts(data.posts)
-      setTotal(data.total)
-    } catch (error) {
-      console.error('게시물 검색 오류:', error)
-    }
-    setLoading(false)
-  }
-
-  // 태그별 게시물 가져오기
-  const fetchPostsByTag = async (tag: string) => {
-    if (!tag || tag === 'all') {
-      fetchPosts()
-      return
-    }
-    setLoading(true)
-    try {
-      const [postsData, usersData]: [PostListRes, UserListRes] = await Promise.all([
-        getPostListByTag(tag),
-        getUserList(),
-      ])
-
-      const postsWithUsers = postsData.posts.map((post) => ({
-        ...post,
-        author: usersData.users.find((user) => user.id === post.userId),
-      }))
-
-      setPosts(postsWithUsers)
-      setTotal(postsData.total)
-    } catch (error) {
-      console.error('태그별 게시물 가져오기 오류:', error)
-    }
-    setLoading(false)
-  }
-
-  // 게시물 추가
-  const addPost = async () => {
-    try {
-      const data: Post = await postPost(newPost)
-      setPosts([data, ...posts])
-      setShowAddDialog(false)
-      setNewPost({ title: '', body: '', userId: 1 })
-    } catch (error) {
-      console.error('게시물 추가 오류:', error)
-    }
-  }
-
-  // 게시물 업데이트
-  const updatePost = async () => {
-    try {
-      if (!selectedPost) return
-      const data: Post = await putPost(selectedPost)
-      setPosts(posts.map((post) => (post.id === data.id ? data : post)))
-      setShowEditDialog(false)
-    } catch (error) {
-      console.error('게시물 업데이트 오류:', error)
-    }
-  }
-
-  // 게시물 삭제
-  const deletedPost = async (id: number) => {
-    try {
-      await deletePost(id)
-      setPosts(posts.filter((post) => post.id !== id))
-    } catch (error) {
-      console.error('게시물 삭제 오류:', error)
     }
   }
 
@@ -473,7 +369,7 @@ const PostsManager = () => {
                   className="pl-8"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && searchPosts()}
+                  onKeyPress={(e) => e.key === 'Enter' && searchPosts(searchQuery)}
                 />
               </div>
             </div>
@@ -574,7 +470,16 @@ const PostsManager = () => {
               value={newPost.userId}
               onChange={(e) => setNewPost({ ...newPost, userId: Number(e.target.value) })}
             />
-            <Button onClick={addPost}>게시물 추가</Button>
+            <Button
+              onClick={() =>
+                addPost(newPost, () => {
+                  setShowAddDialog(false)
+                  setNewPost({ title: '', body: '', userId: 1 })
+                })
+              }
+            >
+              게시물 추가
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
@@ -597,7 +502,7 @@ const PostsManager = () => {
               value={selectedPost?.body || ''}
               onChange={(e) => setSelectedPost(selectedPost ? { ...selectedPost, body: e.target.value } : null)}
             />
-            <Button onClick={updatePost}>게시물 업데이트</Button>
+            <Button onClick={() => updatePost(selectedPost, () => setShowEditDialog(false))}>게시물 업데이트</Button>
           </div>
         </DialogContent>
       </Dialog>
