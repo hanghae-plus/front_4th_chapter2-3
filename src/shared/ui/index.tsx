@@ -1,32 +1,32 @@
-import * as React from "react"
-import { forwardRef } from "react"
-import * as SelectPrimitive from "@radix-ui/react-select"
-import * as DialogPrimitive from "@radix-ui/react-dialog"
-import { Check, ChevronDown, X } from "lucide-react"
-import { cva, VariantProps } from "class-variance-authority"
+import * as React from 'react'
+import { forwardRef } from 'react'
+import * as SelectPrimitive from '@radix-ui/react-select'
+import * as DialogPrimitive from '@radix-ui/react-dialog'
+import { Check, ChevronDown, X } from 'lucide-react'
+import { cva, VariantProps } from 'class-variance-authority'
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background",
+  'inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background',
   {
     variants: {
       variant: {
-        default: "bg-blue-500 text-white hover:bg-blue-600",
-        destructive: "bg-red-500 text-white hover:bg-red-600",
-        outline: "border border-gray-300 bg-transparent text-gray-700 hover:bg-gray-100",
-        secondary: "bg-gray-200 text-gray-800 hover:bg-gray-300",
-        ghost: "bg-transparent text-gray-700 hover:bg-gray-100",
-        link: "underline-offset-4 hover:underline text-blue-500",
+        default: 'bg-blue-500 text-white hover:bg-blue-600',
+        destructive: 'bg-red-500 text-white hover:bg-red-600',
+        outline: 'border border-gray-300 bg-transparent text-gray-700 hover:bg-gray-100',
+        secondary: 'bg-gray-200 text-gray-800 hover:bg-gray-300',
+        ghost: 'bg-transparent text-gray-700 hover:bg-gray-100',
+        link: 'underline-offset-4 hover:underline text-blue-500',
       },
       size: {
-        default: "h-10 py-2 px-4",
-        sm: "h-8 px-3 rounded-md text-xs",
-        lg: "h-11 px-8 rounded-md",
-        icon: "h-9 w-9",
+        default: 'h-10 py-2 px-4',
+        sm: 'h-8 px-3 rounded-md text-xs',
+        lg: 'h-11 px-8 rounded-md',
+        icon: 'h-9 w-9',
       },
     },
     defaultVariants: {
-      variant: "default",
-      size: "default",
+      variant: 'default',
+      size: 'default',
     },
   },
 )
@@ -39,7 +39,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(({ className, v
   return <button className={buttonVariants({ variant, size, className })} ref={ref} {...props} />
 })
 
-Button.displayName = "Button"
+Button.displayName = 'Button'
 
 // 입력 컴포넌트
 export const Input = forwardRef(({ className, type, ...props }, ref) => {
@@ -52,28 +52,28 @@ export const Input = forwardRef(({ className, type, ...props }, ref) => {
     />
   )
 })
-Input.displayName = "Input"
+Input.displayName = 'Input'
 
 // 카드 컴포넌트
 export const Card = forwardRef(({ className, ...props }, ref) => (
   <div ref={ref} className={`rounded-lg border bg-card text-card-foreground shadow-sm ${className}`} {...props} />
 ))
-Card.displayName = "Card"
+Card.displayName = 'Card'
 
 export const CardHeader = forwardRef(({ className, ...props }, ref) => (
   <div ref={ref} className={`flex flex-col space-y-1.5 p-6 ${className}`} {...props} />
 ))
-CardHeader.displayName = "CardHeader"
+CardHeader.displayName = 'CardHeader'
 
 export const CardTitle = forwardRef(({ className, ...props }, ref) => (
   <h3 ref={ref} className={`text-2xl font-semibold leading-none tracking-tight ${className}`} {...props} />
 ))
-CardTitle.displayName = "CardTitle"
+CardTitle.displayName = 'CardTitle'
 
 export const CardContent = forwardRef(({ className, ...props }, ref) => (
   <div ref={ref} className={`p-6 pt-0 ${className}`} {...props} />
 ))
-CardContent.displayName = "CardContent"
+CardContent.displayName = 'CardContent'
 
 // 텍스트 영역 컴포넌트
 export const Textarea = forwardRef(({ className, ...props }, ref) => {
@@ -85,7 +85,7 @@ export const Textarea = forwardRef(({ className, ...props }, ref) => {
     />
   )
 })
-Textarea.displayName = "Textarea"
+Textarea.displayName = 'Textarea'
 
 // 선택 컴포넌트
 export const Select = SelectPrimitive.Root
@@ -104,7 +104,7 @@ export const SelectTrigger = forwardRef(({ className, children, ...props }, ref)
 ))
 SelectTrigger.displayName = SelectPrimitive.Trigger.displayName
 
-export const SelectContent = forwardRef(({ className, children, position = "popper", ...props }, ref) => (
+export const SelectContent = forwardRef(({ className, children, position = 'popper', ...props }, ref) => (
   <SelectPrimitive.Portal>
     <SelectPrimitive.Content
       ref={ref}
@@ -161,7 +161,7 @@ DialogContent.displayName = DialogPrimitive.Content.displayName
 export const DialogHeader = ({ className, ...props }) => (
   <div className={`flex flex-col space-y-1.5 text-center sm:text-left ${className}`} {...props} />
 )
-DialogHeader.displayName = "DialogHeader"
+DialogHeader.displayName = 'DialogHeader'
 
 export const DialogTitle = forwardRef(({ className, ...props }, ref) => (
   <DialogPrimitive.Title
@@ -178,17 +178,17 @@ export const Table = forwardRef(({ className, ...props }, ref) => (
     <table ref={ref} className={`table-fixed w-full caption-bottom text-sm ${className}`} {...props} />
   </div>
 ))
-Table.displayName = "Table"
+Table.displayName = 'Table'
 
 export const TableHeader = forwardRef(({ className, ...props }, ref) => (
   <thead ref={ref} className={`[&_tr]:border-b ${className}`} {...props} />
 ))
-TableHeader.displayName = "TableHeader"
+TableHeader.displayName = 'TableHeader'
 
 export const TableBody = forwardRef(({ className, ...props }, ref) => (
   <tbody ref={ref} className={`[&_tr:last-child]:border-0 ${className}`} {...props} />
 ))
-TableBody.displayName = "TableBody"
+TableBody.displayName = 'TableBody'
 
 export const TableRow = forwardRef(({ className, ...props }, ref) => (
   <tr
@@ -197,7 +197,7 @@ export const TableRow = forwardRef(({ className, ...props }, ref) => (
     {...props}
   />
 ))
-TableRow.displayName = "TableRow"
+TableRow.displayName = 'TableRow'
 
 export const TableHead = forwardRef(({ className, ...props }, ref) => (
   <th
@@ -206,9 +206,9 @@ export const TableHead = forwardRef(({ className, ...props }, ref) => (
     {...props}
   />
 ))
-TableHead.displayName = "TableHead"
+TableHead.displayName = 'TableHead'
 
 export const TableCell = forwardRef(({ className, ...props }, ref) => (
   <td ref={ref} className={`p-2 align-middle [&:has([role=checkbox])]:pr-0 ${className}`} {...props} />
 ))
-TableCell.displayName = "TableCell"
+TableCell.displayName = 'TableCell'
