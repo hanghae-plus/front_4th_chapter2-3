@@ -1,5 +1,4 @@
-import * as React from "react"
-import { forwardRef } from "react"
+import { ButtonHTMLAttributes, forwardRef } from "react"
 import * as SelectPrimitive from "@radix-ui/react-select"
 import * as DialogPrimitive from "@radix-ui/react-dialog"
 import { Check, ChevronDown, X } from "lucide-react"
@@ -31,7 +30,7 @@ const buttonVariants = cva(
   },
 )
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
   className?: string
 }
 
