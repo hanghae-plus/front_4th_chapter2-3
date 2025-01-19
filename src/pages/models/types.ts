@@ -35,13 +35,15 @@ export type User = {
 export type Comment = {
   id: number
   body: string
-  postId: number
+  postId: number | null
   userId: number
   likes: number
   user: {
     username: string
   }
 }
+
+export type NewComment = Pick<Comment, 'body' | 'postId' | 'userId'>
 
 export type Tag = {
   slug: string

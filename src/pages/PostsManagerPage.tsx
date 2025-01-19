@@ -25,7 +25,7 @@ import {
   TableRow,
   Textarea,
 } from '../shared/ui'
-import { Post, User, Comment } from './models/types'
+import { Post, User, Comment, Tag, NewComment } from './models/types'
 import { PostListRes, UserListRes } from './models/dto.types'
 
 const PostsManager = () => {
@@ -46,16 +46,17 @@ const PostsManager = () => {
   const [showEditDialog, setShowEditDialog] = useState(false)
   const [newPost, setNewPost] = useState({ title: '', body: '', userId: 1 })
   const [loading, setLoading] = useState(false)
-  const [tags, setTags] = useState([])
+  const [tags, setTags] = useState<Tag[]>([])
   const [selectedTag, setSelectedTag] = useState(queryParams.get('tag') || '')
   const [comments, setComments] = useState<Record<number, Comment[]>>({})
   const [selectedComment, setSelectedComment] = useState<Comment | null>(null)
-  const [newComment, setNewComment] = useState({ body: '', postId: null, userId: 1 })
+  console.log('🚀 ~ PostsManager ~ selectedComment:', selectedComment)
+  const [newComment, setNewComment] = useState<NewComment>({ body: '', postId: null, userId: 1 })
   const [showAddCommentDialog, setShowAddCommentDialog] = useState(false)
   const [showEditCommentDialog, setShowEditCommentDialog] = useState(false)
   const [showPostDetailDialog, setShowPostDetailDialog] = useState(false)
   const [showUserModal, setShowUserModal] = useState(false)
-  const [selectedUser, setSelectedUser] = useState(null)
+  const [selectedUser, setSelectedUser] = useState<User | null>(null)
 
   // URL 업데이트 함수
   const updateURL = () => {
@@ -297,8 +298,9 @@ const PostsManager = () => {
   }
 
   // 사용자 모달 열기
-  const openUserModal = async (user: User) => {
+  const openUserModal = async (user: User | undefined) => {
     try {
+      if (!user) return
       const response = await fetch(`/api/users/${user.id}`)
       const userData = await response.json()
       setSelectedUser(userData)
@@ -427,7 +429,7 @@ const PostsManager = () => {
   )
 
   // 댓글 렌더링
-  const renderComments = (postId) => (
+  const renderComments = (postId: number) => (
     <div className="mt-2">
       <div className="flex items-center justify-between mb-2">
         <h3 className="text-sm font-semibold">댓글</h3>
@@ -613,13 +615,13 @@ const PostsManager = () => {
             <Input
               placeholder="제목"
               value={selectedPost?.title || ''}
-              onChange={(e) => setSelectedPost({ ...selectedPost, title: e.target.value })}
+              onChange={(e) => setSelectedPost(selectedPost ? { ...selectedPost, title: e.target.value } : null)}
             />
             <Textarea
               rows={15}
               placeholder="내용"
               value={selectedPost?.body || ''}
-              onChange={(e) => setSelectedPost({ ...selectedPost, body: e.target.value })}
+              onChange={(e) => setSelectedPost(selectedPost ? { ...selectedPost, body: e.target.value } : null)}
             />
             <Button onClick={updatePost}>게시물 업데이트</Button>
           </div>
@@ -653,7 +655,9 @@ const PostsManager = () => {
             <Textarea
               placeholder="댓글 내용"
               value={selectedComment?.body || ''}
-              onChange={(e) => setSelectedComment({ ...selectedComment, body: e.target.value })}
+              onChange={(e) =>
+                setSelectedComment(selectedComment ? { ...selectedComment, body: e.target.value } : null)
+              }
             />
             <Button onClick={updateComment}>댓글 업데이트</Button>
           </div>
@@ -664,11 +668,11 @@ const PostsManager = () => {
       <Dialog open={showPostDetailDialog} onOpenChange={setShowPostDetailDialog}>
         <DialogContent className="max-w-3xl">
           <DialogHeader>
-            <DialogTitle>{highlightText(selectedPost?.title, searchQuery)}</DialogTitle>
+            <DialogTitle>{selectedPost?.title ? highlightText(selectedPost.title, searchQuery) : ''}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <p>{highlightText(selectedPost?.body, searchQuery)}</p>
-            {renderComments(selectedPost?.id)}
+            <p>{selectedPost?.body ? highlightText(selectedPost.body, searchQuery) : ''}</p>
+            {selectedPost?.id ? renderComments(selectedPost.id) : ''}
           </div>
         </DialogContent>
       </Dialog>
