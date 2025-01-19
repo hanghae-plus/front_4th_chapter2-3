@@ -26,6 +26,8 @@ import {
   Textarea,
 } from "../shared/ui"
 import UserInfoModal from "../widgets/ui/UserInfoModal"
+import { highlightText } from "../shared/lib/highlightText"
+import PostDetailModal from "../widgets/ui/PostDetailModal"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -327,21 +329,6 @@ const PostsManager = () => {
     setSortOrder(params.get("sortOrder") || "asc")
     setSelectedTag(params.get("tag") || "")
   }, [location.search])
-
-  // 하이라이트 함수 추가
-  const highlightText = (text: string, highlight: string) => {
-    if (!text) return null
-    if (!highlight.trim()) {
-      return <span>{text}</span>
-    }
-    const regex = new RegExp(`(${highlight})`, "gi")
-    const parts = text.split(regex)
-    return (
-      <span>
-        {parts.map((part, i) => (regex.test(part) ? <mark key={i}>{part}</mark> : <span key={i}>{part}</span>))}
-      </span>
-    )
-  }
 
   // 게시물 테이블 렌더링
   const renderPostTable = () => (
@@ -656,19 +643,17 @@ const PostsManager = () => {
           </div>
         </DialogContent>
       </Dialog>
-
       {/* 게시물 상세 보기 대화상자 */}
-      <Dialog open={showPostDetailDialog} onOpenChange={setShowPostDetailDialog}>
-        <DialogContent className="max-w-3xl">
-          <DialogHeader>
-            <DialogTitle>{highlightText(selectedPost?.title, searchQuery)}</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <p>{highlightText(selectedPost?.body, searchQuery)}</p>
-            {renderComments(selectedPost?.id)}
-          </div>
-        </DialogContent>
-      </Dialog>
+      {selectedPost && (
+        <PostDetailModal
+          showPostDetailDialog={showPostDetailDialog}
+          setShowPostDetailDialog={setShowPostDetailDialog}
+          selectedPost={selectedPost}
+          searchQuery={searchQuery}
+          renderComments={renderComments}
+        />
+      )}
+      {/* 사용자 정보 모달 */}
       <UserInfoModal showUserModal={showUserModal} setShowUserModal={setShowUserModal} selectedUser={selectedUser} />
     </Card>
   )
