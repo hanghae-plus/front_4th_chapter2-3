@@ -25,6 +25,36 @@ import {
   TableRow,
   Textarea,
 } from "../shared/ui"
+import { atom, useAtom, useSetAtom } from "jotai"
+
+type PostItem = {
+  id: number;
+  title: string;
+  body: string;
+  tags: string[];
+  reactions: {
+    likes: number;
+    dislikes: number;
+  };
+  views: number;
+  userId: number;
+}
+
+type Post = {
+  posts: PostItem[];
+  total: number;
+  skip: number;
+  limit: number;
+}
+
+type User = {
+  id: number
+  username: string
+  image: string
+}
+
+const posts = atom<Post>({ posts: [], total: 0, skip: 0, limit: 0 });
+const users = atom<User[]>([]);
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -32,7 +62,6 @@ const PostsManager = () => {
   const queryParams = new URLSearchParams(location.search)
 
   // 상태 관리
-  const [posts, setPosts] = useState([])
   const [total, setTotal] = useState(0)
   const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"))
   const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"))
@@ -67,27 +96,28 @@ const PostsManager = () => {
     navigate(`?${params.toString()}`)
   }
 
+
   // 게시물 가져오기
+  const [postList, setPostList] = useAtom(posts);
+  const [userList, setUserList] = useAtom(users);
   const fetchPosts = () => {
     setLoading(true)
-    let postsData
-    let usersData
 
     fetch(`/api/posts?limit=${limit}&skip=${skip}`)
       .then((response) => response.json())
-      .then((data) => {
-        postsData = data
+      .then((postData: Post) => {
+        setPostList(postData);
         return fetch("/api/users?limit=0&select=username,image")
       })
       .then((response) => response.json())
-      .then((users) => {
-        usersData = users.users
-        const postsWithUsers = postsData.posts.map((post) => ({
+      .then((userData) => {
+        setUserList(userData);
+        const postsWithUserId = postList.posts.map((post: PostItem) => ({
           ...post,
-          author: usersData.find((user) => user.id === post.userId),
+          author: userList.find((user) => user.id === post.userId),
         }))
-        setPosts(postsWithUsers)
-        setTotal(postsData.total)
+        setPostList((prev) => ({ ...prev, posts: postsWithUserId }))
+        setTotal(postList.total)
       })
       .catch((error) => {
         console.error("게시물 가져오기 오류:", error)
