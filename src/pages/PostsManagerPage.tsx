@@ -25,8 +25,8 @@ import {
   TableRow,
   Textarea,
 } from '../shared/ui'
-import { Post, User, Comment, Tag, NewComment } from './models/types'
-import { PostListRes, UserListRes } from './models/dto.types'
+import { Post, User, Comment, Tag, NewComment } from '../legacy/models/types'
+import { PostListRes, UserListRes } from '../legacy/models/dto.types'
 
 const PostsManager = () => {
   const navigate = useNavigate()
