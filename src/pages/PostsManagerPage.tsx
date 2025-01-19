@@ -56,6 +56,7 @@ type User = {
 const posts = atom<Post>({ posts: [], total: 0, skip: 0, limit: 0 });
 const users = atom<User[]>([]);
 const total = atom(0);
+const tags = atom<string[]>([]);
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -63,6 +64,10 @@ const PostsManager = () => {
   const queryParams = new URLSearchParams(location.search)
 
   // 상태 관리
+  const [postList, setPostList] = useAtom(posts);
+  const [userList, setUserList] = useAtom(users);
+  const setTotal = useSetAtom(total);
+  const [tagList, setTagList] = useAtom(tags);
   const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"))
   const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"))
   const [searchQuery, setSearchQuery] = useState(queryParams.get("search") || "")
@@ -73,7 +78,6 @@ const PostsManager = () => {
   const [showEditDialog, setShowEditDialog] = useState(false)
   const [newPost, setNewPost] = useState({ title: "", body: "", userId: 1 })
   const [loading, setLoading] = useState(false)
-  const [tags, setTags] = useState([])
   const [selectedTag, setSelectedTag] = useState(queryParams.get("tag") || "")
   const [comments, setComments] = useState({})
   const [selectedComment, setSelectedComment] = useState(null)
@@ -98,9 +102,6 @@ const PostsManager = () => {
 
 
   // 게시물 가져오기
-  const [postList, setPostList] = useAtom(posts);
-  const [userList, setUserList] = useAtom(users);
-  const setTotal = useSetAtom(total);
   const fetchPosts = () => {
     setLoading(true)
 
@@ -133,7 +134,7 @@ const PostsManager = () => {
     try {
       const response = await fetch("/api/posts/tags")
       const data = await response.json()
-      setTags(data)
+      setTagList(data)
     } catch (error) {
       console.error("태그 가져오기 오류:", error)
     }
@@ -149,7 +150,7 @@ const PostsManager = () => {
     try {
       const response = await fetch(`/api/posts/search?q=${searchQuery}`)
       const data = await response.json()
-      setPosts(data.posts)
+      setPostList(data.posts)
       setTotal(data.total)
     } catch (error) {
       console.error("게시물 검색 오류:", error)
@@ -540,7 +541,7 @@ const PostsManager = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">모든 태그</SelectItem>
-                {tags.map((tag) => (
+                {tagList.map((tag) => (
                   <SelectItem key={tag.url} value={tag.slug}>
                     {tag.slug}
                   </SelectItem>
