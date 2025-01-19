@@ -26,16 +26,7 @@ import {
   Textarea,
 } from "../shared/ui";
 
-import {
-  Post,
-  PostsResponseDto,
-  PostWithAuther,
-  Tag,
-  User,
-  UsersResponseDto,
-  Comment,
-  NewComment,
-} from "@entities/index";
+import { Post, PostWithAuther, Tag, User, Comment, NewComment, getPosts, getUsers } from "@entities/index";
 import { getParams } from "@shared/lib";
 
 const PostsManager = () => {
@@ -74,33 +65,20 @@ const PostsManager = () => {
   };
 
   // 게시물 가져오기
-  const fetchPosts = () => {
+  const fetchPosts = async () => {
     setLoading(true);
-    let postsData: PostsResponseDto;
-    let usersData: UsersResponseDto;
 
-    fetch(`/api/posts?limit=${limit}&skip=${skip}`)
-      .then((response) => response.json())
-      .then((data) => {
-        postsData = data;
-        return fetch("/api/users?limit=0&select=username,image");
-      })
-      .then((response) => response.json())
-      .then((data) => {
-        usersData = data;
-        const postsWithUsers = postsData.posts.map((post) => ({
-          ...post,
-          author: usersData.users.find((user) => user.id === post.userId),
-        }));
-        setPosts(postsWithUsers);
-        setTotal(postsData.total);
-      })
-      .catch((error) => {
-        console.error("게시물 가져오기 오류:", error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    const postsData = await getPosts({ limit, skip });
+    const usersData = await getUsers();
+
+    const postsWithUsers = postsData.posts.map((post) => ({
+      ...post,
+      author: usersData.users.find((user) => user.id === post.userId) ?? null,
+    }));
+    setPosts(postsWithUsers);
+    setTotal(postsData.total);
+
+    setLoading(false);
   };
 
   // 태그 가져오기
