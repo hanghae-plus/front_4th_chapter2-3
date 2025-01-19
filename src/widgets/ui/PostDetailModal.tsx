@@ -7,7 +7,7 @@ interface PostDetailModalProps {
   setShowPostDetailDialog: (value: boolean) => void
   selectedPost: Post
   searchQuery: string
-  renderComments: (postId: number) => React.ReactNode
+  children?: React.ReactNode
 }
 
 const PostDetailModal: React.FC<PostDetailModalProps> = ({
@@ -15,7 +15,7 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
   setShowPostDetailDialog,
   selectedPost,
   searchQuery,
-  renderComments,
+  children,
 }) => {
   return (
     <Dialog open={showPostDetailDialog} onOpenChange={setShowPostDetailDialog}>
@@ -25,7 +25,7 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
         </DialogHeader>
         <div className="space-y-4">
           <p>{highlightText(selectedPost.body, searchQuery)}</p>
-          {renderComments(selectedPost.id)}
+          {children}
         </div>
       </DialogContent>
     </Dialog>
