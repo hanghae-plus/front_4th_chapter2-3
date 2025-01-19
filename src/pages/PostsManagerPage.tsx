@@ -28,6 +28,8 @@ import {
 import UserInfoModal from "../widgets/ui/UserInfoModal"
 import { highlightText } from "../shared/lib/highlightText"
 import PostDetailModal from "../widgets/ui/PostDetailModal"
+import CommentEditModal from "../widgets/ui/CommentEditModal"
+import { Comment } from "../entities/post/model/types"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -50,7 +52,7 @@ const PostsManager = () => {
   const [tags, setTags] = useState([])
   const [selectedTag, setSelectedTag] = useState(queryParams.get("tag") || "")
   const [comments, setComments] = useState({})
-  const [selectedComment, setSelectedComment] = useState(null)
+  const [selectedComment, setSelectedComment] = useState<Comment | null>(null)
   const [newComment, setNewComment] = useState({ body: "", postId: null, userId: 1 })
   const [showAddCommentDialog, setShowAddCommentDialog] = useState(false)
   const [showEditCommentDialog, setShowEditCommentDialog] = useState(false)
@@ -628,21 +630,15 @@ const PostsManager = () => {
       </Dialog>
 
       {/* 댓글 수정 대화상자 */}
-      <Dialog open={showEditCommentDialog} onOpenChange={setShowEditCommentDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>댓글 수정</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <Textarea
-              placeholder="댓글 내용"
-              value={selectedComment?.body || ""}
-              onChange={(e) => setSelectedComment({ ...selectedComment, body: e.target.value })}
-            />
-            <Button onClick={updateComment}>댓글 업데이트</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {selectedComment && (
+        <CommentEditModal
+          showEditCommentDialog={showEditCommentDialog}
+          setShowEditCommentDialog={setShowEditCommentDialog}
+          selectedComment={selectedComment}
+          setSelectedComment={setSelectedComment}
+          updateComment={updateComment}
+        />
+      )}
       {/* 게시물 상세 보기 대화상자 */}
       {selectedPost && (
         <PostDetailModal
