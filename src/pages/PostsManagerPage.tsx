@@ -25,6 +25,9 @@ import {
   TableRow,
   Textarea,
 } from "../shared/ui"
+import SearchInput from "../features/search/ui/SearchInput.tsx"
+import { useAtom } from "jotai"
+import { postsAtom } from "../features/posts/model/store.ts"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -32,7 +35,8 @@ const PostsManager = () => {
   const queryParams = new URLSearchParams(location.search)
 
   // 상태 관리
-  const [posts, setPosts] = useState([])
+  // const [posts, setPosts] = useState([])
+  const [posts, setPosts] = useAtom(postsAtom);
   const [total, setTotal] = useState(0)
   const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"))
   const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"))
@@ -484,18 +488,19 @@ const PostsManager = () => {
         <div className="flex flex-col gap-4">
           {/* 검색 및 필터 컨트롤 */}
           <div className="flex gap-4">
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="게시물 검색..."
-                  className="pl-8"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyPress={(e) => e.key === "Enter" && searchPosts()}
-                />
-              </div>
-            </div>
+            {/*<div className="flex-1">*/}
+            {/*  <div className="relative">*/}
+            {/*    <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />*/}
+            {/*    <Input*/}
+            {/*      placeholder="게시물 검색..."*/}
+            {/*      className="pl-8"*/}
+            {/*      value={searchQuery}*/}
+            {/*      onChange={(e) => setSearchQuery(e.target.value)}*/}
+            {/*      onKeyPress={(e) => e.key === "Enter" && searchPosts()}*/}
+            {/*    />*/}
+            {/*  </div>*/}
+            {/*</div>*/}
+            <SearchInput />
             <Select
               value={selectedTag}
               onValueChange={(value) => {

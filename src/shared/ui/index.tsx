@@ -225,4 +225,4 @@ export const Modal = forwardRef(({className, ...props } : ModalProps, ref) => (
       </div>
     </DialogContent>
   </Dialog>
-));
+))
