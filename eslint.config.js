@@ -18,7 +18,7 @@ export default [
   },
   sonarjs.configs.recommended,
   {
-    files: ['src/{refactoring,advanced}/**/*.{ts,tsx}'], // 적용되어야 하는 피일을 나타는 glob패턴, 지정하지 않으면 모든 파일에 적용
+    files: ['src/**/*.{ts,tsx}'], // 적용되어야 하는 피일을 나타는 glob패턴, 지정하지 않으면 모든 파일에 적용
     languageOptions: {
       ecmaVersion: 'latest', // 지원할 ECMAScript 버전 기본 값은 'latest'
       sourceType: 'module', // js 소스코드의 유형, ECMAScript의 모듈일 경우 'module', Commonjs인 경우 'commonjs'
