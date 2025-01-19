@@ -53,13 +53,20 @@ type User = {
   image: string
 }
 
+type Comment = {
+  id: number
+  user: User
+  body: string
+  likes: number
+}
+
 const posts = atom<Post>({ posts: [], total: 0, skip: 0, limit: 0 });
 const users = atom<User[]>([]);
 const total = atom(0);
 const tags = atom<string[]>([]);
 const newPost = atom({ title: "", body: "", userId: 1 });
 const selectedPostAtom = atom<PostItem | null>(null);
-const commentListAtom = atom<{ [key: number]: [] }>({});
+const commentListAtom = atom<{ [key: number]: Comment[] }>({});
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -276,6 +283,7 @@ const PostsManager = () => {
 
   // 댓글 업데이트
   const updateComment = async () => {
+    if (!selectedComment) return // null 체크
     try {
       const response = await fetch(`/api/commentList/${selectedComment.id}`, {
         method: "PUT",
