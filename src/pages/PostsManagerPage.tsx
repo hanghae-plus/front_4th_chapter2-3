@@ -36,6 +36,7 @@ import {
   Comment,
   NewComment,
 } from "@entities/index";
+import { getParams } from "@shared/lib";
 
 const PostsManager = () => {
   const navigate = useNavigate();
@@ -68,13 +69,7 @@ const PostsManager = () => {
 
   // URL 업데이트 함수
   const updateURL = () => {
-    const params = new URLSearchParams();
-    if (skip) params.set("skip", skip.toString());
-    if (limit) params.set("limit", limit.toString());
-    if (searchQuery) params.set("search", searchQuery);
-    if (sortBy) params.set("sortBy", sortBy);
-    if (sortOrder) params.set("sortOrder", sortOrder);
-    if (selectedTag) params.set("tag", selectedTag);
+    const params = getParams({ skip, limit, searchQuery, sortBy, sortOrder, selectedTag });
     navigate(`?${params.toString()}`);
   };
 
