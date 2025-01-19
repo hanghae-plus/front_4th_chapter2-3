@@ -50,7 +50,6 @@ const PostsManager = () => {
   const [selectedTag, setSelectedTag] = useState(queryParams.get('tag') || '')
   const [comments, setComments] = useState<Record<number, Comment[]>>({})
   const [selectedComment, setSelectedComment] = useState<Comment | null>(null)
-  console.log('🚀 ~ PostsManager ~ selectedComment:', selectedComment)
   const [newComment, setNewComment] = useState<NewComment>({ body: '', postId: null, userId: 1 })
   const [showAddCommentDialog, setShowAddCommentDialog] = useState(false)
   const [showEditCommentDialog, setShowEditCommentDialog] = useState(false)
