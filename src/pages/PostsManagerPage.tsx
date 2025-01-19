@@ -67,6 +67,7 @@ const tags = atom<string[]>([]);
 const newPost = atom({ title: "", body: "", userId: 1 });
 const selectedPostAtom = atom<PostItem | null>(null);
 const commentListAtom = atom<{ [key: number]: Comment[] }>({});
+const selectedCommentAtom = atom<Comment | null>(null);
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -81,6 +82,7 @@ const PostsManager = () => {
   const setNewPost = useSetAtom(newPost);
   const [selectedPost, setSelectedPost] = useAtom(selectedPostAtom);
   const [commentList, setCommentList] = useAtom(commentListAtom);
+  const [selectedComment, setSelectedComment] = useAtom(selectedCommentAtom);
 
   const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"))
   const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"))
@@ -91,7 +93,7 @@ const PostsManager = () => {
   const [showEditDialog, setShowEditDialog] = useState(false)
   const [loading, setLoading] = useState(false)
   const [selectedTag, setSelectedTag] = useState(queryParams.get("tag") || "")
-  const [selectedComment, setSelectedComment] = useState(null)
+  // const [selectedComment, setSelectedComment] = useState(null)
   const [newComment, setNewComment] = useState({ body: "", postId: null, userId: 1 })
   const [showAddCommentDialog, setShowAddCommentDialog] = useState(false)
   const [showEditCommentDialog, setShowEditCommentDialog] = useState(false)
