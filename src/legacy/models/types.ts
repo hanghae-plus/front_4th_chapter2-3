@@ -12,6 +12,8 @@ export type Post = {
   author?: User
 }
 
+export type NewPost = Pick<Post, 'title' | 'body' | 'userId'>
+
 export type User = {
   id: number
   username: string

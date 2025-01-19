@@ -14,6 +14,4 @@ export type UserListRes = {
   skip: number
 }
 
-export type TagListRes = {
-  tags: Tag[]
-}
+export type TagListRes = Tag[]

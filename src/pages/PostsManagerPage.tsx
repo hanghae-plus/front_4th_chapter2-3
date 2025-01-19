@@ -25,8 +25,19 @@ import {
   TableRow,
   Textarea,
 } from '../shared/ui'
-import { Post, User, Comment, Tag, NewComment } from '../legacy/models/types'
-import { PostListRes, UserListRes } from '../legacy/models/dto.types'
+import { Post, User, Comment, Tag, NewComment, NewPost } from '../legacy/models/types'
+import { PostListRes, TagListRes, UserListRes } from '../legacy/models/dto.types'
+import {
+  deletePost,
+  getPostList,
+  getPostListBySearch,
+  getPostListByTag,
+  getPostTags,
+  postPost,
+  putPost,
+} from '../legacy/api/post.api'
+import { deleteComment, getComments, patchComment, postComment, putComment } from '../legacy/api/comments.api'
+import { getUser, getUserList } from '../legacy/api/user.api'
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -44,7 +55,7 @@ const PostsManager = () => {
   const [sortOrder, setSortOrder] = useState(queryParams.get('sortOrder') || 'asc')
   const [showAddDialog, setShowAddDialog] = useState(false)
   const [showEditDialog, setShowEditDialog] = useState(false)
-  const [newPost, setNewPost] = useState({ title: '', body: '', userId: 1 })
+  const [newPost, setNewPost] = useState<NewPost>({ title: '', body: '', userId: 1 })
   const [loading, setLoading] = useState(false)
   const [tags, setTags] = useState<Tag[]>([])
   const [selectedTag, setSelectedTag] = useState(queryParams.get('tag') || '')
@@ -73,13 +84,10 @@ const PostsManager = () => {
   const fetchPosts = async () => {
     setLoading(true)
     try {
-      const [postsResponse, usersResponse] = await Promise.all([
-        fetch(`/api/posts?limit=${limit}&skip=${skip}`),
-        fetch('/api/users?limit=0&select=username,image'),
+      const [postsData, usersData]: [PostListRes, UserListRes] = await Promise.all([
+        getPostList(limit, skip),
+        getUserList(),
       ])
-
-      const postsData: PostListRes = await postsResponse.json()
-      const usersData: UserListRes = await usersResponse.json()
 
       const postsWithUsers = postsData.posts.map((post) => ({
         ...post,
@@ -98,8 +106,7 @@ const PostsManager = () => {
   // 태그 가져오기
   const fetchTags = async () => {
     try {
-      const response = await fetch('/api/posts/tags')
-      const data = await response.json()
+      const data: TagListRes = await getPostTags()
       setTags(data)
     } catch (error) {
       console.error('태그 가져오기 오류:', error)
@@ -114,8 +121,7 @@ const PostsManager = () => {
     }
     setLoading(true)
     try {
-      const response = await fetch(`/api/posts/search?q=${searchQuery}`)
-      const data = await response.json()
+      const data: PostListRes = await getPostListBySearch(searchQuery)
       setPosts(data.posts)
       setTotal(data.total)
     } catch (error) {
@@ -132,12 +138,10 @@ const PostsManager = () => {
     }
     setLoading(true)
     try {
-      const [postsResponse, usersResponse] = await Promise.all([
-        fetch(`/api/posts/tag/${tag}`),
-        fetch('/api/users?limit=0&select=username,image'),
+      const [postsData, usersData]: [PostListRes, UserListRes] = await Promise.all([
+        getPostListByTag(tag),
+        getUserList(),
       ])
-      const postsData: PostListRes = await postsResponse.json()
-      const usersData: UserListRes = await usersResponse.json()
 
       const postsWithUsers = postsData.posts.map((post) => ({
         ...post,
@@ -155,12 +159,7 @@ const PostsManager = () => {
   // 게시물 추가
   const addPost = async () => {
     try {
-      const response = await fetch('/api/posts/add', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newPost),
-      })
-      const data = await response.json()
+      const data: Post = await postPost(newPost)
       setPosts([data, ...posts])
       setShowAddDialog(false)
       setNewPost({ title: '', body: '', userId: 1 })
@@ -173,12 +172,7 @@ const PostsManager = () => {
   const updatePost = async () => {
     try {
       if (!selectedPost) return
-      const response = await fetch(`/api/posts/${selectedPost.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(selectedPost),
-      })
-      const data = await response.json()
+      const data: Post = await putPost(selectedPost)
       setPosts(posts.map((post) => (post.id === data.id ? data : post)))
       setShowEditDialog(false)
     } catch (error) {
@@ -187,11 +181,9 @@ const PostsManager = () => {
   }
 
   // 게시물 삭제
-  const deletePost = async (id: number) => {
+  const deletedPost = async (id: number) => {
     try {
-      await fetch(`/api/posts/${id}`, {
-        method: 'DELETE',
-      })
+      await deletePost(id)
       setPosts(posts.filter((post) => post.id !== id))
     } catch (error) {
       console.error('게시물 삭제 오류:', error)
@@ -201,10 +193,10 @@ const PostsManager = () => {
   // 댓글 가져오기
   const fetchComments = async (postId: number) => {
     if (comments[postId]) return // 이미 불러온 댓글이 있으면 다시 불러오지 않음
+
     try {
-      const response = await fetch(`/api/comments/post/${postId}`)
-      const data = await response.json()
-      setComments((prev) => ({ ...prev, [postId]: data.comments }))
+      const data: Comment[] = await getComments(postId)
+      setComments((prev) => ({ ...prev, [postId]: data }))
     } catch (error) {
       console.error('댓글 가져오기 오류:', error)
     }
@@ -213,15 +205,11 @@ const PostsManager = () => {
   // 댓글 추가
   const addComment = async () => {
     try {
-      const response = await fetch('/api/comments/add', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newComment),
-      })
-      const data = await response.json()
+      const data: Comment = await postComment(newComment)
+
       setComments((prev) => ({
         ...prev,
-        [data.postId]: [...(prev[data.postId] || []), data],
+        [data.postId as number]: [...(prev[data.postId as number] || []), data],
       }))
       setShowAddCommentDialog(false)
       setNewComment({ body: '', postId: null, userId: 1 })
@@ -234,15 +222,13 @@ const PostsManager = () => {
   const updateComment = async () => {
     try {
       if (!selectedComment) return
-      const response = await fetch(`/api/comments/${selectedComment.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ body: selectedComment.body }),
-      })
-      const data = await response.json()
+
+      const data: Comment = await putComment(selectedComment)
       setComments((prev) => ({
         ...prev,
-        [data.postId]: prev[data.postId].map((comment) => (comment.id === data.id ? data : comment)),
+        [data.postId as number]: prev[data.postId as number].map((comment) =>
+          comment.id === data.id ? data : comment,
+        ),
       }))
       setShowEditCommentDialog(false)
     } catch (error) {
@@ -251,11 +237,10 @@ const PostsManager = () => {
   }
 
   // 댓글 삭제
-  const deleteComment = async (id: number, postId: number) => {
+  const deletedComment = async (id: number, postId: number) => {
     try {
-      await fetch(`/api/comments/${id}`, {
-        method: 'DELETE',
-      })
+      await deleteComment(id)
+
       setComments((prev) => ({
         ...prev,
         [postId]: prev[postId].filter((comment) => comment.id !== id),
@@ -268,12 +253,7 @@ const PostsManager = () => {
   // 댓글 좋아요
   const likeComment = async (id: number, postId: number) => {
     try {
-      const response = await fetch(`/api/comments/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ likes: comments[postId]?.find((c) => c.id === id)?.likes ?? 0 + 1 }),
-      })
-      const data = await response.json()
+      const data = await patchComment(id, comments[postId]?.find((c) => c.id === id)?.likes ?? 0 + 1)
       setComments((prev) => ({
         ...prev,
         [postId]: prev[postId].map((comment) =>
@@ -296,8 +276,7 @@ const PostsManager = () => {
   const openUserModal = async (user: User | undefined) => {
     try {
       if (!user) return
-      const response = await fetch(`/api/users/${user.id}`)
-      const userData = await response.json()
+      const userData = await getUser(user.id)
       setSelectedUser(userData)
       setShowUserModal(true)
     } catch (error) {
@@ -412,7 +391,7 @@ const PostsManager = () => {
                 >
                   <Edit2 className="w-4 h-4" />
                 </Button>
-                <Button variant="ghost" size="sm" onClick={() => deletePost(post.id)}>
+                <Button variant="ghost" size="sm" onClick={() => deletedPost(post.id)}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>
@@ -461,7 +440,7 @@ const PostsManager = () => {
               >
                 <Edit2 className="w-3 h-3" />
               </Button>
-              <Button variant="ghost" size="sm" onClick={() => deleteComment(comment.id, postId)}>
+              <Button variant="ghost" size="sm" onClick={() => deletedComment(comment.id, postId)}>
                 <Trash2 className="w-3 h-3" />
               </Button>
             </div>
