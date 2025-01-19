@@ -1,3 +1,4 @@
+import pluginQuery from '@tanstack/eslint-plugin-query';
 import typescript from '@typescript-eslint/eslint-plugin';
 import typescriptParser from '@typescript-eslint/parser';
 import prettier from 'eslint-config-prettier';
@@ -17,6 +18,7 @@ export default [
     ignores: ['**/node_modules/**', 'dist/**'], // 적용되지 않아야 하는 파일을 나타내는 glob패턴, 지정하지 않으면 모든 파일에 적용
   },
   sonarjs.configs.recommended,
+  ...pluginQuery.configs['flat/recommended'],
   {
     files: ['src/**/*.{ts,tsx}'], // 적용되어야 하는 피일을 나타는 glob패턴, 지정하지 않으면 모든 파일에 적용
     languageOptions: {
