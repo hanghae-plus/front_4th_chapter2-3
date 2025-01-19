@@ -304,7 +304,7 @@ const PostsManager = () => {
   }
 
   // 댓글 삭제
-  const deleteComment = async (id, postId) => {
+  const deleteComment = async (id: number, postId: number) => {
     try {
       await fetch(`/api/commentList/${id}`, {
         method: "DELETE",
@@ -319,7 +319,7 @@ const PostsManager = () => {
   }
 
   // 댓글 좋아요
-  const likeComment = async (id, postId) => {
+  const likeComment = async (id: number, postId: number) => {
     try {
 
       const response = await fetch(`/api/commentList/${id}`, {
@@ -338,14 +338,14 @@ const PostsManager = () => {
   }
 
   // 게시물 상세 보기
-  const openPostDetail = (post) => {
+  const openPostDetail = (post: PostItem) => {
     setSelectedPost(post)
     fetchcommentList(post.id)
     setShowPostDetailDialog(true)
   }
 
   // 사용자 모달 열기
-  const openUserModal = async (user) => {
+  const openUserModal = async (user: User) => {
     try {
       const response = await fetch(`/api/users/${user.id}`)
       const userData = await response.json()
