@@ -52,6 +52,10 @@ export default [
       react: {
         version: 'detect',
       },
+      browsers: [
+        'last 2 versions',
+        'not op_mini all', // Opera Mini 제외
+      ],
     },
     rules: {
       // 구성된 규칙이 포함된 객체, files가 지정되면 포함된 파일만 검사
@@ -93,10 +97,7 @@ export default [
       'jest/valid-expect': 'error', // 올바른 `expect` 사용 보장
 
       // 브라우저 호환성 (Compat) 규칙
-      'compat/compat': [
-        'warn',
-        { ignoreBrowsers: ['IE_Mob 10', 'IE 10', 'bb 7', 'Opera Mini'] }
-      ],
+      'compat/compat': 'warn', // 호환성 검사
 
       // 보안 관련 규칙 (Security)
       'security/detect-object-injection': 'warn', // 객체 속성 주입 방지
