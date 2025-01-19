@@ -1,54 +1,32 @@
-import { NewPost, Post } from "../models/types"
+import { NewPost, Post } from '../models/types'
 
-// TODO: 에러 처리 필요 : 심화과제 tanstack에서 처리할 예정
-export const getPostList = async (limit: number, skip: number) => {
-  const response = await fetch(`/api/posts?limit=${limit}&skip=${skip}`)
-  const data = await response.json()
-  return data
-}
+const BASE_URL = '/api/posts'
 
-export const getPostTags = async () => {
-  const response = await fetch(`/api/posts/tags`)
-  const data = await response.json()
-  return data
-}
+export const PostsAPI = {
+  getList: (limit: number, skip: number) => fetch(`${BASE_URL}?limit=${limit}&skip=${skip}`),
 
-export const getPostListByTag = async (tag: string) => {
-  const response = await fetch(`/api/posts/tag/${tag}`)
-  const data = await response.json()
-  return data
-}
+  getTags: () => fetch(`${BASE_URL}/tags`),
 
-export const getPostListBySearch = async (searchQuery: string) => {
-  const response = await fetch(`/api/posts/search?q=${searchQuery}`)
-  const data = await response.json()
-  return data
-}
+  getByTag: (tag: string) => fetch(`${BASE_URL}/tag/${tag}`),
 
-export const postPost = async (post: NewPost) => {
-  const response = await fetch(`/api/posts/add`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(post),
-  })
-  const data = await response.json()
-  return data
-}
+  search: (query: string) => fetch(`${BASE_URL}/search?q=${query}`),
 
-export const putPost = async (post: Post) => {
-  const response = await fetch(`/api/posts/${post.id}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(post),
-  })
-  const data = await response.json()
-  return data
-}
+  create: (post: NewPost) =>
+    fetch(`${BASE_URL}/add`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(post),
+    }),
 
-export const deletePost = async (id: number) => {
-  const response = await fetch(`/api/posts/${id}`, {
-    method: 'DELETE',
-  })
-  const data = await response.json()
-  return data
+  update: (post: Post) =>
+    fetch(`${BASE_URL}/${post.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(post),
+    }),
+
+  delete: (id: number) =>
+    fetch(`${BASE_URL}/${id}`, {
+      method: 'DELETE',
+    }),
 }

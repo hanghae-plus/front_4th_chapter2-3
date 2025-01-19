@@ -35,9 +35,9 @@ import {
   getPostTags,
   postPost,
   putPost,
-} from '../legacy/api/post.api'
-import { deleteComment, getComments, patchComment, postComment, putComment } from '../legacy/api/comments.api'
-import { getUser, getUserList } from '../legacy/api/user.api'
+} from '../legacy/service/post.service'
+import { deleteComment, getComments, patchComment, postComment, putComment } from '../legacy/service/comments.service'
+import { getUser, getUserList } from '../legacy/service/user.service'
 
 const PostsManager = () => {
   const navigate = useNavigate()
