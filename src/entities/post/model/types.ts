@@ -1,3 +1,5 @@
+import { User } from "../../user/model/types"
+
 interface Post {
   id: number
   title: string
@@ -10,5 +12,12 @@ interface Post {
   views: number
   userId: number
 }
+interface Comment {
+  id: number
+  body: string
+  likes: number
+  postId: Post["id"]
+  user: Pick<User, "id" | "username"> & { fullName: string }
+}
 
-export type { Post }
+export type { Post, Comment }
