@@ -25,9 +25,17 @@ import {
   TableRow,
   Textarea,
 } from "../shared/ui";
-import { Post, PostsResponseDto, User, UsersResponseDto } from "@entities/index";
-import { PostWithAuther } from "@features/index";
-import { Comment } from "@entities/comment";
+
+import {
+  Post,
+  PostsResponseDto,
+  PostWithAuther,
+  Tag,
+  User,
+  UsersResponseDto,
+  Comment,
+  NewComment,
+} from "@entities/index";
 
 const PostsManager = () => {
   const navigate = useNavigate();
@@ -40,18 +48,18 @@ const PostsManager = () => {
   const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"));
   const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"));
   const [searchQuery, setSearchQuery] = useState(queryParams.get("search") || "");
-  const [selectedPost, setSelectedPost] = useState<PostWithAuther | null>(null);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [sortBy, setSortBy] = useState(queryParams.get("sortBy") || "");
   const [sortOrder, setSortOrder] = useState(queryParams.get("sortOrder") || "asc");
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [newPost, setNewPost] = useState({ title: "", body: "", userId: 1 });
   const [loading, setLoading] = useState(false);
-  const [tags, setTags] = useState([]);
+  const [tags, setTags] = useState<Tag[]>([]);
   const [selectedTag, setSelectedTag] = useState(queryParams.get("tag") || "");
   const [comments, setComments] = useState<Record<number, Comment[]>>({});
   const [selectedComment, setSelectedComment] = useState<Comment | null>(null);
-  const [newComment, setNewComment] = useState({ body: "", postId: null, userId: 1 });
+  const [newComment, setNewComment] = useState<NewComment>({ body: "", postId: null, userId: 1 });
   const [showAddCommentDialog, setShowAddCommentDialog] = useState(false);
   const [showEditCommentDialog, setShowEditCommentDialog] = useState(false);
   const [showPostDetailDialog, setShowPostDetailDialog] = useState(false);
@@ -428,7 +436,7 @@ const PostsManager = () => {
   );
 
   // 댓글 렌더링
-  const renderComments = (postId) => (
+  const renderComments = (postId: number) => (
     <div className="mt-2">
       <div className="flex items-center justify-between mb-2">
         <h3 className="text-sm font-semibold">댓글</h3>
@@ -504,7 +512,7 @@ const PostsManager = () => {
             </div>
             <Select
               value={selectedTag}
-              onValueChange={(value) => {
+              onValueChange={(value: string) => {
                 setSelectedTag(value);
                 fetchPostsByTag(value);
                 updateURL();
@@ -515,7 +523,7 @@ const PostsManager = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">모든 태그</SelectItem>
-                {tags.map((tag) => (
+                {tags.map((tag: Tag) => (
                   <SelectItem key={tag.url} value={tag.slug}>
                     {tag.slug}
                   </SelectItem>

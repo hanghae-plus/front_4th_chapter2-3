@@ -1,3 +1,5 @@
+import { User } from "@entities/user";
+
 export interface PostsResponseDto {
   posts: Post[];
   total: number;
@@ -13,6 +15,10 @@ export interface Post {
   reactions: Reaction;
   views: number;
   userId: number;
+}
+
+export interface PostWithAuther extends Post {
+  author: User | null;
 }
 
 export interface Reaction {
