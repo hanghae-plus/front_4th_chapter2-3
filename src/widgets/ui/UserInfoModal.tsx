@@ -1,5 +1,4 @@
-import { Dialog, DialogContent, DialogTitle } from "@radix-ui/react-dialog"
-import { DialogHeader } from "../../shared/ui"
+import { Dialog, DialogContent, DialogTitle, DialogHeader } from "../../shared/ui"
 import { User } from "../../entities/user/model/types"
 
 interface UserInfoModalProps {
