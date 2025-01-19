@@ -55,6 +55,7 @@ type User = {
 
 const posts = atom<Post>({ posts: [], total: 0, skip: 0, limit: 0 });
 const users = atom<User[]>([]);
+const total = atom(0);
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -62,7 +63,6 @@ const PostsManager = () => {
   const queryParams = new URLSearchParams(location.search)
 
   // 상태 관리
-  const [total, setTotal] = useState(0)
   const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"))
   const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"))
   const [searchQuery, setSearchQuery] = useState(queryParams.get("search") || "")
@@ -100,6 +100,7 @@ const PostsManager = () => {
   // 게시물 가져오기
   const [postList, setPostList] = useAtom(posts);
   const [userList, setUserList] = useAtom(users);
+  const setTotal = useSetAtom(total);
   const fetchPosts = () => {
     setLoading(true)
 
