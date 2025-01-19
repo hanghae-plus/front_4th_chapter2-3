@@ -321,11 +321,13 @@ const PostsManager = () => {
   // 댓글 좋아요
   const likeComment = async (id: number, postId: number) => {
     try {
+      const comment = commentList[postId].find((c) => c.id === id);
+      if(!comment) return;
 
       const response = await fetch(`/api/commentList/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ likes: commentList[postId].find((c) => c.id === id).likes + 1 }),
+        body: JSON.stringify({ likes: comment.likes + 1 }),
       })
       const data = await response.json()
       setCommentList((prev) => ({
