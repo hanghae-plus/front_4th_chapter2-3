@@ -59,6 +59,7 @@ const total = atom(0);
 const tags = atom<string[]>([]);
 const newPost = atom({ title: "", body: "", userId: 1 });
 const selectedPostAtom = atom<PostItem | null>(null);
+const commentListAtom = atom<{ [key: number]: [] }>({});
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -72,6 +73,8 @@ const PostsManager = () => {
   const [tagList, setTagList] = useAtom(tags);
   const setNewPost = useSetAtom(newPost);
   const [selectedPost, setSelectedPost] = useAtom(selectedPostAtom);
+  const [commentList, setCommentList] = useAtom(commentListAtom);
+
   const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"))
   const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"))
   const [searchQuery, setSearchQuery] = useState(queryParams.get("search") || "")
@@ -81,7 +84,6 @@ const PostsManager = () => {
   const [showEditDialog, setShowEditDialog] = useState(false)
   const [loading, setLoading] = useState(false)
   const [selectedTag, setSelectedTag] = useState(queryParams.get("tag") || "")
-  const [comments, setComments] = useState({})
   const [selectedComment, setSelectedComment] = useState(null)
   const [newComment, setNewComment] = useState({ body: "", postId: null, userId: 1 })
   const [showAddCommentDialog, setShowAddCommentDialog] = useState(false)
@@ -241,12 +243,12 @@ const PostsManager = () => {
   }
 
   // 댓글 가져오기
-  const fetchComments = async (postId) => {
-    if (comments[postId]) return // 이미 불러온 댓글이 있으면 다시 불러오지 않음
+  const fetchcommentList = async (postId: number) => {
+    if (commentList[postId]) return // 이미 불러온 댓글이 있으면 다시 불러오지 않음
     try {
-      const response = await fetch(`/api/comments/post/${postId}`)
+      const response = await fetch(`/api/commentList/post/${postId}`)
       const data = await response.json()
-      setComments((prev) => ({ ...prev, [postId]: data.comments }))
+      setCommentList((prev) => ({ ...prev, [postId]: data.commentList }))
     } catch (error) {
       console.error("댓글 가져오기 오류:", error)
     }
@@ -255,13 +257,13 @@ const PostsManager = () => {
   // 댓글 추가
   const addComment = async () => {
     try {
-      const response = await fetch("/api/comments/add", {
+      const response = await fetch("/api/commentList/add", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newComment),
       })
       const data = await response.json()
-      setComments((prev) => ({
+      setCommentList((prev) => ({
         ...prev,
         [data.postId]: [...(prev[data.postId] || []), data],
       }))
@@ -275,13 +277,13 @@ const PostsManager = () => {
   // 댓글 업데이트
   const updateComment = async () => {
     try {
-      const response = await fetch(`/api/comments/${selectedComment.id}`, {
+      const response = await fetch(`/api/commentList/${selectedComment.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ body: selectedComment.body }),
       })
       const data = await response.json()
-      setComments((prev) => ({
+      setCommentList((prev) => ({
         ...prev,
         [data.postId]: prev[data.postId].map((comment) => (comment.id === data.id ? data : comment)),
       }))
@@ -294,10 +296,10 @@ const PostsManager = () => {
   // 댓글 삭제
   const deleteComment = async (id, postId) => {
     try {
-      await fetch(`/api/comments/${id}`, {
+      await fetch(`/api/commentList/${id}`, {
         method: "DELETE",
       })
-      setComments((prev) => ({
+      setCommentList((prev) => ({
         ...prev,
         [postId]: prev[postId].filter((comment) => comment.id !== id),
       }))
@@ -310,13 +312,13 @@ const PostsManager = () => {
   const likeComment = async (id, postId) => {
     try {
 
-      const response = await fetch(`/api/comments/${id}`, {
+      const response = await fetch(`/api/commentList/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ likes: comments[postId].find((c) => c.id === id).likes + 1 }),
+        body: JSON.stringify({ likes: commentList[postId].find((c) => c.id === id).likes + 1 }),
       })
       const data = await response.json()
-      setComments((prev) => ({
+      setCommentList((prev) => ({
         ...prev,
         [postId]: prev[postId].map((comment) => (comment.id === data.id ? {...data, likes: comment.likes + 1} : comment)),
       }))
@@ -328,7 +330,7 @@ const PostsManager = () => {
   // 게시물 상세 보기
   const openPostDetail = (post) => {
     setSelectedPost(post)
-    fetchComments(post.id)
+    fetchcommentList(post.id)
     setShowPostDetailDialog(true)
   }
 
@@ -463,7 +465,7 @@ const PostsManager = () => {
   )
 
   // 댓글 렌더링
-  const renderComments = (postId) => (
+  const rendercommentList = (postId) => (
     <div className="mt-2">
       <div className="flex items-center justify-between mb-2">
         <h3 className="text-sm font-semibold">댓글</h3>
@@ -479,7 +481,7 @@ const PostsManager = () => {
         </Button>
       </div>
       <div className="space-y-1">
-        {comments[postId]?.map((comment) => (
+        {commentList[postId]?.map((comment) => (
           <div key={comment.id} className="flex items-center justify-between text-sm border-b pb-1">
             <div className="flex items-center space-x-2 overflow-hidden">
               <span className="font-medium truncate">{comment.user.username}:</span>
@@ -704,7 +706,7 @@ const PostsManager = () => {
           </DialogHeader>
           <div className="space-y-4">
             <p>{highlightText(selectedPost?.body, searchQuery)}</p>
-            {renderComments(selectedPost?.id)}
+            {rendercommentList(selectedPost?.id)}
           </div>
         </DialogContent>
       </Dialog>
