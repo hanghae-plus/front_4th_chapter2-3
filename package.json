@@ -9,9 +9,12 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest",
-    "coverage": "vitest run --coverage"
+    "coverage": "vitest run --coverage",
+    "start:basic": "vite serve --open ./index.html"
   },
   "dependencies": {
+    "@tanstack/react-query": "4",
+    "jotai": "^2.11.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
