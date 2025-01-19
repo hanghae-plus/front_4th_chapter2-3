@@ -12,6 +12,12 @@ interface Post {
   views: number
   userId: number
 }
+
+interface NewPost {
+  title: Post["title"]
+  body: Post["body"]
+  userId: User["id"]
+}
 interface Comment {
   id: number
   body: string
@@ -26,4 +32,4 @@ interface NewComment {
   userId: Comment["user"]["id"]
 }
 
-export type { Post, Comment, NewComment }
+export type { Post, NewPost, Comment, NewComment }
