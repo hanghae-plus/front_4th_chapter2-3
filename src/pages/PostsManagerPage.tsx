@@ -7,10 +7,6 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
   Input,
   Select,
   SelectContent,
@@ -23,16 +19,17 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-  Textarea,
 } from "../shared/ui"
-import UserInfoModal from "../widgets/ui/UserInfoModal"
 import { highlightText } from "../shared/lib/highlightText"
-import PostDetailModal from "../widgets/ui/PostDetailModal"
-import CommentEditModal from "../widgets/ui/CommentEditModal"
 import { Comment, NewComment, NewPost, Post } from "../entities/post/model/types"
-import { CommentAddModal } from "../widgets/ui/CommentAddModal"
-import PostEditModal from "../widgets/ui/PostEditModal"
-import PostAddModal from "../widgets/ui/PostAddModal"
+import {
+  CommentAddModal,
+  CommentEditModal,
+  PostAddModal,
+  PostDetailModal,
+  PostEditModal,
+  UserInfoModal,
+} from "../widgets/ui/modals"
 
 const PostsManager = () => {
   const navigate = useNavigate()

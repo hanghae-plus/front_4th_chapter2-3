@@ -35,4 +35,4 @@ const CommentAddModal: React.FC<CommentAddModalProps> = ({
   )
 }
 
-export { CommentAddModal }
+export default CommentAddModal
