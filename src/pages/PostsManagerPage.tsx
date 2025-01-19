@@ -58,6 +58,7 @@ const users = atom<User[]>([]);
 const total = atom(0);
 const tags = atom<string[]>([]);
 const newPost = atom({ title: "", body: "", userId: 1 });
+const selectedPostAtom = atom<PostItem | null>(null);
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -70,15 +71,14 @@ const PostsManager = () => {
   const setTotal = useSetAtom(total);
   const [tagList, setTagList] = useAtom(tags);
   const setNewPost = useSetAtom(newPost);
+  const [selectedPost, setSelectedPost] = useAtom(selectedPostAtom);
   const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"))
   const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"))
   const [searchQuery, setSearchQuery] = useState(queryParams.get("search") || "")
-  const [selectedPost, setSelectedPost] = useState(null)
   const [sortBy, setSortBy] = useState(queryParams.get("sortBy") || "")
   const [sortOrder, setSortOrder] = useState(queryParams.get("sortOrder") || "asc")
   const [showAddDialog, setShowAddDialog] = useState(false)
   const [showEditDialog, setShowEditDialog] = useState(false)
-  // const [newPost, setNewPost] = useState({ title: "", body: "", userId: 1 })
   const [loading, setLoading] = useState(false)
   const [selectedTag, setSelectedTag] = useState(queryParams.get("tag") || "")
   const [comments, setComments] = useState({})
@@ -207,6 +207,7 @@ const PostsManager = () => {
 
   // 게시물 업데이트
   const updatePost = async () => {
+    if (!selectedPost) return; // null 체크
     try {
       const response = await fetch(`/api/posts/${selectedPost.id}`, {
         method: "PUT",
@@ -214,7 +215,10 @@ const PostsManager = () => {
         body: JSON.stringify(selectedPost),
       })
       const data = await response.json()
-      setPosts(posts.map((post) => (post.id === data.id ? data : post)))
+      setPostList((prev) => ({
+        ...prev,
+        posts: prev.posts.map((post) => (post.id === data.id ? data : post)),
+      }))
       setShowEditDialog(false)
     } catch (error) {
       console.error("게시물 업데이트 오류:", error)
