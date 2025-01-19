@@ -20,4 +20,10 @@ interface Comment {
   user: Pick<User, "id" | "username"> & { fullName: string }
 }
 
-export type { Post, Comment }
+interface NewComment {
+  body: Comment["body"]
+  postId: Comment["postId"] | null
+  userId: Comment["user"]["id"]
+}
+
+export type { Post, Comment, NewComment }
