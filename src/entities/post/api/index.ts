@@ -22,13 +22,13 @@ export const getSearchPosts = async (params: getSearchPostsRequest): Promise<get
 
 //게시물 등록
 export const postPosts = async (params: postPostsRequest) => {
-  const { data } = await axios.post("/api/posts/add", { params })
+  const { data } = await axios.post("/api/posts/add", { ...params })
   return data
 }
 
 //게시물 업데이트
 export const putPosts = async (params: putPostsRequest) => {
-  const { data } = await axios.put(`/api/posts/${params.id}`, { params })
+  const { data } = await axios.put(`/api/posts/${params.id}`, { ...params })
   return data
 }
 
