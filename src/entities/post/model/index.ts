@@ -1,4 +1,4 @@
-import { User } from './user'
+import { User } from '@entities/model'
 
 export interface Post {
   id: number

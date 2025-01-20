@@ -1,16 +1,10 @@
 import { useEffect, useState } from "react"
 import { Edit2, MessageSquare, Plus, Search, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react"
 import { useLocation, useNavigate } from "react-router-dom"
-import {
-  Button,
-  Card,
-  Dialog,
-  Input,
-  Select,
-  Table,
-  Textarea,
-} from "@shared/ui"
-import { Post, User, Comment, PostsResponse, UsersResponse } from "@entities/model"
+import { Button, Card, Dialog, Input, Select, Table, Textarea } from "@shared/ui"
+import { User, Comment } from "@entities/model"
+import { Post } from "@entities/post/model"
+import { postsApi } from "@entities/post/api"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -61,36 +55,13 @@ const PostsManager = () => {
   const fetchPosts = async () => {
     setLoading(true)
     try {
-      const [postsResponse, usersResponse] = await Promise.all([
-        fetch(`/api/posts?limit=${limit}&skip=${skip}`),
-        fetch("/api/users?limit=0&select=username,image"),
-      ])
-
-      const postsData = (await postsResponse.json()) as PostsResponse
-      const usersData = (await usersResponse.json()) as UsersResponse
-
-      const postsWithUsers = postsData.posts.map((post: Post) => ({
-        ...post,
-        author: usersData.users.find((user: User) => user.id === post.userId),
-      }))
-
-      setPosts(postsWithUsers)
-      setTotal(postsData.total)
+      const data = await postsApi.fetchPosts(limit, skip)
+      setPosts(data.posts)
+      setTotal(data.total)
     } catch (error) {
-      console.error("게시물 가져오기 오류:", error instanceof Error ? error.message : "알 수 없는 오류")
+      console.error("게시물 가져오기 오류:", error)
     } finally {
       setLoading(false)
-    }
-  }
-
-  // 태그 가져오기
-  const fetchTags = async () => {
-    try {
-      const response = await fetch("/api/posts/tags")
-      const data = await response.json()
-      setTags(data)
-    } catch (error) {
-      console.error("태그 가져오기 오류:", error)
     }
   }
 
@@ -102,8 +73,7 @@ const PostsManager = () => {
     }
     setLoading(true)
     try {
-      const response = await fetch(`/api/posts/search?q=${searchQuery}`)
-      const data = await response.json()
+      const data = await postsApi.searchPosts(searchQuery)
       setPosts(data.posts)
       setTotal(data.total)
     } catch (error) {
@@ -120,20 +90,9 @@ const PostsManager = () => {
     }
     setLoading(true)
     try {
-      const [postsResponse, usersResponse] = await Promise.all([
-        fetch(`/api/posts/tag/${tag}`),
-        fetch("/api/users?limit=0&select=username,image"),
-      ])
-      const postsData = await postsResponse.json()
-      const usersData = await usersResponse.json()
-
-      const postsWithUsers = postsData.posts.map((post: Post) => ({
-        ...post,
-        author: usersData.users.find((user: User) => user.id === post.userId),
-      }))
-
-      setPosts(postsWithUsers)
-      setTotal(postsData.total)
+      const data = await postsApi.fetchPostsByTag(tag)
+      setPosts(data.posts)
+      setTotal(data.total)
     } catch (error) {
       console.error("태그별 게시물 가져오기 오류:", error)
     }
@@ -143,12 +102,7 @@ const PostsManager = () => {
   // 게시물 추가
   const addPost = async () => {
     try {
-      const response = await fetch("/api/posts/add", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newPost),
-      })
-      const data = await response.json()
+      const data = await postsApi.addPost(newPost)
       setPosts([data, ...posts])
       setShowAddDialog(false)
       setNewPost({ title: "", body: "", userId: 1 })
@@ -161,12 +115,7 @@ const PostsManager = () => {
   const updatePost = async () => {
     if (!selectedPost) return
     try {
-      const response = await fetch(`/api/posts/${selectedPost.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(selectedPost),
-      })
-      const data = await response.json()
+      const data = await postsApi.updatePost(selectedPost)
       setPosts(posts.map((post) => (post.id === data.id ? data : post)))
       setShowEditDialog(false)
     } catch (error) {
@@ -177,12 +126,20 @@ const PostsManager = () => {
   // 게시물 삭제
   const deletePost = async (id: number) => {
     try {
-      await fetch(`/api/posts/${id}`, {
-        method: "DELETE",
-      })
+      await postsApi.deletePost(id)
       setPosts(posts.filter((post) => post.id !== id))
     } catch (error) {
       console.error("게시물 삭제 오류:", error)
+    }
+  }
+
+  // 태그 가져오기
+  const fetchTags = async () => {
+    try {
+      const data = await postsApi.fetchTags()
+      setTags(data)
+    } catch (error) {
+      console.error("태그 가져오기 오류:", error)
     }
   }
 
