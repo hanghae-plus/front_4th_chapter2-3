@@ -40,6 +40,7 @@ import {
   updatePost,
   deletePost,
   getUser,
+  searchPosts,
 } from "@entities/index";
 import { getParams } from "@shared/lib";
 import { addComment, getComments, likeComment, updateComment } from "@entities/comment/model";
@@ -104,20 +105,17 @@ const PostsManager = () => {
   };
 
   // 게시물 검색
-  const searchPosts = async () => {
+  const searchPostsAndUpdate = async () => {
     if (!searchQuery) {
       fetchPosts();
       return;
     }
     setLoading(true);
-    try {
-      const response = await fetch(`/api/posts/search?q=${searchQuery}`);
-      const data = await response.json();
-      setPosts(data.posts);
-      setTotal(data.total);
-    } catch (error) {
-      console.error("게시물 검색 오류:", error);
-    }
+    const data = await searchPosts(searchQuery);
+
+    setPosts(data.posts);
+    setTotal(data.total);
+
     setLoading(false);
   };
 
@@ -438,7 +436,7 @@ const PostsManager = () => {
                   className="pl-8"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyPress={(e) => e.key === "Enter" && searchPosts()}
+                  onKeyPress={(e) => e.key === "Enter" && searchPostsAndUpdate()}
                 />
               </div>
             </div>

@@ -1,12 +1,17 @@
 import { NewPost, Post, PostsRequestDto, PostsResponseDto } from "./types";
 
-// const POST = '/api/posts?limit={limit}&skip={skip}&searchQuery={searchQuery}&searchQuery={searchQuery}&sortBy={sortBy}&searchQuery={searchQuery}';
-
 export const getPosts = async ({ limit, skip }: PostsRequestDto): Promise<PostsResponseDto> =>
   fetch(`/api/posts?limit=${limit}&skip=${skip}`)
     .then((response) => response.json())
     .catch((error) => {
       console.error("게시물 가져오기 오류:", error);
+    });
+
+export const searchPosts = async (searchQuery: string): Promise<PostsResponseDto> =>
+  fetch(`/api/posts/search?q=${searchQuery}`)
+    .then((response) => response.json())
+    .catch((error) => {
+      console.error("게시물 검색 오류:", error);
     });
 
 export const getPostsByTag = async (tag: string): Promise<PostsResponseDto> =>

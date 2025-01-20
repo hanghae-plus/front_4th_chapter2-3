@@ -32,7 +32,7 @@ export interface Post {
 export type NewPost = Pick<Post, "userId" | "title" | "body">;
 
 export interface PostWithAuther extends Post {
-  author: User | null;
+  author?: User | null;
 }
 
 export interface Reaction {
