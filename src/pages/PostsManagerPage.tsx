@@ -2,13 +2,7 @@ import { Edit2, MessageSquare, Plus, Search, ThumbsDown, ThumbsUp, Trash2 } from
 import { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 
-import { Button } from "../shared/ui/button/Button"
-import { Card } from "../shared/ui/card"
-import { Dialog } from "../shared/ui/dialog"
-import { Input } from "../shared/ui/input/Input"
-import { Select } from "../shared/ui/select"
-import { Table } from "../shared/ui/table"
-import { Textarea } from "../shared/ui/textarea/Textarea"
+import { Textarea, Button, Card, Dialog, Input, Select, Table } from "../shared/ui"
 
 const PostsManager = () => {
   const navigate = useNavigate()
