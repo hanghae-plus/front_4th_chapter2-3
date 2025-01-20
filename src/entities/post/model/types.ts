@@ -11,6 +11,7 @@ interface Post {
   }
   views: number
   userId: number
+  author: User
 }
 
 interface NewPost {

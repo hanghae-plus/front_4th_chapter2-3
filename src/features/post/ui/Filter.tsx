@@ -1,5 +1,5 @@
 import { Search } from "lucide-react"
-import { Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../shared/ui"
+import { Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../shared/ui"
 
 interface FilterProps {
   searchQuery: string
