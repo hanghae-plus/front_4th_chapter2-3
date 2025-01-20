@@ -1,0 +1,1 @@
+export { postsKeys } from "./queryKey";
