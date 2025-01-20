@@ -52,8 +52,7 @@
     "typescript-eslint": "^8.20.0",
     "vite": "^6.0.7",
     "vitest": "^3.0.2",
-    "vitest-browser-react": "^0.0.4",
-    "whatwg-fetch": "^3.6.20"
+    "vitest-browser-react": "^0.0.4"
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx}": [

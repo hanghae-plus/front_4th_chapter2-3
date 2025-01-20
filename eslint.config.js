@@ -52,10 +52,7 @@ export default [
       react: {
         version: 'detect',
       },
-      browsers: [
-        'last 2 versions',
-        'not op_mini all', // Opera Mini 제외
-      ],
+      browsers: '> 0.5%, last 2 versions, not op_mini all, Firefox ESR, not dead',
     },
     rules: {
       // 구성된 규칙이 포함된 객체, files가 지정되면 포함된 파일만 검사
