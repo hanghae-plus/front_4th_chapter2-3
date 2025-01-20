@@ -1,30 +1,12 @@
 import { useEffect, useState } from "react"
 import { Edit2, MessageSquare, Plus, Search, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react"
 import { useLocation, useNavigate } from "react-router-dom"
-import {
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  Input,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-  Textarea,
-} from "../shared/ui"
+
+import { Button, Input, Textarea } from "../shared/ui/common"
+import { Table, TableHead, TableHeader, TableRow, TableBody, TableCell } from "../shared/ui/table"
+import { DialogContainer, DialogContent, DialogHeader, DialogTitle } from "../shared/ui/dialog"
+import { SelectContainer, SelectValue, SelectContent, SelectItem, SelectTrigger } from "../shared/ui/select"
+import { CardContainer, CardContent, CardHeader, CardTitle } from "../shared/ui/card"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -268,7 +250,6 @@ const PostsManager = () => {
   // 댓글 좋아요
   const likeComment = async (id, postId) => {
     try {
-
       const response = await fetch(`/api/comments/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -277,7 +258,9 @@ const PostsManager = () => {
       const data = await response.json()
       setComments((prev) => ({
         ...prev,
-        [postId]: prev[postId].map((comment) => (comment.id === data.id ? {...data, likes: comment.likes + 1} : comment)),
+        [postId]: prev[postId].map((comment) =>
+          comment.id === data.id ? { ...data, likes: comment.likes + 1 } : comment,
+        ),
       }))
     } catch (error) {
       console.error("댓글 좋아요 오류:", error)
@@ -470,7 +453,7 @@ const PostsManager = () => {
   )
 
   return (
-    <Card className="w-full max-w-6xl mx-auto">
+    <CardContainer className="w-full max-w-6xl mx-auto">
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <span>게시물 관리자</span>
@@ -496,7 +479,7 @@ const PostsManager = () => {
                 />
               </div>
             </div>
-            <Select
+            <SelectContainer
               value={selectedTag}
               onValueChange={(value) => {
                 setSelectedTag(value)
@@ -515,8 +498,8 @@ const PostsManager = () => {
                   </SelectItem>
                 ))}
               </SelectContent>
-            </Select>
-            <Select value={sortBy} onValueChange={setSortBy}>
+            </SelectContainer>
+            <SelectContainer value={sortBy} onValueChange={setSortBy}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="정렬 기준" />
               </SelectTrigger>
@@ -526,8 +509,8 @@ const PostsManager = () => {
                 <SelectItem value="title">제목</SelectItem>
                 <SelectItem value="reactions">반응</SelectItem>
               </SelectContent>
-            </Select>
-            <Select value={sortOrder} onValueChange={setSortOrder}>
+            </SelectContainer>
+            <SelectContainer value={sortOrder} onValueChange={setSortOrder}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="정렬 순서" />
               </SelectTrigger>
@@ -535,7 +518,7 @@ const PostsManager = () => {
                 <SelectItem value="asc">오름차순</SelectItem>
                 <SelectItem value="desc">내림차순</SelectItem>
               </SelectContent>
-            </Select>
+            </SelectContainer>
           </div>
 
           {/* 게시물 테이블 */}
@@ -545,7 +528,7 @@ const PostsManager = () => {
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
               <span>표시</span>
-              <Select value={limit.toString()} onValueChange={(value) => setLimit(Number(value))}>
+              <SelectContainer value={limit.toString()} onValueChange={(value) => setLimit(Number(value))}>
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="10" />
                 </SelectTrigger>
@@ -554,7 +537,7 @@ const PostsManager = () => {
                   <SelectItem value="20">20</SelectItem>
                   <SelectItem value="30">30</SelectItem>
                 </SelectContent>
-              </Select>
+              </SelectContainer>
               <span>항목</span>
             </div>
             <div className="flex gap-2">
@@ -570,7 +553,7 @@ const PostsManager = () => {
       </CardContent>
 
       {/* 게시물 추가 대화상자 */}
-      <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
+      <DialogContainer open={showAddDialog} onOpenChange={setShowAddDialog}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>새 게시물 추가</DialogTitle>
@@ -596,10 +579,10 @@ const PostsManager = () => {
             <Button onClick={addPost}>게시물 추가</Button>
           </div>
         </DialogContent>
-      </Dialog>
+      </DialogContainer>
 
       {/* 게시물 수정 대화상자 */}
-      <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+      <DialogContainer open={showEditDialog} onOpenChange={setShowEditDialog}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>게시물 수정</DialogTitle>
@@ -619,10 +602,10 @@ const PostsManager = () => {
             <Button onClick={updatePost}>게시물 업데이트</Button>
           </div>
         </DialogContent>
-      </Dialog>
+      </DialogContainer>
 
       {/* 댓글 추가 대화상자 */}
-      <Dialog open={showAddCommentDialog} onOpenChange={setShowAddCommentDialog}>
+      <DialogContainer open={showAddCommentDialog} onOpenChange={setShowAddCommentDialog}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>새 댓글 추가</DialogTitle>
@@ -636,10 +619,10 @@ const PostsManager = () => {
             <Button onClick={addComment}>댓글 추가</Button>
           </div>
         </DialogContent>
-      </Dialog>
+      </DialogContainer>
 
       {/* 댓글 수정 대화상자 */}
-      <Dialog open={showEditCommentDialog} onOpenChange={setShowEditCommentDialog}>
+      <DialogContainer open={showEditCommentDialog} onOpenChange={setShowEditCommentDialog}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>댓글 수정</DialogTitle>
@@ -653,10 +636,10 @@ const PostsManager = () => {
             <Button onClick={updateComment}>댓글 업데이트</Button>
           </div>
         </DialogContent>
-      </Dialog>
+      </DialogContainer>
 
       {/* 게시물 상세 보기 대화상자 */}
-      <Dialog open={showPostDetailDialog} onOpenChange={setShowPostDetailDialog}>
+      <DialogContainer open={showPostDetailDialog} onOpenChange={setShowPostDetailDialog}>
         <DialogContent className="max-w-3xl">
           <DialogHeader>
             <DialogTitle>{highlightText(selectedPost?.title, searchQuery)}</DialogTitle>
@@ -666,10 +649,10 @@ const PostsManager = () => {
             {renderComments(selectedPost?.id)}
           </div>
         </DialogContent>
-      </Dialog>
+      </DialogContainer>
 
       {/* 사용자 모달 */}
-      <Dialog open={showUserModal} onOpenChange={setShowUserModal}>
+      <DialogContainer open={showUserModal} onOpenChange={setShowUserModal}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>사용자 정보</DialogTitle>
@@ -700,8 +683,8 @@ const PostsManager = () => {
             </div>
           </div>
         </DialogContent>
-      </Dialog>
-    </Card>
+      </DialogContainer>
+    </CardContainer>
   )
 }
 
