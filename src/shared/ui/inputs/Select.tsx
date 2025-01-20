@@ -2,6 +2,9 @@ import * as SelectPrimitive from "@radix-ui/react-select"
 import { Check, ChevronDown } from "lucide-react"
 import { forwardRef } from "react"
 
+export const Select = SelectPrimitive.Root
+export const SelectValue = SelectPrimitive.Value
+
 export const SelectTrigger = forwardRef<
   React.ComponentRef<typeof SelectPrimitive.Trigger>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>

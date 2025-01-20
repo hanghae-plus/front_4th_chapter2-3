@@ -1,4 +1,4 @@
-import { forwardRef } from "react"
+import React, { forwardRef } from "react"
 import { cn } from "../../lib"
 
 // 입력 컴포넌트
