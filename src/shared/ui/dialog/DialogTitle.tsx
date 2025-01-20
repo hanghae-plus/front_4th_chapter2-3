@@ -3,18 +3,23 @@ import { forwardRef } from "react"
 
 import type { PropsWithChildren } from "react"
 
-interface DialogTitleProps {
-  className?: string
-}
-
-export const DialogTitle = forwardRef(({ className, children, ...props }: PropsWithChildren<DialogTitleProps>, ref) => (
-  <DialogPrimitive.Title
-    ref={ref}
-    className={`text-lg font-semibold leading-none tracking-tight ${className}`}
-    {...props}
-  >
-    {children}
-  </DialogPrimitive.Title>
-))
+export const DialogTitle = forwardRef(
+  (
+    {
+      className,
+      children,
+      ...props
+    }: PropsWithChildren<DialogPrimitive.DialogTitleProps & React.RefAttributes<HTMLHeadingElement>>,
+    ref,
+  ) => (
+    <DialogPrimitive.Title
+      ref={ref}
+      className={`text-lg font-semibold leading-none tracking-tight ${className}`}
+      {...props}
+    >
+      {children}
+    </DialogPrimitive.Title>
+  ),
+)
 
 DialogTitle.displayName = DialogPrimitive.Title.displayName
