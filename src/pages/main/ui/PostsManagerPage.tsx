@@ -25,6 +25,9 @@ import {
   TableRow,
   Textarea,
 } from "../../../shared/ui"
+import { useQuery } from "@tanstack/react-query"
+import { postQueries } from "../../../entities/post/api/post.queries"
+import { SortOrder } from "../../../entities/post/model/types"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -32,7 +35,6 @@ const PostsManager = () => {
   const queryParams = new URLSearchParams(location.search)
 
   // 상태 관리
-  const [total, setTotal] = useState(0)
   const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"))
   const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"))
   const [searchQuery, setSearchQuery] = useState(queryParams.get("search") || "")
@@ -40,12 +42,11 @@ const PostsManager = () => {
   const [sortOrder, setSortOrder] = useState(queryParams.get("sortOrder") || "asc")
   const [selectedTag, setSelectedTag] = useState(queryParams.get("tag") || "")
 
-  const [posts, setPosts] = useState([])
   const [selectedPost, setSelectedPost] = useState(null)
   const [showAddDialog, setShowAddDialog] = useState(false)
   const [showEditDialog, setShowEditDialog] = useState(false)
   const [newPost, setNewPost] = useState({ title: "", body: "", userId: 1 })
-  const [loading, setLoading] = useState(false)
+
   const [tags, setTags] = useState([])
   const [comments, setComments] = useState({})
   const [selectedComment, setSelectedComment] = useState(null)
@@ -68,9 +69,21 @@ const PostsManager = () => {
     navigate(`?${params.toString()}`)
   }
 
+  const { data: { posts, total } = { posts: [], total: 0 }, isLoading: isPostsLoading } = useQuery({
+    ...postQueries.listQuery({
+      limit,
+      skip,
+      sortBy,
+      sortOrder: sortOrder as SortOrder,
+    }),
+    select: (data) => ({
+      posts: data?.data.posts,
+      total: data?.data.total,
+    }),
+  })
+
   // 게시물 가져오기
   const fetchPosts = () => {
-    setLoading(true)
     let postsData
     let usersData
 
@@ -87,14 +100,9 @@ const PostsManager = () => {
           ...post,
           author: usersData.find((user) => user.id === post.userId),
         }))
-        setPosts(postsWithUsers)
-        setTotal(postsData.total)
       })
       .catch((error) => {
         console.error("게시물 가져오기 오류:", error)
-      })
-      .finally(() => {
-        setLoading(false)
       })
   }
 
@@ -115,16 +123,12 @@ const PostsManager = () => {
       fetchPosts()
       return
     }
-    setLoading(true)
     try {
       const response = await fetch(`/api/posts/search?q=${searchQuery}`)
       const data = await response.json()
-      setPosts(data.posts)
-      setTotal(data.total)
     } catch (error) {
       console.error("게시물 검색 오류:", error)
     }
-    setLoading(false)
   }
 
   // 태그별 게시물 가져오기
@@ -133,7 +137,6 @@ const PostsManager = () => {
       fetchPosts()
       return
     }
-    setLoading(true)
     try {
       const [postsResponse, usersResponse] = await Promise.all([
         fetch(`/api/posts/tag/${tag}`),
@@ -146,13 +149,9 @@ const PostsManager = () => {
         ...post,
         author: usersData.users.find((user) => user.id === post.userId),
       }))
-
-      setPosts(postsWithUsers)
-      setTotal(postsData.total)
     } catch (error) {
       console.error("태그별 게시물 가져오기 오류:", error)
     }
-    setLoading(false)
   }
 
   // 게시물 추가
@@ -163,8 +162,7 @@ const PostsManager = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newPost),
       })
-      const data = await response.json()
-      setPosts([data, ...posts])
+
       setShowAddDialog(false)
       setNewPost({ title: "", body: "", userId: 1 })
     } catch (error) {
@@ -180,8 +178,6 @@ const PostsManager = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(selectedPost),
       })
-      const data = await response.json()
-      setPosts(posts.map((post) => (post.id === data.id ? data : post)))
       setShowEditDialog(false)
     } catch (error) {
       console.error("게시물 업데이트 오류:", error)
@@ -194,7 +190,6 @@ const PostsManager = () => {
       await fetch(`/api/posts/${id}`, {
         method: "DELETE",
       })
-      setPosts(posts.filter((post) => post.id !== id))
     } catch (error) {
       console.error("게시물 삭제 오류:", error)
     }
@@ -541,7 +536,7 @@ const PostsManager = () => {
           </div>
 
           {/* 게시물 테이블 */}
-          {loading ? <div className="flex justify-center p-4">로딩 중...</div> : renderPostTable()}
+          {isPostsLoading ? <div className="flex justify-center p-4">로딩 중...</div> : renderPostTable()}
 
           {/* 페이지네이션 */}
           <div className="flex justify-between items-center">
