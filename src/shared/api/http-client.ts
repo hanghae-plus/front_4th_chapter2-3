@@ -94,4 +94,4 @@ export class HttpClient {
   }
 }
 
-export const httpClient = new HttpClient("/api")
+export const httpClient = new HttpClient("http://localhost:5173/api")
