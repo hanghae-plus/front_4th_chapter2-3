@@ -26,7 +26,20 @@ import {
   Textarea,
 } from "../shared/ui";
 
-import { Post, PostWithAuther, Tag, User, Comment, NewComment, getPosts, getUsers } from "@entities/index";
+import {
+  Post,
+  PostWithAuther,
+  Tag,
+  User,
+  Comment,
+  NewComment,
+  getPosts,
+  getUsers,
+  getPostsByTag,
+  addPost,
+  updatePost,
+  deletePost,
+} from "@entities/index";
 import { getParams } from "@shared/lib";
 import { getComments } from "@entities/comment/model";
 import { getTags } from "@entities/tag/model";
@@ -115,16 +128,11 @@ const PostsManager = () => {
     }
     setLoading(true);
     try {
-      const [postsResponse, usersResponse] = await Promise.all([
-        fetch(`/api/posts/tag/${tag}`),
-        fetch("/api/users?limit=0&select=username,image"),
-      ]);
-      const postsData = await postsResponse.json();
-      const usersData = await usersResponse.json();
+      const [postsData, usersData] = await Promise.all([getPostsByTag(tag), getUsers()]);
 
       const postsWithUsers = postsData.posts.map((post: Post) => ({
         ...post,
-        author: usersData.users.find((user: User) => user.id === post.userId),
+        author: usersData.users.find((user: User) => user.id === post.userId) ?? null,
       }));
 
       setPosts(postsWithUsers);
@@ -136,14 +144,9 @@ const PostsManager = () => {
   };
 
   // 게시물 추가
-  const addPost = async () => {
+  const addAndUpdatePosts = async () => {
     try {
-      const response = await fetch("/api/posts/add", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newPost),
-      });
-      const data = await response.json();
+      const data = await addPost(newPost);
       setPosts([data, ...posts]);
       setShowAddDialog(false);
       setNewPost({ title: "", body: "", userId: 1 });
@@ -153,32 +156,20 @@ const PostsManager = () => {
   };
 
   // 게시물 업데이트
-  const updatePost = async () => {
-    try {
-      if (!selectedPost) return;
-      const response = await fetch(`/api/posts/${selectedPost.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(selectedPost),
-      });
-      const data = await response.json();
-      setPosts(posts.map((post) => (post.id === data.id ? data : post)));
-      setShowEditDialog(false);
-    } catch (error) {
-      console.error("게시물 업데이트 오류:", error);
-    }
+  const editAndUpdatePosts = async () => {
+    if (!selectedPost) return;
+
+    const data = await updatePost(selectedPost);
+
+    // FIX_ME: auther 추후 수정
+    setPosts(posts.map((post) => (post.id === data.id ? { ...data, author: null } : post)));
+    setShowEditDialog(false);
   };
 
   // 게시물 삭제
-  const deletePost = async (id: number) => {
-    try {
-      await fetch(`/api/posts/${id}`, {
-        method: "DELETE",
-      });
-      setPosts(posts.filter((post) => post.id !== id));
-    } catch (error) {
-      console.error("게시물 삭제 오류:", error);
-    }
+  const deleteAndUpdatePosts = async (id: number) => {
+    await deletePost(id);
+    setPosts(posts.filter((post) => post.id !== id));
   };
 
   // 댓글 가져오기
@@ -393,7 +384,7 @@ const PostsManager = () => {
                 >
                   <Edit2 className="w-4 h-4" />
                 </Button>
-                <Button variant="ghost" size="sm" onClick={() => deletePost(post.id)}>
+                <Button variant="ghost" size="sm" onClick={() => deleteAndUpdatePosts(post.id)}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>
@@ -576,7 +567,7 @@ const PostsManager = () => {
               value={newPost.userId}
               onChange={(e) => setNewPost({ ...newPost, userId: Number(e.target.value) })}
             />
-            <Button onClick={addPost}>게시물 추가</Button>
+            <Button onClick={addAndUpdatePosts}>게시물 추가</Button>
           </div>
         </DialogContent>
       </Dialog>
@@ -599,7 +590,7 @@ const PostsManager = () => {
               value={selectedPost?.body || ""}
               onChange={(e) => setSelectedPost({ ...(selectedPost as Post), body: e.target.value })}
             />
-            <Button onClick={updatePost}>게시물 업데이트</Button>
+            <Button onClick={editAndUpdatePosts}>게시물 업데이트</Button>
           </div>
         </DialogContent>
       </Dialog>
