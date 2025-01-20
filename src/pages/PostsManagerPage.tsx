@@ -50,6 +50,7 @@ const PostsManager = () => {
   const [tags, setTags] = useState<Tag[]>([])
   const [selectedTag, setSelectedTag] = useState(queryParams.get('tag') || '')
   const [comments, setComments] = useState<Record<number, Comment[]>>({})
+  console.log('🚀 ~ PostsManager ~ comments:', comments)
   const [selectedComment, setSelectedComment] = useState<Comment | null>(null)
   const [newComment, setNewComment] = useState<NewComment>({ body: '', postId: null, userId: 1 })
   const [showAddCommentDialog, setShowAddCommentDialog] = useState(false)
@@ -91,8 +92,8 @@ const PostsManager = () => {
     if (comments[postId]) return // 이미 불러온 댓글이 있으면 다시 불러오지 않음
 
     try {
-      const data: Comment[] = await getComments(postId)
-      setComments((prev) => ({ ...prev, [postId]: data }))
+      const data = await getComments(postId)
+      setComments((prev) => ({ ...prev, [postId]: data.comments }))
     } catch (error) {
       console.error('댓글 가져오기 오류:', error)
     }
