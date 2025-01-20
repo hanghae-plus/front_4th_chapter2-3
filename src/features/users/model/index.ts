@@ -1,0 +1,1 @@
+export { useSuspenseQueryGetUserbyId } from "./useSuspenseQueryGetUserbyId";
