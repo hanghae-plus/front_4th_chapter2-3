@@ -34,7 +34,7 @@ export interface getSearchPostsRequest {
 export interface getSearchPostsResponse {
   limit: number
   skip: number
-  totla: number
+  total: number
   posts: Post[]
 }
 

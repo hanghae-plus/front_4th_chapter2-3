@@ -9,6 +9,7 @@ import {
 
 const queryKeys = {
   all: ["post"] as const,
+  search: () => [...queryKeys.all, "search"] as const,
 }
 
 //게시물 조회

@@ -6,9 +6,10 @@ const queryKeys = {
 }
 
 //사용자 조회
-export const useGetUsers = () => {
+export const useGetUsers = (id: number) => {
   return useQuery({
-    queryKey: [...queryKeys.all],
-    queryFn: () => getUsers(),
+    queryKey: [...queryKeys.all, id],
+    queryFn: () => getUsers(id),
+    enabled: !!id,
   })
 }

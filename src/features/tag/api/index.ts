@@ -7,7 +7,7 @@ const queryKeys = {
 }
 
 //태그 조회
-export const useGetPosts = () => {
+export const useGetTags = () => {
   return useQuery({
     queryKey: [...queryKeys.all],
     queryFn: () => getTags(),
