@@ -10,34 +10,7 @@ const Header: React.FC = () => {
           <MessageSquare className="w-6 h-6" />
           <h1 className="text-xl font-bold">게시물 관리 시스템</h1>
         </div>
-        <nav>
-          <ul className="flex space-x-4">
-            <li>
-              <a
-                href="#"
-                className="hover:underline"
-              >
-                홈
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="hover:underline"
-              >
-                대시보드
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="hover:underline"
-              >
-                설정
-              </a>
-            </li>
-          </ul>
-        </nav>
+        <Navigation />
       </div>
     </header>
   );
