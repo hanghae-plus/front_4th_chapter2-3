@@ -1,4 +1,5 @@
-import { Component } from "react"
+import React from "react"
+import { useStore } from "../../app/store"
 import { Edit2, MessageSquare, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, highlightText, Button } from "../../shared/ui"
 
@@ -8,7 +9,66 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, highligh
  * @returns Table Component
  */
 
-export const PostTable = (posts, searchQuery, selectedTag, setSelectedTag): Component => {
+// 상태 관리
+const {
+  posts,
+  comments,
+  searchQuery,
+  selectedTag,
+  setPosts,
+  setSelectedPost,
+  setShowEditDialog,
+  setComments,
+  setShowPostDetailDialog,
+  setShowUserModal,
+  setSelectedUser,
+  setSelectedTag,
+} = useStore()
+
+// 게시물 삭제
+const deletePost = async (id: number) => {
+  try {
+    await fetch(`/api/posts/${id}`, {
+      method: "DELETE",
+    })
+    setPosts(posts.filter((post) => post.id !== id))
+  } catch (error) {
+    console.error("게시물 삭제 오류:", error)
+  }
+}
+
+// 댓글 가져오기
+const fetchComments = async (postId: number) => {
+  if (comments[postId]) return // 이미 불러온 댓글이 있으면 다시 불러오지 않음
+  try {
+    const response = await fetch(`/api/comments/post/${postId}`)
+    const data = await response.json()
+    setComments(postId, data.comments)
+  } catch (error) {
+    console.error("댓글 가져오기 오류:", error)
+  }
+}
+
+// 게시물 상세 보기
+const openPostDetail = (post) => {
+  setSelectedPost(post)
+  fetchComments(post.id)
+  setShowPostDetailDialog(true)
+}
+
+// 사용자 모달 열기
+const openUserModal = async (user) => {
+  try {
+    const response = await fetch(`/api/users/${user.id}`)
+    const userData = await response.json()
+    setSelectedUser(userData)
+    setShowUserModal(true)
+  } catch (error) {
+    console.error("사용자 정보 가져오기 오류:", error)
+  }
+}
+
+export const PostTable = (): React.Component => {
   return (
     <Table>
       <TableHeader>
