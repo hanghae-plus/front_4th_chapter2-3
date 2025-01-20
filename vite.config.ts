@@ -14,4 +14,14 @@ export default defineConfig({
       },
     },
   },
+  resolve: {
+    alias: [
+      { find: "@shared", replacement: "/src/shared" },
+      { find: "@app", replacement: "/src/app" },
+      { find: "@entities", replacement: "/src/entities" },
+      { find: "@features", replacement: "/src/features" },
+      { find: "@widgets", replacement: "/src/widgets" },
+      { find: "@pages", replacement: "/src/pages" },
+    ],
+  },
 })
