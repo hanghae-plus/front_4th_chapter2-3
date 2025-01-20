@@ -344,6 +344,7 @@ const PostsManager = () => {
   }
 
   // 게시물 테이블 렌더링
+  // widget
   const renderPostTable = () => (
     <Table>
       <TableHeader>
@@ -424,6 +425,7 @@ const PostsManager = () => {
   )
 
   // 댓글 렌더링
+  // widget
   const renderComments = (postId) => (
     <div className="mt-2">
       <div className="flex items-center justify-between mb-2">
@@ -440,6 +442,7 @@ const PostsManager = () => {
         </Button>
       </div>
       <div className="space-y-1">
+        {/* Feature */}
         {comments[postId]?.map((comment) => (
           <div key={comment.id} className="flex items-center justify-between text-sm border-b pb-1">
             <div className="flex items-center space-x-2 overflow-hidden">
