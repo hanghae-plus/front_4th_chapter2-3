@@ -1,12 +1,12 @@
 import { httpClient } from "../../../shared/api/http-client"
-import { FetchPostsParams, PostsResponse, Post } from "../model/types"
+import { FetchPostsParams, PostsResponse, Post, FetchPostsByTagParams } from "../model/types"
 
 export const postApi = {
-  fetchPosts: (params: FetchPostsParams) => httpClient.get<PostsResponse, FetchPostsParams>("/posts", params),
+  fetchPosts: (params: Partial<FetchPostsParams>) => httpClient.get<PostsResponse>("/posts", params),
 
-  searchPosts: (query: string) => httpClient.get<PostsResponse>("/posts/search", { q: query }),
+  searchPosts: (query: string) => httpClient.get<PostsResponse, { q: string }>("/posts/search", { q: query }),
 
-  fetchPostsByTag: async (params: FetchPostsParams) => {
+  fetchPostsByTag: async (params: FetchPostsByTagParams) => {
     const response = await httpClient.get<PostsResponse>(`/posts/tag/${params.tag}`, {
       limit: params.limit,
       skip: params.skip,
