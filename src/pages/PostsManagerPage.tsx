@@ -8,7 +8,6 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-  Input,
   Select,
   SelectContent,
   SelectItem,
@@ -23,6 +22,7 @@ import {
   Textarea,
 } from "../shared/ui"
 import { Dialog } from "../shared/ui/dialog"
+import { Input } from "../shared/ui/input/Input"
 
 const PostsManager = () => {
   const navigate = useNavigate()
