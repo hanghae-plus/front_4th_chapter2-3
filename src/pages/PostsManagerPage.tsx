@@ -9,6 +9,8 @@ import { Input } from "../shared/ui/Input/ui"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../shared/ui/Select/ui"
 import { Textarea } from "../shared/ui/Textarea/ui"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../shared/ui/Table/ui"
+import { useDeletePosts, useGetPosts, useGetSearchPosts, usePostPosts, usePutPosts } from "../features/post/api"
+import UserProfile from "../features/user/ui/UserProfile"
 
 interface Tag {
   name: string
@@ -127,38 +129,55 @@ const PostsManager = () => {
     if (selectedTag) params.set("tag", selectedTag)
     navigate(`?${params.toString()}`)
   }
+  const { data: postsData, isLoading, isError, error } = useGetPosts({ limit, skip })
+  const { mutate: getSearchPostsMutation } = useGetSearchPosts()
+  const { mutate: addPostMutation } = usePostPosts()
+  const { mutate: putPostMutation } = usePutPosts()
+  const { mutate: deletePostMutation } = useDeletePosts()
+
+  useEffect(() => {
+    setLoading(isLoading)
+    if (postsData) {
+      setPosts(postsData.posts)
+      setTotal(postsData.total)
+    }
+
+    if (isError) {
+      console.error("게시물 가져오기 오류:", error)
+    }
+  }, [postsData])
 
   // 게시물 가져오기
-  const fetchPosts = () => {
-    setLoading(true)
-    let postsData: PostResponse
-    let usersData: User[]
+  // const fetchPosts = () => {
+  //   setLoading(true)
+  //   let postsData: PostResponse
+  //   let usersData: User[]
 
-    fetch(`/api/posts?limit=${limit}&skip=${skip}`)
-      .then((response) => response.json())
-      .then((data) => {
-        postsData = data
-        return fetch("/api/users?limit=0&select=username,image")
-      })
-      .then((response) => response.json())
-      .then((users) => {
-        usersData = users.users
-        const postsWithUsers = postsData.posts?.map((post) => ({
-          ...post,
-          author: usersData.find((user: User) => user.id === post.userId),
-        }))
-        if (postsWithUsers) {
-          setPosts(postsWithUsers)
-        }
-        setTotal(postsData.total)
-      })
-      .catch((error) => {
-        console.error("게시물 가져오기 오류:", error)
-      })
-      .finally(() => {
-        setLoading(false)
-      })
-  }
+  //   fetch(`/api/posts?limit=${limit}&skip=${skip}`)
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       postsData = data
+  //       return fetch("/api/users?limit=0&select=username,image")
+  //     })
+  //     .then((response) => response.json())
+  //     .then((users) => {
+  //       usersData = users.users
+  //       const postsWithUsers = postsData.posts?.map((post) => ({
+  //         ...post,
+  //         author: usersData.find((user: User) => user.id === post.userId),
+  //       }))
+  //       if (postsWithUsers) {
+  //         setPosts(postsWithUsers)
+  //       }
+  //       setTotal(postsData.total)
+  //     })
+  //     .catch((error) => {
+  //       console.error("게시물 가져오기 오류:", error)
+  //     })
+  //     .finally(() => {
+  //       setLoading(false)
+  //     })
+  // }
 
   // 태그 가져오기
   const fetchTags = async () => {
@@ -178,14 +197,19 @@ const PostsManager = () => {
       return
     }
     setLoading(true)
-    try {
-      const response = await fetch(`/api/posts/search?q=${searchQuery}`)
-      const data = await response.json()
-      setPosts(data.posts)
-      setTotal(data.total)
-    } catch (error) {
-      console.error("게시물 검색 오류:", error)
-    }
+
+    getSearchPostsMutation(
+      { q: searchQuery },
+      {
+        onSuccess: (data) => {
+          setPosts(data.posts)
+          setTotal(data.total)
+        },
+        onError: (error) => {
+          console.error("게시물 검색 오류:", error)
+        },
+      },
+    )
     setLoading(false)
   }
 
@@ -218,48 +242,42 @@ const PostsManager = () => {
   }
 
   // 게시물 추가
-  const addPost = async () => {
-    try {
-      const response = await fetch("/api/posts/add", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newPost),
-      })
-      const data = await response.json()
-      setPosts([data, ...posts])
-      setShowAddDialog(false)
-      setNewPost({ title: "", body: "", userId: 1 })
-    } catch (error) {
-      console.error("게시물 추가 오류:", error)
-    }
+  const addPost = () => {
+    addPostMutation(newPost, {
+      onSuccess: (data) => {
+        setPosts([data, ...posts])
+        setShowAddDialog(false)
+        setNewPost({ title: "", body: "", userId: 1 })
+      },
+      onError: (error) => {
+        console.error("게시물 추가 오류:", error)
+      },
+    })
   }
 
   // 게시물 업데이트
   const updatePost = async () => {
-    try {
-      const response = await fetch(`/api/posts/${selectedPost?.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(selectedPost),
-      })
-      const data = await response.json()
-      setPosts(posts.map((post) => (post.id === data.id ? data : post)))
-      setShowEditDialog(false)
-    } catch (error) {
-      console.error("게시물 업데이트 오류:", error)
-    }
+    putPostMutation(selectedPost!, {
+      onSuccess: (data) => {
+        setPosts(posts.map((post) => (post.id === data.id ? data : post)))
+        setShowEditDialog(false)
+      },
+      onError: (error) => {
+        console.error("게시물 업데이트 오류:", error)
+      },
+    })
   }
 
   // 게시물 삭제
   const deletePost = async (id: number) => {
-    try {
-      await fetch(`/api/posts/${id}`, {
-        method: "DELETE",
-      })
-      setPosts(posts.filter((post) => post.id !== id))
-    } catch (error) {
-      console.error("게시물 삭제 오류:", error)
-    }
+    deletePostMutation(id, {
+      onSuccess: () => {
+        setPosts(posts.filter((post) => post.id !== id))
+      },
+      onError: (error) => {
+        console.error("게시물 삭제 오류:", error)
+      },
+    })
   }
 
   // 댓글 가져오기
@@ -375,7 +393,7 @@ const PostsManager = () => {
     if (selectedTag) {
       fetchPostsByTag(selectedTag)
     } else {
-      fetchPosts()
+      // fetchPosts()
     }
     updateURL()
   }, [skip, limit, sortBy, sortOrder, selectedTag])
@@ -446,13 +464,7 @@ const PostsManager = () => {
               </div>
             </TableCell>
             <TableCell>
-              <div
-                className="flex items-center space-x-2 cursor-pointer"
-                onClick={() => post.author && openUserModal(post.author)}
-              >
-                <img src={post.author?.image} alt={post.author?.username} className="w-8 h-8 rounded-full" />
-                <span>{post.author?.username}</span>
-              </div>
+              <UserProfile id={post.userId} />
             </TableCell>
             <TableCell>
               <div className="flex items-center gap-2">
