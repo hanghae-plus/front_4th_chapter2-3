@@ -41,13 +41,17 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(({ className, v
 
 Button.displayName = "Button"
 
-interface Props {
-  className: string
-  type: React.HTMLInputTypeAttribute | undefined
-};
+interface InputProps {
+  className?: string
+  type?: string
+  value?: string | number
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+  onKeyPress?: (e: React.KeyboardEvent<HTMLInputElement>) => void | Promise<void>
+  placeholder?: string
+}
 
 // 입력 컴포넌트
-export const Input = forwardRef<HTMLInputElement, Props>(({ className, type, ...props }, ref) => {
+export const Input = forwardRef<HTMLInputElement, InputProps>(({ className, type, ...props }, ref) => {
   return (
     <input
       type={type}
@@ -59,29 +63,43 @@ export const Input = forwardRef<HTMLInputElement, Props>(({ className, type, ...
 })
 Input.displayName = "Input"
 
+interface CardProps {
+  className?: string
+  children?: React.ReactNode | string
+}
+
 // 카드 컴포넌트
-export const Card = forwardRef<HTMLInputElement, Props>(({ className, ...props }, ref) => (
+export const Card = forwardRef<HTMLInputElement, CardProps>(({ className, ...props }, ref) => (
   <div ref={ref} className={`rounded-lg border bg-card text-card-foreground shadow-sm ${className}`} {...props} />
 ))
 Card.displayName = "Card"
 
-export const CardHeader = forwardRef<HTMLInputElement, Props>(({ className, ...props }, ref) => (
+export const CardHeader = forwardRef<HTMLInputElement, CardProps>(({ className, ...props }, ref) => (
   <div ref={ref} className={`flex flex-col space-y-1.5 p-6 ${className}`} {...props} />
 ))
 CardHeader.displayName = "CardHeader"
 
-export const CardTitle = forwardRef<HTMLInputElement, Props>(({ className, ...props }, ref) => (
+export const CardTitle = forwardRef<HTMLInputElement, CardProps>(({ className, ...props }, ref) => (
   <h3 ref={ref} className={`text-2xl font-semibold leading-none tracking-tight ${className}`} {...props} />
 ))
 CardTitle.displayName = "CardTitle"
 
-export const CardContent = forwardRef<HTMLInputElement, Props>(({ className, ...props }, ref) => (
+export const CardContent = forwardRef<HTMLInputElement, CardProps>(({ className, ...props }, ref) => (
   <div ref={ref} className={`p-6 pt-0 ${className}`} {...props} />
 ))
 CardContent.displayName = "CardContent"
 
+
 // 텍스트 영역 컴포넌트
-export const Textarea = forwardRef<HTMLTextAreaElement, Props>(({ className, ...props }, ref) => {
+interface TextareaProps {
+  rows?: number;
+  className?: string;
+  placeholder?: string;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;  // onChange 명확화
+}
+
+export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(({ className, ...props }, ref) => {
   return (
     <textarea
       className={`flex min-h-[150px] w-full rounded-md border border-input bg-white px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
@@ -97,14 +115,14 @@ export const Select = SelectPrimitive.Root
 export const SelectGroup = SelectPrimitive.Group
 export const SelectValue = SelectPrimitive.Value
 
-interface ChildrenProps {
-  className: string
-  children: React.ReactNode
-  position: "popper" | "item-aligned" | undefined
-  value: string
+interface SelectProps {
+  className?: string
+  children?: React.ReactNode | string
+  position?: "popper" | "item-aligned"
+  value?: string
 };
 
-export const SelectTrigger = forwardRef<HTMLButtonElement, ChildrenProps>(({ className, children, ...props }, ref) => (
+export const SelectTrigger = forwardRef<HTMLButtonElement, SelectProps>(({ className, children, ...props }, ref) => (
   <SelectPrimitive.Trigger
     ref={ref}
     className={`flex h-10 items-center justify-between rounded-md border border-input bg-white px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
@@ -116,7 +134,7 @@ export const SelectTrigger = forwardRef<HTMLButtonElement, ChildrenProps>(({ cla
 ))
 SelectTrigger.displayName = SelectPrimitive.Trigger.displayName
 
-export const SelectContent = forwardRef<HTMLDivElement, ChildrenProps>(({ className, children, position = "popper", ...props }, ref) => (
+export const SelectContent = forwardRef<HTMLDivElement, SelectProps>(({ className, children, position = "popper", ...props }, ref) => (
   <SelectPrimitive.Portal>
     <SelectPrimitive.Content
       ref={ref}
@@ -130,9 +148,10 @@ export const SelectContent = forwardRef<HTMLDivElement, ChildrenProps>(({ classN
 ))
 SelectContent.displayName = SelectPrimitive.Content.displayName
 
-export const SelectItem = forwardRef<HTMLDivElement, ChildrenProps>(({ className, children, ...props }, ref) => (
+export const SelectItem = forwardRef<HTMLDivElement, SelectProps>(({ className, children, value, ...props }, ref) => (
   <SelectPrimitive.Item
     ref={ref}
+    value={value || ""}
     className={`relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 ${className}`}
     {...props}
   >
@@ -153,8 +172,8 @@ export const DialogPortal = DialogPrimitive.Portal
 export const DialogOverlay = DialogPrimitive.Overlay
 
 interface DialogProps {
-  className: string
-  children: React.ReactNode
+  className?: string
+  children?: React.ReactNode | string
 };
 
 export const DialogContent = forwardRef<HTMLDivElement, DialogProps>(({ className, children, ...props }, ref) => (
@@ -191,8 +210,8 @@ DialogTitle.displayName = DialogPrimitive.Title.displayName
 
 // 테이블 컴포넌트
 interface TableProps {
-  className: string
-  children: React.ReactNode
+  className?: string
+  children?: React.ReactNode | string
 };
 
 export const Table = forwardRef<HTMLTableElement, TableProps>(({ className, ...props }, ref) => (
