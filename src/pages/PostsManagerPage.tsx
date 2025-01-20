@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom"
 import UserProfile from "../entities/user/ui/UserProfile"
 import { Textarea, Button, Card, Dialog, Input, Select, Table } from "../shared/ui"
 import { PostEditDialog } from "../widgets/post-dialog/ui/PostDialog"
+import { UserDialog } from "../widgets/user-dialog/ui/UserDialog"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -666,15 +667,7 @@ const PostsManager = () => {
       </Dialog>
 
       {/* 사용자 모달 */}
-      {/* Widget */}
-      <Dialog open={showUserModal} onOpenChange={setShowUserModal}>
-        <Dialog.Content>
-          <Dialog.Header>
-            <Dialog.Title>사용자 정보</Dialog.Title>
-          </Dialog.Header>
-          <UserProfile user={selectedUser} />
-        </Dialog.Content>
-      </Dialog>
+      <UserDialog open={showUserModal} onOpenChange={setShowUserModal} selectedUser={selectedUser} />
     </Card>
   )
 }
