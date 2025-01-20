@@ -6,7 +6,7 @@ export const SelectGroup = SelectPrimitive.Group;
 export const SelectValue = SelectPrimitive.Value;
 
 type SelectTriggerProps = SelectPrimitive.SelectTriggerProps & {
-  ref: React.Ref<HTMLButtonElement>;
+  ref?: React.Ref<HTMLButtonElement>;
 };
 
 export const SelectTrigger = ({ className, children, ref, ...props }: SelectTriggerProps) => (
@@ -21,7 +21,7 @@ export const SelectTrigger = ({ className, children, ref, ...props }: SelectTrig
 );
 
 type SelectContentProps = SelectPrimitive.SelectContentProps & {
-  ref: React.Ref<HTMLDivElement>;
+  ref?: React.Ref<HTMLDivElement>;
 };
 
 export const SelectContent = ({ className, children, position = "popper", ref, ...props }: SelectContentProps) => (
@@ -38,7 +38,7 @@ export const SelectContent = ({ className, children, position = "popper", ref, .
 );
 
 type SelectItemProps = SelectPrimitive.SelectItemProps & {
-  ref: React.Ref<HTMLDivElement>;
+  ref?: React.Ref<HTMLDivElement>;
 };
 
 export const SelectItem = ({ className, children, ref, ...props }: SelectItemProps) => (

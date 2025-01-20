@@ -7,7 +7,7 @@ export const DialogPortal = DialogPrimitive.Portal;
 export const DialogOverlay = DialogPrimitive.Overlay;
 
 type DialogContentProps = DialogPrimitive.DialogContentProps & {
-  ref: React.Ref<HTMLDivElement>;
+  ref?: React.Ref<HTMLDivElement>;
 };
 
 export const DialogContent = ({ className, children, ref, ...props }: DialogContentProps) => (
@@ -34,7 +34,7 @@ export const DialogHeader = ({ className, ...props }: DialogHeaderProps) => (
 );
 
 type DialogTitleProps = DialogPrimitive.DialogTitleProps & {
-  ref: React.Ref<HTMLDivElement>;
+  ref?: React.Ref<HTMLDivElement>;
 };
 
 export const DialogTitle = ({ className, ref, ...props }: DialogTitleProps) => (
