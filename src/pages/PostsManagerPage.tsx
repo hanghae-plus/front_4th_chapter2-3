@@ -1,10 +1,16 @@
 import { useEffect, useState } from "react"
 import { Edit2, MessageSquare, Plus, Search, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react"
 import { useLocation, useNavigate } from "react-router-dom"
+
 import { Button, Card, Dialog, Input, Select, Table, Textarea } from "@shared/ui"
-import { User, Comment } from "@entities/model"
+
+import { User } from "@entities/user/model"
+import { Comment } from "@entities/comment/model"
 import { Post } from "@entities/post/model"
+
 import { postsApi } from "@entities/post/api"
+import { usersApi } from "@entities/user/api"
+import { commentsApi } from "@entities/comment/api"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -147,9 +153,8 @@ const PostsManager = () => {
   const fetchComments = async (postId: number) => {
     if (comments[postId]) return // 이미 불러온 댓글이 있으면 다시 불러오지 않음
     try {
-      const response = await fetch(`/api/comments/post/${postId}`)
-      const data = await response.json()
-      setComments((prev) => ({ ...prev, [postId]: data.comments }))
+      const commentsList = await commentsApi.fetchCommentsByPostId(postId)
+      setComments((prev) => ({ ...prev, [postId]: commentsList }))
     } catch (error) {
       console.error("댓글 가져오기 오류:", error)
     }
@@ -159,12 +164,11 @@ const PostsManager = () => {
   const addComment = async () => {
     if (!newComment.postId) return
     try {
-      const response = await fetch("/api/comments/add", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newComment),
+      const data = await commentsApi.addComment({
+        body: newComment.body,
+        postId: newComment.postId,
+        userId: newComment.userId,
       })
-      const data = await response.json()
       setComments((prev) => ({
         ...prev,
         [data.postId]: [...(prev[data.postId] || []), data],
@@ -180,12 +184,7 @@ const PostsManager = () => {
   const updateComment = async () => {
     if (!selectedComment) return
     try {
-      const response = await fetch(`/api/comments/${selectedComment.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ body: selectedComment.body }),
-      })
-      const data = await response.json()
+      const data = await commentsApi.updateComment(selectedComment.id, selectedComment.body)
       setComments((prev) => ({
         ...prev,
         [data.postId]: prev[data.postId]?.map((comment) => (comment.id === data.id ? data : comment)) || [],
@@ -199,9 +198,7 @@ const PostsManager = () => {
   // 댓글 삭제
   const deleteComment = async (id: number, postId: number) => {
     try {
-      await fetch(`/api/comments/${id}`, {
-        method: "DELETE",
-      })
+      await commentsApi.deleteComment(id)
       setComments((prev) => ({
         ...prev,
         [postId]: prev[postId].filter((comment) => comment.id !== id),
@@ -217,12 +214,7 @@ const PostsManager = () => {
     if (!comment) return
 
     try {
-      const response = await fetch(`/api/comments/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ likes: comment.likes + 1 }),
-      })
-      const data = await response.json()
+      const data = await commentsApi.likeComment(id, comment.likes)
       setComments((prev) => ({
         ...prev,
         [postId]:
@@ -247,8 +239,7 @@ const PostsManager = () => {
   const openUserModal = async (user: User | undefined) => {
     if (!user?.id) return
     try {
-      const response = await fetch(`/api/users/${user.id}`)
-      const userData = await response.json()
+      const userData = await usersApi.fetchUserById(user.id)
       setSelectedUser(userData)
       setShowUserModal(true)
     } catch (error) {

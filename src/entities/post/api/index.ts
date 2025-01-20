@@ -1,5 +1,5 @@
 import { Post, PostsResponse } from "@entities/post/model"
-import { User, UsersResponse } from "@entities/model"
+import { User, UsersResponse } from "@entities/user/model"
 
 export const postsApi = {
   fetchPosts: async (limit: number, skip: number) => {
