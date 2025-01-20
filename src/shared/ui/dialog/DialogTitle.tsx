@@ -4,7 +4,7 @@ import { forwardRef } from "react"
 import type { PropsWithChildren } from "react"
 
 interface DialogTitleProps {
-  className: string
+  className?: string
 }
 
 export const DialogTitle = forwardRef(({ className, children, ...props }: PropsWithChildren<DialogTitleProps>, ref) => (

@@ -8,7 +8,7 @@ export const DialogPortal = DialogPrimitive.Portal
 export const DialogOverlay = DialogPrimitive.Overlay
 
 interface DialogContentProps {
-  className: string
+  className?: string
   children: ReactNode
 }
 

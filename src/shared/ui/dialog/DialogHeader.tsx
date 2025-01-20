@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from "react"
 
 interface DialogHeaderProps {
-  className: string
+  className?: string
 }
 
 export const DialogHeader = ({ className, children, ...props }: PropsWithChildren<DialogHeaderProps>) => (

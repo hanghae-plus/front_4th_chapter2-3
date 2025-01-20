@@ -8,10 +8,6 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
   Input,
   Select,
   SelectContent,
@@ -26,6 +22,7 @@ import {
   TableRow,
   Textarea,
 } from "../shared/ui"
+import { Dialog } from "../shared/ui/dialog"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -69,6 +66,7 @@ const PostsManager = () => {
   }
 
   // 게시물 가져오기
+  // Feature
   const fetchPosts = () => {
     setLoading(true)
     let postsData
@@ -99,6 +97,7 @@ const PostsManager = () => {
   }
 
   // 태그 가져오기
+  // Feature
   const fetchTags = async () => {
     try {
       const response = await fetch("/api/posts/tags")
@@ -110,6 +109,7 @@ const PostsManager = () => {
   }
 
   // 게시물 검색
+  // Feature
   const searchPosts = async () => {
     if (!searchQuery) {
       fetchPosts()
@@ -128,6 +128,7 @@ const PostsManager = () => {
   }
 
   // 태그별 게시물 가져오기
+  // Feature
   const fetchPostsByTag = async (tag) => {
     if (!tag || tag === "all") {
       fetchPosts()
@@ -156,6 +157,7 @@ const PostsManager = () => {
   }
 
   // 게시물 추가
+  // Feature
   const addPost = async () => {
     try {
       const response = await fetch("/api/posts/add", {
@@ -173,6 +175,7 @@ const PostsManager = () => {
   }
 
   // 게시물 업데이트
+  // Feature
   const updatePost = async () => {
     try {
       const response = await fetch(`/api/posts/${selectedPost.id}`, {
@@ -189,6 +192,7 @@ const PostsManager = () => {
   }
 
   // 게시물 삭제
+  // Feature
   const deletePost = async (id) => {
     try {
       await fetch(`/api/posts/${id}`, {
@@ -201,6 +205,7 @@ const PostsManager = () => {
   }
 
   // 댓글 가져오기
+  // Feature
   const fetchComments = async (postId) => {
     if (comments[postId]) return // 이미 불러온 댓글이 있으면 다시 불러오지 않음
     try {
@@ -213,6 +218,7 @@ const PostsManager = () => {
   }
 
   // 댓글 추가
+  // Feature
   const addComment = async () => {
     try {
       const response = await fetch("/api/comments/add", {
@@ -233,6 +239,7 @@ const PostsManager = () => {
   }
 
   // 댓글 업데이트
+  // Feature
   const updateComment = async () => {
     try {
       const response = await fetch(`/api/comments/${selectedComment.id}`, {
@@ -252,6 +259,7 @@ const PostsManager = () => {
   }
 
   // 댓글 삭제
+  // Feature
   const deleteComment = async (id, postId) => {
     try {
       await fetch(`/api/comments/${id}`, {
@@ -267,6 +275,7 @@ const PostsManager = () => {
   }
 
   // 댓글 좋아요
+  // Feature
   const likeComment = async (id, postId) => {
     try {
       const response = await fetch(`/api/comments/${id}`, {
@@ -287,6 +296,7 @@ const PostsManager = () => {
   }
 
   // 게시물 상세 보기
+  // Feature
   const openPostDetail = (post) => {
     setSelectedPost(post)
     fetchComments(post.id)
@@ -294,6 +304,7 @@ const PostsManager = () => {
   }
 
   // 사용자 모달 열기
+  // Feature
   const openUserModal = async (user) => {
     try {
       const response = await fetch(`/api/users/${user.id}`)
@@ -305,10 +316,11 @@ const PostsManager = () => {
     }
   }
 
+  // Feature
   useEffect(() => {
     fetchTags()
   }, [])
-
+  // Feature
   useEffect(() => {
     if (selectedTag) {
       fetchPostsByTag(selectedTag)
@@ -318,6 +330,7 @@ const PostsManager = () => {
     updateURL()
   }, [skip, limit, sortBy, sortOrder, selectedTag])
 
+  // Feature? 뭐야이거
   useEffect(() => {
     const params = new URLSearchParams(location.search)
     setSkip(parseInt(params.get("skip") || "0"))
@@ -476,6 +489,7 @@ const PostsManager = () => {
 
   return (
     <Card className="w-full max-w-6xl mx-auto">
+      {/* Widget - ?? */}
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <span>게시물 관리자</span>
@@ -489,6 +503,7 @@ const PostsManager = () => {
         <div className="flex flex-col gap-4">
           {/* 검색 및 필터 컨트롤 */}
           <div className="flex gap-4">
+            {/* Feature */}
             <div className="flex-1">
               <div className="relative">
                 <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -501,6 +516,7 @@ const PostsManager = () => {
                 />
               </div>
             </div>
+            {/* Feature */}
             <Select
               value={selectedTag}
               onValueChange={(value) => {
@@ -521,6 +537,7 @@ const PostsManager = () => {
                 ))}
               </SelectContent>
             </Select>
+            {/* Feature - ??? */}
             <Select value={sortBy} onValueChange={setSortBy}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="정렬 기준" />
@@ -562,6 +579,7 @@ const PostsManager = () => {
               </Select>
               <span>항목</span>
             </div>
+            {/* Feature - ?? */}
             <div className="flex gap-2">
               <Button disabled={skip === 0} onClick={() => setSkip(Math.max(0, skip - limit))}>
                 이전
@@ -575,11 +593,12 @@ const PostsManager = () => {
       </CardContent>
 
       {/* 게시물 추가 대화상자 */}
+      {/* Widget */}
       <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>새 게시물 추가</DialogTitle>
-          </DialogHeader>
+        <Dialog.Content>
+          <Dialog.Header>
+            <Dialog.Title>새 게시물 추가</Dialog.Title>
+          </Dialog.Header>
           <div className="space-y-4">
             <Input
               placeholder="제목"
@@ -600,15 +619,16 @@ const PostsManager = () => {
             />
             <Button onClick={addPost}>게시물 추가</Button>
           </div>
-        </DialogContent>
+        </Dialog.Content>
       </Dialog>
 
       {/* 게시물 수정 대화상자 */}
+      {/* Widget */}
       <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>게시물 수정</DialogTitle>
-          </DialogHeader>
+        <Dialog.Content>
+          <Dialog.Header>
+            <Dialog.Title>게시물 수정</Dialog.Title>
+          </Dialog.Header>
           <div className="space-y-4">
             <Input
               placeholder="제목"
@@ -623,15 +643,16 @@ const PostsManager = () => {
             />
             <Button onClick={updatePost}>게시물 업데이트</Button>
           </div>
-        </DialogContent>
+        </Dialog.Content>
       </Dialog>
 
       {/* 댓글 추가 대화상자 */}
+      {/* Widget */}
       <Dialog open={showAddCommentDialog} onOpenChange={setShowAddCommentDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>새 댓글 추가</DialogTitle>
-          </DialogHeader>
+        <Dialog.Content>
+          <Dialog.Header>
+            <Dialog.Title>새 댓글 추가</Dialog.Title>
+          </Dialog.Header>
           <div className="space-y-4">
             <Textarea
               placeholder="댓글 내용"
@@ -640,15 +661,16 @@ const PostsManager = () => {
             />
             <Button onClick={addComment}>댓글 추가</Button>
           </div>
-        </DialogContent>
+        </Dialog.Content>
       </Dialog>
 
       {/* 댓글 수정 대화상자 */}
+      {/* Widget */}
       <Dialog open={showEditCommentDialog} onOpenChange={setShowEditCommentDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>댓글 수정</DialogTitle>
-          </DialogHeader>
+        <Dialog.Content>
+          <Dialog.Header>
+            <Dialog.Title>댓글 수정</Dialog.Title>
+          </Dialog.Header>
           <div className="space-y-4">
             <Textarea
               placeholder="댓글 내용"
@@ -657,28 +679,30 @@ const PostsManager = () => {
             />
             <Button onClick={updateComment}>댓글 업데이트</Button>
           </div>
-        </DialogContent>
+        </Dialog.Content>
       </Dialog>
 
       {/* 게시물 상세 보기 대화상자 */}
+      {/* Widget */}
       <Dialog open={showPostDetailDialog} onOpenChange={setShowPostDetailDialog}>
-        <DialogContent className="max-w-3xl">
-          <DialogHeader>
-            <DialogTitle>{highlightText(selectedPost?.title, searchQuery)}</DialogTitle>
-          </DialogHeader>
+        <Dialog.Content className="max-w-3xl">
+          <Dialog.Header>
+            <Dialog.Title>{highlightText(selectedPost?.title, searchQuery)}</Dialog.Title>
+          </Dialog.Header>
           <div className="space-y-4">
             <p>{highlightText(selectedPost?.body, searchQuery)}</p>
             {renderComments(selectedPost?.id)}
           </div>
-        </DialogContent>
+        </Dialog.Content>
       </Dialog>
 
       {/* 사용자 모달 */}
+      {/* Widget */}
       <Dialog open={showUserModal} onOpenChange={setShowUserModal}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>사용자 정보</DialogTitle>
-          </DialogHeader>
+        <Dialog.Content>
+          <Dialog.Header>
+            <Dialog.Title>사용자 정보</Dialog.Title>
+          </Dialog.Header>
           <div className="space-y-4">
             <img src={selectedUser?.image} alt={selectedUser?.username} className="w-24 h-24 rounded-full mx-auto" />
             <h3 className="text-xl font-semibold text-center">{selectedUser?.username}</h3>
@@ -704,7 +728,7 @@ const PostsManager = () => {
               </p>
             </div>
           </div>
-        </DialogContent>
+        </Dialog.Content>
       </Dialog>
     </Card>
   )
