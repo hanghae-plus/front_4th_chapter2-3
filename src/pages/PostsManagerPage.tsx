@@ -19,10 +19,10 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-  Textarea,
 } from "../shared/ui"
 import { Dialog } from "../shared/ui/dialog"
 import { Input } from "../shared/ui/input/Input"
+import { Textarea } from "../shared/ui/textarea/Textarea"
 
 const PostsManager = () => {
   const navigate = useNavigate()
