@@ -3,7 +3,6 @@ import { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 
 import {
-  Button,
   Card,
   CardContent,
   CardHeader,
@@ -20,6 +19,7 @@ import {
   TableHeader,
   TableRow,
 } from "../shared/ui"
+import { Button } from "../shared/ui/button/Button"
 import { Dialog } from "../shared/ui/dialog"
 import { Input } from "../shared/ui/input/Input"
 import { Textarea } from "../shared/ui/textarea/Textarea"
