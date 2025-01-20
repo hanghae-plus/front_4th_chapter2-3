@@ -1,6 +1,7 @@
 import { Edit2, MessageSquare, Plus, Search, ThumbsDown, ThumbsUp, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+
 import {
   Button,
   Card,
@@ -24,28 +25,28 @@ import {
   TableHeader,
   TableRow,
   Textarea,
-} from '../shared/ui';
+} from '@/shared/ui';
 
-const PostsManager = () => {
+export const PostsManagerPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
 
   // 상태 관리
   const [posts, setPosts] = useState([]);
+  const [searchQuery, setSearchQuery] = useState(queryParams.get('search') || '');
+  const [loading, setLoading] = useState(false);
+  const [selectedTag, setSelectedTag] = useState(queryParams.get('tag') || '');
   const [total, setTotal] = useState(0);
   const [skip, setSkip] = useState(parseInt(queryParams.get('skip') || '0'));
   const [limit, setLimit] = useState(parseInt(queryParams.get('limit') || '10'));
-  const [searchQuery, setSearchQuery] = useState(queryParams.get('search') || '');
   const [selectedPost, setSelectedPost] = useState(null);
   const [sortBy, setSortBy] = useState(queryParams.get('sortBy') || '');
   const [sortOrder, setSortOrder] = useState(queryParams.get('sortOrder') || 'asc');
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [newPost, setNewPost] = useState({ title: '', body: '', userId: 1 });
-  const [loading, setLoading] = useState(false);
   const [tags, setTags] = useState([]);
-  const [selectedTag, setSelectedTag] = useState(queryParams.get('tag') || '');
   const [comments, setComments] = useState({});
   const [selectedComment, setSelectedComment] = useState(null);
   const [newComment, setNewComment] = useState({ body: '', postId: null, userId: 1 });
@@ -721,5 +722,3 @@ const PostsManager = () => {
     </Card>
   );
 };
-
-export default PostsManager;
