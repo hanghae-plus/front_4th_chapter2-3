@@ -8,7 +8,7 @@ export interface CommentsResponseDto {
 export interface Comment {
   id: number;
   body: string;
-  postId: number | null;
+  postId: number;
   likes: number;
   user: {
     id: number;
