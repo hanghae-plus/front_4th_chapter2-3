@@ -2,23 +2,12 @@ import { Edit2, MessageSquare, Plus, Search, ThumbsDown, ThumbsUp, Trash2 } from
 import { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "../shared/ui"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../shared/ui"
 import { Button } from "../shared/ui/button/Button"
 import { Card } from "../shared/ui/card"
 import { Dialog } from "../shared/ui/dialog"
 import { Input } from "../shared/ui/input/Input"
+import { Select } from "../shared/ui/select"
 import { Textarea } from "../shared/ui/textarea/Textarea"
 
 const PostsManager = () => {
@@ -522,38 +511,38 @@ const PostsManager = () => {
                 updateURL()
               }}
             >
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="태그 선택" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">모든 태그</SelectItem>
+              <Select.Trigger className="w-[180px]">
+                <Select.Value placeholder="태그 선택" />
+              </Select.Trigger>
+              <Select.Content>
+                <Select.Item value="all">모든 태그</Select.Item>
                 {tags.map((tag) => (
-                  <SelectItem key={tag.url} value={tag.slug}>
+                  <Select.Item key={tag.url} value={tag.slug}>
                     {tag.slug}
-                  </SelectItem>
+                  </Select.Item>
                 ))}
-              </SelectContent>
+              </Select.Content>
             </Select>
             {/* Feature - ??? */}
             <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="정렬 기준" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="none">없음</SelectItem>
-                <SelectItem value="id">ID</SelectItem>
-                <SelectItem value="title">제목</SelectItem>
-                <SelectItem value="reactions">반응</SelectItem>
-              </SelectContent>
+              <Select.Trigger className="w-[180px]">
+                <Select.Value placeholder="정렬 기준" />
+              </Select.Trigger>
+              <Select.Content>
+                <Select.Item value="none">없음</Select.Item>
+                <Select.Item value="id">ID</Select.Item>
+                <Select.Item value="title">제목</Select.Item>
+                <Select.Item value="reactions">반응</Select.Item>
+              </Select.Content>
             </Select>
             <Select value={sortOrder} onValueChange={setSortOrder}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="정렬 순서" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="asc">오름차순</SelectItem>
-                <SelectItem value="desc">내림차순</SelectItem>
-              </SelectContent>
+              <Select.Trigger className="w-[180px]">
+                <Select.Value placeholder="정렬 순서" />
+              </Select.Trigger>
+              <Select.Content>
+                <Select.Item value="asc">오름차순</Select.Item>
+                <Select.Item value="desc">내림차순</Select.Item>
+              </Select.Content>
             </Select>
           </div>
 
@@ -565,14 +554,14 @@ const PostsManager = () => {
             <div className="flex items-center gap-2">
               <span>표시</span>
               <Select value={limit.toString()} onValueChange={(value) => setLimit(Number(value))}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="10" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="10">10</SelectItem>
-                  <SelectItem value="20">20</SelectItem>
-                  <SelectItem value="30">30</SelectItem>
-                </SelectContent>
+                <Select.Trigger className="w-[180px]">
+                  <Select.Value placeholder="10" />
+                </Select.Trigger>
+                <Select.Content>
+                  <Select.Item value="10">10</Select.Item>
+                  <Select.Item value="20">20</Select.Item>
+                  <Select.Item value="30">30</Select.Item>
+                </Select.Content>
               </Select>
               <span>항목</span>
             </div>
