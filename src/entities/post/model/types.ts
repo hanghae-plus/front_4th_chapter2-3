@@ -1,3 +1,5 @@
+export type SortOrder = "asc" | "desc"
+
 export interface PostsResponse {
   posts: Post[]
   total: number
@@ -9,7 +11,7 @@ export interface FetchPostsParams {
   limit?: number
   skip?: number
   sortBy?: string
-  sortOrder?: "asc" | "desc"
+  sortOrder?: SortOrder
   tag?: string
   search?: string
 }
