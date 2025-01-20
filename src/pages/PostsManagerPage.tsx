@@ -3,10 +3,6 @@ import { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
   Select,
   SelectContent,
   SelectItem,
@@ -20,6 +16,7 @@ import {
   TableRow,
 } from "../shared/ui"
 import { Button } from "../shared/ui/button/Button"
+import { Card } from "../shared/ui/card"
 import { Dialog } from "../shared/ui/dialog"
 import { Input } from "../shared/ui/input/Input"
 import { Textarea } from "../shared/ui/textarea/Textarea"
@@ -490,16 +487,16 @@ const PostsManager = () => {
   return (
     <Card className="w-full max-w-6xl mx-auto">
       {/* Widget - ?? */}
-      <CardHeader>
-        <CardTitle className="flex items-center justify-between">
+      <Card.Header>
+        <Card.Title className="flex items-center justify-between">
           <span>게시물 관리자</span>
           <Button onClick={() => setShowAddDialog(true)}>
             <Plus className="w-4 h-4 mr-2" />
             게시물 추가
           </Button>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+        </Card.Title>
+      </Card.Header>
+      <Card.Content>
         <div className="flex flex-col gap-4">
           {/* 검색 및 필터 컨트롤 */}
           <div className="flex gap-4">
@@ -590,7 +587,7 @@ const PostsManager = () => {
             </div>
           </div>
         </div>
-      </CardContent>
+      </Card.Content>
 
       {/* 게시물 추가 대화상자 */}
       {/* Widget */}

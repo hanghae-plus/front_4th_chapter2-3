@@ -1,6 +1,6 @@
 import { forwardRef } from "react"
 
-interface TextareaProps {
+interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   className?: string
 }
 
