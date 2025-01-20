@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@tanstack/react-query':
+        specifier: ^5.64.2
+        version: 5.64.2(react@19.0.0)
       react:
         specifier: ^19.0.0
         version: 19.0.0
@@ -17,6 +20,9 @@ importers:
       vite-tsconfig-paths:
         specifier: ^5.1.4
         version: 5.1.4(typescript@5.7.3)(vite@6.0.7(@types/node@22.8.1))
+      zustand:
+        specifier: ^5.0.3
+        version: 5.0.3(@types/react@19.0.7)(react@19.0.0)
     devDependencies:
       '@eslint/js':
         specifier: ^9.18.0
@@ -872,6 +878,14 @@ packages:
     resolution: {integrity: sha512-fbMkAF7fufku0N2dE5TBXcNlg0pt0cJue4xBRE2Qc5Vqikxr4VCgKj/ht6SMdFcOacVA9rqF70APJ8RN/4vMJw==}
     cpu: [x64]
     os: [win32]
+
+  '@tanstack/query-core@5.64.2':
+    resolution: {integrity: sha512-hdO8SZpWXoADNTWXV9We8CwTkXU88OVWRBcsiFrk7xJQnhm6WRlweDzMD+uH+GnuieTBVSML6xFa17C2cNV8+g==}
+
+  '@tanstack/react-query@5.64.2':
+    resolution: {integrity: sha512-3pakNscZNm8KJkxmovvtZ4RaXLyiYYobwleTMvpIGUoKRa8j8VlrQKNl5W8VUEfVfZKkikvXVddLuWMbcSCA1Q==}
+    peerDependencies:
+      react: ^18 || ^19
 
   '@testing-library/dom@10.4.0':
     resolution: {integrity: sha512-pemlzrSESWbdAloYml3bAJMEfNh1Z7EduzqPKprCH5S341frlpYnUEW0H72dLxa6IsYr+mPno20GiSm+h9dEdQ==}
@@ -2229,6 +2243,24 @@ packages:
     resolution: {integrity: sha512-cYVsTjKl8b+FrnidjibDWskAv7UKOfcwaVZdp/it9n1s9fU3IkgDbhdIRKCW4JDsAlECJY0ytoVPT3sK6kideA==}
     engines: {node: '>=18'}
 
+  zustand@5.0.3:
+    resolution: {integrity: sha512-14fwWQtU3pH4dE0dOpdMiWjddcH+QzKIgk1cl8epwSE7yag43k/AD/m4L6+K7DytAOr9gGBe3/EXj9g7cdostg==}
+    engines: {node: '>=12.20.0'}
+    peerDependencies:
+      '@types/react': '>=18.0.0'
+      immer: '>=9.0.6'
+      react: '>=18.0.0'
+      use-sync-external-store: '>=1.2.0'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      immer:
+        optional: true
+      react:
+        optional: true
+      use-sync-external-store:
+        optional: true
+
 snapshots:
 
   '@adobe/css-tools@4.4.0': {}
@@ -2915,6 +2947,13 @@ snapshots:
 
   '@rollup/rollup-win32-x64-msvc@4.24.0':
     optional: true
+
+  '@tanstack/query-core@5.64.2': {}
+
+  '@tanstack/react-query@5.64.2(react@19.0.0)':
+    dependencies:
+      '@tanstack/query-core': 5.64.2
+      react: 19.0.0
 
   '@testing-library/dom@10.4.0':
     dependencies:
@@ -4236,3 +4275,8 @@ snapshots:
   yocto-queue@0.1.0: {}
 
   yoctocolors-cjs@2.1.2: {}
+
+  zustand@5.0.3(@types/react@19.0.7)(react@19.0.0):
+    optionalDependencies:
+      '@types/react': 19.0.7
+      react: 19.0.0
