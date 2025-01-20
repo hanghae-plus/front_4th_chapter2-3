@@ -5,7 +5,7 @@ import { highlightText } from '../utils/highligtText'
 import { Dispatch, SetStateAction } from 'react'
 import { Comment } from '../models/types'
 type CommentsProps = {
-  comments: Comment[]
+  comments: Comment[] | undefined
   postId: number
   searchQuery: string
   setNewComment: Dispatch<SetStateAction<NewComment>>
@@ -26,6 +26,8 @@ export const Comments = ({
   setShowEditCommentDialog,
   deletedComment,
 }: CommentsProps) => {
+  if (!comments || !Array.isArray(comments)) return null
+
   return (
     <div className="mt-2">
       <div className="flex items-center justify-between mb-2">
