@@ -3,7 +3,7 @@ import { forwardRef } from "react";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   className?: string;
-  type: string;
+  type?: string;
 }
 
 // input UI
