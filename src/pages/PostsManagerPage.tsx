@@ -25,8 +25,9 @@ import {
   TableRow,
   Textarea,
 } from "../shared/ui"
-import { Post } from "../features/post/types"
+import { Post, Tags } from "../features/post/types"
 import HighlightText from "../shared/ui/HighlightText"
+import RenderPostTable from "../features/post/ui/RenderPostTable"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -46,7 +47,7 @@ const PostsManager = () => {
   const [showEditDialog, setShowEditDialog] = useState(false)
   const [newPost, setNewPost] = useState({ title: "", body: "", userId: 1 })
   const [loading, setLoading] = useState(false)
-  const [tags, setTags] = useState([])
+  const [tags, setTags] = useState<Tags[]>([])
   const [selectedTag, setSelectedTag] = useState(queryParams.get("tag") || "")
   const [comments, setComments] = useState({})
   const [selectedComment, setSelectedComment] = useState(null)
@@ -56,7 +57,6 @@ const PostsManager = () => {
   const [showPostDetailDialog, setShowPostDetailDialog] = useState(false)
   const [showUserModal, setShowUserModal] = useState(false)
   const [selectedUser, setSelectedUser] = useState(null)
-
   // URL 업데이트 함수
   const updateURL = () => {
     const params = new URLSearchParams()
@@ -172,7 +172,6 @@ const PostsManager = () => {
       console.error("게시물 추가 오류:", error)
     }
   }
-
   // 게시물 업데이트
   const updatePost = async () => {
     try {
@@ -232,7 +231,6 @@ const PostsManager = () => {
       console.error("댓글 추가 오류:", error)
     }
   }
-  console.log("post : ", posts)
   // 댓글 업데이트
   const updateComment = async () => {
     try {
@@ -289,6 +287,7 @@ const PostsManager = () => {
 
   // 게시물 상세 보기
   const openPostDetail = (post) => {
+    console.log("post : ", post)
     setSelectedPost(post)
     fetchComments(post.id)
     setShowPostDetailDialog(true)
@@ -350,7 +349,6 @@ const PostsManager = () => {
                 <div>
                   <HighlightText text={post.title} highlight={searchQuery} />
                 </div>
-                {/* <div>{highlightText(post.title, searchQuery)}</div> */}
 
                 <div className="flex flex-wrap gap-1">
                   {post.tags?.map((tag) => (
@@ -532,7 +530,23 @@ const PostsManager = () => {
           </div>
 
           {/* 게시물 테이블 */}
-          {loading ? <div className="flex justify-center p-4">로딩 중...</div> : renderPostTable()}
+          {/* {loading ? <div className="flex justify-center p-4">로딩 중...</div> : renderPostTable()} */}
+          {loading ? (
+            <div className="flex justify-center p-4">로딩 중...</div>
+          ) : (
+            <RenderPostTable
+              posts={posts}
+              searchQuery={searchQuery}
+              selectedTag={selectedTag}
+              setSelectedTag={setSelectedTag}
+              updateURL={updateURL}
+              setSelectedPost={setSelectedPost}
+              setShowEditDialog={setShowEditDialog}
+              deletePost={deletePost}
+              openPostDetail={openPostDetail}
+              openUserModal={openUserModal}
+            />
+          )}
 
           {/* 페이지네이션 */}
           <div className="flex justify-between items-center">
@@ -626,6 +640,7 @@ const PostsManager = () => {
               value={newComment.body}
               onChange={(e) => setNewComment({ ...newComment, body: e.target.value })}
             />
+
             <Button onClick={addComment}>댓글 추가</Button>
           </div>
         </DialogContent>

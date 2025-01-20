@@ -19,3 +19,9 @@ interface Reactions {
   likes: number
   dislikes: number
 }
+
+export interface Tags {
+  name: string
+  slug: string
+  url: string
+}
