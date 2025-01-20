@@ -1,4 +1,4 @@
-import { NewComment } from "../../entities/post/model/types"
+import { NewComment } from "../../entities/comment/model/types"
 import { Button, Dialog, DialogContent, DialogHeader, DialogTitle, Textarea } from "../../shared/ui"
 
 interface CommentAddModalProps {

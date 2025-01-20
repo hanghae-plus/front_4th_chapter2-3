@@ -2,7 +2,8 @@ import { useEffect, useState } from "react"
 import { Plus } from "lucide-react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { Button, Card, CardContent, CardHeader, CardTitle } from "../shared/ui"
-import { Comment, NewComment, NewPost, Post } from "../entities/post/model/types"
+import { NewPost, Post } from "../entities/post/model/types"
+import { Comment } from "../entities/comment/model/types"
 import {
   CommentAddModal,
   CommentEditModal,
@@ -16,6 +17,7 @@ import Pagination from "../features/post/ui/Pagination"
 import Filter from "../features/post/ui/Filter"
 import { User } from "../entities/user/model/types"
 import PTable from "../features/post/ui/PTable"
+import { useAddComment } from "../features/comment/api/useAddComment.query"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -39,12 +41,23 @@ const PostsManager = () => {
   const [selectedTag, setSelectedTag] = useState(queryParams.get("tag") || "")
   const [comments, setComments] = useState<{ [key in number]: Comment[] }>({})
   const [selectedComment, setSelectedComment] = useState<Comment | null>(null)
-  const [newComment, setNewComment] = useState<NewComment>({ body: "", postId: null, userId: 1 })
   const [showAddCommentDialog, setShowAddCommentDialog] = useState(false)
   const [showEditCommentDialog, setShowEditCommentDialog] = useState(false)
   const [showPostDetailDialog, setShowPostDetailDialog] = useState(false)
   const [showUserModal, setShowUserModal] = useState(false)
   const [selectedUser, setSelectedUser] = useState(null)
+
+  const { newComment, setNewComment, handleAddComment } = useAddComment({
+    onSuccess: (responseComment) => {
+      setComments((prev) => ({
+        ...prev,
+        [responseComment.postId]: [...(prev[responseComment.postId] || []), responseComment],
+      }))
+    },
+    fallback: () => {
+      setShowAddCommentDialog(false)
+    },
+  })
 
   // URL 업데이트 함수
   const updateURL = () => {
@@ -195,26 +208,6 @@ const PostsManager = () => {
       setComments((prev) => ({ ...prev, [postId]: data.comments }))
     } catch (error) {
       console.error("댓글 가져오기 오류:", error)
-    }
-  }
-
-  // 댓글 추가
-  const addComment = async () => {
-    try {
-      const response = await fetch("/api/comments/add", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newComment),
-      })
-      const data = await response.json()
-      setComments((prev) => ({
-        ...prev,
-        [data.postId]: [...(prev[data.postId] || []), data],
-      }))
-      setShowAddCommentDialog(false)
-      setNewComment({ body: "", postId: null, userId: 1 })
-    } catch (error) {
-      console.error("댓글 추가 오류:", error)
     }
   }
 
@@ -396,7 +389,7 @@ const PostsManager = () => {
           setShowAddCommentDialog={setShowAddCommentDialog}
           newComment={newComment}
           setNewComment={setNewComment}
-          addComment={addComment}
+          addComment={handleAddComment}
         />
       )}
 
