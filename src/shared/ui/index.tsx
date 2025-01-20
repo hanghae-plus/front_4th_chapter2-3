@@ -60,7 +60,7 @@ Button.displayName = "Button";
 /* ------------------------------------------------------------------
   2) Input
 ------------------------------------------------------------------ */
-interface InputProps {
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   className?: string;
   type: string;
 }
@@ -144,7 +144,8 @@ CardContent.displayName = "CardContent";
 /* ------------------------------------------------------------------
   4) Textarea
 ------------------------------------------------------------------ */
-interface TextareaProps {
+interface TextareaProps
+  extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   className?: string;
 }
 
@@ -271,7 +272,7 @@ export const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(
 );
 DialogContent.displayName = DialogPrimitive.Content.displayName;
 
-interface DialogHeaderProps {
+interface DialogHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
 }
 
@@ -306,7 +307,7 @@ DialogTitle.displayName = DialogPrimitive.Title.displayName;
 /* ------------------------------------------------------------------
   7) Table
 ------------------------------------------------------------------ */
-interface TableProps {
+interface TableProps extends React.TableHTMLAttributes<HTMLTableElement> {
   className?: string;
 }
 // 테이블 컴포넌트
@@ -323,7 +324,8 @@ export const Table = forwardRef<HTMLTableElement, TableProps>(
 );
 Table.displayName = "Table";
 
-interface TableHeaderProps {
+interface TableHeaderProps
+  extends React.HTMLAttributes<HTMLTableSectionElement> {
   className?: string;
 }
 
@@ -339,7 +341,7 @@ export const TableHeader = forwardRef<
 ));
 TableHeader.displayName = "TableHeader";
 
-interface TableBodyProps {
+interface TableBodyProps extends React.HTMLAttributes<HTMLTableSectionElement> {
   className?: string;
 }
 
@@ -354,7 +356,7 @@ export const TableBody = forwardRef<HTMLTableSectionElement, TableBodyProps>(
 );
 TableBody.displayName = "TableBody";
 
-interface TableRowProps {
+interface TableRowProps extends React.HTMLAttributes<HTMLTableRowElement> {
   className?: string;
 }
 
@@ -369,7 +371,7 @@ export const TableRow = forwardRef<HTMLTableRowElement, TableRowProps>(
 );
 TableRow.displayName = "TableRow";
 
-interface TableHeadProps {
+interface TableHeadProps extends React.HTMLAttributes<HTMLTableCellElement> {
   className?: string;
 }
 
@@ -384,7 +386,7 @@ export const TableHead = forwardRef<HTMLTableCellElement, TableHeadProps>(
 );
 TableHead.displayName = "TableHead";
 
-interface TableCellProps {
+interface TableCellProps extends React.HTMLAttributes<HTMLTableCellElement> {
   className?: string;
 }
 
