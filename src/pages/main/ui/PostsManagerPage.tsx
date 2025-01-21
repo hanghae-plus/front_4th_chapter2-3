@@ -148,6 +148,13 @@ const PostsManager = () => {
     },
   })
 
+  const deletePostMutation = useMutation({
+    ...postMutations.deleteMutation(),
+    onError: (error) => {
+      console.error("게시물 삭제 오류:", error)
+    },
+  })
+
   const { data: comments } = useQuery({
     ...commentQueries.byPostQuery(Number(selectedPostId) || 0),
     select: (data) => data?.comments,
@@ -187,30 +194,20 @@ const PostsManager = () => {
   const updatePost = async () => {
     if (!selectedPost) return
 
-    try {
-      await updatePostMutation.mutateAsync({
-        id: selectedPost.id,
-        post: {
-          title: selectedPost.title,
-          body: selectedPost.body,
-          userId: selectedPost.userId,
-        },
-      })
-      updateURLParams({ selectedPostId: null, mode: null })
-    } catch (error) {
-      console.error("게시물 업데이트 오류:", error)
-    }
+    await updatePostMutation.mutateAsync({
+      id: selectedPost.id,
+      post: {
+        title: selectedPost.title,
+        body: selectedPost.body,
+        userId: selectedPost.userId,
+      },
+    })
+    updateURLParams({ selectedPostId: null, mode: null })
   }
 
   // 게시물 삭제
-  const deletePost = async (id) => {
-    try {
-      await fetch(`/api/posts/${id}`, {
-        method: "DELETE",
-      })
-    } catch (error) {
-      console.error("게시물 삭제 오류:", error)
-    }
+  const deletePost = async (id: string) => {
+    await deletePostMutation.mutateAsync(id)
   }
 
   // 댓글 추가
