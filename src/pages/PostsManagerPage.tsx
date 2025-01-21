@@ -8,11 +8,12 @@ import { UpdatePostDialog } from "../features/updatePost/ui"
 import { CommentsList } from "../features/comments/ui"
 import { AddCommentDialog } from "../features/addComment/ui"
 import { UserDialog } from "../entities/user/ui"
-import { Button, Input, Textarea } from "../shared/ui/common"
+import { Button, Input } from "../shared/ui/common"
 import { DialogContainer, DialogContent, DialogHeader, DialogTitle } from "../shared/ui/dialog"
 import { SelectContainer, SelectValue, SelectContent, SelectItem, SelectTrigger } from "../shared/ui/select"
 import { CardContainer, CardContent, CardHeader, CardTitle } from "../shared/ui/card"
 import { highlightText } from "../shared/lib"
+import { UpdateCommentDialog } from "../features/updateComment/ui"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -447,21 +448,9 @@ const PostsManager = () => {
       <AddCommentDialog {...{ showAddCommentDialog, setShowAddCommentDialog, newComment, setNewComment, addComment }} />
 
       {/* 댓글 수정 대화상자 */}
-      <DialogContainer open={showEditCommentDialog} onOpenChange={setShowEditCommentDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>댓글 수정</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <Textarea
-              placeholder="댓글 내용"
-              value={selectedComment?.body || ""}
-              onChange={(e) => setSelectedComment({ ...selectedComment, body: e.target.value })}
-            />
-            <Button onClick={updateComment}>댓글 업데이트</Button>
-          </div>
-        </DialogContent>
-      </DialogContainer>
+      <UpdateCommentDialog
+        {...{ showEditCommentDialog, setShowEditCommentDialog, selectedComment, setSelectedComment, updateComment }}
+      />
 
       {/* 게시물 상세 보기 대화상자 */}
       <DialogContainer open={showPostDetailDialog} onOpenChange={setShowPostDetailDialog}>
