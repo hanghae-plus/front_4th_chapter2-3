@@ -8,7 +8,7 @@ export const commentApi = {
 
   // 댓글 가져오기
   getComments: async (postId: number) => {
-    const response = await apiClient.get<CommentResponse>(`/posts/comments/post/${postId}`)
+    const response = await apiClient.get<CommentResponse>(`/comments/post/${postId}`)
     return response.data
   },
 
@@ -18,7 +18,7 @@ export const commentApi = {
 
   // 댓글 추가하기
   addComment: async (data: NewComment) => {
-    const response = await apiClient.post<Comment>("/posts/add", data)
+    const response = await apiClient.post<Comment>("/comments/add", data)
     return response.data
   },
 
