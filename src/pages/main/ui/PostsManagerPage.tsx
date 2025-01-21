@@ -26,7 +26,7 @@ import {
   Textarea,
 } from "../../../shared/ui"
 import { useQuery } from "@tanstack/react-query"
-import { postQueries } from "../../../entities/post/api/post.queries"
+import { postQueries } from "../../../entities/post/api/queries"
 import { SortOrder } from "../../../entities/post/model/types"
 
 const PostsManager = () => {
