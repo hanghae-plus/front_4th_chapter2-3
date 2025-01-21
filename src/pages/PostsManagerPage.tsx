@@ -27,6 +27,7 @@ import { PostItem } from "../entities/post/ui/PostItem.tsx";
 import { CommentItem } from "../entities/comment/ui/CommentItem.tsx";
 import { Comment } from "./../entities/comment/model/types";
 import { highlightText } from "../shared/lib/handleHighlightText.tsx";
+import { PostPagination } from "../entities/post/ui/PostPagination.tsx";
 
 const PostsManager = () => {
   const navigate = useNavigate();
@@ -373,9 +374,6 @@ const PostsManager = () => {
     setSelectedTag(params.get("tag") || "");
   }, [location.search]);
 
-  // 하이라이트 함수 추가
-  // shared/lib
-
   return (
     <Card className="w-full max-w-6xl mx-auto">
       <CardHeader>
@@ -478,41 +476,13 @@ const PostsManager = () => {
               onDelete={(postId: number) => deletePost(postId)}
             />
           )}
-
-          {/* 페이지네이션 */}
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2">
-              <span>표시</span>
-              <Select
-                value={limit.toString()}
-                onValueChange={(value) => setLimit(Number(value))}
-              >
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="10" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="10">10</SelectItem>
-                  <SelectItem value="20">20</SelectItem>
-                  <SelectItem value="30">30</SelectItem>
-                </SelectContent>
-              </Select>
-              <span>항목</span>
-            </div>
-            <div className="flex gap-2">
-              <Button
-                disabled={skip === 0}
-                onClick={() => setSkip(Math.max(0, skip - limit))}
-              >
-                이전
-              </Button>
-              <Button
-                disabled={skip + limit >= total}
-                onClick={() => setSkip(skip + limit)}
-              >
-                다음
-              </Button>
-            </div>
-          </div>
+          <PostPagination
+            limit={limit}
+            skip={skip}
+            total={total}
+            onClickPage={(skip) => setSkip(skip)}
+            onValueChange={(value) => setLimit(Number(value))}
+          />
         </div>
       </CardContent>
 
