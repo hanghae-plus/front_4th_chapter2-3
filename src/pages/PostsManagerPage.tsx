@@ -4,16 +4,14 @@ import { useLocation, useNavigate } from "react-router-dom"
 
 import { PostsWithUsersTable } from "../features/postsWithUsers/ui"
 import { AddPostDialog } from "../features/addPost/ui"
+import { PostDetailDialog } from "../features/postDetail/ui"
 import { UpdatePostDialog } from "../features/updatePost/ui"
-import { CommentsList } from "../features/comments/ui"
 import { AddCommentDialog } from "../features/addComment/ui"
+import { UpdateCommentDialog } from "../features/updateComment/ui"
 import { UserDialog } from "../entities/user/ui"
 import { Button, Input } from "../shared/ui/common"
-import { DialogContainer, DialogContent, DialogHeader, DialogTitle } from "../shared/ui/dialog"
 import { SelectContainer, SelectValue, SelectContent, SelectItem, SelectTrigger } from "../shared/ui/select"
 import { CardContainer, CardContent, CardHeader, CardTitle } from "../shared/ui/card"
-import { highlightText } from "../shared/lib"
-import { UpdateCommentDialog } from "../features/updateComment/ui"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -453,29 +451,21 @@ const PostsManager = () => {
       />
 
       {/* 게시물 상세 보기 대화상자 */}
-      <DialogContainer open={showPostDetailDialog} onOpenChange={setShowPostDetailDialog}>
-        <DialogContent className="max-w-3xl">
-          <DialogHeader>
-            <DialogTitle>{highlightText(selectedPost?.title, searchQuery)}</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <p>{highlightText(selectedPost?.body, searchQuery)}</p>
-            <CommentsList
-              {...{
-                postId: selectedPost?.id,
-                setNewComment,
-                setShowAddCommentDialog,
-                comments,
-                searchQuery,
-                likeComment,
-                setSelectedComment,
-                setShowEditCommentDialog,
-                deleteComment,
-              }}
-            />
-          </div>
-        </DialogContent>
-      </DialogContainer>
+      <PostDetailDialog
+        {...{
+          showPostDetailDialog,
+          setShowPostDetailDialog,
+          selectedPost,
+          searchQuery,
+          setNewComment,
+          setShowAddCommentDialog,
+          comments,
+          likeComment,
+          setSelectedComment,
+          setShowEditCommentDialog,
+          deleteComment,
+        }}
+      />
 
       {/* 사용자 정보 모달 */}
       <UserDialog {...{ showUserModal, setShowUserModal, selectedUser }} />
