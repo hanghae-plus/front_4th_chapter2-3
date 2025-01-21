@@ -28,7 +28,8 @@
       "@features/*": ["./src/features/*"],
       "@entities/*": ["./src/entities/*"],
       "@pages/*": ["./src/pages/*"],
-      "@widgets/*": ["./src/widgets/*"]
+      "@widgets/*": ["./src/widgets/*"],
+      "@core/*": ["./src/core/*"]
     }
 },
   "include": ["src"]

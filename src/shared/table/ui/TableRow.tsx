@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 import { TableRowProps } from "@shared/table/types";
-import { cn } from "@shared/lib/cn";
+import { cn } from "@/core/utils/cn.ts";
 
 export const TableRow = forwardRef<HTMLTableRowElement, TableRowProps>(({ className, selected, ...props }, ref) => (
   <tr

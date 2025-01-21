@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 import { TableHeadProps } from "@shared/table/types";
-import { cn } from "@shared/lib/cn";
+import { cn } from "@/core/utils/cn.ts";
 import { ArrowDown, ArrowUp } from "lucide-react";
 
 export const TableHead = forwardRef<HTMLTableCellElement, TableHeadProps>(
