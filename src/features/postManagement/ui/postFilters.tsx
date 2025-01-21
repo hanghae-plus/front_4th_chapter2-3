@@ -1,10 +1,27 @@
 import { usePostStore } from "../../../entities/post/model/store";
-import { Select, Input } from "../../../shared/ui";
+import { Input } from "../../../shared/ui";
+import { Select } from "../../../shared/ui/select/Select";
 import { Search } from "lucide-react";
+import { Tag } from "../../../shared/ui/select/Select.types";
+import { useEffect, useState } from "react";
 
 export const PostFilters = () => {
   const { filters, setFilters } = usePostStore();
-  const tags = [];
+  const [tags, setTags] = useState<Tag[]>([]);
+
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+        const response = await fetch("/api/posts/tags");
+        const data = await response.json();
+        setTags(data);
+      } catch (error) {
+        console.error("태그 가져오기 오류:", error);
+      }
+    };
+
+    fetchTags();
+  }, []);
 
   return (
     <div className="flex gap-4">
@@ -27,7 +44,7 @@ export const PostFilters = () => {
         <Select.Content>
           <Select.Item value="all">모든 태그</Select.Item>
           {tags.map((tag) => (
-            <Select.Item key={tag.slug} value={tag.slug}>
+            <Select.Item key={tag.url} value={tag.slug}>
               {tag.slug}
             </Select.Item>
           ))}

@@ -1,5 +1,5 @@
-import { baseApi } from "./baseApi";
-import { Post, PostFilters, PaginationParams } from "../../entities/types"
+import { baseApi } from "../../../shared/api/baseApi";
+import { Post, PostFilters, PaginationParams } from "../../../entities/types"
 
 interface PostsResponse {
   posts: Post[];
