@@ -7,17 +7,12 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
   Input,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-  Textarea,
 } from '../shared/ui'
 import { Post, User, Comment, Tag, NewComment, NewPost } from '../legacy/models/types'
 import { TagListRes } from '../legacy/models/dto.types'
@@ -25,12 +20,13 @@ import { getPostTags } from '../legacy/service/post.service'
 import { deleteComment, getComments, patchComment, postComment, putComment } from '../legacy/service/comments.service'
 import { getUser } from '../legacy/service/user.service'
 import { usePost } from '../legacy/hooks/usePost'
-import { highlightText } from '../legacy/utils/highligtText'
 import { PostTable } from '../legacy/components/PostTable'
-import { Comments } from '../legacy/components/Comments'
 import { AddPostModal } from '../legacy/components/AddPostModal'
 import { EditPostModal } from '../legacy/components/EditPostModal'
 import { AddCommentModal } from '../legacy/components/AddCommentModal'
+import { EditCommentModal } from '../legacy/components/EditCommentModal'
+import { PostDetailModal } from '../legacy/components/PostDetailModal'
+import { UserModal } from '../legacy/components/UserModal'
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -343,85 +339,29 @@ const PostsManager = () => {
         addComment={addComment}
       />
 
-      {/* 댓글 수정 대화상자 */}
-      <Dialog open={showEditCommentDialog} onOpenChange={setShowEditCommentDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>댓글 수정</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <Textarea
-              placeholder="댓글 내용"
-              value={selectedComment?.body || ''}
-              onChange={(e) =>
-                setSelectedComment(selectedComment ? { ...selectedComment, body: e.target.value } : null)
-              }
-            />
-            <Button onClick={updateComment}>댓글 업데이트</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <EditCommentModal
+        showEditCommentDialog={showEditCommentDialog}
+        setShowEditCommentDialog={setShowEditCommentDialog}
+        selectedComment={selectedComment}
+        setSelectedComment={setSelectedComment}
+        updateComment={updateComment}
+      />
 
-      {/* 게시물 상세 보기 대화상자 */}
-      <Dialog open={showPostDetailDialog} onOpenChange={setShowPostDetailDialog}>
-        <DialogContent className="max-w-3xl">
-          <DialogHeader>
-            <DialogTitle>{selectedPost?.title ? highlightText(selectedPost.title, searchQuery) : ''}</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <p>{selectedPost?.body ? highlightText(selectedPost.body, searchQuery) : ''}</p>
-            {selectedPost?.id ? (
-              <Comments
-                comments={comments[selectedPost.id]}
-                postId={selectedPost.id}
-                searchQuery={searchQuery}
-                setNewComment={setNewComment}
-                setShowAddCommentDialog={setShowAddCommentDialog}
-                setSelectedComment={setSelectedComment}
-                setShowEditCommentDialog={setShowEditCommentDialog}
-                deletedComment={deletedComment}
-                likeComment={likeComment}
-              />
-            ) : (
-              ''
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
+      <PostDetailModal
+        showPostDetailDialog={showPostDetailDialog}
+        setShowPostDetailDialog={setShowPostDetailDialog}
+        selectedPost={selectedPost}
+        comments={comments}
+        searchQuery={searchQuery}
+        setNewComment={setNewComment}
+        setShowAddCommentDialog={setShowAddCommentDialog}
+        setSelectedComment={setSelectedComment}
+        setShowEditCommentDialog={setShowEditCommentDialog}
+        deletedComment={deletedComment}
+        likeComment={likeComment}
+      />
 
-      {/* 사용자 모달 */}
-      <Dialog open={showUserModal} onOpenChange={setShowUserModal}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>사용자 정보</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <img src={selectedUser?.image} alt={selectedUser?.username} className="w-24 h-24 rounded-full mx-auto" />
-            <h3 className="text-xl font-semibold text-center">{selectedUser?.username}</h3>
-            <div className="space-y-2">
-              <p>
-                <strong>이름:</strong> {selectedUser?.firstName} {selectedUser?.lastName}
-              </p>
-              <p>
-                <strong>나이:</strong> {selectedUser?.age}
-              </p>
-              <p>
-                <strong>이메일:</strong> {selectedUser?.email}
-              </p>
-              <p>
-                <strong>전화번호:</strong> {selectedUser?.phone}
-              </p>
-              <p>
-                <strong>주소:</strong> {selectedUser?.address?.address}, {selectedUser?.address?.city},{' '}
-                {selectedUser?.address?.state}
-              </p>
-              <p>
-                <strong>직장:</strong> {selectedUser?.company?.name} - {selectedUser?.company?.title}
-              </p>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <UserModal showUserModal={showUserModal} setShowUserModal={setShowUserModal} selectedUser={selectedUser} />
     </Card>
   )
 }
