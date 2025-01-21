@@ -72,17 +72,6 @@ const PostsManager = () => {
     navigate(`?${newParams.toString()}`)
   }
 
-  const updateURL = () => {
-    updateURLParams({
-      skip: skip ? skip.toString() : null,
-      limit: limit ? limit.toString() : null,
-      search: searchQuery || null,
-      sortBy: sortBy || null,
-      sortOrder: sortOrder || null,
-      tag: selectedTag || null,
-    })
-  }
-
   const { data: { posts, total } = { posts: [], total: 0 }, isLoading: isPostsLoading } = useQuery({
     ...postQueries.listQuery({
       limit,
