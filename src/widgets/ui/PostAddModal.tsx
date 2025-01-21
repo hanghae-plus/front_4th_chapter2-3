@@ -6,7 +6,7 @@ interface PostAddModalProps {
   setShowAddDialog: (value: boolean) => void
   newPost: NewPost
   setNewPost: React.Dispatch<React.SetStateAction<NewPost>>
-  addPost: () => void
+  addPost: (post: NewPost) => void
 }
 
 const PostAddModal: React.FC<PostAddModalProps> = ({
@@ -40,7 +40,7 @@ const PostAddModal: React.FC<PostAddModalProps> = ({
             value={newPost.userId}
             onChange={(e) => setNewPost({ ...newPost, userId: Number(e.target.value) })}
           />
-          <Button onClick={addPost}>게시물 추가</Button>
+          <Button onClick={() => addPost(newPost)}>게시물 추가</Button>
         </div>
       </DialogContent>
     </Dialog>
