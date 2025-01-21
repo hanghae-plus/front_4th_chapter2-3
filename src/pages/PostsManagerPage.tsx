@@ -30,6 +30,7 @@ import { TagSelect } from '../legacy/components/TagSelect'
 import { SortBySelect } from '../legacy/components/SortBySelect'
 import { SortOrderSelect } from '../legacy/components/SortOrderSelect'
 import { Searchbar } from '../legacy/components/Searchbar'
+import { useTagParam } from '../legacy/hooks/useQueryParams'
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -43,11 +44,12 @@ const PostsManager = () => {
   const [selectedPost, setSelectedPost] = useState<Post | null>(null)
   const [sortBy, setSortBy] = useState(queryParams.get('sortBy') || '')
   const [sortOrder, setSortOrder] = useState(queryParams.get('sortOrder') || 'asc')
+  const [selectedTag, setSelectedTag] = useTagParam()
+
   const [showAddDialog, setShowAddDialog] = useState(false)
   const [showEditDialog, setShowEditDialog] = useState(false)
   const [newPost, setNewPost] = useState<NewPost>({ title: '', body: '', userId: 1 })
   const [tags, setTags] = useState<Tag[]>([])
-  const [selectedTag, setSelectedTag] = useState(queryParams.get('tag') || '')
   const [comments, setComments] = useState<Record<number, Comment[]>>({})
   const [selectedComment, setSelectedComment] = useState<Comment | null>(null)
   const [newComment, setNewComment] = useState<NewComment>({ body: '', postId: null, userId: 1 })
@@ -58,6 +60,7 @@ const PostsManager = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
 
   // 커스텀 hook으로 분리
+  // posts가 전체 posts
   const { posts, loading, total, fetchPosts, searchPosts, fetchPostsByTag, updatePost, deletedPost, addPost } = usePost(
     limit,
     skip,
@@ -71,7 +74,6 @@ const PostsManager = () => {
     if (searchQuery) params.set('search', searchQuery)
     if (sortBy) params.set('sortBy', sortBy)
     if (sortOrder) params.set('sortOrder', sortOrder)
-    if (selectedTag) params.set('tag', selectedTag)
     navigate(`?${params.toString()}`)
   }
 
@@ -225,7 +227,6 @@ const PostsManager = () => {
               onValueChange={(value) => {
                 setSelectedTag(value)
                 fetchPostsByTag(value)
-                updateURL()
               }}
             />
 
@@ -241,9 +242,6 @@ const PostsManager = () => {
             <PostTable
               posts={posts}
               searchQuery={searchQuery}
-              selectedTag={selectedTag}
-              setSelectedTag={setSelectedTag}
-              updateURL={updateURL}
               openUserModal={openUserModal}
               openPostDetail={openPostDetail}
               setSelectedPost={setSelectedPost}

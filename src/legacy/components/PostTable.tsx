@@ -2,13 +2,11 @@ import { ThumbsUp, ThumbsDown, MessageSquare, Edit2, Trash2 } from 'lucide-react
 import { Button, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../shared/ui'
 import { highlightText } from '../utils/highligtText'
 import { Post, User } from '../models/types'
+import { useTagParam } from '../hooks/useQueryParams'
 
 type PostTableProps = {
   posts: Post[]
   searchQuery: string
-  selectedTag: string
-  setSelectedTag: (tag: string) => void
-  updateURL: () => void
   openUserModal: (user: User | undefined) => void
   openPostDetail: (post: Post) => void
   setSelectedPost: (post: Post) => void
@@ -18,15 +16,13 @@ type PostTableProps = {
 export const PostTable = ({
   posts,
   searchQuery,
-  selectedTag,
-  setSelectedTag,
-  updateURL,
   openUserModal,
   openPostDetail,
   setSelectedPost,
   deletedPost,
   setShowEditDialog,
 }: PostTableProps) => {
+  const [selectedTag, setSelectedTag] = useTagParam()
   return (
     <Table>
       <TableHeader>
@@ -57,7 +53,6 @@ export const PostTable = ({
                       }`}
                       onClick={() => {
                         setSelectedTag(tag)
-                        updateURL()
                       }}
                     >
                       {tag}
