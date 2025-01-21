@@ -30,6 +30,7 @@ import { postMutations, postQueries } from "../../../entities/post/api/queries"
 import { SortOrder } from "../../../entities/post/model/types"
 import { userQueries } from "../../../entities/user/api/queries"
 import { User } from "../../../entities/user/model/types"
+import { commentQueries } from "../../../entities/comment/api/queries"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -50,7 +51,7 @@ const PostsManager = () => {
   const [showAddDialog, setShowAddDialog] = useState(false)
   const [newPost, setNewPost] = useState({ title: "", body: "", userId: 1 })
 
-  const [comments, setComments] = useState({})
+  const [, setComments] = useState({})
   const [selectedComment, setSelectedComment] = useState(null)
   const [newComment, setNewComment] = useState({ body: "", postId: null, userId: 1 })
   const [showEditCommentDialog, setShowEditCommentDialog] = useState(false)
@@ -147,9 +148,14 @@ const PostsManager = () => {
     },
   })
 
+  const { data: comments } = useQuery({
+    ...commentQueries.byPostQuery(Number(selectedPostId) || 0),
+    select: (data) => data?.comments,
+  })
+
   const posts = searchQuery ? searchResults?.posts : selectedTag ? listByTag?.posts : list?.posts
 
-  const total = searchQuery ? searchResults?.total : selectedTag ? listByTag?.total : list?.total
+  const total = (searchQuery ? searchResults?.total : selectedTag ? listByTag?.total : list?.total) ?? 0
 
   const isPostsLoading = isListLoading || isTagLoading || isSearchLoading
 
@@ -204,18 +210,6 @@ const PostsManager = () => {
       })
     } catch (error) {
       console.error("게시물 삭제 오류:", error)
-    }
-  }
-
-  // 댓글 가져오기
-  const fetchComments = async (postId) => {
-    if (comments[postId]) return // 이미 불러온 댓글이 있으면 다시 불러오지 않음
-    try {
-      const response = await fetch(`/api/comments/post/${postId}`)
-      const data = await response.json()
-      setComments((prev) => ({ ...prev, [postId]: data.comments }))
-    } catch (error) {
-      console.error("댓글 가져오기 오류:", error)
     }
   }
 
@@ -291,11 +285,6 @@ const PostsManager = () => {
     } catch (error) {
       console.error("댓글 좋아요 오류:", error)
     }
-  }
-
-  // 게시물 상세 보기
-  const openPostDetail = (post) => {
-    fetchComments(post.id)
   }
 
   // 사용자 모달 열기
@@ -416,14 +405,14 @@ const PostsManager = () => {
   )
 
   // 댓글 렌더링
-  const renderComments = (postId) => (
+  const renderComments = () => (
     <div className="mt-2">
       <div className="flex items-center justify-between mb-2">
         <h3 className="text-sm font-semibold">댓글</h3>
         <Button
           size="sm"
           onClick={() => {
-            setNewComment((prev) => ({ ...prev, postId }))
+            setNewComment((prev) => ({ ...prev, postId: selectedPostId }))
             setShowAddCommentDialog(true)
           }}
         >
@@ -432,14 +421,14 @@ const PostsManager = () => {
         </Button>
       </div>
       <div className="space-y-1">
-        {comments[postId]?.map((comment) => (
+        {comments?.map((comment) => (
           <div key={comment.id} className="flex items-center justify-between text-sm border-b pb-1">
-            <div className="flex items-center space-x-2 overflow-hidden">
-              <span className="font-medium truncate">{comment.user.username}:</span>
-              <span className="truncate">{highlightText(comment.body, searchQuery)}</span>
+            <div className="flex items-center space-x-2 min-w-0 flex-1">
+              <span className="font-medium whitespace-nowrap">{comment.user.username}:</span>
+              <span className="break-all">{highlightText(comment.body, searchQuery)}</span>
             </div>
-            <div className="flex items-center space-x-1">
-              <Button variant="ghost" size="sm" onClick={() => likeComment(comment.id, postId)}>
+            <div className="flex items-center space-x-1 flex-shrink-0">
+              <Button variant="ghost" size="sm" onClick={() => likeComment(comment.id, selectedPostId)}>
                 <ThumbsUp className="w-3 h-3" />
                 <span className="ml-1 text-xs">{comment.likes}</span>
               </Button>
@@ -453,7 +442,7 @@ const PostsManager = () => {
               >
                 <Edit2 className="w-3 h-3" />
               </Button>
-              <Button variant="ghost" size="sm" onClick={() => deleteComment(comment.id, postId)}>
+              <Button variant="ghost" size="sm" onClick={() => deleteComment(comment.id, selectedPostId)}>
                 <Trash2 className="w-3 h-3" />
               </Button>
             </div>
@@ -668,10 +657,10 @@ const PostsManager = () => {
               </>
             ) : (
               // 상세 보기 모드 UI
-              <>
-                <p>{highlightText(selectedPost?.body ?? "", searchQuery)}</p>
-                {renderComments(selectedPost?.id)}
-              </>
+              <div className="overflow-hidden">
+                <p className="break-words">{highlightText(selectedPost?.body ?? "", searchQuery)}</p>
+                {renderComments()}
+              </div>
             )}
           </div>
         </DialogContent>

@@ -1,10 +1,22 @@
-import { User } from "../../user/model/types"
-
 export interface Comment {
   id: number
   body: string
   postId: number
-  userId: number
   likes: number
-  user: Pick<User, "username" | "image">
+  user: {
+    id: number
+    username: string
+    fullName: string
+  }
+}
+
+export interface CommentsResponse {
+  comments: Comment[]
+  total: number
+}
+
+export interface AddCommentRequest {
+  body: string
+  postId: number
+  userId: number
 }
