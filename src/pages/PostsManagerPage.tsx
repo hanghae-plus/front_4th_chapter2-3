@@ -26,6 +26,50 @@ import {
   Textarea,
 } from "../shared/ui"
 
+interface Post {
+  id: number
+  title: string
+  body: string
+  userId: number
+  tags?: string[]
+  reactions?: {
+    likes: number
+    dislikes: number
+  }
+  author?: User
+}
+
+interface User {
+  id: number
+  username: string
+  image: string
+  firstName?: string
+  lastName?: string
+  age?: number
+  email?: string
+  phone?: string
+  address?: {
+    address: string
+    city: string
+    state: string
+  }
+  company?: {
+    name: string
+    title: string
+  }
+}
+
+interface Comment {
+  id: number
+  body: string
+  postId: number
+  userId: number
+  likes: number
+  user: {
+    username: string
+  }
+}
+
 const PostsManager = () => {
   const navigate = useNavigate()
   const location = useLocation()
@@ -268,7 +312,6 @@ const PostsManager = () => {
   // 댓글 좋아요
   const likeComment = async (id, postId) => {
     try {
-
       const response = await fetch(`/api/comments/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -277,7 +320,9 @@ const PostsManager = () => {
       const data = await response.json()
       setComments((prev) => ({
         ...prev,
-        [postId]: prev[postId].map((comment) => (comment.id === data.id ? {...data, likes: comment.likes + 1} : comment)),
+        [postId]: prev[postId].map((comment) =>
+          comment.id === data.id ? { ...data, likes: comment.likes + 1 } : comment,
+        ),
       }))
     } catch (error) {
       console.error("댓글 좋아요 오류:", error)
