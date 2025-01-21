@@ -72,8 +72,21 @@ const PostsManager = () => {
     navigate(`?${newParams.toString()}`)
   }
 
-  const { data: { posts, total } = { posts: [], total: 0 }, isLoading: isPostsLoading } = useQuery({
+  const { data: list, isLoading: isListLoading } = useQuery({
     ...postQueries.listQuery({
+      limit,
+      skip,
+      sortBy,
+      order: sortOrder as SortOrder,
+    }),
+    select: (data) => ({
+      posts: data.posts,
+      total: data.total,
+    }),
+  })
+
+  const { data: listByTag, isLoading: isTagLoading } = useQuery({
+    ...postQueries.listByTagQuery({
       limit,
       skip,
       sortBy,
@@ -81,9 +94,10 @@ const PostsManager = () => {
       tag: selectedTag,
     }),
     select: (data) => ({
-      posts: data?.data.posts,
-      total: data?.data.total,
+      posts: data.posts,
+      total: data.total,
     }),
+    enabled: !!selectedTag,
   })
 
   const { data: { users } = { users: [] } } = useQuery({
@@ -101,6 +115,11 @@ const PostsManager = () => {
   const { data: tags = [] } = useQuery({
     ...postQueries.tagQuery(),
   })
+
+  const posts = selectedTag ? listByTag?.posts : list?.posts
+  const total = selectedTag ? listByTag?.total : list?.total
+
+  const isPostsLoading = isListLoading || isTagLoading
 
   const postsWithUsers = useMemo(() => {
     if (!posts || !users) return []

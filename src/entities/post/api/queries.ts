@@ -1,24 +1,26 @@
 import { queryOptions } from "@tanstack/react-query"
 
-import { FetchPostsParams, Post } from "../model/types"
+import { FetchPostsByTagParams, FetchPostsParams, Post } from "../model/types"
 import { postApi } from "."
 import { queryClient } from "../../../shared/api/query-client"
 
 export const postQueries = {
   all: () => ["posts"] as const,
   list: () => [...postQueries.all(), "list"] as const,
-  listByTag: () => [...postQueries.all(), "byTag"] as const,
-  listQuery: (params: FetchPostsParams & { tag?: string }) =>
+  listQuery: (params: FetchPostsParams) =>
     queryOptions({
-      queryKey: params.tag ? [...postQueries.tag(), params.tag, params] : [...postQueries.list(), params],
-      queryFn: async () => {
-        if (params.tag) {
-          const response = await postApi.fetchPostsByTag({ tag: params.tag, ...params })
-          return { data: response }
-        }
-        return postApi.fetchPosts(params)
-      },
+      queryKey: [...postQueries.list(), params],
+      queryFn: () => postApi.fetchPosts(params),
     }),
+
+  listByTag: () => [...postQueries.all(), "byTag"] as const,
+  listByTagQuery: (params: FetchPostsByTagParams) =>
+    queryOptions({
+      queryKey: [...postQueries.listByTag(), params],
+      queryFn: () => postApi.fetchPostsByTag(params),
+      enabled: !!params.tag,
+    }),
+
   search: () => [...postQueries.all(), "search"] as const,
   searchQuery: (query: string) =>
     queryOptions({
