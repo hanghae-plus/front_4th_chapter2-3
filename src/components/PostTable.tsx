@@ -1,9 +1,9 @@
 import { MessageSquare, Table, ThumbsDown, ThumbsUp } from "lucide-react"
 import { Button, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../shared/ui"
 import { highlightText } from "../utils/html"
-import { deletePost as deletePostFunction } from "../api/posts"
+import { deletePost as deletePostFunction } from "../api/post"
 import { getUser } from "../api/user"
-import { getComments } from "../api/comments"
+import { getComments } from "../api/comment"
 
 export const PostTable = (posts) => {
   // 댓글 가져오기

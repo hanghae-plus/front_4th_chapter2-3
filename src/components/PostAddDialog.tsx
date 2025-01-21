@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogTitle } from "@radix-ui/react-dialog"
 import { Button, DialogHeader, Input, Textarea } from "../shared/ui"
-import { addPost as addPostFunction } from "../api/posts"
+import { addPost as addPostFunction } from "../api/post"
 
 export const PostAddDialog = () => {
   const addPost = async () => {

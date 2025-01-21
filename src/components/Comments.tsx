@@ -1,7 +1,7 @@
 import { ThumbsUp } from "lucide-react"
 import { Button } from "../shared/ui"
 import { highlightText } from "../utils/html"
-import { deleteComment as deleteCommentFunction, likeComment as likeCommentFunction } from "../api/comments"
+import { deleteComment as deleteCommentFunction, likeComment as likeCommentFunction } from "../api/comment"
 
 interface Props {
   postId?: string

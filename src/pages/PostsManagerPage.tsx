@@ -11,8 +11,8 @@ import { CommentUpdateDialog } from "../components/CommentUpdateDialog"
 import { PostDetailDialog } from "../components/PostDetailDialog"
 import { UserModal } from "../components/UserModal"
 import { FilterableSearch } from "../components/FilterableSearch"
-import { getPosts, getPostsByTag } from "../api/posts"
-import { getTags } from "../api/tags"
+import { getPosts, getPostsByTag } from "../api/post"
+import { getTags } from "../api/tag"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -106,8 +106,11 @@ const PostsManager = () => {
     } else {
       fetchPosts()
     }
-    updateURL()
   }, [skip, limit, sortBy, sortOrder, selectedTag])
+
+  useEffect(() => {
+    updateURL()
+  }, [])
 
   useEffect(() => {
     const params = new URLSearchParams(location.search)

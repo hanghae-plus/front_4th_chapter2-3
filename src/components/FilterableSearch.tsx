@@ -1,4 +1,4 @@
-import { getPostsBySearchQuery } from "../api/posts"
+import { getPostsBySearchQuery } from "../api/post"
 
 export const FilterableSearch = () => {
   const searchPosts = async () => {

@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogTitle } from "@radix-ui/react-dialog"
 import { Button, DialogHeader, Textarea } from "../shared/ui"
-import { updateComment as updateCommentFunction } from "../api/comments"
+import { updateComment as updateCommentFunction } from "../api/comment"
 
 export const CommentUpdateDialog = () => {
   const updateComment = async () => {
