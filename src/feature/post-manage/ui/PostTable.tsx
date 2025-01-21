@@ -1,17 +1,15 @@
 import { Edit2, MessageSquare, ThumbsDown, ThumbsUp } from "lucide-react"
 import { Button, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../shared/ui"
 import { highlightText } from "../../lib/helpers"
+import { usePostStore } from "../model/store"
+import { useUserModal } from "../../user-manage/hooks/useUserModal"
+import { usePostDetailDialog } from "../hooks/usePostDetailDialog"
 
-export const PostTabe = ({
-  posts,
-  searchQuery,
-  selectedTag,
-  onTagSelect,
-  onUserClick,
-  onPostDetail,
-  onEditPost,
-  onDeletePost,
-}) => {
+export const PostTable = () => {
+  const { posts, searchQuery, selectedTag, setSelectedTag, updateURL } = usePostStore()
+  const { openUserModal } = useUserModal()
+  const { openPostDetailDialog, closePostDetailDialog } = usePostDetailDialog()
+
   return (
     <Table>
       <TableHeader>
@@ -67,7 +65,7 @@ export const PostTabe = ({
             </TableCell>
             <TableCell>
               <div className="flex items-center gap-2">
-                <Button variant="ghost" size="sm" onClick={() => openPostDetail(post)}>
+                <Button variant="ghost" size="sm" onClick={() => openPostDetailDialog(post)}>
                   <MessageSquare className="w-4 h-4" />
                 </Button>
                 <Button

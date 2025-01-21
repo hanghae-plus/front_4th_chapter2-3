@@ -32,6 +32,7 @@ import { useEditDialog } from "../feature/post-manage/hooks/useEditDialog"
 import { useDetailDialog } from "../feature/post-manage/hooks/useDetailDialog"
 import { usePostDetailDialog } from "../feature/post-manage/hooks/usePostDetailDialog"
 import { useUserModal } from "../feature/user-manage/hooks/useUserModal"
+import { useSelectedUser } from "../feature/user-manage/hooks/useSelectedUser"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -44,11 +45,8 @@ const PostsManager = () => {
   const { showEditCommentDialog, openEditCommentDialog, closeEditCommentDialog } = useEditCommentDialog()
   const { showEditDialog, setShowEditDialog, openEditDialog, closeEditDialog } = useEditDialog()
   const { showPostDetailDialog, setShowPostDetailDialog, openPostDetailDialog } = usePostDetailDialog()
-  const {
-    showUserModal,
-    setShowUserModal,
-    //  openUserModal, closeUserModal 다른 이름으로 변경 필요
-  } = useUserModal()
+  const { showUserModal, setShowUserModal, openUserModal } = useUserModal()
+  const { selectedUser } = useSelectedUser()
 
   const [posts, setPosts] = useState([])
   const [total, setTotal] = useState(0)
@@ -65,7 +63,6 @@ const PostsManager = () => {
   const [selectedTag, setSelectedTag] = useState(queryParams.get("tag") || "")
   const [comments, setComments] = useState({})
   const [newComment, setNewComment] = useState({ body: "", postId: null, userId: 1 })
-  const [selectedUser, setSelectedUser] = useState(null)
 
   // URL 업데이트 함수
   const updateURL = () => {
@@ -306,18 +303,18 @@ const PostsManager = () => {
   }
 
   // 사용자 모달 열기
-  const openUserModal = async (user) => {
-    try {
-      const response = await fetch(`/api/users/${user.id}`)
-      const userData = await response.json()
-      setSelectedUser(userData)
+  // const openUserModal = async (user) => {
+  //   try {
+  //     const response = await fetch(`/api/users/${user.id}`)
+  //     const userData = await response.json()
+  //     setSelectedUser(userData)
 
-      // openUserModal()  // 다른 이름으로 설정 필요
-      setShowUserModal(true)
-    } catch (error) {
-      console.error("사용자 정보 가져오기 오류:", error)
-    }
-  }
+  //     // openUserModal()  // 다른 이름으로 설정 필요
+  //     setShowUserModal(true)
+  //   } catch (error) {
+  //     console.error("사용자 정보 가져오기 오류:", error)
+  //   }
+  // }
 
   useEffect(() => {
     fetchTags()
@@ -413,7 +410,7 @@ const PostsManager = () => {
             </TableCell>
             <TableCell>
               <div className="flex items-center gap-2">
-                <Button variant="ghost" size="sm" onClick={() => openPostDetail(post)}>
+                <Button variant="ghost" size="sm" onClick={() => openPostDetailDialog(post)}>
                   <MessageSquare className="w-4 h-4" />
                 </Button>
                 <Button

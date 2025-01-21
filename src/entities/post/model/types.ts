@@ -17,4 +17,11 @@ export interface Post {
   reactions?: Reactions
   createdAt?: string
   updatedAt?: string
+  tags: string[]
+}
+
+export interface CreatePostDto {
+  title: string
+  body: string
+  userId?: number
 }
