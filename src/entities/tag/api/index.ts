@@ -2,7 +2,7 @@ import axios from "axios"
 import { getPostByTagsRequest, getTagsResponse } from "../model/type"
 
 //태그 조회
-export const getTags = async (): Promise<getTagsResponse> => {
+export const getTags = async (): Promise<getTagsResponse[]> => {
   const { data } = await axios.get("/api/posts/tags")
   return data
 }

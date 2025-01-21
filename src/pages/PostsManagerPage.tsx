@@ -11,6 +11,7 @@ import { Textarea } from "../shared/ui/Textarea/ui"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../shared/ui/Table/ui"
 import { useDeletePosts, useGetPosts, useGetSearchPosts, usePostPosts, usePutPosts } from "../features/post/api"
 import UserProfile from "../features/user/ui/UserProfile"
+import { useGetTags } from "../features/tag/api"
 
 interface Tag {
   name: string
@@ -68,27 +69,6 @@ interface NewComment {
   userId: number
 }
 
-interface SelectUser {
-  id: number
-  image: string
-  firstName: string
-  lastName: string
-  age: number
-  username: string
-  email: string
-  phone: string
-
-  address: {
-    address: string
-    state: string
-    city: string
-  }
-  company: {
-    name: string
-    title: string
-  }
-}
-
 const PostsManager = () => {
   const navigate = useNavigate()
   const location = useLocation()
@@ -115,8 +95,6 @@ const PostsManager = () => {
   const [showAddCommentDialog, setShowAddCommentDialog] = useState<boolean>(false)
   const [showEditCommentDialog, setShowEditCommentDialog] = useState<boolean>(false)
   const [showPostDetailDialog, setShowPostDetailDialog] = useState<boolean>(false)
-  const [showUserModal, setShowUserModal] = useState<boolean>(false)
-  const [selectedUser, setSelectedUser] = useState<SelectUser | null>(null)
 
   // URL 업데이트 함수
   const updateURL = () => {
@@ -129,23 +107,40 @@ const PostsManager = () => {
     if (selectedTag) params.set("tag", selectedTag)
     navigate(`?${params.toString()}`)
   }
-  const { data: postsData, isLoading, isError, error } = useGetPosts({ limit, skip })
+  const {
+    data: postsData,
+    isLoading: postsLoading,
+    isError: postsIsError,
+    error: postsError,
+  } = useGetPosts({ limit, skip })
   const { mutate: getSearchPostsMutation } = useGetSearchPosts()
   const { mutate: addPostMutation } = usePostPosts()
   const { mutate: putPostMutation } = usePutPosts()
   const { mutate: deletePostMutation } = useDeletePosts()
 
+  const { data: tagData, isError: tagIsError, error: tagError } = useGetTags()
+
   useEffect(() => {
-    setLoading(isLoading)
+    setLoading(postsLoading)
     if (postsData) {
       setPosts(postsData.posts)
       setTotal(postsData.total)
     }
 
-    if (isError) {
-      console.error("게시물 가져오기 오류:", error)
+    if (postsIsError) {
+      console.error("게시물 가져오기 오류:", postsError)
     }
   }, [postsData])
+
+  useEffect(() => {
+    if (tagData) {
+      setTags(tagData)
+    }
+
+    if (tagIsError) {
+      console.error("게시물 가져오기 오류:", tagError)
+    }
+  }, [tagData])
 
   // 게시물 가져오기
   // const fetchPosts = () => {
@@ -180,22 +175,23 @@ const PostsManager = () => {
   // }
 
   // 태그 가져오기
-  const fetchTags = async () => {
-    try {
-      const response = await fetch("/api/posts/tags")
-      const data = await response.json()
-      setTags(data)
-    } catch (error) {
-      console.error("태그 가져오기 오류:", error)
-    }
-  }
+
+  // const fetchTags = async () => {
+  //   try {
+  //     const response = await fetch("/api/posts/tags")
+  //     const data = await response.json()
+  //     setTags(data)
+  //   } catch (error) {
+  //     console.error("태그 가져오기 오류:", error)
+  //   }
+  // }
 
   // 게시물 검색
   const searchPosts = async () => {
-    if (!searchQuery) {
-      fetchPosts()
-      return
-    }
+    // if (!searchQuery) {
+    //   fetchPosts()
+    //   return
+    // }
     setLoading(true)
 
     getSearchPostsMutation(
@@ -373,21 +369,9 @@ const PostsManager = () => {
     setShowPostDetailDialog(true)
   }
 
-  // 사용자 모달 열기
-  const openUserModal = async (user: User) => {
-    try {
-      const response = await fetch(`/api/users/${user.id}`)
-      const userData = await response.json()
-      setSelectedUser(userData)
-      setShowUserModal(true)
-    } catch (error) {
-      console.error("사용자 정보 가져오기 오류:", error)
-    }
-  }
-
-  useEffect(() => {
-    fetchTags()
-  }, [])
+  // useEffect(() => {
+  //   fetchTags()
+  // }, [])
 
   useEffect(() => {
     if (selectedTag) {
@@ -750,7 +734,7 @@ const PostsManager = () => {
       </Dialog>
 
       {/* 사용자 모달 */}
-      <Dialog open={showUserModal} onOpenChange={setShowUserModal}>
+      {/* <Dialog open={showUserModal} onOpenChange={setShowUserModal}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>사용자 정보</DialogTitle>
@@ -781,7 +765,7 @@ const PostsManager = () => {
             </div>
           </div>
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
     </Card>
   )
 }
