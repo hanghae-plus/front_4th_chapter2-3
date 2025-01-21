@@ -3,7 +3,22 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import {
+  matchQuery,
+  MutationCache,
+  MutationMeta,
+  QueryClient,
+  QueryClientProvider,
+  QueryKey,
+} from '@tanstack/react-query'
+
+type QueryKeysReturnType = readonly (string | number | readonly (string | number)[])[]
+
+declare module '@tanstack/react-query' {
+  interface CustomMutationMeta extends MutationMeta {
+    invalidates?: QueryKeysReturnType
+  }
+}
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -13,6 +28,15 @@ const queryClient = new QueryClient({
       staleTime: 5 * 60 * 1000, // 데이터가 오래되기 전까지의 시간(ms)
     },
   },
+  mutationCache: new MutationCache({
+    onSuccess: (_, __, ___, mutation) => {
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          Array.isArray(mutation?.options?.meta?.invalidates) &&
+          mutation.options.meta.invalidates.some((queryKey) => matchQuery({ queryKey: queryKey as QueryKey }, query)),
+      })
+    },
+  }),
 })
 
 createRoot(document.getElementById('root')!).render(
