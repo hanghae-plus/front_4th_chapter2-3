@@ -1,17 +1,4 @@
-export interface Post {
-  id: number;
-  title: string;
-  body: string;
-  userId: number;
-
-  tags?: string[];
-  reactions?: {
-    likes: number;
-    dislikes: number;
-  };
-  views?: number;
-  author?: UserThumbnail;
-}
+import { ResponseWithData } from '../../search/model';
 
 export interface User {
   id: number;
@@ -85,36 +72,4 @@ export interface User {
 }
 
 export type UserThumbnail = Pick<User, 'id' | 'username' | 'image'>;
-
-export interface Tag {
-  slug: string;
-  name: string;
-  url: string;
-}
-
-export interface Comment {
-  id: number;
-  body: string;
-  postId: number;
-  likes?: number;
-  user: {
-    id: number;
-    username: string;
-    fullName: string;
-  };
-}
-
-export interface Response {
-  limit: number;
-  skip: number;
-  total: number;
-}
-
-export type ResponseWithData<T, K extends string = `${Lowercase<string & T>}s`> = Response & {
-  [key in K]: T[];
-};
-
-export type Posts = ResponseWithData<Post, 'posts'>;
-export type Users = ResponseWithData<User, 'users'>;
 export type UserThumbnails = ResponseWithData<UserThumbnail, 'users'>;
-export type Comments = ResponseWithData<Comment, 'comments'>;
