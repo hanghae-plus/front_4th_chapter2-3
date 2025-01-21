@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { Plus } from 'lucide-react'
-import { useLocation } from 'react-router-dom'
 import {
   Button,
   Card,
@@ -13,9 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../shared/ui'
-import { Post, User, Comment, Tag, NewComment, NewPost } from '../legacy/models/types'
-import { TagListRes } from '../legacy/models/dto.types'
-import { getPostTags } from '../legacy/service/post.service'
+import { Post, User, Comment, NewComment, NewPost } from '../legacy/models/types'
 import { deleteComment, getComments, patchComment, postComment, putComment } from '../legacy/service/comments.service'
 import { getUser } from '../legacy/service/user.service'
 import { usePost } from '../legacy/hooks/usePost'
@@ -44,13 +41,12 @@ const PostsManager = () => {
   const [limit, setLimit] = useLimitParam()
   const [sortBy, setSortBy] = useSortByParam()
   const [sortOrder, setSortOrder] = useSortOrderParam()
-  const [selectedTag, setSelectedTag] = useTagParam()
+  const [selectedTag] = useTagParam()
 
   const [selectedPost, setSelectedPost] = useState<Post | null>(null)
   const [showAddDialog, setShowAddDialog] = useState(false)
   const [showEditDialog, setShowEditDialog] = useState(false)
   const [newPost, setNewPost] = useState<NewPost>({ title: '', body: '', userId: 1 })
-  const [tags, setTags] = useState<Tag[]>([])
   const [comments, setComments] = useState<Record<number, Comment[]>>({})
   const [selectedComment, setSelectedComment] = useState<Comment | null>(null)
   const [newComment, setNewComment] = useState<NewComment>({ body: '', postId: null, userId: 1 })
@@ -64,16 +60,6 @@ const PostsManager = () => {
   // posts가 전체 posts
   const { posts, loading, total, fetchPosts, searchPosts, fetchPostsByTag, updatePost, deletedPost, addPost } =
     usePost()
-
-  // 태그 가져오기
-  const fetchTags = async () => {
-    try {
-      const data: TagListRes = await getPostTags()
-      setTags(data)
-    } catch (error) {
-      console.error('태그 가져오기 오류:', error)
-    }
-  }
 
   // 댓글 가져오기
   const fetchComments = async (postId: number) => {
@@ -170,10 +156,6 @@ const PostsManager = () => {
   }
 
   useEffect(() => {
-    fetchTags()
-  }, [])
-
-  useEffect(() => {
     if (selectedTag) {
       fetchPostsByTag(selectedTag)
     } else {
@@ -199,10 +181,7 @@ const PostsManager = () => {
             <SearchPostInput handleSearch={searchPosts} />
 
             <TagSelect
-              selectedTag={selectedTag}
-              tags={tags}
               onValueChange={(value) => {
-                setSelectedTag(value)
                 fetchPostsByTag(value)
               }}
             />
