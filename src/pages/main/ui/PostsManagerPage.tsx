@@ -30,7 +30,9 @@ import { postMutations, postQueries } from "../../../entities/post/api/queries"
 import { SortOrder } from "../../../entities/post/model/types"
 import { userQueries } from "../../../entities/user/api/queries"
 import { User } from "../../../entities/user/model/types"
-import { commentQueries } from "../../../entities/comment/api/queries"
+import { commentMutations, commentQueries } from "../../../entities/comment/api/queries"
+import { queryClient } from "../../../shared/api/query-client"
+import { Comment } from "../../../entities/comment/model/types"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -54,6 +56,7 @@ const PostsManager = () => {
   const [, setComments] = useState({})
   const [selectedComment, setSelectedComment] = useState(null)
   const [newComment, setNewComment] = useState({ body: "", postId: null, userId: 1 })
+  const [showAddCommentDialog, setShowAddCommentDialog] = useState(false)
   const [showEditCommentDialog, setShowEditCommentDialog] = useState(false)
 
   // URL 업데이트 함수
@@ -160,6 +163,35 @@ const PostsManager = () => {
     select: (data) => data?.comments,
   })
 
+  const addCommentMutation = useMutation({
+    ...commentMutations.addMutation(),
+    onSuccess: () => {
+      queryClient.setQueryData<{ comments: Comment[] }>(
+        commentQueries.byPost(Number(selectedPostId)),
+        (old = { comments: [] }) => ({
+          comments: [
+            ...old.comments,
+            {
+              id: Date.now(),
+              body: newComment.body,
+              postId: Number(selectedPostId),
+              userId: 1,
+              likes: 0,
+              user: {
+                id: 1,
+                username: "현재 사용자",
+                fullName: "Current User",
+              },
+            },
+          ],
+        }),
+      )
+    },
+    onError: (error) => {
+      console.error("게시물 추가 오류:", error)
+    },
+  })
+
   const posts = searchQuery ? searchResults?.posts : selectedTag ? listByTag?.posts : list?.posts
 
   const total = (searchQuery ? searchResults?.total : selectedTag ? listByTag?.total : list?.total) ?? 0
@@ -206,28 +238,21 @@ const PostsManager = () => {
   }
 
   // 게시물 삭제
-  const deletePost = async (id: string) => {
+  const deletePost = async (id: number) => {
     await deletePostMutation.mutateAsync(id)
   }
 
   // 댓글 추가
   const addComment = async () => {
-    try {
-      const response = await fetch("/api/comments/add", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newComment),
-      })
-      const data = await response.json()
-      setComments((prev) => ({
-        ...prev,
-        [data.postId]: [...(prev[data.postId] || []), data],
-      }))
-      setShowAddCommentDialog(false)
-      setNewComment({ body: "", postId: null, userId: 1 })
-    } catch (error) {
-      console.error("댓글 추가 오류:", error)
-    }
+    if (!newComment.body || !selectedPostId) return
+
+    await addCommentMutation.mutateAsync({
+      body: newComment.body,
+      postId: Number(selectedPostId),
+      userId: 1,
+    })
+    setShowAddCommentDialog(false)
+    setNewComment({ body: "", postId: null, userId: 1 })
   }
 
   // 댓글 업데이트
@@ -659,6 +684,24 @@ const PostsManager = () => {
                 {renderComments()}
               </div>
             )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showAddCommentDialog} onOpenChange={setShowAddCommentDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>새 댓글 추가</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <Textarea
+              placeholder="댓글 내용"
+              value={newComment.body}
+              onChange={(e) => setNewComment({ ...newComment, body: e.target.value })}
+            />
+            <Button onClick={addComment} disabled={addCommentMutation.isPending}>
+              {addCommentMutation.isPending ? "추가 중..." : "댓글 추가"}
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
