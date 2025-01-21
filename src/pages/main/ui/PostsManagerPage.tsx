@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Edit2, MessageSquare, Plus, Search, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react"
 import { useLocation, useNavigate } from "react-router-dom"
 import {
@@ -28,6 +28,7 @@ import {
 import { useQuery } from "@tanstack/react-query"
 import { postQueries } from "../../../entities/post/api/queries"
 import { SortOrder } from "../../../entities/post/model/types"
+import { userQueries } from "../../../entities/user/api/queries"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -82,29 +83,27 @@ const PostsManager = () => {
     }),
   })
 
-  // 게시물 가져오기
-  const fetchPosts = () => {
-    let postsData
-    let usersData
+  const { data: { users } = { users: [] } } = useQuery({
+    ...userQueries.listQuery(),
+    select: (data) => ({
+      users: data.users,
+    }),
+  })
 
-    fetch(`/api/posts?limit=${limit}&skip=${skip}`)
-      .then((response) => response.json())
-      .then((data) => {
-        postsData = data
-        return fetch("/api/users?limit=0&select=username,image")
-      })
-      .then((response) => response.json())
-      .then((users) => {
-        usersData = users.users
-        const postsWithUsers = postsData.posts.map((post) => ({
-          ...post,
-          author: usersData.find((user) => user.id === post.userId),
-        }))
-      })
-      .catch((error) => {
-        console.error("게시물 가져오기 오류:", error)
-      })
-  }
+  // openUserModal() 함수에서 사용
+  const { data: userData } = useQuery({
+    ...userQueries.detailQuery(selectedUser?.id || 0),
+    enabled: !!selectedUser?.id,
+  })
+
+  const postsWithUsers = useMemo(() => {
+    if (!posts || !users) return []
+
+    return posts.map((post) => ({
+      ...post,
+      author: users.find((user) => user.id === post.userId),
+    }))
+  }, [posts, users])
 
   // 태그 가져오기
   const fetchTags = async () => {
@@ -307,8 +306,6 @@ const PostsManager = () => {
   useEffect(() => {
     if (selectedTag) {
       fetchPostsByTag(selectedTag)
-    } else {
-      fetchPosts()
     }
     updateURL()
   }, [skip, limit, sortBy, sortOrder, selectedTag])
@@ -351,7 +348,7 @@ const PostsManager = () => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {posts.map((post) => (
+        {postsWithUsers.map((post) => (
           <TableRow key={post.id}>
             <TableCell>{post.id}</TableCell>
             <TableCell>

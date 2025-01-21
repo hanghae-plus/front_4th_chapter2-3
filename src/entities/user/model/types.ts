@@ -17,3 +17,15 @@ export interface User {
     title: string
   }
 }
+
+export interface FetchUsersParams {
+  limit?: number
+  skip?: number
+  select?: string
+}
+
+export interface SearchUsersParams {
+  query: string
+  limit?: number
+  skip?: number
+}
