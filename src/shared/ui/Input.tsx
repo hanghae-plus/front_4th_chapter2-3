@@ -1,4 +1,3 @@
-import * as React from "react"
 import { forwardRef } from "react"
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {

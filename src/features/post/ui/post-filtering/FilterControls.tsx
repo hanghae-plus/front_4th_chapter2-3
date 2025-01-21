@@ -1,4 +1,4 @@
-import { Select } from "@shared/ui/Select"
+import { Select } from "@shared/ui"
 import { PostTag } from "@entities/post/model"
 
 interface FilterControlsProps {

@@ -1,7 +1,7 @@
 import { Dialog } from "@shared/ui"
 import { Post } from "@entities/post/model"
 import { Comment } from "@entities/comment/model"
-import { PostCommentsFeature } from "@features/post-comments/ui/PostCommentsFeature"
+import { PostCommentsFeature } from "@features/comment/ui"
 
 interface PostDetailDialogProps {
   open: boolean

@@ -1,4 +1,3 @@
-import * as React from "react"
 import { forwardRef } from "react"
 
 interface CardProps extends React.HTMLAttributes<HTMLDivElement> {

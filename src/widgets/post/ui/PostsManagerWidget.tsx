@@ -1,12 +1,9 @@
-import { Card } from "@shared/ui"
-import { Button } from "@shared/ui"
+import { Card, Button, LoadingSpinner, Pagination } from "@shared/ui"
 import { Plus } from "lucide-react"
 import { Post, PostTag } from "@entities/post/model"
 import { User } from "@entities/user/model"
-import { LoadingSpinner } from "@entities/common/ui/LoadingSpinner"
 import { PostsTable } from "./PostsTable"
-import { PostsSearchFilter } from "./PostsSearchFilter"
-import { PaginationControls } from "@features/common/pagination/ui/PaginationControls"
+import { PostsSearchFilter } from "@widgets/post/ui"
 
 interface PostsManageProps {
   loading: boolean
@@ -97,7 +94,7 @@ export const PostsManagerWidget = ({
             />
           )}
 
-          <PaginationControls
+          <Pagination
             skip={skip}
             limit={limit}
             total={total}

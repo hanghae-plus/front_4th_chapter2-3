@@ -1,6 +1,5 @@
-import { Dialog, Textarea } from "@shared/ui"
+import { Dialog, Textarea, Button } from "@shared/ui"
 import { Comment } from "@entities/comment/model"
-import { DialogActions } from "@features/common/dialog/ui/DialogActions"
 
 interface CommentFormDialogProps {
   mode: "add" | "edit"
@@ -33,7 +32,9 @@ export const CommentFormDialog = ({
             value={isEdit ? (comment?.body ?? "") : ""}
             onChange={(e) => onBodyChange(e.target.value)}
           />
-          <DialogActions onSubmit={onSubmit} submitText={isEdit ? "댓글 업데이트" : "댓글 추가"} />
+          <div className="flex justify-end gap-2 mt-4">
+            <Button onClick={onSubmit}>{isEdit ? "댓글 업데이트" : "댓글 추가"}</Button>
+          </div>
         </div>
       </Dialog.Content>
     </Dialog>

@@ -1,5 +1,5 @@
-import { SearchInput } from "@features/post/post-search/ui/SearchInput"
-import { FilterControls } from "@features/post/post-filtering/ui/FilterControls"
+import { SearchInput } from "@features/post/ui"
+import { FilterControls } from "@features/post/ui"
 import { PostTag } from "@entities/post/model"
 
 interface PostsSearchFilterProps {

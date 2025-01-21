@@ -2,7 +2,7 @@ import { Plus } from "lucide-react"
 import { Button } from "@shared/ui"
 import { Comment } from "@entities/comment/model"
 import { CommentView } from "@entities/comment/ui"
-import { CommentActionButtons } from "@features/comment/comment-management/ui"
+import { CommentActionButtons } from "@features/comment/ui"
 
 interface CommentsListProps {
   postId: number
@@ -22,6 +22,7 @@ export const CommentsList = ({ postId, comments, onAddClick, onLike, onEdit, onD
         댓글 추가
       </Button>
     </div>
+    
     <div className="space-y-1">
       {comments.map((comment) => (
         <div key={comment.id} className="flex items-center justify-between border-b pb-1">

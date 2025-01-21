@@ -1,6 +1,6 @@
 import { Comment } from "@entities/comment/model"
 import { Post } from "@entities/post/model"
-import { CommentsList } from "@features/comment/comment-list/ui"
+import { CommentsList } from "@features/comment/ui"
 
 interface PostCommentsFeatureProps {
   post: Post | null

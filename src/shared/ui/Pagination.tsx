@@ -1,6 +1,6 @@
 import { Select, Button } from "@shared/ui"
 
-interface PaginationControlsProps {
+interface PaginationProps {
   skip: number
   limit: number
   total: number
@@ -9,14 +9,14 @@ interface PaginationControlsProps {
   onNextPage: () => void
 }
 
-export const PaginationControls = ({
+export const Pagination = ({
   skip,
   limit,
   total,
   onLimitChange,
   onPrevPage,
   onNextPage,
-}: PaginationControlsProps) => (
+}: PaginationProps) => (
   <div className="flex justify-between items-center">
     <div className="flex items-center gap-2">
       <span>표시</span>

@@ -3,7 +3,7 @@ import { Post } from "@entities/post/model"
 import { User } from "@entities/user/model"
 import { PostPreview } from "@entities/post/ui/PostPreview"
 import { UserInfo } from "@entities/user/ui/UserInfo"
-import { PostActionButtons } from "@features/post/post-management/ui/PostActionButtons"
+import { PostActionButtons } from "@features/post/ui/post-management/PostActionButtons"
 
 interface PostsTableProps {
   posts: Post[]
