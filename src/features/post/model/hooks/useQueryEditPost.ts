@@ -1,6 +1,6 @@
 // TODO: react-query 적용 예정
 
-import type { Post } from "../types/post"
+import type { Post } from "../../../../entities/post/model/types/post"
 
 export const useQueryEditPost = (
   selectedPost: Post,

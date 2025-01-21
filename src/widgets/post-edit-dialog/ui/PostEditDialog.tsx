@@ -1,7 +1,7 @@
 import { PostEditForm } from "../../../features/post/ui/PostEditForm"
 import { Dialog } from "../../../shared/ui"
 
-import type { Post } from "../../../features/post/model/types/post"
+import type { Post } from "../../../entities/post/model/types/post"
 
 interface PostEditDialogProps {
   open: boolean

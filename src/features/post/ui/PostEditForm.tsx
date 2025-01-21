@@ -1,7 +1,7 @@
 import { Button, Input, Textarea } from "../../../shared/ui"
 import { useQueryEditPost } from "../model/hooks/useQueryEditPost"
 
-import type { Post } from "../model/types/post"
+import type { Post } from "../../../entities/post/model/types/post"
 
 interface PostEditFormProps {
   posts: Post[]
