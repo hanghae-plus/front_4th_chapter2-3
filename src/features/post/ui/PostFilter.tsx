@@ -1,6 +1,7 @@
 import React from "react";
 import { Search } from "lucide-react";
-import { Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../shared/ui";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@shared/select/ui";
+import { Input } from "@shared/input/ui";
 
 function PostFilter({
   searchQuery,

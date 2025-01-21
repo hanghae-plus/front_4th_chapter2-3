@@ -1,14 +1,17 @@
 import { useEffect, useState } from "react";
-import { Edit2, MessageSquare, Plus, Search, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react";
+import { Edit2, Plus, ThumbsUp, Trash2 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Button, Card, CardContent, CardHeader, CardTitle } from "../shared/ui";
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/card/ui";
 import PostTable from "../widgets/post/PostTable.tsx";
-import Pagination from "../features/post/pagination.tsx";
-import PostFilter from "../features/post/PostFilter.tsx";
+import Pagination from "@features/post/ui/pagination.tsx";
+import PostFilter from "@features/post/ui/PostFilter.tsx";
 import { NewPost, Post, PostResponse } from "../types/post.ts";
 import { User, UserResponse } from "../types/user.ts";
 import { Tag } from "../types/tag.ts";
 import { usePostStore } from "@features/post/model/usePostStore.ts";
+import { Button } from "@shared/button/ui";
+import { useDialog } from "@shared/dialog/model/useDialog.ts";
+import PostAddDialog from "@features/post/ui/PostAddDialog.tsx";
 
 const PostsManager = () => {
   const navigate = useNavigate();
@@ -40,12 +43,13 @@ const PostsManager = () => {
   const [selectedUser, setSelectedUser] = useState(null);
 
   // dialog trigger
-  const [showAddDialog, setShowAddDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showAddCommentDialog, setShowAddCommentDialog] = useState(false);
   const [showEditCommentDialog, setShowEditCommentDialog] = useState(false);
   const [showPostDetailDialog, setShowPostDetailDialog] = useState(false);
   const [showUserModal, setShowUserModal] = useState(false);
+
+  const { open, close } = useDialog();
 
   // URL 업데이트 함수
   const updateURL = () => {
@@ -146,8 +150,6 @@ const PostsManager = () => {
   // 게시물 추가
   const addPost = async () => {
     try {
-      console.log(newPost);
-
       const response = await fetch("/api/posts/add", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -155,7 +157,7 @@ const PostsManager = () => {
       });
       const data = await response.json();
       setPosts([data, ...posts]);
-      setShowAddDialog(false);
+
       setNewPost({ title: "", body: "", userId: 1 });
     } catch (error) {
       console.error("게시물 추가 오류:", error);
@@ -389,12 +391,15 @@ const PostsManager = () => {
     </div>
   );
 
+  const handleOpenAddDialog = () => {
+    open(<PostAddDialog addPost={addPost} />);
+  };
   return (
     <Card className="w-full max-w-6xl mx-auto">
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <span>게시물 관리자</span>
-          <Button onClick={() => setShowAddDialog(true)}>
+          <Button onClick={handleOpenAddDialog}>
             <Plus className="w-4 h-4 mr-2" />
             게시물 추가
           </Button>
@@ -417,40 +422,13 @@ const PostsManager = () => {
             updateURL={updateURL}
           />
           {/* 게시물 테이블 */}
-          {loading ? <div className="flex justify-center p-4">로딩 중...</div> : <PostTable posts={posts} />}
+          {loading ? <div className="flex justify-center p-4">로딩 중...</div> : <PostTable />}
           {/* 페이지네이션 */}
           <Pagination skip={skip} limit={limit} setLimit={setLimit} setSkip={setSkip} total={total} />
         </div>
       </CardContent>
 
       {/*/!* 게시물 추가 대화상자 *!/*/}
-      {/*<Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>*/}
-      {/*  <DialogContent>*/}
-      {/*    <DialogHeader>*/}
-      {/*      <DialogTitle>새 게시물 추가</DialogTitle>*/}
-      {/*    </DialogHeader>*/}
-      {/*    <div className="space-y-4">*/}
-      {/*      <Input*/}
-      {/*        placeholder="제목"*/}
-      {/*        value={newPost.title}*/}
-      {/*        onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}*/}
-      {/*      />*/}
-      {/*      <Textarea*/}
-      {/*        rows={30}*/}
-      {/*        placeholder="내용"*/}
-      {/*        value={newPost.body}*/}
-      {/*        onChange={(e) => setNewPost({ ...newPost, body: e.target.value })}*/}
-      {/*      />*/}
-      {/*      <Input*/}
-      {/*        type="number"*/}
-      {/*        placeholder="사용자 ID"*/}
-      {/*        value={newPost.userId}*/}
-      {/*        onChange={(e) => setNewPost({ ...newPost, userId: Number(e.target.value) })}*/}
-      {/*      />*/}
-      {/*      <Button onClick={addPost}>게시물 추가</Button>*/}
-      {/*    </div>*/}
-      {/*  </DialogContent>*/}
-      {/*</Dialog>*/}
 
       {/*/!* 게시물 수정 대화상자 *!/*/}
       {/*<Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>*/}

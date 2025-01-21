@@ -1,7 +1,7 @@
 import { Edit2, MessageSquare, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@shared/table/ui";
 import { usePostStore } from "@features/post/model/usePostStore.ts";
-import { Button } from "@shared/ui";
+import { Button } from "@shared/button/ui";
 
 function PostTable() {
   const { posts } = usePostStore();

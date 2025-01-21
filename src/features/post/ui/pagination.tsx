@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Button, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../shared/ui";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@shared/select/ui";
+import { Button } from "@shared/button/ui";
 
 function Pagination({ total, skip, limit, setSkip, setLimit }) {
   const queryParams = new URLSearchParams(location.search);
