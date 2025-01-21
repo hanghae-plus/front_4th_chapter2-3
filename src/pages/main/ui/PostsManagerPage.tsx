@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { Edit2, MessageSquare, Plus, Search, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react"
 import { useLocation, useNavigate } from "react-router-dom"
 import {
@@ -50,7 +50,6 @@ const PostsManager = () => {
   const [showEditDialog, setShowEditDialog] = useState(false)
   const [newPost, setNewPost] = useState({ title: "", body: "", userId: 1 })
 
-  const [tags, setTags] = useState([])
   const [comments, setComments] = useState({})
   const [selectedComment, setSelectedComment] = useState(null)
   const [newComment, setNewComment] = useState({ body: "", postId: null, userId: 1 })
@@ -104,10 +103,13 @@ const PostsManager = () => {
     }),
   })
 
-  // openUserModal() 함수에서 사용
   const { data: userData } = useQuery({
     ...userQueries.detailQuery(Number(userId) || 0),
     enabled: !!userId,
+  })
+
+  const { data: tags = [] } = useQuery({
+    ...postQueries.tagQuery(),
   })
 
   const postsWithUsers = useMemo(() => {
@@ -118,17 +120,6 @@ const PostsManager = () => {
       author: users.find((user) => user.id === post.userId),
     }))
   }, [posts, users])
-
-  // 태그 가져오기
-  const fetchTags = async () => {
-    try {
-      const response = await fetch("/api/posts/tags")
-      const data = await response.json()
-      setTags(data)
-    } catch (error) {
-      console.error("태그 가져오기 오류:", error)
-    }
-  }
 
   // 게시물 검색
   const searchPosts = async () => {
@@ -308,17 +299,6 @@ const PostsManager = () => {
     })
   }
 
-  useEffect(() => {
-    fetchTags()
-  }, [])
-
-  useEffect(() => {
-    if (selectedTag) {
-      fetchPostsByTag(selectedTag)
-    }
-    updateURL()
-  }, [skip, limit, sortBy, sortOrder, selectedTag])
-
   // 하이라이트 함수 추가
   const highlightText = (text: string, highlight: string) => {
     if (!text) return null
@@ -363,10 +343,7 @@ const PostsManager = () => {
                           ? "text-white bg-blue-500 hover:bg-blue-600"
                           : "text-blue-800 bg-blue-100 hover:bg-blue-200"
                       }`}
-                      onClick={() => {
-                        setSelectedTag(tag)
-                        updateURL()
-                      }}
+                      onClick={() => updateURLParams({ tag, skip: "0" })}
                     >
                       {tag}
                     </span>
@@ -498,11 +475,12 @@ const PostsManager = () => {
             </div>
             <Select
               value={selectedTag}
-              onValueChange={(value) => {
-                setSelectedTag(value)
-                fetchPostsByTag(value)
-                updateURL()
-              }}
+              onValueChange={(value) =>
+                updateURLParams({
+                  tag: value === "all" ? null : value,
+                  skip: "0",
+                })
+              }
             >
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="태그 선택" />

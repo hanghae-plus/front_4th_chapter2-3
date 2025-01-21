@@ -1,5 +1,5 @@
 import { httpClient } from "../../../shared/api/http-client"
-import { FetchPostsParams, PostsResponse, Post, FetchPostsByTagParams } from "../model/types"
+import { FetchPostsParams, PostsResponse, Post, FetchPostsByTagParams, Tag } from "../model/types"
 
 export const postApi = {
   fetchPosts: (params: Partial<FetchPostsParams>) => httpClient.get<PostsResponse>("/posts", params),
@@ -30,7 +30,7 @@ export const postApi = {
   },
 
   fetchTags: async () => {
-    const response = await httpClient.get<{ tags: string[] }>("/posts/tags")
+    const response = await httpClient.get<Tag[]>("/posts/tags")
     return response.data
   },
 }
