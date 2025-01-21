@@ -35,19 +35,7 @@ import {
   UserThumbnail,
   UserThumbnails,
 } from '../types.ts';
-
-interface NewPost {
-  title: string;
-  body: string;
-  userId: number;
-}
-const initNewPost: NewPost = { title: '', body: '', userId: 1 };
-interface NewComment {
-  body: string;
-  postId: number | null;
-  userId: number;
-}
-const initNewComment: NewComment = { body: '', postId: null, userId: 1 };
+import { initNewComment, initNewPost, NewComment, NewPost } from './initData.ts';
 
 const PostsManager = () => {
   const navigate = useNavigate();
@@ -105,6 +93,7 @@ const PostsManager = () => {
     let usersData: UserThumbnail[];
 
     // fetch 체이닝을 통한 값을 할당하는 것 -> 연속적인 쿼리를 어떻게 대응할 것인가
+    // 게시물을 가져온 후 유저정보를 가져와서 매핑한다.
 
     fetch(`/api/posts?limit=${limit}&skip=${skip}`)
       .then((response) => response.json())
