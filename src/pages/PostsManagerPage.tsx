@@ -392,23 +392,6 @@ const PostsManager = () => {
     );
   };
 
-  const handleViewAuthor = (author: User) => {
-    if (author) openUserModal(author);
-  };
-
-  const handleView = (post: Post) => {
-    openPostDetail(post);
-  };
-
-  const handleEdit = (post: Post) => {
-    setSelectedPost(post);
-    setShowEditDialog(true);
-  };
-
-  const handleDelete = (postId: number) => {
-    deletePost(postId);
-  };
-
   // 댓글 렌더링
   const renderComments = (postId: number) => (
     <div className="mt-2">
@@ -567,10 +550,15 @@ const PostsManager = () => {
               selectedTag={selectedTag}
               setSelectedTag={setSelectedTag}
               updateURL={updateURL}
-              onViewAuthor={handleViewAuthor}
-              onView={handleView}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
+              onViewAuthor={(author: User) => {
+                if (author) openUserModal(author);
+              }}
+              onView={(post: Post) => openPostDetail(post)}
+              onEdit={(post: Post) => {
+                setSelectedPost(post);
+                setShowEditDialog(true);
+              }}
+              onDelete={(postId: number) => deletePost(postId)}
             />
           )}
 

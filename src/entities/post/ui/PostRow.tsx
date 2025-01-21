@@ -64,8 +64,9 @@ export const PostRow: React.FC<PostRowProps> = ({
         dislikes={post.reactions?.dislikes || 0}
       />
       <PostIcons
+        post={post}
         onView={() => onView(post)}
-        onEdit={(post) => onEdit(post)}
+        onEdit={() => onEdit(post)}
         onDelete={() => onDelete(post.id)}
       />
     </TableRow>

@@ -17,7 +17,6 @@ export const PostAuthor: React.FC<PostAuthorProps> = ({
         className="flex items-center space-x-2 cursor-pointer"
         onClick={() => {
           if (post?.author) onViewAuthor(post.author);
-          // if (post?.author) openUserModal(post.author);
         }}
       >
         <img
