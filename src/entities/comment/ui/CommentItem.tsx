@@ -6,6 +6,7 @@ import { Comment } from "../model/types";
 interface CommentItemProps {
   comments: Record<number, Comment[]>;
   postId: number;
+  searchQuery: string;
   onAdd: () => void;
   onLikeComment: (comment: Comment) => void;
   onEditComment: (comment: Comment) => void;
@@ -14,6 +15,7 @@ interface CommentItemProps {
 
 export const CommentItem: React.FC<CommentItemProps> = ({
   comments,
+  searchQuery,
   onAdd,
   onLikeComment,
   onEditComment,
@@ -37,6 +39,7 @@ export const CommentItem: React.FC<CommentItemProps> = ({
         {flattenedComments.map((comment: Comment) => (
           <CommentRow
             comment={comment}
+            searchQuery={searchQuery}
             onLikeComment={() => {
               if (comment?.id && comment.postId) onLikeComment(comment);
             }}

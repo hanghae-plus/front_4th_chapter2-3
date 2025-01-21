@@ -26,6 +26,8 @@ import { PostTable } from "../entities/post/ui/PostTable.tsx";
 
 import { CommentItem } from "../entities/comment/ui/CommentItem.tsx";
 import { Comment } from "./../entities/comment/model/types";
+import { highlightText } from "../shared/lib/handleHighlightText.tsx";
+
 const PostsManager = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -373,25 +375,6 @@ const PostsManager = () => {
 
   // 하이라이트 함수 추가
   // shared/lib
-  const highlightText = (text: string, highlight: string) => {
-    if (!text) return null;
-    if (!highlight.trim()) {
-      return <span>{text}</span>;
-    }
-    const regex = new RegExp(`(${highlight})`, "gi");
-    const parts = text.split(regex);
-    return (
-      <span>
-        {parts.map((part, i) =>
-          regex.test(part) ? (
-            <mark key={i}>{part}</mark>
-          ) : (
-            <span key={i}>{part}</span>
-          )
-        )}
-      </span>
-    );
-  };
 
   return (
     <Card className="w-full max-w-6xl mx-auto">
@@ -481,6 +464,7 @@ const PostsManager = () => {
             <PostTable
               posts={posts}
               selectedTag={selectedTag}
+              searchQuery={searchQuery}
               setSelectedTag={setSelectedTag}
               updateURL={updateURL}
               onViewAuthor={(author: User) => {
@@ -658,6 +642,7 @@ const PostsManager = () => {
             <CommentItem
               comments={comments}
               postId={selectedPost.id}
+              searchQuery={searchQuery}
               onAdd={() => {
                 setNewComment((prev: Comment) => ({
                   ...prev,

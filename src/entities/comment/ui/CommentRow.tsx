@@ -1,8 +1,10 @@
+import { highlightText } from "../../../shared/lib/handleHighlightText";
 import { Comment } from "../model/types";
 import { CommentIcons } from "./CommentIcons";
 
 interface CommentRowProps {
   comment: Comment;
+  searchQuery: string;
   onLikeComment: (commentId: number, postId: number) => void;
   onEditComment: (comment: Comment) => void;
   onDeleteComment: (commentId: number, postId: number) => void;
@@ -10,6 +12,7 @@ interface CommentRowProps {
 
 export const CommentRow: React.FC<CommentRowProps> = ({
   comment,
+  searchQuery,
   onLikeComment,
   onEditComment,
   onDeleteComment,
@@ -24,8 +27,7 @@ export const CommentRow: React.FC<CommentRowProps> = ({
           {comment.user?.username || ""}:
         </span>
         <span className="truncate">
-          룰루랄라 have to fix
-          {/* {highlightText(comment.body, searchQuery)} */}
+          {highlightText(comment.body, searchQuery)}
         </span>
       </div>
       <CommentIcons

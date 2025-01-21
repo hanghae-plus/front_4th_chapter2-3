@@ -6,7 +6,8 @@ import { User } from "../../user/types";
 
 interface PostTableProps {
   posts: Post[];
-  selectedTag: string; // have to check
+  selectedTag: string;
+  searchQuery: string;
   setSelectedTag: (tag: string) => void;
   updateURL: () => void;
   onViewAuthor: (author: User) => void; // ✅ User 타입을 받는 onClick
@@ -18,6 +19,7 @@ interface PostTableProps {
 export const PostTable: React.FC<PostTableProps> = ({
   posts,
   selectedTag,
+  searchQuery,
   setSelectedTag,
   updateURL,
   onViewAuthor,
@@ -35,6 +37,7 @@ export const PostTable: React.FC<PostTableProps> = ({
           <PostRow
             key={post.id}
             post={post}
+            searchQuery={searchQuery}
             selectedTag={selectedTag}
             setSelectedTag={setSelectedTag}
             updateURL={updateURL}

@@ -1,3 +1,4 @@
+import { highlightText } from "../../../shared/lib/handleHighlightText";
 import { TableCell, TableRow } from "../../../shared/ui";
 import { User } from "../../user/types";
 import { Post } from "../model/types";
@@ -7,7 +8,8 @@ import { PostReactions } from "./PostReactions";
 
 interface PostRowProps {
   post: Post;
-  selectedTag: string; // have to check
+  selectedTag: string;
+  searchQuery: string;
   setSelectedTag: (tag: string) => void;
   updateURL: () => void;
   onViewAuthor: (author: User) => void;
@@ -19,6 +21,7 @@ interface PostRowProps {
 export const PostRow: React.FC<PostRowProps> = ({
   post,
   selectedTag,
+  searchQuery,
   setSelectedTag,
   updateURL,
   onViewAuthor,
@@ -31,10 +34,7 @@ export const PostRow: React.FC<PostRowProps> = ({
       <TableCell>{post.id}</TableCell>
       <TableCell>
         <div className="space-y-1">
-          {/* have to fix */}
-          <div>{post.title}</div>
-          {/* <div>{highlightText(post.title, searchQuery)}</div> */}
-
+          <div>{highlightText(post.title, searchQuery)}</div>
           <div className="flex flex-wrap gap-1">
             {post.tags?.map((tag) => (
               <span
