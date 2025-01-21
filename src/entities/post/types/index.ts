@@ -19,3 +19,7 @@ export interface PostResponse {
   skip: number
   total: number
 }
+
+export interface TagResponse {
+  tags: string[]
+}
