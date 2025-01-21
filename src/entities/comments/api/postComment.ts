@@ -1,5 +1,4 @@
-import { NewComment } from '../../../pages/initData.ts';
-import { Comment } from '../../../types.ts';
+import { Comment, NewComment } from '../model';
 
 export const postComment = async (newComment: NewComment): Promise<Comment> => {
   const response = await fetch('/api/comments/add', {

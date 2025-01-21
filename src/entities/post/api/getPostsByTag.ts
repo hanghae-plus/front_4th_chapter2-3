@@ -1,4 +1,4 @@
-import { Posts } from '../../../types.ts';
+import { Posts } from '../model';
 
 export const getPostsByTag = async (tag: string): Promise<Posts> => {
   const response = await fetch(`/api/posts/tag/${tag}`, { method: 'GET' });

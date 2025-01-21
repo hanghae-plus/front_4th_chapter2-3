@@ -1,4 +1,4 @@
-import { Posts } from '../../../types.ts';
+import { Posts } from '../model';
 
 export const getPostsByQuery = async (searchQuery: string): Promise<Posts> => {
   const response = await fetch(`/api/posts/search?q=${searchQuery}`);

@@ -1,4 +1,4 @@
-import { Comment } from '../../../types.ts';
+import { Comment } from '../model';
 
 export const patchComment = async (
   commentId: number,

@@ -1,4 +1,4 @@
-import { UserThumbnails } from '../../../types.ts';
+import { UserThumbnails } from '../model';
 
 export const getUsers = async (): Promise<UserThumbnails> => {
   const response = await fetch('/api/users?limit=0&select=username,image', { method: 'GET' });

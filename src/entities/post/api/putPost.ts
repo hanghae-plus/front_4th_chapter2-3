@@ -1,4 +1,4 @@
-import { Post } from '../../../types.ts';
+import { Post } from '../model';
 
 export const putPost = async (selectedPost: Post): Promise<Post> => {
   const response = await fetch(`/api/posts/${selectedPost.id}`, {

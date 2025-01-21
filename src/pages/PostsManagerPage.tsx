@@ -25,21 +25,30 @@ import {
   TableRow,
   Textarea,
 } from '../shared/ui';
-import { Comment, Post, Tag, User, UserThumbnail } from '../types.ts';
-import { initNewComment, initNewPost, NewComment, NewPost } from './initData.ts';
-import { getPosts } from '../entities/post/api/getPosts.ts';
-import { getUsers } from '../entities/user/api/getUsers.ts';
-import { getTags } from '../entities/tag/api/getTags.ts';
-import { getPostsByQuery } from '../entities/post/api/getPostsByQuery.ts';
-import { getPostsByTag } from '../entities/post/api/getPostsByTag.ts';
-import { postPost } from '../entities/post/api/postPost.ts';
-import { putPost } from '../entities/post/api/putPost.ts';
-import { getComments } from '../entities/comments/api/getComments.ts';
-import { postComment } from '../entities/comments/api/postComment.ts';
-import { putComment } from '../entities/comments/api/putComment.ts';
-import { patchComment } from '../entities/comments/api/patchComment.ts';
-import { getUserDetail } from '../entities/user/api/getUserDetail.ts';
-import { deleteComment } from '../entities/comments/api/deleteComment.ts';
+
+import { NewPost, Post } from '../entities/post/model';
+import { Tag } from '../entities/tag/model';
+import { User, UserThumbnail } from '../entities/user/model';
+import { Comment, NewComment } from '../entities/comments/model';
+import { initNewPost } from '../entities/post/config/initData.ts';
+import { initNewComment } from '../entities/comments/config/initData.ts';
+import { getTags } from '../entities/tag/api';
+import {
+  deletePost,
+  getPosts,
+  getPostsByQuery,
+  getPostsByTag,
+  postPost,
+  putPost,
+} from '../entities/post/api';
+import { getUser, getUsers } from '../entities/user/api';
+import {
+  deleteComment,
+  getComments,
+  patchComment,
+  postComment,
+  putComment,
+} from '../entities/comments/api';
 
 const PostsManager = () => {
   const navigate = useNavigate();
@@ -216,7 +225,7 @@ const PostsManager = () => {
   };
 
   // 게시물 삭제
-  const deletePost = async (id: number) => {
+  const removePost = async (id: number) => {
     const post = posts.find((post) => post.id === id);
     if (!post) return;
     try {
@@ -335,7 +344,7 @@ const PostsManager = () => {
   const openUserModal = async (user: UserThumbnail | undefined) => {
     if (!user) return;
     try {
-      const userData = await getUserDetail(user.id);
+      const userData = await getUser(user.id);
       setSelectedUser(userData);
       setShowUserModal(true);
     } catch (error) {
@@ -463,7 +472,7 @@ const PostsManager = () => {
                 >
                   <Edit2 className='w-4 h-4' />
                 </Button>
-                <Button variant='ghost' size='sm' onClick={() => deletePost(post.id)}>
+                <Button variant='ghost' size='sm' onClick={() => removePost(post.id)}>
                   <Trash2 className='w-4 h-4' />
                 </Button>
               </div>

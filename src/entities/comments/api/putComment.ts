@@ -1,4 +1,4 @@
-import { Comment } from '../../../types.ts';
+import { Comment } from '../model';
 
 export const putComment = async (comment: Comment): Promise<Comment> => {
   const response = await fetch(`/api/comments/${comment.id}`, {

@@ -1,6 +1,6 @@
-import { User } from '../../../types.ts';
+import { User } from '../model';
 
-export const getUserDetail = async (userId: number): Promise<User> => {
+export const getUser = async (userId: number): Promise<User> => {
   const response = await fetch(`/api/users/${userId}`);
   if (!response.ok) {
     throw new Error(`사용자 정보 가져오기 오류: ${response.statusText}`);

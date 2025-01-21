@@ -1,5 +1,4 @@
-import { NewPost } from '../../../pages/initData.ts';
-import { Post } from '../../../types.ts';
+import { NewPost, Post } from '../model';
 
 export const postPost = async (newPost: NewPost): Promise<Post> => {
   const response = await fetch('/api/posts/add', {

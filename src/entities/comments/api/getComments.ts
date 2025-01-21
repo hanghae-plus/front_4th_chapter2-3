@@ -1,4 +1,4 @@
-import { Comments } from '../../../types.ts';
+import { Comments } from '../model';
 
 export const getComments = async (postId: number): Promise<Comments> => {
   const response = await fetch(`/api/comments/post/${postId}`, { method: 'GET' });
