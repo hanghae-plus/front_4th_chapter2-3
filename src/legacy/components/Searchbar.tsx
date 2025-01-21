@@ -1,13 +1,14 @@
 import { Search } from 'lucide-react'
 import { Input } from '../../shared/ui'
+import { useSearchParam } from '../hooks/useQueryParams'
 
-interface SearchbarProps {
-  searchQuery: string
-  setSearchQuery: (value: string) => void
-  searchPosts: (value: string) => void
+interface SearchPostInputProps {
+  handleSearch: () => void
 }
 
-export const Searchbar = ({ searchQuery, setSearchQuery, searchPosts }: SearchbarProps) => {
+export const SearchPostInput = ({ handleSearch }: SearchPostInputProps) => {
+  const [searchQuery, setSearchQuery] = useSearchParam()
+
   return (
     <div className="flex-1  ">
       <div className="relative">
@@ -17,7 +18,7 @@ export const Searchbar = ({ searchQuery, setSearchQuery, searchPosts }: Searchba
           className="pl-8"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          onKeyPress={(e) => e.key === 'Enter' && searchPosts(searchQuery)}
+          onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
         />
       </div>
     </div>

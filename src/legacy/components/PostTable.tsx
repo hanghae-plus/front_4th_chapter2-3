@@ -2,11 +2,10 @@ import { ThumbsUp, ThumbsDown, MessageSquare, Edit2, Trash2 } from 'lucide-react
 import { Button, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../shared/ui'
 import { highlightText } from '../utils/highligtText'
 import { Post, User } from '../models/types'
-import { useTagParam } from '../hooks/useQueryParams'
+import { useSearchParam, useTagParam } from '../hooks/useQueryParams'
 
 type PostTableProps = {
   posts: Post[]
-  searchQuery: string
   openUserModal: (user: User | undefined) => void
   openPostDetail: (post: Post) => void
   setSelectedPost: (post: Post) => void
@@ -15,7 +14,6 @@ type PostTableProps = {
 }
 export const PostTable = ({
   posts,
-  searchQuery,
   openUserModal,
   openPostDetail,
   setSelectedPost,
@@ -23,6 +21,8 @@ export const PostTable = ({
   setShowEditDialog,
 }: PostTableProps) => {
   const [selectedTag, setSelectedTag] = useTagParam()
+  const [searchQuery] = useSearchParam()
+
   return (
     <Table>
       <TableHeader>

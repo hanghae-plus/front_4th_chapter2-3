@@ -3,13 +3,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../shared/u
 import { Comment, NewComment, Post } from '../models/types'
 import { highlightText } from '../utils/highligtText'
 import { Comments } from './Comments'
+import { useSearchParam } from '../hooks/useQueryParams'
 
 type PostDetailModalProps = {
   showPostDetailDialog: boolean
   setShowPostDetailDialog: Dispatch<SetStateAction<boolean>>
   selectedPost: Post | null
   comments: Record<number, Comment[]>
-  searchQuery: string
   setNewComment: Dispatch<SetStateAction<NewComment>>
   setShowAddCommentDialog: Dispatch<SetStateAction<boolean>>
   setSelectedComment: Dispatch<SetStateAction<Comment | null>>
@@ -23,7 +23,6 @@ export const PostDetailModal = ({
   setShowPostDetailDialog,
   selectedPost,
   comments,
-  searchQuery,
   setNewComment,
   setShowAddCommentDialog,
   setSelectedComment,
@@ -31,6 +30,7 @@ export const PostDetailModal = ({
   deletedComment,
   likeComment,
 }: PostDetailModalProps) => {
+  const [searchQuery] = useSearchParam()
   return (
     <Dialog open={showPostDetailDialog} onOpenChange={setShowPostDetailDialog}>
       <DialogContent className="max-w-3xl">

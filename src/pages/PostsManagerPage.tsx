@@ -29,8 +29,8 @@ import { UserModal } from '../legacy/components/UserModal'
 import { TagSelect } from '../legacy/components/TagSelect'
 import { SortBySelect } from '../legacy/components/SortBySelect'
 import { SortOrderSelect } from '../legacy/components/SortOrderSelect'
-import { Searchbar } from '../legacy/components/Searchbar'
-import { useTagParam } from '../legacy/hooks/useQueryParams'
+import { SearchPostInput } from '../legacy/components/Searchbar'
+import { useLimitParam, useSkipParam, useTagParam } from '../legacy/hooks/useQueryParams'
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -38,9 +38,8 @@ const PostsManager = () => {
   const queryParams = new URLSearchParams(location.search)
 
   // 상태 관리
-  const [skip, setSkip] = useState(parseInt(queryParams.get('skip') || '0'))
-  const [limit, setLimit] = useState(parseInt(queryParams.get('limit') || '10'))
-  const [searchQuery, setSearchQuery] = useState(queryParams.get('search') || '')
+  const [skip, setSkip] = useSkipParam()
+  const [limit, setLimit] = useLimitParam()
   const [selectedPost, setSelectedPost] = useState<Post | null>(null)
   const [sortBy, setSortBy] = useState(queryParams.get('sortBy') || '')
   const [sortOrder, setSortOrder] = useState(queryParams.get('sortOrder') || 'asc')
@@ -71,7 +70,6 @@ const PostsManager = () => {
     const params = new URLSearchParams()
     if (skip) params.set('skip', skip.toString())
     if (limit) params.set('limit', limit.toString())
-    if (searchQuery) params.set('search', searchQuery)
     if (sortBy) params.set('sortBy', sortBy)
     if (sortOrder) params.set('sortOrder', sortOrder)
     navigate(`?${params.toString()}`)
@@ -198,10 +196,8 @@ const PostsManager = () => {
     const params = new URLSearchParams(location.search)
     setSkip(parseInt(params.get('skip') || '0'))
     setLimit(parseInt(params.get('limit') || '10'))
-    setSearchQuery(params.get('search') || '')
     setSortBy(params.get('sortBy') || '')
     setSortOrder(params.get('sortOrder') || 'asc')
-    setSelectedTag(params.get('tag') || '')
   }, [location.search])
 
   return (
@@ -219,7 +215,7 @@ const PostsManager = () => {
         <div className="flex flex-col gap-4">
           {/* 검색 및 필터 컨트롤 */}
           <div className="flex gap-4">
-            <Searchbar searchQuery={searchQuery} setSearchQuery={setSearchQuery} searchPosts={searchPosts} />
+            <SearchPostInput handleSearch={searchPosts} />
 
             <TagSelect
               selectedTag={selectedTag}
@@ -241,7 +237,6 @@ const PostsManager = () => {
           ) : (
             <PostTable
               posts={posts}
-              searchQuery={searchQuery}
               openUserModal={openUserModal}
               openPostDetail={openPostDetail}
               setSelectedPost={setSelectedPost}
@@ -315,7 +310,6 @@ const PostsManager = () => {
         setShowPostDetailDialog={setShowPostDetailDialog}
         selectedPost={selectedPost}
         comments={comments}
-        searchQuery={searchQuery}
         setNewComment={setNewComment}
         setShowAddCommentDialog={setShowAddCommentDialog}
         setSelectedComment={setSelectedComment}
