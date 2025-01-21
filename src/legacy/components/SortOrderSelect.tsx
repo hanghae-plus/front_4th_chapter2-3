@@ -1,8 +1,8 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../shared/ui'
 
 interface SortOrderSelectProps {
-  value: string
-  onValueChange: (value: string) => void
+  value: 'asc' | 'desc'
+  onValueChange: (value: 'asc' | 'desc') => void
 }
 
 export const SortOrderSelect = ({ value, onValueChange }: SortOrderSelectProps) => {

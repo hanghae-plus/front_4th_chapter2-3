@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Plus } from 'lucide-react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import {
   Button,
   Card,
@@ -30,21 +30,23 @@ import { TagSelect } from '../legacy/components/TagSelect'
 import { SortBySelect } from '../legacy/components/SortBySelect'
 import { SortOrderSelect } from '../legacy/components/SortOrderSelect'
 import { SearchPostInput } from '../legacy/components/Searchbar'
-import { useLimitParam, useSkipParam, useTagParam } from '../legacy/hooks/useQueryParams'
+import {
+  useLimitParam,
+  useSkipParam,
+  useSortByParam,
+  useSortOrderParam,
+  useTagParam,
+} from '../legacy/hooks/useQueryParams'
 
 const PostsManager = () => {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const queryParams = new URLSearchParams(location.search)
-
   // 상태 관리
   const [skip, setSkip] = useSkipParam()
   const [limit, setLimit] = useLimitParam()
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null)
-  const [sortBy, setSortBy] = useState(queryParams.get('sortBy') || '')
-  const [sortOrder, setSortOrder] = useState(queryParams.get('sortOrder') || 'asc')
+  const [sortBy, setSortBy] = useSortByParam()
+  const [sortOrder, setSortOrder] = useSortOrderParam()
   const [selectedTag, setSelectedTag] = useTagParam()
 
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null)
   const [showAddDialog, setShowAddDialog] = useState(false)
   const [showEditDialog, setShowEditDialog] = useState(false)
   const [newPost, setNewPost] = useState<NewPost>({ title: '', body: '', userId: 1 })
@@ -60,20 +62,8 @@ const PostsManager = () => {
 
   // 커스텀 hook으로 분리
   // posts가 전체 posts
-  const { posts, loading, total, fetchPosts, searchPosts, fetchPostsByTag, updatePost, deletedPost, addPost } = usePost(
-    limit,
-    skip,
-  )
-
-  // URL 업데이트 함수
-  const updateURL = () => {
-    const params = new URLSearchParams()
-    if (skip) params.set('skip', skip.toString())
-    if (limit) params.set('limit', limit.toString())
-    if (sortBy) params.set('sortBy', sortBy)
-    if (sortOrder) params.set('sortOrder', sortOrder)
-    navigate(`?${params.toString()}`)
-  }
+  const { posts, loading, total, fetchPosts, searchPosts, fetchPostsByTag, updatePost, deletedPost, addPost } =
+    usePost()
 
   // 태그 가져오기
   const fetchTags = async () => {
@@ -189,16 +179,7 @@ const PostsManager = () => {
     } else {
       fetchPosts()
     }
-    updateURL()
   }, [skip, limit, sortBy, sortOrder, selectedTag])
-
-  useEffect(() => {
-    const params = new URLSearchParams(location.search)
-    setSkip(parseInt(params.get('skip') || '0'))
-    setLimit(parseInt(params.get('limit') || '10'))
-    setSortBy(params.get('sortBy') || '')
-    setSortOrder(params.get('sortOrder') || 'asc')
-  }, [location.search])
 
   return (
     <Card className="w-full max-w-6xl mx-auto">
