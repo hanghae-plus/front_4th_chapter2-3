@@ -30,7 +30,6 @@ import { postMutations, postQueries } from "../../../entities/post/api/queries"
 import { SortOrder } from "../../../entities/post/model/types"
 import { userQueries } from "../../../entities/user/api/queries"
 import { User } from "../../../entities/user/model/types"
-import { queryClient } from "../../../shared/api/query-client"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -45,18 +44,16 @@ const PostsManager = () => {
   const sortOrder = (queryParams.get("sortOrder") || "asc") as SortOrder
   const selectedTag = queryParams.get("tag") || ""
   const userId = queryParams.get("userId")
+  const selectedPostId = queryParams.get("selectedPostId")
+  const mode = queryParams.get("mode")
 
-  const [selectedPost, setSelectedPost] = useState(null)
   const [showAddDialog, setShowAddDialog] = useState(false)
-  const [showEditDialog, setShowEditDialog] = useState(false)
   const [newPost, setNewPost] = useState({ title: "", body: "", userId: 1 })
 
   const [comments, setComments] = useState({})
   const [selectedComment, setSelectedComment] = useState(null)
   const [newComment, setNewComment] = useState({ body: "", postId: null, userId: 1 })
-  const [showAddCommentDialog, setShowAddCommentDialog] = useState(false)
   const [showEditCommentDialog, setShowEditCommentDialog] = useState(false)
-  const [showPostDetailDialog, setShowPostDetailDialog] = useState(false)
 
   // URL 업데이트 함수
   const updateURLParams = (updates: Record<string, string | null>) => {
@@ -115,6 +112,11 @@ const PostsManager = () => {
     }),
   })
 
+  const { data: selectedPost } = useQuery({
+    ...postQueries.detailQuery(selectedPostId || ""),
+    enabled: !!selectedPostId,
+  })
+
   const { data: { users } = { users: [] } } = useQuery({
     ...userQueries.listQuery(),
     select: (data) => ({
@@ -133,11 +135,15 @@ const PostsManager = () => {
 
   const addPostMutation = useMutation({
     ...postMutations.addMutation(),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: postQueries.list() })
-    },
     onError: (error) => {
       console.error("게시물 추가 오류:", error)
+    },
+  })
+
+  const updatePostMutation = useMutation({
+    ...postMutations.updateMutation(),
+    onError: (error) => {
+      console.error("게시물 업데이트 오류:", error)
     },
   })
 
@@ -173,13 +179,18 @@ const PostsManager = () => {
 
   // 게시물 업데이트
   const updatePost = async () => {
+    if (!selectedPost) return
+
     try {
-      const response = await fetch(`/api/posts/${selectedPost.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(selectedPost),
+      await updatePostMutation.mutateAsync({
+        id: selectedPost.id,
+        post: {
+          title: selectedPost.title,
+          body: selectedPost.body,
+          userId: selectedPost.userId,
+        },
       })
-      setShowEditDialog(false)
+      updateURLParams({ selectedPostId: null, mode: null })
     } catch (error) {
       console.error("게시물 업데이트 오류:", error)
     }
@@ -284,9 +295,7 @@ const PostsManager = () => {
 
   // 게시물 상세 보기
   const openPostDetail = (post) => {
-    setSelectedPost(post)
     fetchComments(post.id)
-    setShowPostDetailDialog(true)
   }
 
   // 사용자 모달 열기
@@ -371,16 +380,27 @@ const PostsManager = () => {
             </TableCell>
             <TableCell>
               <div className="flex items-center gap-2">
-                <Button variant="ghost" size="sm" onClick={() => openPostDetail(post)}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() =>
+                    updateURLParams({
+                      selectedPostId: post.id.toString(),
+                      mode: "detail",
+                    })
+                  }
+                >
                   <MessageSquare className="w-4 h-4" />
                 </Button>
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => {
-                    setSelectedPost(post)
-                    setShowEditDialog(true)
-                  }}
+                  onClick={() =>
+                    updateURLParams({
+                      selectedPostId: post.id.toString(),
+                      mode: "edit",
+                    })
+                  }
                 >
                   <Edit2 className="w-4 h-4" />
                 </Button>
@@ -595,41 +615,64 @@ const PostsManager = () => {
       </Dialog>
 
       {/* 게시물 수정 대화상자 */}
-      <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
-        <DialogContent>
+      <Dialog
+        open={!!selectedPostId}
+        onOpenChange={(open) => {
+          if (!open) {
+            updateURLParams({ selectedPostId: null, mode: null })
+          }
+        }}
+      >
+        <DialogContent className={mode === "detail" ? "max-w-3xl" : ""}>
           <DialogHeader>
-            <DialogTitle>게시물 수정</DialogTitle>
+            <DialogTitle>
+              {mode === "edit" ? "게시물 수정" : highlightText(selectedPost?.title ?? "", searchQuery)}
+            </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <Input
-              placeholder="제목"
-              value={selectedPost?.title || ""}
-              onChange={(e) => setSelectedPost({ ...selectedPost, title: e.target.value })}
-            />
-            <Textarea
-              rows={15}
-              placeholder="내용"
-              value={selectedPost?.body || ""}
-              onChange={(e) => setSelectedPost({ ...selectedPost, body: e.target.value })}
-            />
-            <Button onClick={updatePost}>게시물 업데이트</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* 댓글 추가 대화상자 */}
-      <Dialog open={showAddCommentDialog} onOpenChange={setShowAddCommentDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>새 댓글 추가</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <Textarea
-              placeholder="댓글 내용"
-              value={newComment.body}
-              onChange={(e) => setNewComment({ ...newComment, body: e.target.value })}
-            />
-            <Button onClick={addComment}>댓글 추가</Button>
+            {mode === "edit" ? (
+              // 편집 모드 UI
+              <>
+                <Input
+                  placeholder="제목"
+                  value={selectedPost?.title || ""}
+                  onChange={(e) => {
+                    if (!selectedPost) return
+                    updatePostMutation.mutate({
+                      id: selectedPost.id,
+                      post: {
+                        ...selectedPost,
+                        title: e.target.value,
+                      },
+                    })
+                  }}
+                />
+                <Textarea
+                  rows={15}
+                  placeholder="내용"
+                  value={selectedPost?.body || ""}
+                  onChange={(e) => {
+                    if (!selectedPost) return
+                    updatePostMutation.mutate({
+                      id: selectedPost.id,
+                      post: {
+                        ...selectedPost,
+                        body: e.target.value,
+                      },
+                    })
+                  }}
+                />
+                <Button onClick={updatePost} disabled={updatePostMutation.isPending}>
+                  {updatePostMutation.isPending ? "업데이트 중..." : "게시물 업데이트"}
+                </Button>
+              </>
+            ) : (
+              // 상세 보기 모드 UI
+              <>
+                <p>{highlightText(selectedPost?.body ?? "", searchQuery)}</p>
+                {renderComments(selectedPost?.id)}
+              </>
+            )}
           </div>
         </DialogContent>
       </Dialog>
@@ -647,19 +690,6 @@ const PostsManager = () => {
               onChange={(e) => setSelectedComment({ ...selectedComment, body: e.target.value })}
             />
             <Button onClick={updateComment}>댓글 업데이트</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* 게시물 상세 보기 대화상자 */}
-      <Dialog open={showPostDetailDialog} onOpenChange={setShowPostDetailDialog}>
-        <DialogContent className="max-w-3xl">
-          <DialogHeader>
-            <DialogTitle>{highlightText(selectedPost?.title, searchQuery)}</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <p>{highlightText(selectedPost?.body, searchQuery)}</p>
-            {renderComments(selectedPost?.id)}
           </div>
         </DialogContent>
       </Dialog>

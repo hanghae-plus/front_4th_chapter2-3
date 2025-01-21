@@ -29,6 +29,14 @@ export const postQueries = {
       enabled: !!params.search,
     }),
 
+  detail: () => [...postQueries.all(), "detail"] as const,
+  detailQuery: (id: string) =>
+    queryOptions({
+      queryKey: [...postQueries.detail(), id],
+      queryFn: () => postApi.fetchPost(id),
+      enabled: !!id,
+    }),
+
   tag: () => [...postQueries.all(), "tag"] as const,
   tagQuery: () =>
     queryOptions({
@@ -43,7 +51,7 @@ export const postMutations = {
     mutationFn: (post: CreatePostDto) => postApi.addPost(post),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: postQueries.list(),
+        queryKey: postQueries.all(),
       })
     },
   }),
@@ -53,7 +61,7 @@ export const postMutations = {
     mutationFn: ({ id, post }: { id: number; post: Partial<Post> }) => postApi.updatePost(id, post),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: postQueries.list(),
+        queryKey: postQueries.all(),
       })
     },
   }),
@@ -63,7 +71,7 @@ export const postMutations = {
     mutationFn: (id: number) => postApi.deletePost(id),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: postQueries.list(),
+        queryKey: postQueries.all(),
       })
     },
   }),

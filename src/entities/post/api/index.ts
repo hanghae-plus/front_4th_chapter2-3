@@ -15,6 +15,11 @@ export const postApi = {
     return response.data
   },
 
+  fetchPost: async (id: string) => {
+    const response = await httpClient.get<Post>(`/post/${id}`)
+    return response.data
+  },
+
   searchPosts: async (params: FetchPostsBySearchParams) => {
     const searchParams: Record<string, string | number> = {}
 
