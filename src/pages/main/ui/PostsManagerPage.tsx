@@ -29,6 +29,7 @@ import { useQuery } from "@tanstack/react-query"
 import { postQueries } from "../../../entities/post/api/queries"
 import { SortOrder } from "../../../entities/post/model/types"
 import { userQueries } from "../../../entities/user/api/queries"
+import { User } from "../../../entities/user/model/types"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -55,19 +56,31 @@ const PostsManager = () => {
   const [showAddCommentDialog, setShowAddCommentDialog] = useState(false)
   const [showEditCommentDialog, setShowEditCommentDialog] = useState(false)
   const [showPostDetailDialog, setShowPostDetailDialog] = useState(false)
-  const [showUserModal, setShowUserModal] = useState(false)
-  const [selectedUser, setSelectedUser] = useState(null)
 
   // URL 업데이트 함수
+  const updateURLParams = (updates: Record<string, string | null>) => {
+    const newParams = new URLSearchParams(location.search)
+
+    Object.entries(updates).forEach(([key, value]) => {
+      if (value === null) {
+        newParams.delete(key)
+      } else {
+        newParams.set(key, value)
+      }
+    })
+
+    navigate(`?${newParams.toString()}`)
+  }
+
   const updateURL = () => {
-    const params = new URLSearchParams()
-    if (skip) params.set("skip", skip.toString())
-    if (limit) params.set("limit", limit.toString())
-    if (searchQuery) params.set("search", searchQuery)
-    if (sortBy) params.set("sortBy", sortBy)
-    if (sortOrder) params.set("sortOrder", sortOrder)
-    if (selectedTag) params.set("tag", selectedTag)
-    navigate(`?${params.toString()}`)
+    updateURLParams({
+      skip: skip ? skip.toString() : null,
+      limit: limit ? limit.toString() : null,
+      search: searchQuery || null,
+      sortBy: sortBy || null,
+      sortOrder: sortOrder || null,
+      tag: selectedTag || null,
+    })
   }
 
   const { data: { posts, total } = { posts: [], total: 0 }, isLoading: isPostsLoading } = useQuery({
@@ -90,10 +103,12 @@ const PostsManager = () => {
     }),
   })
 
+  const userId = queryParams.get("userId")
+
   // openUserModal() 함수에서 사용
   const { data: userData } = useQuery({
-    ...userQueries.detailQuery(selectedUser?.id || 0),
-    enabled: !!selectedUser?.id,
+    ...userQueries.detailQuery(Number(userId) || 0),
+    enabled: !!userId,
   })
 
   const postsWithUsers = useMemo(() => {
@@ -288,15 +303,10 @@ const PostsManager = () => {
   }
 
   // 사용자 모달 열기
-  const openUserModal = async (user) => {
-    try {
-      const response = await fetch(`/api/users/${user.id}`)
-      const userData = await response.json()
-      setSelectedUser(userData)
-      setShowUserModal(true)
-    } catch (error) {
-      console.error("사용자 정보 가져오기 오류:", error)
-    }
+  const openUserModal = (user: User) => {
+    updateURLParams({
+      userId: user.id.toString(),
+    })
   }
 
   useEffect(() => {
@@ -376,7 +386,14 @@ const PostsManager = () => {
               </div>
             </TableCell>
             <TableCell>
-              <div className="flex items-center space-x-2 cursor-pointer" onClick={() => openUserModal(post.author)}>
+              <div
+                className="flex items-center space-x-2 cursor-pointer"
+                onClick={() => {
+                  if (post.author) {
+                    openUserModal(post.author)
+                  }
+                }}
+              >
                 <img src={post.author?.image} alt={post.author?.username} className="w-8 h-8 rounded-full" />
                 <span>{post.author?.username}</span>
               </div>
@@ -663,33 +680,33 @@ const PostsManager = () => {
       </Dialog>
 
       {/* 사용자 모달 */}
-      <Dialog open={showUserModal} onOpenChange={setShowUserModal}>
+      <Dialog open={!!userId} onOpenChange={(open) => !open && updateURLParams({ userId: null })}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>사용자 정보</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <img src={selectedUser?.image} alt={selectedUser?.username} className="w-24 h-24 rounded-full mx-auto" />
-            <h3 className="text-xl font-semibold text-center">{selectedUser?.username}</h3>
+            <img src={userData?.image} alt={userData?.username} className="w-24 h-24 rounded-full mx-auto" />
+            <h3 className="text-xl font-semibold text-center">{userData?.username}</h3>
             <div className="space-y-2">
               <p>
-                <strong>이름:</strong> {selectedUser?.firstName} {selectedUser?.lastName}
+                <strong>이름:</strong> {userData?.firstName} {userData?.lastName}
               </p>
               <p>
-                <strong>나이:</strong> {selectedUser?.age}
+                <strong>나이:</strong> {userData?.age}
               </p>
               <p>
-                <strong>이메일:</strong> {selectedUser?.email}
+                <strong>이메일:</strong> {userData?.email}
               </p>
               <p>
-                <strong>전화번호:</strong> {selectedUser?.phone}
+                <strong>전화번호:</strong> {userData?.phone}
               </p>
               <p>
-                <strong>주소:</strong> {selectedUser?.address?.address}, {selectedUser?.address?.city},{" "}
-                {selectedUser?.address?.state}
+                <strong>주소:</strong> {userData?.address?.address}, {userData?.address?.city},{" "}
+                {userData?.address?.state}
               </p>
               <p>
-                <strong>직장:</strong> {selectedUser?.company?.name} - {selectedUser?.company?.title}
+                <strong>직장:</strong> {userData?.company?.name} - {userData?.company?.title}
               </p>
             </div>
           </div>
