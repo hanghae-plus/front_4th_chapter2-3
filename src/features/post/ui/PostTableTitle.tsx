@@ -1,7 +1,7 @@
 import { Post } from "@/entities/post/model/types"
 import { PostTags } from "@/entities/post/ui/PostTags"
 import { TableCell } from "@/shared/ui"
-import HighlightText from "@/widgets/ui/HighlightText"
+import HighlightText from "@/shared/ui/HighlightText"
 
 interface PostTableTitleProps {
   post: Post

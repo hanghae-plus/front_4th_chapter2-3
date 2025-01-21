@@ -27,7 +27,7 @@ import { userApi } from "@/entities/user/api/userApi"
 import { commentApi } from "@/entities/comment/api/commentApi"
 import { INITIAL_NEW_POST_STATE } from "@/entities/post/model/constants"
 import { INITIAL_NEW_COMMENT_STATE } from "@/entities/comment/model/constants"
-import HighlightText from "@/widgets/ui/HighlightText"
+import HighlightText from "@/shared/ui/HighlightText"
 import { usePost } from "@/features/model/store"
 import { PostTable } from "@/features/post/ui/PostTable"
 
