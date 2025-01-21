@@ -13,6 +13,7 @@ import { UserModal } from "../components/UserModal"
 import { FilterableSearch } from "../components/FilterableSearch"
 import { getPosts, getPostsByTag } from "../api/post"
 import { getTags } from "../api/tag"
+import { usePosts } from "../hooks/usePosts"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -20,23 +21,27 @@ const PostsManager = () => {
   const queryParams = new URLSearchParams(location.search)
 
   // 상태 관리
-  const [posts, setPosts] = useState([])
-  const [total, setTotal] = useState(0)
+
   const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"))
   const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"))
   const [searchQuery, setSearchQuery] = useState(queryParams.get("search") || "")
   const [selectedPost, setSelectedPost] = useState(null)
   const [sortBy, setSortBy] = useState(queryParams.get("sortBy") || "")
   const [sortOrder, setSortOrder] = useState(queryParams.get("sortOrder") || "asc")
-  const [showAddDialog, setShowAddDialog] = useState(false)
-  const [showEditDialog, setShowEditDialog] = useState(false)
+
   const [newPost, setNewPost] = useState({ title: "", body: "", userId: 1 })
-  const [loading, setLoading] = useState(false)
+
   const [tags, setTags] = useState([])
   const [selectedTag, setSelectedTag] = useState(queryParams.get("tag") || "")
+
+  const { posts, loading } = usePosts(selectedTag, skip, limit, sortBy, sortOrder)
+
   const [comments, setComments] = useState({})
   const [selectedComment, setSelectedComment] = useState(null)
   const [newComment, setNewComment] = useState({ body: "", postId: null, userId: 1 })
+
+  const [showAddDialog, setShowAddDialog] = useState(false)
+  const [showEditDialog, setShowEditDialog] = useState(false)
   const [showAddCommentDialog, setShowAddCommentDialog] = useState(false)
   const [showEditCommentDialog, setShowEditCommentDialog] = useState(false)
   const [showPostDetailDialog, setShowPostDetailDialog] = useState(false)
@@ -55,20 +60,6 @@ const PostsManager = () => {
     navigate(`?${params.toString()}`)
   }
 
-  // 게시물 가져오기
-  const fetchPosts = async () => {
-    setLoading(true)
-    try {
-      const data = await getPosts(limit, skip)
-      setPosts(data)
-      setTotal(data.total)
-    } catch (error) {
-      console.error("게시글 가져오기 오류:", error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
   // 태그 가져오기
   const fetchTags = async () => {
     try {
@@ -79,34 +70,9 @@ const PostsManager = () => {
     }
   }
 
-  // 태그별 게시물 가져오기
-  const fetchPostsByTag = async (tag) => {
-    if (!tag || tag === "all") {
-      fetchPosts()
-      return
-    }
-    setLoading(true)
-    try {
-      const data = await getPostsByTag(tag)
-      setPosts(data)
-      setTotal(data.total)
-    } catch (error) {
-      console.error("태그별 게시물 가져오기 오류:", error)
-    }
-    setLoading(false)
-  }
-
   useEffect(() => {
     fetchTags()
   }, [])
-
-  useEffect(() => {
-    if (selectedTag) {
-      fetchPostsByTag(selectedTag)
-    } else {
-      fetchPosts()
-    }
-  }, [skip, limit, sortBy, sortOrder, selectedTag])
 
   useEffect(() => {
     updateURL()
