@@ -13,29 +13,34 @@ const PostsManager = () => {
   const location = useLocation()
   const queryParams = new URLSearchParams(location.search)
 
-  // 상태 관리
+  // Loading
+  const [loading, setLoading] = useState(false)
+  // Posts
   const [posts, setPosts] = useState([])
+  const [selectedPost, setSelectedPost] = useState(null)
+  const [newPost, setNewPost] = useState({ title: "", body: "", userId: 1 })
   const [total, setTotal] = useState(0)
+  const [tags, setTags] = useState([])
+  // Users
+  const [selectedUser, setSelectedUser] = useState(null)
+  // Query Params
   const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"))
   const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"))
   const [searchQuery, setSearchQuery] = useState(queryParams.get("search") || "")
-  const [selectedPost, setSelectedPost] = useState(null)
   const [sortBy, setSortBy] = useState(queryParams.get("sortBy") || "")
   const [sortOrder, setSortOrder] = useState(queryParams.get("sortOrder") || "asc")
-  const [showAddDialog, setShowAddDialog] = useState(false)
-  const [showEditDialog, setShowEditDialog] = useState(false)
-  const [newPost, setNewPost] = useState({ title: "", body: "", userId: 1 })
-  const [loading, setLoading] = useState(false)
-  const [tags, setTags] = useState([])
   const [selectedTag, setSelectedTag] = useState(queryParams.get("tag") || "")
+  // Comments
   const [comments, setComments] = useState({})
   const [selectedComment, setSelectedComment] = useState(null)
   const [newComment, setNewComment] = useState({ body: "", postId: null, userId: 1 })
+  //Dialogs
+  const [showEditDialog, setShowEditDialog] = useState(false)
+  const [showAddDialog, setShowAddDialog] = useState(false)
   const [showAddCommentDialog, setShowAddCommentDialog] = useState(false)
   const [showEditCommentDialog, setShowEditCommentDialog] = useState(false)
   const [showPostDetailDialog, setShowPostDetailDialog] = useState(false)
   const [showUserModal, setShowUserModal] = useState(false)
-  const [selectedUser, setSelectedUser] = useState(null)
 
   // URL 업데이트 함수
   const updateURL = () => {
