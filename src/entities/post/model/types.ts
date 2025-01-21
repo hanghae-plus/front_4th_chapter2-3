@@ -11,7 +11,7 @@ export interface FetchPostsParams {
   limit?: number
   skip?: number
   sortBy?: string
-  sortOrder?: SortOrder
+  order?: SortOrder
   search?: string
 }
 

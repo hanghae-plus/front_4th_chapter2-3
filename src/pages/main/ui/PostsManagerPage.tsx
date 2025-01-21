@@ -77,7 +77,7 @@ const PostsManager = () => {
       limit,
       skip,
       sortBy,
-      sortOrder: sortOrder as SortOrder,
+      order: sortOrder as SortOrder,
       tag: selectedTag,
     }),
     select: (data) => ({
