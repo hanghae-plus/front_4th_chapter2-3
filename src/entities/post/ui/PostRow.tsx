@@ -1,6 +1,6 @@
 import { highlightText } from "../../../shared/lib/handleHighlightText";
 import { TableCell, TableRow } from "../../../shared/ui";
-import { User } from "../../user/types";
+import { User } from "../../user/model/types";
 import { Post } from "../model/types";
 import { PostAuthor } from "./PostAuthor";
 import { PostIcons } from "./PostIcons";

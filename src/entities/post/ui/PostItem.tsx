@@ -2,7 +2,7 @@ import { PostHeader } from "./PostHeader";
 import { Table, TableBody, TableHeader } from "../../../shared/ui";
 import { Post } from "../model/types";
 import { PostRow } from "./PostRow";
-import { User } from "../../user/types";
+import { User } from "../../user/model/types";
 
 interface PostItemProps {
   posts: Post[];

@@ -1,5 +1,5 @@
 import { TableCell } from "../../../shared/ui";
-import { User } from "../../user/types";
+import { User } from "../../user/model/types";
 import { Post } from "../model/types";
 
 interface PostAuthorProps {
