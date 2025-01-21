@@ -18,6 +18,8 @@ interface Reaction {
   dislikes: number;
 }
 
+export type NewPost = Pick<Post, "title" | "body" | "userId">;
+
 export interface PostResponse extends PaginationMeta {
   posts: Post[];
 }

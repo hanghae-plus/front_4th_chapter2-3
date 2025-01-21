@@ -5,7 +5,7 @@ import { Button, Card, CardContent, CardHeader, CardTitle } from "../shared/ui";
 import PostTable from "../widgets/post/PostTable.tsx";
 import Pagination from "../features/post/pagination.tsx";
 import PostFilter from "../features/post/PostFilter.tsx";
-import { Post, PostResponse } from "../types/post.ts";
+import { NewPost, Post, PostResponse } from "../types/post.ts";
 import { User, UserResponse } from "../types/user.ts";
 import { Tag } from "../types/tag.ts";
 
@@ -29,7 +29,7 @@ const PostsManager = () => {
   const [sortOrder, setSortOrder] = useState(queryParams.get("sortOrder") || "asc");
 
   // 새로 등록할 데이터
-  const [newPost, setNewPost] = useState<Pick<Post, "title" | "body" | "userId">>({ title: "", body: "", userId: 1 });
+  const [newPost, setNewPost] = useState<NewPost>({ title: "", body: "", userId: 1 });
   const [newComment, setNewComment] = useState({ body: "", postId: null, userId: 1 });
 
   // 선택된 데이터
