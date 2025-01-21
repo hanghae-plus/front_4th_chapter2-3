@@ -37,12 +37,13 @@ const PostsManager = () => {
   const queryParams = new URLSearchParams(location.search)
 
   // 상태 관리
-  const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"))
-  const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"))
-  const [searchQuery, setSearchQuery] = useState(queryParams.get("search") || "")
-  const [sortBy, setSortBy] = useState(queryParams.get("sortBy") || "")
-  const [sortOrder, setSortOrder] = useState(queryParams.get("sortOrder") || "asc")
-  const [selectedTag, setSelectedTag] = useState(queryParams.get("tag") || "")
+  const skip = useMemo(() => parseInt(queryParams.get("skip") || "0"), [location.search])
+  const limit = useMemo(() => parseInt(queryParams.get("limit") || "10"), [location.search])
+  const searchQuery = queryParams.get("search") || ""
+  const sortBy = queryParams.get("sortBy") || ""
+  const sortOrder = (queryParams.get("sortOrder") || "asc") as SortOrder
+  const selectedTag = queryParams.get("tag") || ""
+  const userId = queryParams.get("userId")
 
   const [selectedPost, setSelectedPost] = useState(null)
   const [showAddDialog, setShowAddDialog] = useState(false)
@@ -102,8 +103,6 @@ const PostsManager = () => {
       users: data.users,
     }),
   })
-
-  const userId = queryParams.get("userId")
 
   // openUserModal() 함수에서 사용
   const { data: userData } = useQuery({
@@ -320,16 +319,6 @@ const PostsManager = () => {
     updateURL()
   }, [skip, limit, sortBy, sortOrder, selectedTag])
 
-  useEffect(() => {
-    const params = new URLSearchParams(location.search)
-    setSkip(parseInt(params.get("skip") || "0"))
-    setLimit(parseInt(params.get("limit") || "10"))
-    setSearchQuery(params.get("search") || "")
-    setSortBy(params.get("sortBy") || "")
-    setSortOrder(params.get("sortOrder") || "asc")
-    setSelectedTag(params.get("tag") || "")
-  }, [location.search])
-
   // 하이라이트 함수 추가
   const highlightText = (text: string, highlight: string) => {
     if (!text) return null
@@ -527,7 +516,7 @@ const PostsManager = () => {
                 ))}
               </SelectContent>
             </Select>
-            <Select value={sortBy} onValueChange={setSortBy}>
+            <Select value={sortBy} onValueChange={(value) => updateURLParams({ sortBy: value || null })}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="정렬 기준" />
               </SelectTrigger>
@@ -538,7 +527,7 @@ const PostsManager = () => {
                 <SelectItem value="reactions">반응</SelectItem>
               </SelectContent>
             </Select>
-            <Select value={sortOrder} onValueChange={setSortOrder}>
+            <Select value={sortOrder} onValueChange={(value) => updateURLParams({ sortOrder: value })}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="정렬 순서" />
               </SelectTrigger>
@@ -556,7 +545,15 @@ const PostsManager = () => {
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
               <span>표시</span>
-              <Select value={limit.toString()} onValueChange={(value) => setLimit(Number(value))}>
+              <Select
+                value={limit.toString()}
+                onValueChange={(value) =>
+                  updateURLParams({
+                    limit: value,
+                    skip: "0",
+                  })
+                }
+              >
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="10" />
                 </SelectTrigger>
@@ -569,10 +566,24 @@ const PostsManager = () => {
               <span>항목</span>
             </div>
             <div className="flex gap-2">
-              <Button disabled={skip === 0} onClick={() => setSkip(Math.max(0, skip - limit))}>
+              <Button
+                disabled={skip === 0}
+                onClick={() =>
+                  updateURLParams({
+                    skip: Math.max(0, skip - limit).toString(),
+                  })
+                }
+              >
                 이전
               </Button>
-              <Button disabled={skip + limit >= total} onClick={() => setSkip(skip + limit)}>
+              <Button
+                disabled={skip + limit >= total}
+                onClick={() =>
+                  updateURLParams({
+                    skip: (skip + limit).toString(),
+                  })
+                }
+              >
                 다음
               </Button>
             </div>
