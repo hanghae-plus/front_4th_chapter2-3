@@ -1,3 +1,5 @@
+import { PaginationMeta } from "./meta.ts";
+
 export interface User {
   id: number;
   firstName: string;
@@ -68,4 +70,8 @@ interface Crypto {
   coin: string;
   wallet: string;
   network: string;
+}
+
+export interface UserResponse extends PaginationMeta {
+  users: User[];
 }

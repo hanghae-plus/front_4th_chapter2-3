@@ -1,4 +1,5 @@
 import { User } from "./user.ts";
+import { PaginationMeta } from "./meta.ts";
 
 export interface Post {
   id: number;
@@ -9,10 +10,14 @@ export interface Post {
   views: number;
   userId: number;
   comments: Comment[];
-  author: User;
+  author?: User;
 }
 
 interface Reaction {
   likes: number;
   dislikes: number;
+}
+
+export interface PostResponse extends PaginationMeta {
+  posts: Post[];
 }

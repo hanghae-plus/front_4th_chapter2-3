@@ -1,62 +1,50 @@
 import { useEffect, useState } from "react";
 import { Edit2, MessageSquare, Plus, Search, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
-import {
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  Input,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-  Textarea,
-} from "../shared/ui";
+import { Button, Card, CardContent, CardHeader, CardTitle } from "../shared/ui";
 import PostTable from "../widgets/post/PostTable.tsx";
 import Pagination from "../features/post/pagination.tsx";
 import PostFilter from "../features/post/PostFilter.tsx";
+import { Post, PostResponse } from "../types/post.ts";
+import { User, UserResponse } from "../types/user.ts";
+import { Tag } from "../types/tag.ts";
 
 const PostsManager = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
 
-  // 상태 관리
-  const [posts, setPosts] = useState([]);
-  const [total, setTotal] = useState(0);
+  // UI 데이터
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [tags, setTags] = useState<Tag[]>([]);
+  const [comments, setComments] = useState({});
+
+  // 페이지네이션 데이터
+  const [total, setTotal] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(false);
   const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"));
   const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"));
   const [searchQuery, setSearchQuery] = useState(queryParams.get("search") || "");
-  const [selectedPost, setSelectedPost] = useState(null);
   const [sortBy, setSortBy] = useState(queryParams.get("sortBy") || "");
   const [sortOrder, setSortOrder] = useState(queryParams.get("sortOrder") || "asc");
+
+  // 새로 등록할 데이터
+  const [newPost, setNewPost] = useState<Pick<Post, "title" | "body" | "userId">>({ title: "", body: "", userId: 1 });
+  const [newComment, setNewComment] = useState({ body: "", postId: null, userId: 1 });
+
+  // 선택된 데이터
+  const [selectedPost, setSelectedPost] = useState(null);
+  const [selectedTag, setSelectedTag] = useState(queryParams.get("tag") || "");
+  const [selectedComment, setSelectedComment] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
+
+  // dialog trigger
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
-  const [newPost, setNewPost] = useState({ title: "", body: "", userId: 1 });
-  const [loading, setLoading] = useState(false);
-  const [tags, setTags] = useState([]);
-  const [selectedTag, setSelectedTag] = useState(queryParams.get("tag") || "");
-  const [comments, setComments] = useState({});
-  const [selectedComment, setSelectedComment] = useState(null);
-  const [newComment, setNewComment] = useState({ body: "", postId: null, userId: 1 });
   const [showAddCommentDialog, setShowAddCommentDialog] = useState(false);
   const [showEditCommentDialog, setShowEditCommentDialog] = useState(false);
   const [showPostDetailDialog, setShowPostDetailDialog] = useState(false);
   const [showUserModal, setShowUserModal] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null);
 
   // URL 업데이트 함수
   const updateURL = () => {
@@ -71,33 +59,30 @@ const PostsManager = () => {
   };
 
   // 게시물 가져오기
-  const fetchPosts = () => {
+  const fetchPosts = async () => {
     setLoading(true);
-    let postsData;
-    let usersData;
+    let postsData: Post[];
+    let usersData: User[];
 
-    fetch(`/api/posts?limit=${limit}&skip=${skip}`)
-      .then((response) => response.json())
-      .then((data) => {
-        postsData = data;
-        return fetch("/api/users?limit=0&select=username,image");
-      })
-      .then((response) => response.json())
-      .then((users) => {
-        usersData = users.users;
-        const postsWithUsers = postsData.posts.map((post) => ({
-          ...post,
-          author: usersData.find((user) => user.id === post.userId),
-        }));
-        setPosts(postsWithUsers);
-        setTotal(postsData.total);
-      })
-      .catch((error) => {
-        console.error("게시물 가져오기 오류:", error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    try {
+      const postResponse: PostResponse = await (await fetch(`/api/posts?limit=${limit}&skip=${skip}`)).json();
+      const userResponse: UserResponse = await (await fetch("/api/users?limit=0&select=username,image")).json();
+
+      postsData = postResponse.posts;
+      usersData = userResponse.users;
+
+      const postsWithUsers = postsData.map((post) => ({
+        ...post,
+        author: usersData.find((user) => user.id === post.userId),
+      }));
+
+      setPosts(postsWithUsers);
+      setTotal(postResponse.total);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // 태그 가져오기
@@ -319,7 +304,13 @@ const PostsManager = () => {
     if (selectedTag) {
       fetchPostsByTag(selectedTag);
     } else {
-      fetchPosts();
+      console.log("fetch");
+
+      async function fetchPostData() {
+        await fetchPosts();
+      }
+
+      fetchPostData();
     }
     updateURL();
   }, [skip, limit, sortBy, sortOrder, selectedTag]);
