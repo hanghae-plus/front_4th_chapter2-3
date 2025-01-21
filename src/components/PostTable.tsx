@@ -1,14 +1,16 @@
 import { MessageSquare, Table, ThumbsDown, ThumbsUp } from "lucide-react"
 import { Button, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../shared/ui"
 import { highlightText } from "../utils/html"
+import { deletePost as deletePostFunction } from "../api/posts"
+import { getUser } from "../api/user"
+import { getComments } from "../api/comments"
 
 export const PostTable = (posts) => {
   // 댓글 가져오기
   const fetchComments = async (postId) => {
     if (comments[postId]) return // 이미 불러온 댓글이 있으면 다시 불러오지 않음
     try {
-      const response = await fetch(`/api/comments/post/${postId}`)
-      const data = await response.json()
+      const data = await getComments(postId)
       setComments((prev) => ({ ...prev, [postId]: data.comments }))
     } catch (error) {
       console.error("댓글 가져오기 오류:", error)
@@ -23,9 +25,8 @@ export const PostTable = (posts) => {
 
   const openUserModal = async (user) => {
     try {
-      const response = await fetch(`/api/users/${user.id}`)
-      const userData = await response.json()
-      setSelectedUser(userData)
+      const data = getUser(user.id)
+      setSelectedUser(data)
       setShowUserModal(true)
     } catch (error) {
       console.error("사용자 정보 가져오기 오류:", error)
@@ -34,9 +35,7 @@ export const PostTable = (posts) => {
 
   const deletePost = async (id) => {
     try {
-      await fetch(`/api/posts/${id}`, {
-        method: "DELETE",
-      })
+      await deletePostFunction(id)
       setPosts(posts.filter((post) => post.id !== id))
     } catch (error) {
       console.error("게시물 삭제 오류:", error)

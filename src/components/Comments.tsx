@@ -1,6 +1,7 @@
 import { ThumbsUp } from "lucide-react"
 import { Button } from "../shared/ui"
 import { highlightText } from "../utils/html"
+import { deleteComment as deleteCommentFunction, likeComment as likeCommentFunction } from "../api/comments"
 
 interface Props {
   postId?: string
@@ -9,9 +10,7 @@ interface Props {
 export const Comments = ({ postId }: Props) => {
   const deleteComment = async (id, postId) => {
     try {
-      await fetch(`/api/comments/${id}`, {
-        method: "DELETE",
-      })
+      await deleteCommentFunction(id)
       setComments((prev) => ({
         ...prev,
         [postId]: prev[postId].filter((comment) => comment.id !== id),
@@ -23,12 +22,7 @@ export const Comments = ({ postId }: Props) => {
 
   const likeComment = async (id, postId) => {
     try {
-      const response = await fetch(`/api/comments/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ likes: comments[postId].find((c) => c.id === id).likes + 1 }),
-      })
-      const data = await response.json()
+      const data = await likeCommentFunction(id, comments[postId].find((c) => c.id === id).likes)
       setComments((prev) => ({
         ...prev,
         [postId]: prev[postId].map((comment) =>

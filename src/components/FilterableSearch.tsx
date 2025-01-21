@@ -1,3 +1,5 @@
+import { getPostsBySearchQuery } from "../api/posts"
+
 export const FilterableSearch = () => {
   const searchPosts = async () => {
     if (!searchQuery) {
@@ -6,8 +8,7 @@ export const FilterableSearch = () => {
     }
     setLoading(true)
     try {
-      const response = await fetch(`/api/posts/search?q=${searchQuery}`)
-      const data = await response.json()
+      const data = await getPostsBySearchQuery(searchQuery)
       setPosts(data.posts)
       setTotal(data.total)
     } catch (error) {
