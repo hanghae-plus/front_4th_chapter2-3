@@ -1,6 +1,10 @@
-export const usePostEditDialog = (
-  selectedPost: any,
-  posts: any[],
+// TODO: react-query 적용 예정
+
+import type { Post } from "../types/post"
+
+export const useQueryEditPost = (
+  selectedPost: Post,
+  posts: Post[],
   onShowEditDialog: (open: boolean) => void,
   onChangeEditPosts: (posts: any[]) => void,
 ) => {

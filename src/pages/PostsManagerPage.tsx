@@ -2,9 +2,8 @@ import { Edit2, MessageSquare, Plus, Search, ThumbsDown, ThumbsUp, Trash2 } from
 import { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 
-import UserProfile from "../entities/user/ui/UserProfile"
 import { Textarea, Button, Card, Dialog, Input, Select, Table } from "../shared/ui"
-import { PostEditDialog } from "../widgets/post-dialog/ui/PostDialog"
+import { PostEditDialog } from "../widgets/post-edit-dialog/ui/PostEditDialog"
 import { UserDialog } from "../widgets/user-dialog/ui/UserDialog"
 
 const PostsManager = () => {
