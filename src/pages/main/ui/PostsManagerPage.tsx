@@ -100,6 +100,14 @@ const PostsManager = () => {
     enabled: !!selectedTag,
   })
 
+  const { data: searchResults, isLoading: isSearchLoading } = useQuery({
+    ...postQueries.searchQuery(searchQuery),
+    select: (data) => ({
+      posts: data.data.posts,
+      total: data.data.total,
+    }),
+  })
+
   const { data: { users } = { users: [] } } = useQuery({
     ...userQueries.listQuery(),
     select: (data) => ({
@@ -116,10 +124,11 @@ const PostsManager = () => {
     ...postQueries.tagQuery(),
   })
 
-  const posts = selectedTag ? listByTag?.posts : list?.posts
-  const total = selectedTag ? listByTag?.total : list?.total
+  const posts = searchQuery ? searchResults?.posts : selectedTag ? listByTag?.posts : list?.posts
 
-  const isPostsLoading = isListLoading || isTagLoading
+  const total = searchQuery ? searchResults?.total : selectedTag ? listByTag?.total : list?.total
+
+  const isPostsLoading = isListLoading || isTagLoading || isSearchLoading
 
   const postsWithUsers = useMemo(() => {
     if (!posts || !users) return []
@@ -131,17 +140,11 @@ const PostsManager = () => {
   }, [posts, users])
 
   // 게시물 검색
-  const searchPosts = async () => {
-    if (!searchQuery) {
-      fetchPosts()
-      return
-    }
-    try {
-      const response = await fetch(`/api/posts/search?q=${searchQuery}`)
-      const data = await response.json()
-    } catch (error) {
-      console.error("게시물 검색 오류:", error)
-    }
+  const searchPosts = (value: string) => {
+    updateURLParams({
+      search: value || null,
+      skip: "0",
+    })
   }
 
   // 게시물 추가
@@ -454,8 +457,7 @@ const PostsManager = () => {
                   placeholder="게시물 검색..."
                   className="pl-8"
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyPress={(e) => e.key === "Enter" && searchPosts()}
+                  onChange={(e) => searchPosts(e.target.value)}
                 />
               </div>
             </div>
