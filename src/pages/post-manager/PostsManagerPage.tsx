@@ -34,6 +34,7 @@ import { commentApi } from "@/entities/comment/api/commentApi"
 import { INITIAL_NEW_POST_STATE } from "@/entities/post/model/constants"
 import { INITIAL_NEW_COMMENT_STATE } from "@/entities/comment/model/constants"
 import HighlightText from "@/widgets/ui/HighlightText"
+import { usePost } from "@/features/model/store"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -41,7 +42,6 @@ const PostsManager = () => {
   const queryParams = new URLSearchParams(location.search)
 
   // 상태 관리
-  const [posts, setPosts] = useState<Post[] | []>([])
   const [total, setTotal] = useState(0)
   const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"))
   const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"))
@@ -63,6 +63,10 @@ const PostsManager = () => {
   const [showPostDetailDialog, setShowPostDetailDialog] = useState(false)
   const [showUserModal, setShowUserModal] = useState(false)
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
+
+  // 전역 상태 관리
+  const posts = usePost((state) => state.posts);
+  const setPosts = usePost((state) => state.setPosts);
 
   // URL 업데이트 함수
   const updateURL = () => {
