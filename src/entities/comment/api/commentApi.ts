@@ -1,9 +1,11 @@
-export const getCommentsApi = async (postId) => {
+import { InfComment, InfComments } from "../type/types.ts"
+
+export const getCommentsApi = async (postId : number) : Promise<InfComments>  => {
   const response = await fetch(`/api/comments/post/${postId}`)
   return response.json();
 }
 
-export const createCommentApi = async (newComment) => {
+export const createCommentApi = async (newComment : InfComment) : Promise<InfComment> => {
   const response = await fetch("/api/comments/add", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -12,7 +14,7 @@ export const createCommentApi = async (newComment) => {
   return response.json()
 }
 
-export const updateCommentApi = async (selectedComment) : Promise<any> => {
+export const updateCommentApi = async (selectedComment : InfComment) : Promise<InfComment> => {
   const response = await fetch(`/api/comments/${selectedComment.id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
@@ -21,13 +23,13 @@ export const updateCommentApi = async (selectedComment) : Promise<any> => {
   return response.json()
 }
 
-export const deleteCommentApi = async (id) => {
-  return await fetch(`/api/comments/${id}`, {
+export const deleteCommentApi = async (id : number) : Promise<void> => {
+  await fetch(`/api/comments/${id}`, {
     method: "DELETE",
   })
 }
 
-export const likeCommentApi = async (id, comments, postId) => {
+export const likeCommentApi = async (id : number, comments: InfComments, postId : number) : Promise<InfComment> => {
   const response = await fetch(`/api/comments/${id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },

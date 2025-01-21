@@ -1,9 +1,17 @@
 import { useAtom, useAtomValue, useSetAtom } from "jotai"
-import { newPostsAtom, postsAtom, selectedPostsAtom } from "../model/store.ts"
-import { showAddDialogAtom, showEditDialogAtom, showPostDetailDialogAtom } from "../../../entities/modal/model/store.ts"
+import { newPostsAtom, postsAtom, selectedPostsAtom, selectedUserAtom } from "../model/store.ts"
+import {
+  showAddDialogAtom,
+  showEditDialogAtom,
+  showPostDetailDialogAtom,
+  showUserModalAtom,
+} from "../../../entities/modal/model/store.ts"
 import { addingPostApi, deletingPostApi, updatingPostApi } from "../../../entities/posts/api/fetchPosts.ts"
 import { searchQueryAtom } from "../../search/model/store.ts"
 import { selectedTagAtom } from "../../tag/model/store.ts"
+import useComments from "../../comments/model/action.ts"
+import { InfPost, InfUser } from "../../../entities/posts/types/types.ts"
+import { fetchGetUser } from "../../../entities/posts/api/fetchUsers.ts"
 
 export default function usePostData() {
   const [posts, setPosts] = useAtom(postsAtom);
@@ -14,10 +22,14 @@ export default function usePostData() {
   const searchQuery = useAtomValue(searchQueryAtom);
   const [selectedTag, setSelectedTag] = useAtom(selectedTagAtom);
   const setShowPostDetailDialog = useSetAtom(showPostDetailDialogAtom);
+  const setSelectedUser = useSetAtom(selectedUserAtom);
+  const setShowUserModal = useSetAtom(showUserModalAtom);
+  const {fetchComments} = useComments();
   
   const addPost = async () => {
     try {
       const data = await addingPostApi(newPost)
+      console.log("data", data)
       setPosts([data, ...posts])
       setShowAddDialog(false)
       setNewPost({ title: "", body: "", userId: 1 })
@@ -36,7 +48,7 @@ export default function usePostData() {
     }
   }
   
-  const deletePost = async (id) => {
+  const deletePost = async (id : number) => {
     try {
       await fetch(`/api/posts/${id}`, {
         method: "DELETE",
@@ -49,10 +61,21 @@ export default function usePostData() {
   }
   
   // 게시물 상세 보기
-  const openPostDetail = (post) => {
+  const openPostDetail = async (post : InfPost) => {
     setSelectedPost(post)
-    fetchComments(post.id)
+    await fetchComments(post.id)
     setShowPostDetailDialog(true)
+  }
+  
+  // 사용자 모달 열기
+  const openUserModal = async (user : InfUser)  => {
+    try {
+      const userData = await fetchGetUser(user);
+      setSelectedUser(userData)
+      setShowUserModal(true)
+    } catch (error) {
+      console.error("사용자 정보 가져오기 오류:", error)
+    }
   }
   
   return {
@@ -66,5 +89,6 @@ export default function usePostData() {
     setSelectedPost,
     setShowEditDialog,
     openPostDetail,
+    openUserModal,
   }
 }

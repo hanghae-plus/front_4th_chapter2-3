@@ -7,7 +7,7 @@ export default function SearchInput(props : SearchInputProps) {
   const {
     searchQuery,
     setSearchQuery,
-    searchPosts
+    // searchPosts
   } = useSearchActions();
   return (
     <div className="flex-1">
@@ -18,7 +18,7 @@ export default function SearchInput(props : SearchInputProps) {
           className="pl-8"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          onKeyPress={(e) => e.key === "Enter" && searchPosts()}
+          // onKeyPress={(e) => e.key === "Enter" && searchPosts()}
         />
       </div>
     </div>

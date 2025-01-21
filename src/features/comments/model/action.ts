@@ -72,6 +72,7 @@ export default function useComments() {
   const likeComment = async (id, postId) => {
     try {
       const data = await likeCommentApi(id, comments, postId);
+      console.log("updateData", data)
       setComments((prev) => ({
         ...prev,
         [postId]: prev[postId].map((comment) => (comment.id === data.id ? {...data, likes: comment.likes + 1} : comment)),

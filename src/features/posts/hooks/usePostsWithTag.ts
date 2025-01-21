@@ -4,10 +4,6 @@ import { fetchPostsWithTag } from "../../../entities/posts/api/fetchPostsWithTag
 import { fetchUsers } from "../../../entities/posts/api/fetchUsers.ts"
 
 export const usePostsWithTag = async (tag: any) => {
-  // return useQuery({
-  //   queryKey: ['posts', tag],
-  //   queryFn: () => getPostsWithUsers(tag),
-  // });
   
   const postsUrl = `/api/posts/tag/${tag}`;
   const [postsResponse, usersResponse] = await Promise.all([

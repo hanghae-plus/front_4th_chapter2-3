@@ -17,6 +17,7 @@ export default function RenderPostTable() {
     setSelectedPost,
     setShowEditDialog,
     openPostDetail,
+    openUserModal,
   } = usePostData();
   const {updateURL} = updateSearchParams();
   const isLoading = useAtomValue(isLoadingAtom);
