@@ -8,7 +8,7 @@ import { PostsTable } from "./PostsTable"
 import { PostsSearchFilter } from "./PostsSearchFilter"
 import { PaginationControls } from "@features/common/pagination/ui/PaginationControls"
 
-interface PostsManagerWidgetProps {
+interface PostsManageProps {
   loading: boolean
   posts: Post[]
   total: number
@@ -58,7 +58,7 @@ export const PostsManagerWidget = ({
   onLimitChange,
   onPrevPage,
   onNextPage,
-}: PostsManagerWidgetProps) => {
+}: PostsManageProps) => {
   return (
     <Card>
       <Card.Header>

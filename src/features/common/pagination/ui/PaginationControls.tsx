@@ -1,5 +1,4 @@
-import { Select } from "@shared/ui/Select"
-import { Button } from "@shared/ui/Button"
+import { Select, Button } from "@shared/ui"
 
 interface PaginationControlsProps {
   skip: number

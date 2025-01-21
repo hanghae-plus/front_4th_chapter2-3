@@ -1,5 +1,5 @@
 
-import { Button } from "@shared/ui/Button"
+import { Button } from "@shared/ui"
 import { Comment } from "@entities/comment/model"
 import { ThumbsUp, Edit2, Trash2 } from "lucide-react"
 

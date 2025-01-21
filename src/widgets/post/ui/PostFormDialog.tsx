@@ -1,7 +1,7 @@
 import { Dialog } from "@shared/ui"
 import { Post } from "@entities/post/model"
 import { DialogActions } from "@features/common/dialog/ui/DialogActions"
-import { PostFormFields } from "./PostFormFields"
+import { PostFormFields } from "@features/post/post-form/ui/PostFormFields"
 
 interface PostFormDialogProps {
   mode: "add" | "edit"

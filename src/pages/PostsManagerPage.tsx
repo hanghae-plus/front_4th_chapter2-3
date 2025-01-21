@@ -11,14 +11,10 @@ import { postsApi } from "@entities/post/api"
 import { usersApi } from "@entities/user/api"
 import { commentsApi } from "@entities/comment/api"
 
-// features
-import { PostFormDialog } from "@features/post/post-form/ui/PostFormDialog"
-import { CommentFormDialog } from "@features/comment/comment-form/ui/CommentFormDialog"
-import { UserInfoDialog } from "@features/user/user-info/ui/UserInfoDialog"
-
 // widgets
-import { PostsManagerWidget } from "@widgets/post/ui/PostsManagerWidget"
-import { PostDetailDialogWidget } from "@widgets/post/ui/PostDetailDialogWidget"
+import { PostsManagerWidget, PostDetailDialog, PostFormDialog } from "@widgets/post/ui"
+import { CommentFormDialog } from "@widgets/comment/ui"
+import { UserInfoDialog } from "@widgets/user/ui"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -309,7 +305,7 @@ const PostsManager = () => {
         onNextPage={() => setSkip(skip + limit)}
       />
 
-      <PostDetailDialogWidget
+      <PostDetailDialog
         open={showPostDetailDialog}
         onOpenChange={setShowPostDetailDialog}
         post={selectedPost}
