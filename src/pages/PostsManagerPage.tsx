@@ -8,14 +8,15 @@ import PostFilter from "../features/post/PostFilter.tsx";
 import { NewPost, Post, PostResponse } from "../types/post.ts";
 import { User, UserResponse } from "../types/user.ts";
 import { Tag } from "../types/tag.ts";
+import { usePostStore } from "@features/post/model/usePostStore.ts";
 
 const PostsManager = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
 
+  const { posts, setPosts } = usePostStore();
   // UI 데이터
-  const [posts, setPosts] = useState<Post[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
   const [comments, setComments] = useState({});
 

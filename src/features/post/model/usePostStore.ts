@@ -1,4 +1,4 @@
-import { Post } from "../../../types/post.ts";
+import { Post } from "@/types/post.ts";
 import { create } from "zustand/react";
 
 interface PostStore {
