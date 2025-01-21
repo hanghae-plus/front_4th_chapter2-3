@@ -24,6 +24,14 @@ export const useParams = () => {
     navigate(`?${params.toString()}`)
   }, [limit, skip, searchQuery, sortBy, sortOrder, selectedTag, navigate])
 
+  const changeSkip = (skip: 0 | 1) => {
+    setSkip(skip)
+  }
+
+  const changeLimit = (limit: number) => {
+    setLimit(limit)
+  }
+
   useEffect(() => {
     const params = new URLSearchParams(location.search)
     setSkip(parseInt(params.get("skip") || "0"))
@@ -46,5 +54,7 @@ export const useParams = () => {
     sortOrder,
     selectedTag,
     updateURL,
+    changeSkip,
+    changeLimit,
   }
 }

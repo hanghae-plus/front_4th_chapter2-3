@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react"
 import { Plus } from "lucide-react"
-import { useLocation, useNavigate } from "react-router-dom"
 import { Button, Card, CardContent, CardHeader, CardTitle } from "../shared/ui/index"
 import { PostTable } from "../components/PostTable"
 import { Pagination } from "../components/Pagination"
@@ -16,10 +15,8 @@ import { usePosts } from "../hooks/usePosts"
 import { useParams } from "../hooks/useParams"
 
 const PostsManager = () => {
-  const location = useLocation()
-
   // 상태 관리
-  const { limit, selectedTag, skip, sortBy, sortOrder } = useParams()
+  const { limit, selectedTag, skip, sortBy, sortOrder, changeLimit, changeSkip } = useParams()
 
   const [selectedPost, setSelectedPost] = useState(null)
 
@@ -27,7 +24,7 @@ const PostsManager = () => {
 
   const [tags, setTags] = useState([])
 
-  const { posts, loading } = usePosts(selectedTag, skip, limit, sortBy, sortOrder)
+  const { posts, loading, total } = usePosts(selectedTag, skip, limit, sortBy, sortOrder)
 
   const [comments, setComments] = useState({})
   const [selectedComment, setSelectedComment] = useState(null)
@@ -73,7 +70,7 @@ const PostsManager = () => {
         <div className="flex flex-col gap-4">
           <FilterableSearch />
           {loading ? <div className="flex justify-center p-4">로딩 중...</div> : <PostTable posts={posts} />}
-          <Pagination />
+          <Pagination skip={skip} total={total} limit={limit} onChangeLimit={changeLimit} onChangeSkip={changeSkip} />
         </div>
       </CardContent>
       <PostAddDialog />
@@ -87,3 +84,8 @@ const PostsManager = () => {
 }
 
 export default PostsManager
+
+// todo: hooks로 분리할 수 있는 거 다 분리
+// todo: 위에서 분리한 거 전역 상태로 끌어올리기 - ui 상태는 아마 제외.
+// todo: tanstack + typescript 제대로 적용
+// todo: fsd식 파일 분리
