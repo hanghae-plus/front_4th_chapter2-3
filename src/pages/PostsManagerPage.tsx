@@ -12,6 +12,8 @@ import { postsApi } from "@entities/post/api"
 import { usersApi } from "@entities/user/api"
 import { commentsApi } from "@entities/comment/api"
 
+import { PostTag, PostComment } from "@entities/post/model"
+
 const PostsManager = () => {
   const navigate = useNavigate()
   const location = useLocation()
@@ -30,11 +32,11 @@ const PostsManager = () => {
   const [showEditDialog, setShowEditDialog] = useState(false)
   const [newPost, setNewPost] = useState<Omit<Post, "id">>({ title: "", body: "", userId: 1 })
   const [loading, setLoading] = useState(false)
-  const [tags, setTags] = useState<{ url: string; slug: string }[]>([])
+  const [tags, setTags] = useState<PostTag[]>([])
   const [selectedTag, setSelectedTag] = useState(queryParams.get("tag") || "")
   const [comments, setComments] = useState<Record<number, Comment[]>>({})
   const [selectedComment, setSelectedComment] = useState<Comment | null>(null)
-  const [newComment, setNewComment] = useState<{ body: string; postId: number | null; userId: number }>({
+  const [newComment, setNewComment] = useState<PostComment>({
     body: "",
     postId: null,
     userId: 1,
