@@ -1,11 +1,12 @@
-import { fetchPosts } from "../../../entities/posts/api/fetchPosts.ts"
 import { fetchUsers } from "../../../entities/posts/api/fetchUsers.ts"
+import { fetchPostsWithTag } from "../../../entities/posts/api/fetchPostsWithTag.ts"
 
-export const getPostsWithUsers = async ({ limit, skip }: any) => {
+export const getPostsWithUsers = async (tag: any) => {
   const [postsData, usersData] = await Promise.all([
-    fetchPosts({ limit, skip }),
+    fetchPostsWithTag(tag),
     fetchUsers()
   ]);
+  
   return {
     posts: postsData.posts.map((post) => ({
       ...post,

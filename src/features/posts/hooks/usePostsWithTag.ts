@@ -1,15 +1,17 @@
 import { useQuery } from "@tanstack/react-query"
 import { getPostsWithUsers } from "../api/getPostsWithUsers.ts"
-import { fetchPosts } from "../../../entities/posts/api/fetchPosts.ts"
+import { fetchPostsWithTag } from "../../../entities/posts/api/fetchPostsWithTag.ts"
 import { fetchUsers } from "../../../entities/posts/api/fetchUsers.ts"
 
-export const usePostsWithUsers = async (limit: number, skip: number) => {
+export const usePostsWithTag = async (tag: any) => {
   // return useQuery({
-  //   queryKey: ['posts', { limit, skip }],
-  //   queryFn: () => getPostsWithUsers({ limit, skip }),
+  //   queryKey: ['posts', tag],
+  //   queryFn: () => getPostsWithUsers(tag),
   // });
+  
+  const postsUrl = `/api/posts/tag/${tag}`;
   const [postsResponse, usersResponse] = await Promise.all([
-    fetchPosts({limit, skip}),
+    fetchPostsWithTag(tag),
     fetchUsers()
   ]);
   

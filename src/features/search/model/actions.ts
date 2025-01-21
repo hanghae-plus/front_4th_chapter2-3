@@ -2,7 +2,7 @@ import { postsAtom, totalAtom } from "../../posts/model/store.ts"
 import { isLoadingAtom } from "../../../shared/model/store.ts"
 import { useAtom, useSetAtom } from "jotai"
 import { searchQueryAtom } from "./store.ts"
-import usePosts from "../../posts/actions.ts"
+import usePosts from "../../posts/model/actions.ts"
 import { useURLParams } from "../../../shared/hooks/useURLParams.ts"
 
 export default function useSearchActions() {
@@ -15,7 +15,7 @@ export default function useSearchActions() {
   const { params, updateParams } = useURLParams();
   const searchPosts = async () => {
     if (!searchQuery) {
-      fetchPosts();
+      await fetchPosts();
       return;
     }
     setLoading(true)

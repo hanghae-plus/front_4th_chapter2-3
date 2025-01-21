@@ -1,3 +1,3 @@
 import { atom } from "jotai"
-
-export const searchQueryAtom = atom<string | undefined>("");
+const queryParams = new URLSearchParams(location.search)
+export const searchQueryAtom = atom<string | undefined>(queryParams.get("search") || "");
