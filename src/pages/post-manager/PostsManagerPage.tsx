@@ -31,6 +31,8 @@ import { User } from "../../entities/user/model/types"
 import { postApi } from "../../entities/post/api/postApi"
 import { userApi } from "@/entities/user/api/userApi"
 import { commentApi } from "@/entities/comment/api/commentApi"
+import { INITIAL_NEW_POST_STATE } from "@/entities/post/model/constants"
+import { INITIAL_NEW_COMMENT_STATE } from "@/entities/comment/model/constants"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -48,13 +50,13 @@ const PostsManager = () => {
   const [sortOrder, setSortOrder] = useState(queryParams.get("sortOrder") || "asc")
   const [showAddDialog, setShowAddDialog] = useState(false)
   const [showEditDialog, setShowEditDialog] = useState(false)
-  const [newPost, setNewPost] = useState<CreatePost>({ title: "", body: "", userId: 1 })
+  const [newPost, setNewPost] = useState<CreatePost>(INITIAL_NEW_POST_STATE)
   const [loading, setLoading] = useState(false)
   const [tags, setTags] = useState<Tag[]>([])
   const [selectedTag, setSelectedTag] = useState(queryParams.get("tag") || "")
   const [comments, setComments] = useState<Record<number, Comment[] | []>>({})
   const [selectedComment, setSelectedComment] = useState<Comment>()
-  const [newComment, setNewComment] = useState<NewComment>({ body: "", postId: null, userId: 1 })
+  const [newComment, setNewComment] = useState<NewComment>(INITIAL_NEW_COMMENT_STATE)
   const [showAddCommentDialog, setShowAddCommentDialog] = useState(false)
   const [showEditCommentDialog, setShowEditCommentDialog] = useState(false)
   const [showPostDetailDialog, setShowPostDetailDialog] = useState(false)
@@ -166,7 +168,7 @@ const PostsManager = () => {
 
       setPosts([data, ...posts])
       setShowAddDialog(false)
-      setNewPost({ title: "", body: "", userId: 1 })
+      setNewPost(INITIAL_NEW_POST_STATE)
     } catch (error) {
       console.error("게시물 추가 오류:", error)
     }
@@ -222,7 +224,7 @@ const PostsManager = () => {
         [data.postId]: [...(prev[data.postId] || []), data],
       }))
       setShowAddCommentDialog(false)
-      setNewComment({ body: "", postId: null, userId: 1 })
+      setNewComment(INITIAL_NEW_COMMENT_STATE)
     } catch (error) {
       console.error("댓글 추가 오류:", error)
     }
