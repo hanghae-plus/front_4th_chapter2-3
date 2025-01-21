@@ -8,8 +8,8 @@ export const postApi = {
 
   fetchPostsByTag: async (params: FetchPostsByTagParams) => {
     const response = await httpClient.get<PostsResponse>(`/posts/tag/${params.tag}`, {
-      limit: params.limit,
-      skip: params.skip,
+      limit: params.limit || 10,
+      skip: params.skip || 0,
     })
     return response.data
   },

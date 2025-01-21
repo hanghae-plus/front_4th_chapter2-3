@@ -12,8 +12,11 @@ export interface FetchPostsParams {
   skip?: number
   sortBy?: string
   sortOrder?: SortOrder
-  tag?: string
   search?: string
+}
+
+export interface FetchPostsByTagParams extends FetchPostsParams {
+  tag: string
 }
 
 export interface Reactions {
@@ -35,10 +38,4 @@ export interface Post {
   reactions: Reactions
   views: number
   userId: number
-}
-
-export interface FetchPostsByTagParams {
-  tag: string
-  limit: number
-  skip: number
 }
