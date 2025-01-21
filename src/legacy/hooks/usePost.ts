@@ -1,14 +1,7 @@
 import { useState } from 'react'
-import { NewPost, Post } from '../models/types'
+import { Post } from '../models/types'
 import { PostListRes, UserListRes } from '../models/dto.types'
-import {
-  deletePost,
-  getPostList,
-  getPostListBySearch,
-  getPostListByTag,
-  postPost,
-  putPost,
-} from '../service/post.service'
+import { getPostList, getPostListBySearch, getPostListByTag } from '../service/post.service'
 import { getUserList } from '../service/user.service'
 import { useLimitParam, useSearchParam, useSkipParam } from './useQueryParams'
 
@@ -88,37 +81,5 @@ export const usePost = () => {
     setLoading(false)
   }
 
-  // 게시물 업데이트
-  const updatePost = async (post: Post | null, onSuccess: () => void) => {
-    try {
-      if (!post) return
-      const data: Post = await putPost(post)
-      setPosts(posts.map((p) => (p.id === data.id ? data : p)))
-      onSuccess()
-    } catch (error) {
-      console.error('게시물 업데이트 오류:', error)
-    }
-  }
-
-  // 게시물 삭제
-  const deletedPost = async (id: number) => {
-    try {
-      await deletePost(id)
-      setPosts(posts.filter((post) => post.id !== id))
-    } catch (error) {
-      console.error('게시물 삭제 오류:', error)
-    }
-  }
-
-  const addPost = async (post: NewPost, onSuccess: () => void) => {
-    try {
-      const data: Post = await postPost(post)
-      setPosts([data, ...posts])
-      onSuccess()
-    } catch (error) {
-      console.error('게시물 추가 오류:', error)
-    }
-  }
-
-  return { posts, loading, total, fetchPosts, searchPosts, fetchPostsByTag, updatePost, deletedPost, addPost }
+  return { posts, loading, total, fetchPosts, searchPosts, fetchPostsByTag }
 }

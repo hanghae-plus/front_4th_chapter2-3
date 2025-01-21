@@ -1,15 +1,26 @@
 import { DialogHeader, Input, Textarea, Button, Dialog, DialogContent, DialogTitle } from '../../shared/ui'
 import { Dispatch, SetStateAction } from 'react'
 import { NewPost } from '../models/types'
+import { useCreatePost } from '../queries/post.query'
 
 type AddPostModalProps = {
   showAddDialog: boolean
   setShowAddDialog: Dispatch<SetStateAction<boolean>>
   newPost: NewPost
   setNewPost: Dispatch<SetStateAction<NewPost>>
-  addPost: (post: NewPost, callback: () => void) => void
 }
-export const AddPostModal = ({ showAddDialog, setShowAddDialog, newPost, setNewPost, addPost }: AddPostModalProps) => {
+export const AddPostModal = ({ showAddDialog, setShowAddDialog, newPost, setNewPost }: AddPostModalProps) => {
+  const { mutate: addPostMutation } = useCreatePost()
+
+  const handleAddPost = () => {
+    addPostMutation(newPost, {
+      onSuccess: () => {
+        setShowAddDialog(false)
+        setNewPost({ title: '', body: '', userId: 1 })
+      },
+    })
+  }
+
   return (
     <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
       <DialogContent>
@@ -34,16 +45,7 @@ export const AddPostModal = ({ showAddDialog, setShowAddDialog, newPost, setNewP
             value={newPost.userId}
             onChange={(e) => setNewPost({ ...newPost, userId: Number(e.target.value) })}
           />
-          <Button
-            onClick={() =>
-              addPost(newPost, () => {
-                setShowAddDialog(false)
-                setNewPost({ title: '', body: '', userId: 1 })
-              })
-            }
-          >
-            게시물 추가
-          </Button>
+          <Button onClick={handleAddPost}>게시물 추가</Button>
         </div>
       </DialogContent>
     </Dialog>

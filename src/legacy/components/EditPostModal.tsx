@@ -1,21 +1,31 @@
 import { Dispatch, SetStateAction } from 'react'
 import { Button, Dialog, DialogContent, DialogHeader, DialogTitle, Input, Textarea } from '../../shared/ui'
 import { Post } from '../models/types'
+import { useUpdatePost } from '../queries/post.query'
 
 type EditPostModalProps = {
   showEditDialog: boolean
   setShowEditDialog: Dispatch<SetStateAction<boolean>>
   selectedPost: Post | null
   setSelectedPost: Dispatch<SetStateAction<Post | null>>
-  updatePost: (post: Post, callback: () => void) => void
 }
 export const EditPostModal = ({
   showEditDialog,
   setShowEditDialog,
   selectedPost,
   setSelectedPost,
-  updatePost,
 }: EditPostModalProps) => {
+  const { mutate: updatePostMutation } = useUpdatePost()
+
+  const handleUpdatePost = () => {
+    updatePostMutation(selectedPost as Post, {
+      onSuccess: () => {
+        setShowEditDialog(false)
+        setSelectedPost(null)
+      },
+    })
+  }
+
   return (
     <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
       <DialogContent>
@@ -34,9 +44,7 @@ export const EditPostModal = ({
             value={selectedPost?.body || ''}
             onChange={(e) => setSelectedPost(selectedPost ? { ...selectedPost, body: e.target.value } : null)}
           />
-          <Button onClick={() => updatePost(selectedPost as Post, () => setShowEditDialog(false))}>
-            게시물 업데이트
-          </Button>
+          <Button onClick={handleUpdatePost}>게시물 업데이트</Button>
         </div>
       </DialogContent>
     </Dialog>

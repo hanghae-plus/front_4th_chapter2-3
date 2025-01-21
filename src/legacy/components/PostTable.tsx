@@ -3,13 +3,13 @@ import { Button, Table, TableBody, TableCell, TableHead, TableHeader, TableRow }
 import { highlightText } from '../utils/highligtText'
 import { Post, User } from '../models/types'
 import { useSearchParam, useTagParam } from '../hooks/useQueryParams'
+import { useDeletePost } from '../queries/post.query'
 
 type PostTableProps = {
   posts: Post[]
   openUserModal: (user: User | undefined) => void
   openPostDetail: (post: Post) => void
   setSelectedPost: (post: Post) => void
-  deletedPost: (postId: number) => void
   setShowEditDialog: (show: boolean) => void
 }
 export const PostTable = ({
@@ -17,11 +17,11 @@ export const PostTable = ({
   openUserModal,
   openPostDetail,
   setSelectedPost,
-  deletedPost,
   setShowEditDialog,
 }: PostTableProps) => {
   const [selectedTag, setSelectedTag] = useTagParam()
   const [searchQuery] = useSearchParam()
+  const { mutate: deletePost } = useDeletePost()
 
   return (
     <Table>
@@ -90,7 +90,7 @@ export const PostTable = ({
                 >
                   <Edit2 className="w-4 h-4" />
                 </Button>
-                <Button variant="ghost" size="sm" onClick={() => deletedPost(post.id)}>
+                <Button variant="ghost" size="sm" onClick={() => deletePost(post.id)}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

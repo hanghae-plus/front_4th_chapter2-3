@@ -58,8 +58,7 @@ const PostsManager = () => {
 
   // 커스텀 hook으로 분리
   // posts가 전체 posts
-  const { posts, loading, total, fetchPosts, searchPosts, fetchPostsByTag, updatePost, deletedPost, addPost } =
-    usePost()
+  const { posts, loading, total, fetchPosts, searchPosts, fetchPostsByTag } = usePost()
 
   // 댓글 가져오기
   const fetchComments = async (postId: number) => {
@@ -201,7 +200,6 @@ const PostsManager = () => {
               openPostDetail={openPostDetail}
               setSelectedPost={setSelectedPost}
               setShowEditDialog={setShowEditDialog}
-              deletedPost={deletedPost}
             />
           )}
 
@@ -238,7 +236,6 @@ const PostsManager = () => {
         setShowAddDialog={setShowAddDialog}
         newPost={newPost}
         setNewPost={setNewPost}
-        addPost={addPost}
       />
 
       <EditPostModal
@@ -246,7 +243,6 @@ const PostsManager = () => {
         setShowEditDialog={setShowEditDialog}
         selectedPost={selectedPost}
         setSelectedPost={setSelectedPost}
-        updatePost={updatePost}
       />
 
       <AddCommentModal
