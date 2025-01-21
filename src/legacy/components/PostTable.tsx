@@ -21,6 +21,7 @@ export const PostTable = ({
 }: PostTableProps) => {
   const [selectedTag, setSelectedTag] = useTagParam()
   const [searchQuery] = useSearchParam()
+
   const { mutate: deletePost } = useDeletePost()
 
   return (
@@ -35,7 +36,7 @@ export const PostTable = ({
         </TableRow>
       </TableHeader>
       <TableBody>
-        {posts.map((post) => (
+        {posts?.map((post) => (
           <TableRow key={post.id}>
             <TableCell>{post.id}</TableCell>
             <TableCell>

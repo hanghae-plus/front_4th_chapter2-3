@@ -1,6 +1,7 @@
 import { queryOptions, useMutation, useQuery } from '@tanstack/react-query'
 import { NewPost, Post } from '../models/types'
 import * as PostService from '../service/post.service'
+import { PostListRes, TagListRes } from '../models/dto.types'
 
 export const postKeys = {
   all: ['posts'],
@@ -12,27 +13,29 @@ export const postKeys = {
 
 export const postQuery = {
   list: (limit: number, skip: number) =>
-    queryOptions({
+    queryOptions<PostListRes>({
       queryKey: postKeys.list(limit, skip),
       queryFn: () => PostService.getPostList(limit, skip),
     }),
 
   tags: () =>
-    queryOptions({
+    queryOptions<TagListRes>({
       queryKey: postKeys.tags(),
       queryFn: () => PostService.getPostTags(),
     }),
 
   byTag: (tag: string) =>
-    queryOptions({
+    queryOptions<PostListRes>({
       queryKey: postKeys.byTag(tag),
       queryFn: () => PostService.getPostListByTag(tag),
+      enabled: !!tag,
     }),
 
   search: (query: string) =>
-    queryOptions({
+    queryOptions<PostListRes>({
       queryKey: postKeys.search(query),
       queryFn: () => PostService.getPostListBySearch(query),
+      enabled: false,
     }),
 }
 

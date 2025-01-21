@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Plus } from 'lucide-react'
 import {
   Button,
@@ -27,13 +27,7 @@ import { TagSelect } from '../legacy/components/TagSelect'
 import { SortBySelect } from '../legacy/components/SortBySelect'
 import { SortOrderSelect } from '../legacy/components/SortOrderSelect'
 import { SearchPostInput } from '../legacy/components/Searchbar'
-import {
-  useLimitParam,
-  useSkipParam,
-  useSortByParam,
-  useSortOrderParam,
-  useTagParam,
-} from '../legacy/hooks/useQueryParams'
+import { useLimitParam, useSkipParam, useSortByParam, useSortOrderParam } from '../legacy/hooks/useQueryParams'
 
 const PostsManager = () => {
   // 상태 관리
@@ -41,7 +35,6 @@ const PostsManager = () => {
   const [limit, setLimit] = useLimitParam()
   const [sortBy, setSortBy] = useSortByParam()
   const [sortOrder, setSortOrder] = useSortOrderParam()
-  const [selectedTag] = useTagParam()
 
   const [selectedPost, setSelectedPost] = useState<Post | null>(null)
   const [showAddDialog, setShowAddDialog] = useState(false)
@@ -58,7 +51,7 @@ const PostsManager = () => {
 
   // 커스텀 hook으로 분리
   // posts가 전체 posts
-  const { posts, loading, total, fetchPosts, searchPosts, fetchPostsByTag } = usePost()
+  const { posts, loading, total } = usePost()
 
   // 댓글 가져오기
   const fetchComments = async (postId: number) => {
@@ -154,14 +147,6 @@ const PostsManager = () => {
     }
   }
 
-  useEffect(() => {
-    if (selectedTag) {
-      fetchPostsByTag(selectedTag)
-    } else {
-      fetchPosts()
-    }
-  }, [skip, limit, sortBy, sortOrder, selectedTag])
-
   return (
     <Card className="w-full max-w-6xl mx-auto">
       <CardHeader>
@@ -177,13 +162,9 @@ const PostsManager = () => {
         <div className="flex flex-col gap-4">
           {/* 검색 및 필터 컨트롤 */}
           <div className="flex gap-4">
-            <SearchPostInput handleSearch={searchPosts} />
+            <SearchPostInput />
 
-            <TagSelect
-              onValueChange={(value) => {
-                fetchPostsByTag(value)
-              }}
-            />
+            <TagSelect />
 
             <SortBySelect value={sortBy} onValueChange={setSortBy} />
 

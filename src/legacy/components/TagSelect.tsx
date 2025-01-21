@@ -3,11 +3,7 @@ import { useTagParam } from '../hooks/useQueryParams'
 import { Tag } from '../models/types'
 import { useGetPostTags } from '../queries/post.query'
 
-interface TagSelectProps {
-  onValueChange: (value: string) => void
-}
-
-export const TagSelect = ({ onValueChange }: TagSelectProps) => {
+export const TagSelect = () => {
   const { data: tags } = useGetPostTags()
   const [selectedTag, setSelectedTag] = useTagParam()
 
@@ -16,7 +12,6 @@ export const TagSelect = ({ onValueChange }: TagSelectProps) => {
       value={selectedTag}
       onValueChange={(value) => {
         setSelectedTag(value)
-        onValueChange(value)
       }}
     >
       <SelectTrigger className="w-[180px]">

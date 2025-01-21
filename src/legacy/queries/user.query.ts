@@ -1,5 +1,6 @@
 import { queryOptions, useQuery } from '@tanstack/react-query'
 import * as UserService from '../service/user.service'
+import { UserListRes } from '../models/dto.types'
 
 export const userKeys = {
   all: ['users'],
@@ -9,7 +10,7 @@ export const userKeys = {
 
 export const userQuery = {
   list: () =>
-    queryOptions({
+    queryOptions<UserListRes>({
       queryKey: userKeys.list(),
       queryFn: () => UserService.getUserList(),
     }),
