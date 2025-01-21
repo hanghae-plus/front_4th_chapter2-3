@@ -12,6 +12,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from ".
 import { useDeletePosts, useGetPosts, useGetSearchPosts, usePostPosts, usePutPosts } from "../features/post/api"
 import UserProfile from "../features/user/ui/UserProfile"
 import { useGetTags } from "../features/tag/api"
+import UserModal from "../features/user/ui/UserModal"
 
 interface Tag {
   name: string
@@ -733,6 +734,7 @@ const PostsManager = () => {
         </DialogContent>
       </Dialog>
 
+      <UserModal />
       {/* 사용자 모달 */}
       {/* <Dialog open={showUserModal} onOpenChange={setShowUserModal}>
         <DialogContent>
