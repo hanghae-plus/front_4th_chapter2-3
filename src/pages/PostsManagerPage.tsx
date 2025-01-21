@@ -76,28 +76,34 @@ const PostsManager = () => {
   const queryParams = new URLSearchParams(location.search)
 
   // 상태 관리
-  const [posts, setPosts] = useState([])
+
+  const [posts, setPosts] = useState<Post[]>([])
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null)
+  const [newPost, setNewPost] = useState<Omit<Post, "id">>({ title: "", body: "", userId: 1 })
+  const [comments, setComments] = useState<Record<number, Comment[]>>({})
+  const [selectedComment, setSelectedComment] = useState<Comment | null>(null)
+  const [newComment, setNewComment] = useState<Omit<Comment, "id" | "user" | "likes">>({
+    body: "",
+    postId: 0,
+    userId: 1,
+  })
+  const [selectedUser, setSelectedUser] = useState<User | null>(null)
+  const [tags, setTags] = useState<Array<{ slug: string; url: string }>>([])
+
   const [total, setTotal] = useState(0)
   const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"))
   const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"))
   const [searchQuery, setSearchQuery] = useState(queryParams.get("search") || "")
-  const [selectedPost, setSelectedPost] = useState(null)
   const [sortBy, setSortBy] = useState(queryParams.get("sortBy") || "")
   const [sortOrder, setSortOrder] = useState(queryParams.get("sortOrder") || "asc")
   const [showAddDialog, setShowAddDialog] = useState(false)
   const [showEditDialog, setShowEditDialog] = useState(false)
-  const [newPost, setNewPost] = useState({ title: "", body: "", userId: 1 })
   const [loading, setLoading] = useState(false)
-  const [tags, setTags] = useState([])
   const [selectedTag, setSelectedTag] = useState(queryParams.get("tag") || "")
-  const [comments, setComments] = useState({})
-  const [selectedComment, setSelectedComment] = useState(null)
-  const [newComment, setNewComment] = useState({ body: "", postId: null, userId: 1 })
   const [showAddCommentDialog, setShowAddCommentDialog] = useState(false)
   const [showEditCommentDialog, setShowEditCommentDialog] = useState(false)
   const [showPostDetailDialog, setShowPostDetailDialog] = useState(false)
   const [showUserModal, setShowUserModal] = useState(false)
-  const [selectedUser, setSelectedUser] = useState(null)
 
   // URL 업데이트 함수
   const updateURL = () => {
@@ -269,7 +275,7 @@ const PostsManager = () => {
         [data.postId]: [...(prev[data.postId] || []), data],
       }))
       setShowAddCommentDialog(false)
-      setNewComment({ body: "", postId: null, userId: 1 })
+      setNewComment({ body: "", postId: 0, userId: 1 })
     } catch (error) {
       console.error("댓글 추가 오류:", error)
     }
