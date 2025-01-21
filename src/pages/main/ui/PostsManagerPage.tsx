@@ -25,11 +25,12 @@ import {
   TableRow,
   Textarea,
 } from "../../../shared/ui"
-import { useQuery } from "@tanstack/react-query"
-import { postQueries } from "../../../entities/post/api/queries"
+import { useMutation, useQuery } from "@tanstack/react-query"
+import { postMutations, postQueries } from "../../../entities/post/api/queries"
 import { SortOrder } from "../../../entities/post/model/types"
 import { userQueries } from "../../../entities/user/api/queries"
 import { User } from "../../../entities/user/model/types"
+import { queryClient } from "../../../shared/api/query-client"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -101,10 +102,16 @@ const PostsManager = () => {
   })
 
   const { data: searchResults, isLoading: isSearchLoading } = useQuery({
-    ...postQueries.searchQuery(searchQuery),
+    ...postQueries.searchQuery({
+      limit,
+      skip,
+      sortBy,
+      order: sortOrder as SortOrder,
+      search: searchQuery,
+    }),
     select: (data) => ({
-      posts: data.data.posts,
-      total: data.data.total,
+      posts: data.posts,
+      total: data.total,
     }),
   })
 
@@ -122,6 +129,16 @@ const PostsManager = () => {
 
   const { data: tags = [] } = useQuery({
     ...postQueries.tagQuery(),
+  })
+
+  const addPostMutation = useMutation({
+    ...postMutations.addMutation(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: postQueries.list() })
+    },
+    onError: (error) => {
+      console.error("게시물 추가 오류:", error)
+    },
   })
 
   const posts = searchQuery ? searchResults?.posts : selectedTag ? listByTag?.posts : list?.posts
@@ -149,18 +166,9 @@ const PostsManager = () => {
 
   // 게시물 추가
   const addPost = async () => {
-    try {
-      const response = await fetch("/api/posts/add", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newPost),
-      })
-
-      setShowAddDialog(false)
-      setNewPost({ title: "", body: "", userId: 1 })
-    } catch (error) {
-      console.error("게시물 추가 오류:", error)
-    }
+    await addPostMutation.mutateAsync(newPost)
+    setShowAddDialog(false)
+    setNewPost({ title: "", body: "", userId: 1 })
   }
 
   // 게시물 업데이트
@@ -475,7 +483,7 @@ const PostsManager = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">모든 태그</SelectItem>
-                {tags.map((tag) => (
+                {tags?.map((tag) => (
                   <SelectItem key={tag.url} value={tag.slug}>
                     {tag.slug}
                   </SelectItem>

@@ -1,6 +1,6 @@
 import { queryOptions } from "@tanstack/react-query"
 
-import { FetchPostsByTagParams, FetchPostsParams, Post } from "../model/types"
+import { CreatePostDto, FetchPostsBySearchParams, FetchPostsByTagParams, FetchPostsParams, Post } from "../model/types"
 import { postApi } from "."
 import { queryClient } from "../../../shared/api/query-client"
 
@@ -13,7 +13,7 @@ export const postQueries = {
       queryFn: () => postApi.fetchPosts(params),
     }),
 
-  listByTag: () => [...postQueries.all(), "byTag"] as const,
+  listByTag: () => [...postQueries.list(), "byTag"] as const,
   listByTagQuery: (params: FetchPostsByTagParams) =>
     queryOptions({
       queryKey: [...postQueries.listByTag(), params],
@@ -21,12 +21,12 @@ export const postQueries = {
       enabled: !!params.tag,
     }),
 
-  search: () => [...postQueries.all(), "search"] as const,
-  searchQuery: (query: string) =>
+  search: () => [...postQueries.list(), "search"] as const,
+  searchQuery: (params: FetchPostsBySearchParams) =>
     queryOptions({
-      queryKey: [...postQueries.search(), query],
-      queryFn: () => postApi.searchPosts(query),
-      enabled: query.length > 0,
+      queryKey: [...postQueries.search(), params],
+      queryFn: () => postApi.searchPosts(params),
+      enabled: !!params.search,
     }),
 
   tag: () => [...postQueries.all(), "tag"] as const,
@@ -40,7 +40,7 @@ export const postQueries = {
 export const postMutations = {
   addMutation: () => ({
     mutationKey: [...postQueries.all(), "add"] as const,
-    mutationFn: (post: Omit<Post, "id">) => postApi.addPost(post),
+    mutationFn: (post: CreatePostDto) => postApi.addPost(post),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: postQueries.list(),

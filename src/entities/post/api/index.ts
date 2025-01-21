@@ -1,5 +1,13 @@
 import { httpClient } from "../../../shared/api/http-client"
-import { FetchPostsParams, PostsResponse, Post, FetchPostsByTagParams, Tag } from "../model/types"
+import {
+  FetchPostsParams,
+  PostsResponse,
+  Post,
+  FetchPostsByTagParams,
+  Tag,
+  CreatePostDto,
+  FetchPostsBySearchParams,
+} from "../model/types"
 
 export const postApi = {
   fetchPosts: async (params: Partial<FetchPostsParams>) => {
@@ -7,7 +15,18 @@ export const postApi = {
     return response.data
   },
 
-  searchPosts: (query: string) => httpClient.get<PostsResponse, { q: string }>("/posts/search", { q: query }),
+  searchPosts: async (params: FetchPostsBySearchParams) => {
+    const searchParams: Record<string, string | number> = {}
+
+    if (params.search) searchParams.q = params.search
+    if (params.limit) searchParams.limit = params.limit
+    if (params.skip) searchParams.skip = params.skip
+    if (params.sortBy) searchParams.sortBy = params.sortBy
+    if (params.order) searchParams.order = params.order
+
+    const response = await httpClient.get<PostsResponse>("/posts/search", searchParams)
+    return response.data
+  },
 
   fetchPostsByTag: async (params: FetchPostsByTagParams) => {
     const response = await httpClient.get<PostsResponse>(`/posts/tag/${params.tag}`, {
@@ -17,8 +36,13 @@ export const postApi = {
     return response.data
   },
 
-  addPost: async (post: Omit<Post, "id">) => {
-    const response = await httpClient.post<Post>("/posts/add", post)
+  addPost: async (post: CreatePostDto) => {
+    const response = await httpClient.post<Post>("/posts/add", {
+      ...post,
+      tags: ["history"],
+      reactions: { likes: 0, dislikes: 0 },
+      view: 0,
+    })
     return response.data
   },
 

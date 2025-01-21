@@ -12,11 +12,16 @@ export interface FetchPostsParams {
   skip?: number
   sortBy?: string
   order?: SortOrder
-  search?: string
 }
+
+export type CreatePostDto = Pick<Post, "title" | "body" | "userId">
 
 export interface FetchPostsByTagParams extends FetchPostsParams {
   tag: string
+}
+
+export interface FetchPostsBySearchParams extends FetchPostsParams {
+  search?: string
 }
 
 export interface Reactions {
