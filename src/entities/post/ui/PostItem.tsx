@@ -4,7 +4,7 @@ import { Post } from "../model/types";
 import { PostRow } from "./PostRow";
 import { User } from "../../user/types";
 
-interface PostTableProps {
+interface PostItemProps {
   posts: Post[];
   selectedTag: string;
   searchQuery: string;
@@ -16,7 +16,7 @@ interface PostTableProps {
   onDelete: (postId: number) => void;
 }
 
-export const PostTable: React.FC<PostTableProps> = ({
+export const PostItem: React.FC<PostItemProps> = ({
   posts,
   selectedTag,
   searchQuery,

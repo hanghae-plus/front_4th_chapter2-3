@@ -22,7 +22,7 @@ import {
 import { Post, Posts } from "../entities/post/model/types.ts";
 import { User } from "../entities/user/types.ts";
 import { Tags } from "../entities/tag/types.ts";
-import { PostTable } from "../entities/post/ui/PostTable.tsx";
+import { PostItem } from "../entities/post/ui/PostItem.tsx";
 
 import { CommentItem } from "../entities/comment/ui/CommentItem.tsx";
 import { Comment } from "./../entities/comment/model/types";
@@ -461,7 +461,7 @@ const PostsManager = () => {
           {loading ? (
             <div className="flex justify-center p-4">로딩 중...</div>
           ) : (
-            <PostTable
+            <PostItem
               posts={posts}
               selectedTag={selectedTag}
               searchQuery={searchQuery}
