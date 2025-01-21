@@ -1,8 +1,8 @@
 import { useMutation } from "@tanstack/react-query"
 import { NewComment } from "../../../entities/comment/model/types"
-import axios, { AxiosResponse } from "axios"
 import { useCallback, useState } from "react"
 import { Comment } from "../../../entities/comment/model/types"
+import { addCommentApi } from "../../../entities/comment/api/addComment.api"
 
 interface Props {
   onSuccess?: (responseComment: Comment) => void
@@ -15,17 +15,9 @@ const useAddComment = ({ onSuccess, fallback }: Props) => {
     body: "",
     userId: 1,
   })
-  const addComment = (comment: NewComment) =>
-    axios
-      .post<NewComment, AxiosResponse<Comment>>("/api/comments/add", {
-        ...comment,
-      })
-      .then((response) => {
-        return response.data
-      })
 
   const mutation = useMutation({
-    mutationFn: addComment,
+    mutationFn: addCommentApi,
     onSuccess: (responseComment) => {
       if (onSuccess) onSuccess(responseComment)
     },

@@ -17,7 +17,7 @@ import Pagination from "../features/post/ui/Pagination"
 import Filter from "../features/post/ui/Filter"
 import { User } from "../entities/user/model/types"
 import PTable from "../features/post/ui/PTable"
-import { useAddComment } from "../features/comment/api/useAddComment.query"
+import { useAddComment } from "../features/comment/model/useAddComment.query"
 
 const PostsManager = () => {
   const navigate = useNavigate()
