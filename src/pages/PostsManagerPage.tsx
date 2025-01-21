@@ -6,6 +6,7 @@ import { PostsWithUsersTable } from "../features/postsWithUsers/ui"
 import { AddPostDialog } from "../features/addPost/ui"
 import { UpdatePostDialog } from "../features/updatePost/ui"
 import { CommentsList } from "../features/comments/ui"
+import { AddCommentDialog } from "../features/addComment/ui"
 import { UserDialog } from "../entities/user/ui"
 import { Button, Input, Textarea } from "../shared/ui/common"
 import { DialogContainer, DialogContent, DialogHeader, DialogTitle } from "../shared/ui/dialog"
@@ -443,21 +444,7 @@ const PostsManager = () => {
       <UpdatePostDialog {...{ showEditDialog, setShowEditDialog, selectedPost, setSelectedPost, updatePost }} />
 
       {/* 댓글 추가 대화상자 */}
-      <DialogContainer open={showAddCommentDialog} onOpenChange={setShowAddCommentDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>새 댓글 추가</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <Textarea
-              placeholder="댓글 내용"
-              value={newComment.body}
-              onChange={(e) => setNewComment({ ...newComment, body: e.target.value })}
-            />
-            <Button onClick={addComment}>댓글 추가</Button>
-          </div>
-        </DialogContent>
-      </DialogContainer>
+      <AddCommentDialog {...{ showAddCommentDialog, setShowAddCommentDialog, newComment, setNewComment, addComment }} />
 
       {/* 댓글 수정 대화상자 */}
       <DialogContainer open={showEditCommentDialog} onOpenChange={setShowEditCommentDialog}>
