@@ -1,3 +1,10 @@
+export interface UserResponse {
+  users: User[];
+  limit: number;
+  skip: number;
+  total: number;
+}
+
 export interface User {
   id: number
   firstName: string

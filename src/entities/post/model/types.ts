@@ -18,7 +18,13 @@ export interface Post {
   }
   userId: number
   views: number
-  author: Partial<User>
+  author?: Partial<User>
+}
+
+export interface CreatePost {
+  title: string
+  body: string
+  userId: number
 }
 
 export interface Tag {
