@@ -15,4 +15,6 @@ interface NewComment {
   userId: Comment["user"]["id"]
 }
 
-export type { Comment, NewComment }
+type PostComments = Record<Post["id"], Comment[]>
+
+export type { Comment, PostComments, NewComment }
