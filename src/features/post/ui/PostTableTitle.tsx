@@ -1,4 +1,5 @@
 import { Post } from "@/entities/post/model/types"
+import { PostTags } from "@/entities/post/ui/PostTags"
 import { TableCell } from "@/shared/ui"
 import HighlightText from "@/widgets/ui/HighlightText"
 
@@ -11,31 +12,19 @@ interface PostTableTitleProps {
 }
 
 export const PostTableTitle = ({ post, searchQuery, selectedTag, setSelectedTag, updateURL }: PostTableTitleProps) => {
+  // 태그 선택
+  const handleSelectTag = (tag: string) => {
+    setSelectedTag(tag)
+    updateURL()
+  }
+
   return (
     <TableCell>
       <div className="space-y-1">
         <div>
           <HighlightText text={post.title} highlight={searchQuery} />
         </div>
-
-        <div className="flex flex-wrap gap-1">
-          {post.tags?.map((tag) => (
-            <span
-              key={tag}
-              className={`px-1 text-[9px] font-semibold rounded-[4px] cursor-pointer ${
-                selectedTag === tag
-                  ? "text-white bg-blue-500 hover:bg-blue-600"
-                  : "text-blue-800 bg-blue-100 hover:bg-blue-200"
-              }`}
-              onClick={() => {
-                setSelectedTag(tag)
-                updateURL()
-              }}
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
+        <PostTags post={post} selectedTag={selectedTag} onTagClick={handleSelectTag} />
       </div>
     </TableCell>
   )

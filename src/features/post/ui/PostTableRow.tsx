@@ -2,9 +2,9 @@ import { Post } from "@/entities/post/model/types"
 import { User } from "@/entities/user/model/types"
 import { TableRow, TableCell } from "@/shared/ui"
 import { PostTableTitle } from "./PostTableTitle"
-import { PostTableAuthor } from "./PostTableAuthor"
-import { PostTableReaction } from "./PostTableReaction"
 import { PostTableWork } from "./PostTableWork"
+import { PostReaction } from "@/entities/post/ui/PostReaction"
+import { UserAvatar } from "@/entities/user/ui/UserAvatar"
 
 interface PostTableRowProps {
   post: Post
@@ -41,8 +41,16 @@ export const PostTableRow = ({
         setSelectedTag={setSelectedTag}
         updateURL={updateURL}
       />
-      <PostTableAuthor post={post} openUserModal={openUserModal} />
-      <PostTableReaction post={post} />
+      <TableCell>
+        <UserAvatar
+          image={post.author?.image}
+          username={post.author?.username}
+          onClick={() => openUserModal(post.author!)}
+        />
+      </TableCell>
+      <TableCell>
+        <PostReaction post={post} />
+      </TableCell>
       <PostTableWork
         post={post}
         openPostDetail={openPostDetail}
