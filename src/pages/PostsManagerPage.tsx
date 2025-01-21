@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Edit2, Plus, Search, ThumbsUp, Trash2 } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   Button,
@@ -21,10 +21,11 @@ import {
 } from "../shared/ui";
 import { Post, Posts } from "../entities/post/model/types.ts";
 import { User } from "../entities/user/types.ts";
-import { Comment } from "../entities/comment/types.ts";
 import { Tags } from "../entities/tag/types.ts";
 import { PostTable } from "../entities/post/ui/PostTable.tsx";
 
+import { CommentItem } from "../entities/comment/ui/CommentItem.tsx";
+import { Comment } from "./../entities/comment/model/types";
 const PostsManager = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -392,74 +393,6 @@ const PostsManager = () => {
     );
   };
 
-  // 댓글 렌더링
-  const renderComments = (postId: number) => (
-    <div className="mt-2">
-      <div className="flex items-center justify-between mb-2">
-        <h3 className="text-sm font-semibold">댓글</h3>
-        <Button
-          size="sm"
-          onClick={() => {
-            setNewComment((prev) => ({ ...prev, postId }));
-            setShowAddCommentDialog(true);
-          }}
-        >
-          <Plus className="w-3 h-3 mr-1" />
-          댓글 추가
-        </Button>
-      </div>
-      <div className="space-y-1">
-        {comments[postId]?.map((comment) => (
-          <div
-            key={comment.id}
-            className="flex items-center justify-between text-sm border-b pb-1"
-          >
-            <div className="flex items-center space-x-2 overflow-hidden">
-              <span className="font-medium truncate">
-                {comment.user?.username || ""}:
-              </span>
-              <span className="truncate">
-                이거 머냐
-                {/* {highlightText(comment.body, searchQuery)} */}
-              </span>
-            </div>
-            <div className="flex items-center space-x-1">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  if (comment?.id) likeComment(comment?.id, postId);
-                }}
-              >
-                <ThumbsUp className="w-3 h-3" />
-                <span className="ml-1 text-xs">{comment.likes}</span>
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  setSelectedComment(comment);
-                  setShowEditCommentDialog(true);
-                }}
-              >
-                <Edit2 className="w-3 h-3" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  if (comment?.id) deleteComment(comment.id, postId);
-                }}
-              >
-                <Trash2 className="w-3 h-3" />
-              </Button>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-
   return (
     <Card className="w-full max-w-6xl mx-auto">
       <CardHeader>
@@ -722,7 +655,29 @@ const PostsManager = () => {
           </DialogHeader>
           <div className="space-y-4">
             <p>{highlightText(selectedPost.body, searchQuery)}</p>
-            {renderComments(selectedPost.id)}
+            <CommentItem
+              comments={comments}
+              postId={selectedPost.id}
+              onAdd={() => {
+                setNewComment((prev: Comment) => ({
+                  ...prev,
+                  postId: selectedPost.id,
+                }));
+                setShowAddCommentDialog(true);
+              }}
+              onLikeComment={(comment: Comment) => {
+                if (comment.id && comment.postId)
+                  likeComment(comment.id, comment.postId);
+              }}
+              onEditComment={(comment: Comment) => {
+                setSelectedComment(comment);
+                setShowEditCommentDialog(true);
+              }}
+              onDeleteComment={(comment: Comment) => {
+                if (comment?.id && comment.postId)
+                  deleteComment(comment.id, comment.postId);
+              }}
+            />
           </div>
         </DialogContent>
       </Dialog>
