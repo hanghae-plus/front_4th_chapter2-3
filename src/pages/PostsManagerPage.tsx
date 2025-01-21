@@ -23,6 +23,7 @@ import { CommentItem } from "../entities/comment/ui/CommentItem.tsx";
 import { Comment } from "./../entities/comment/model/types";
 import { highlightText } from "../shared/lib/handleHighlightText.tsx";
 import { UserModal } from "../entities/user/ui/UserModal.tsx";
+import { DialogAddPost } from "../entities/post/ui/DialogAddPost.tsx";
 
 const PostsManager = () => {
   const navigate = useNavigate();
@@ -430,7 +431,16 @@ const PostsManager = () => {
       </CardContent>
 
       {/* 게시물 추가 대화상자 */}
-      <Dialog
+      <DialogAddPost
+        newPost={newPost}
+        onOpen={showAddDialog}
+        onOpenChange={setShowAddDialog}
+        onSetNewPost={(type, value) =>
+          setNewPost({ ...newPost, [type]: value })
+        }
+        onAddPost={addPost}
+      />
+      {/* <Dialog
         open={showAddDialog}
         onOpenChange={setShowAddDialog}
       >
@@ -463,7 +473,7 @@ const PostsManager = () => {
             <Button onClick={addPost}>게시물 추가</Button>
           </div>
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
 
       {/* 게시물 수정 대화상자 */}
       <Dialog
