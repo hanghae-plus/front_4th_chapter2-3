@@ -1,36 +1,9 @@
 import * as React from "react"
 import { forwardRef } from "react"
-import * as SelectPrimitive from "@radix-ui/react-select"
 import * as DialogPrimitive from "@radix-ui/react-dialog"
-import { Check, ChevronDown, X } from "lucide-react"
-import { cva, VariantProps } from "class-variance-authority"
-import { Button } from "./button/Button"
+import { X } from "lucide-react"
 
-const buttonVariants = cva(
-  "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background",
-  {
-    variants: {
-      variant: {
-        default: "bg-blue-500 text-white hover:bg-blue-600",
-        destructive: "bg-red-500 text-white hover:bg-red-600",
-        outline: "border border-gray-300 bg-transparent text-gray-700 hover:bg-gray-100",
-        secondary: "bg-gray-200 text-gray-800 hover:bg-gray-300",
-        ghost: "bg-transparent text-gray-700 hover:bg-gray-100",
-        link: "underline-offset-4 hover:underline text-blue-500",
-      },
-      size: {
-        default: "h-10 py-2 px-4",
-        sm: "h-8 px-3 rounded-md text-xs",
-        lg: "h-11 px-8 rounded-md",
-        icon: "h-9 w-9",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-      size: "default",
-    },
-  },
-)
+// 버튼 컴포넌트
 
 export { Button } from "./button/Button";
 
@@ -40,62 +13,25 @@ export { Input } from "./input/Input";
 
 // 카드 컴포넌트
 
-interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
-  className?: string;
-}
-
-export const Card = forwardRef<HTMLDivElement, CardProps>(({ className, ...props }, ref) => (
-  <div ref={ref} className={`rounded-lg border bg-card text-card-foreground shadow-sm ${className}`} {...props} />
-))
-Card.displayName = "Card"
-
-interface CardHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
-  className?: string;
-}
-
-export const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>(({ className, ...props }, ref) => (
-  <div ref={ref} className={`flex flex-col space-y-1.5 p-6 ${className}`} {...props} />
-))
-CardHeader.displayName = "CardHeader"
-
-interface CardTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
-  className?: string;
-}
-
-export const CardTitle = forwardRef<HTMLDivElement, CardTitleProps>(({ className, ...props }, ref) => (
-  <h3 ref={ref} className={`text-2xl font-semibold leading-none tracking-tight ${className}`} {...props} />
-))
-CardTitle.displayName = "CardTitle"
-
-interface CardContentProps extends React.HTMLAttributes<HTMLDivElement> {
-  className?: string;
-}
-
-export const CardContent = forwardRef<HTMLDivElement, CardContentProps>(({ className, ...props }, ref) => (
-  <div ref={ref} className={`p-6 pt-0 ${className}`} {...props} />
-))
-CardContent.displayName = "CardContent"
+export { 
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent
+ } from "./card";
 
 // 텍스트 영역 컴포넌트
 
-interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
-
-export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(({ className, ...props }, ref) => {
-  return (
-    <textarea
-      className={`flex min-h-[150px] w-full rounded-md border border-input bg-white px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
-      ref={ref}
-      {...props}
-    />
-  )
-})
-Textarea.displayName = "Textarea"
+export { Textarea } from "./textarea/Textarea";
 
 // 선택 컴포넌트
 
-export { SelectTrigger } from "./select/SelectTrigger";
-export { SelectContent } from "./select/SelectContent";
-export { SelectItem } from "./select/SelectItem";
+export {
+  Select, 
+  SelectTrigger, 
+  SelectContent, 
+  SelectItem 
+} from "./select";
 
 
 // 대화상자 컴포넌트
