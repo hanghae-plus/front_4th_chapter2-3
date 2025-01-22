@@ -7,13 +7,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../../../shared/ui';
-import useSearchStore from '../../../features/search/model/useSearchStore.ts';
+import useSearchStore from '../model/useSearchStore.ts';
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import usePostStore from '../../../features/post/model/usePostStore.ts';
+import usePostStore from '../../post/model/usePostStore.ts';
 import { getPosts, getPostsByQuery, getPostsByTag } from '../../../entities/post/api';
 import { getTags } from '../../../entities/tag/api';
-import { useTagStore } from '../../../features/tag/model/useTagStore.ts';
+import { useTagStore } from '../../tag/model/useTagStore.ts';
 import { getUsers } from '../../../entities/user/api';
 
 const SearchBar = () => {

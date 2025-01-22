@@ -1,12 +1,5 @@
-import {
-  Button,
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  Textarea,
-} from '../../../shared/ui';
-import useCommentStore from '../../../features/comment/model/useCommentStore.ts';
+import { BaseDialog, Button, Textarea } from '../../../shared/ui';
+import useCommentStore from '../model/useCommentStore.ts';
 import { putComment } from '../../../entities/comments/api';
 
 const EditCommentDialog = () => {
@@ -47,21 +40,20 @@ const EditCommentDialog = () => {
   };
 
   return (
-    <Dialog open={showEditCommentDialog} onOpenChange={setShowEditCommentDialog}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>댓글 수정</DialogTitle>
-        </DialogHeader>
-        <div className='space-y-4'>
-          <Textarea
-            placeholder='댓글 내용'
-            value={selectedComment?.body || ''}
-            onChange={(e) => setSelectedComment({ ...selectedComment!, body: e.target.value })}
-          />
-          <Button onClick={updateComment}>댓글 업데이트</Button>
-        </div>
-      </DialogContent>
-    </Dialog>
+    <BaseDialog
+      open={showEditCommentDialog}
+      onOpenChange={setShowEditCommentDialog}
+      title='댓글 수정'
+    >
+      <div className='space-y-4'>
+        <Textarea
+          placeholder='댓글 내용'
+          value={selectedComment?.body || ''}
+          onChange={(e) => setSelectedComment({ ...selectedComment!, body: e.target.value })}
+        />
+        <Button onClick={updateComment}>댓글 업데이트</Button>
+      </div>
+    </BaseDialog>
   );
 };
 

@@ -9,15 +9,15 @@ import {
   TableRow,
 } from '../../../shared/ui';
 import { Edit2, MessageSquare, ThumbsDown, ThumbsUp, Trash2 } from 'lucide-react';
-import usePostStore from '../../../features/post/model/usePostStore.ts';
-import useSearchStore from '../../../features/search/model/useSearchStore.ts';
+import usePostStore from '../model/usePostStore.ts';
+import useSearchStore from '../../search/model/useSearchStore.ts';
 import { Post } from '../../../entities/post/model';
 import { getComments } from '../../../entities/comments/api';
-import useCommentStore from '../../../features/comment/model/useCommentStore.ts';
+import useCommentStore from '../../comment/model/useCommentStore.ts';
 import { UserThumbnail } from '../../../entities/user/model';
 import { deletePost } from '../../../entities/post/api';
 import { getUser } from '../../../entities/user/api';
-import { useUserStore } from '../../../features/user/model/useUserStore.ts';
+import { useUserStore } from '../../user/model/useUserStore.ts';
 import { useNavigate } from 'react-router-dom';
 
 const PostTable = () => {

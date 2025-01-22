@@ -1,11 +1,11 @@
 import { Button, HighlightText } from '../../../shared/ui';
 import { Edit2, Plus, ThumbsUp, Trash2 } from 'lucide-react';
-import useCommentStore from '../../../features/comment/model/useCommentStore.ts';
+import useCommentStore from '../model/useCommentStore.ts';
 import { Comment } from '../../../entities/comments/model';
-import useSearchStore from '../../../features/search/model/useSearchStore.ts';
+import useSearchStore from '../../search/model/useSearchStore.ts';
 import { deleteComment, patchComment } from '../../../entities/comments/api';
 
-const CommentsInPostDialog = ({ postId }: { postId: number }) => {
+const CommentsInPostDetail = ({ postId }: { postId: number }) => {
   const {
     comments,
     setComments,
@@ -110,4 +110,4 @@ const CommentsInPostDialog = ({ postId }: { postId: number }) => {
   );
 };
 
-export default CommentsInPostDialog;
+export default CommentsInPostDetail;

@@ -1,18 +1,17 @@
-import { forwardRef } from 'react';
+import { forwardRef, HTMLAttributes, ReactNode } from 'react';
 import { X } from 'lucide-react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 
 // 대화상자 컴포넌트
-export const Dialog = DialogPrimitive.Root;
-export const DialogTrigger = DialogPrimitive.Trigger;
-export const DialogPortal = DialogPrimitive.Portal;
-export const DialogOverlay = DialogPrimitive.Overlay;
+const Dialog = DialogPrimitive.Root;
+const DialogPortal = DialogPrimitive.Portal;
+const DialogOverlay = DialogPrimitive.Overlay;
 
-interface DialogContentProps extends React.HTMLAttributes<HTMLDivElement> {
+interface DialogContentProps extends HTMLAttributes<HTMLDivElement> {
   className?: string;
 }
 
-export const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(
+const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(
   ({ className, children, ...props }, ref) => (
     <DialogPortal>
       <DialogOverlay className='fixed inset-0 z-50 bg-black/50 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0' />
@@ -32,16 +31,16 @@ export const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(
 );
 DialogContent.displayName = DialogPrimitive.Content.displayName;
 
-export const DialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
+const DialogHeader = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => (
   <div className={`flex flex-col space-y-1.5 text-center sm:text-left ${className}`} {...props} />
 );
 DialogHeader.displayName = 'DialogHeader';
 
-interface DialogTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
+interface DialogTitleProps extends HTMLAttributes<HTMLHeadingElement> {
   className?: string;
 }
 
-export const DialogTitle = forwardRef<HTMLHeadingElement, DialogTitleProps>(
+const DialogTitle = forwardRef<HTMLHeadingElement, DialogTitleProps>(
   ({ className, ...props }, ref) => (
     <DialogPrimitive.Title
       ref={ref}
@@ -51,3 +50,21 @@ export const DialogTitle = forwardRef<HTMLHeadingElement, DialogTitleProps>(
   ),
 );
 DialogTitle.displayName = DialogPrimitive.Title.displayName;
+
+interface BaseDialogProps {
+  open: boolean;
+  onOpenChange: (show: boolean) => void;
+  title: string | ReactNode;
+  children: ReactNode;
+}
+
+export const BaseDialog = ({ open, onOpenChange, title, children }: BaseDialogProps) => (
+  <Dialog open={open} onOpenChange={onOpenChange}>
+    <DialogContent>
+      <DialogHeader>
+        <DialogTitle>{title}</DialogTitle>
+      </DialogHeader>
+      {children}
+    </DialogContent>
+  </Dialog>
+);

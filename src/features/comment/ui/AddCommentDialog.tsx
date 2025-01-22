@@ -1,12 +1,5 @@
-import {
-  Button,
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  Textarea,
-} from '../../../shared/ui';
-import useCommentStore from '../../../features/comment/model/useCommentStore.ts';
+import { BaseDialog, Button, Textarea } from '../../../shared/ui';
+import useCommentStore from '../model/useCommentStore.ts';
 import { postComment } from '../../../entities/comments/api';
 
 const AddCommentDialog = () => {
@@ -39,21 +32,20 @@ const AddCommentDialog = () => {
   };
 
   return (
-    <Dialog open={showAddCommentDialog} onOpenChange={setShowAddCommentDialog}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>새 댓글 추가</DialogTitle>
-        </DialogHeader>
-        <div className='space-y-4'>
-          <Textarea
-            placeholder='댓글 내용'
-            value={newComment.body}
-            onChange={(e) => setNewComment({ ...newComment, body: e.target.value })}
-          />
-          <Button onClick={addComment}>댓글 추가</Button>
-        </div>
-      </DialogContent>
-    </Dialog>
+    <BaseDialog
+      open={showAddCommentDialog}
+      onOpenChange={setShowAddCommentDialog}
+      title='새 댓글 추가'
+    >
+      <div className='space-y-4'>
+        <Textarea
+          placeholder='댓글 내용'
+          value={newComment.body}
+          onChange={(e) => setNewComment({ ...newComment, body: e.target.value })}
+        />
+        <Button onClick={addComment}>댓글 추가</Button>
+      </div>
+    </BaseDialog>
   );
 };
 
