@@ -8,7 +8,7 @@ import {
   SelectItem,
 } from "../../../shared/ui";
 import { Search } from "lucide-react";
-import { Tags } from "../../tag/types";
+import { Tags } from "../../tag/model/types";
 
 interface PostFilterProps {
   searchQuery: string;

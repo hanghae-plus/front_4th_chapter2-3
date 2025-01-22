@@ -16,7 +16,7 @@ import {
 } from "../shared/ui";
 import { Post } from "../entities/post/model/types.ts";
 import { User } from "../entities/user/model/types.ts";
-import { Tags } from "../entities/tag/types.ts";
+import { Tags } from "../entities/tag/model/types.ts";
 import { PostItem, PostFilter, PostPagination } from "../entities/post/ui";
 
 import { CommentItem } from "../entities/comment/ui/CommentItem.tsx";
@@ -33,6 +33,7 @@ import {
   searchPost,
   updatePost,
 } from "../entities/post/api/postApi.ts";
+import { fetchTag } from "../entities/tag/api/tagApi.ts";
 
 const PostsManager = () => {
   const navigate = useNavigate();
@@ -133,10 +134,9 @@ const PostsManager = () => {
   };
 
   // 태그 가져오기
-  const fetchTags = async () => {
+  const handleFetchTags = async () => {
     try {
-      const response = await fetch("/api/posts/tags");
-      const data = await response.json();
+      const data = await fetchTag();
       setTags(data);
     } catch (error) {
       console.error("태그 가져오기 오류:", error);
@@ -345,7 +345,7 @@ const PostsManager = () => {
   };
 
   useEffect(() => {
-    fetchTags();
+    handleFetchTags();
   }, []);
 
   useEffect(() => {
