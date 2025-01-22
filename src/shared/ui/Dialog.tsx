@@ -34,10 +34,13 @@ DialogContent.displayName = DialogPrimitive.Content.displayName;
 
 interface DialogHeaderProps {
   className?: string;
+	children?: React.ReactNode;
 }
 
-export const DialogHeader: React.FC<DialogHeaderProps> = ({ className, ...props }) => (
-  <div className={`flex flex-col space-y-1.5 text-center sm:text-left ${className}`} {...props} />
+export const DialogHeader: React.FC<DialogHeaderProps> = ({ className, children, ...props }) => (
+  <div className={`flex flex-col space-y-1.5 text-center sm:text-left ${className}`} {...props}>
+		{children}
+	</div>
 );
 
 DialogHeader.displayName = 'DialogHeader';
