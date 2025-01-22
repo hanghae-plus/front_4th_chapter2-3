@@ -2,11 +2,12 @@ import { StateCreator } from 'zustand/vanilla';
 import { create } from 'zustand/react';
 import { createStoreSelector } from '../../../shared/model';
 import { NewPost, Post } from '../../../entities/post/model';
+import { initNewPost } from '../../../entities/post/config/initData.ts';
 
 interface State {
   posts: Post[];
   selectedPost: Post | null;
-  newPost: NewPost | null;
+  newPost: NewPost;
   showAddDialog: boolean;
   showEditDialog: boolean;
   showPostDetailDialog: boolean;
@@ -14,7 +15,7 @@ interface State {
 interface Action {
   setPosts: (posts: ((prev: Post[]) => Post[]) | Post[]) => void;
   setSelectedPost: (post: Post | null) => void;
-  setNewPost: (newPost: NewPost | null) => void;
+  setNewPost: (newPost: NewPost) => void;
   setShowAddDialog: (show: boolean) => void;
   setShowEditDialog: (show: boolean) => void;
   setShowPostDetailDialog: (show: boolean) => void;
@@ -25,7 +26,7 @@ type PostStoreProps = State & Action;
 const usePostStoreCreator: StateCreator<PostStoreProps> = (set) => ({
   posts: [],
   selectedPost: null,
-  newPost: null,
+  newPost: initNewPost,
   showAddDialog: false,
   showEditDialog: false,
   showPostDetailDialog: false,
