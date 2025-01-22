@@ -8,7 +8,10 @@ interface GetPostsApiParams {
 
 const getPostsApi = ({ limit, skip }: GetPostsApiParams) =>
   axios
-    .get<{ posts: PostDTO[] }>(`/api/posts?limit=${limit}&skip=${skip}`)
-    .then((res) => res.data.posts)
+    .get<{
+      posts: PostDTO[]
+      total: number
+    }>(`/api/posts?limit=${limit}&skip=${skip}`)
+    .then((res) => res.data)
 
 export { getPostsApi }

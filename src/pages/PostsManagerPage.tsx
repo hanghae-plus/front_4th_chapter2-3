@@ -31,9 +31,6 @@ const PostsManager = () => {
   const [total, setTotal] = useState(0)
   const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"))
   const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"))
-  const [searchQuery, setSearchQuery] = useState(
-    queryParams.get("search") || "",
-  )
   const [selectedPost, setSelectedPost] = useState<Post | null>(null)
   const [sortBy, setSortBy] = useState(queryParams.get("sortBy") || "")
   const [sortOrder, setSortOrder] = useState(
@@ -74,18 +71,17 @@ const PostsManager = () => {
 
   const {
     posts,
-    setPosts,
     isLoading: isLoadingPosts,
+    searchQuery,
     refetchGetPosts,
+    handlers: { handleInputChange, handleKeyDown, handleAddPost },
   } = useGetPosts({
     limit,
     skip,
   })
 
   const { addPost } = useAddPost({
-    onSuccess: (responsePost) => {
-      setPosts([...posts, responsePost])
-    },
+    onSuccess: handleAddPost,
     fallback: () => {
       setShowAddDialog(false)
       setNewPost({ title: "", body: "", userId: 1 })
@@ -118,23 +114,6 @@ const PostsManager = () => {
     } catch (error) {
       console.error("태그 가져오기 오류:", error)
     }
-  }
-
-  // 게시물 검색
-  const searchPosts = async () => {
-    if (!searchQuery) {
-      refetchGetPosts()
-      return
-    }
-    setLoading(true)
-    try {
-      const response = await fetch(`/api/posts/search?q=${searchQuery}`)
-      const data = await response.json()
-      setTotal(data.total)
-    } catch (error) {
-      console.error("게시물 검색 오류:", error)
-    }
-    setLoading(false)
   }
 
   // 태그별 게시물 가져오기
@@ -295,7 +274,6 @@ const PostsManager = () => {
     const params = new URLSearchParams(location.search)
     setSkip(parseInt(params.get("skip") || "0"))
     setLimit(parseInt(params.get("limit") || "10"))
-    setSearchQuery(params.get("search") || "")
     setSortBy(params.get("sortBy") || "")
     setSortOrder(params.get("sortOrder") || "asc")
     setSelectedTag(params.get("tag") || "")
@@ -319,8 +297,8 @@ const PostsManager = () => {
           {/* 검색 및 필터 컨트롤 */}
           <Filter
             searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            searchPosts={searchPosts}
+            setSearchQuery={handleInputChange}
+            handleEnterSearchQuery={handleKeyDown}
             tags={tags}
             selectedTag={selectedTag}
             setSelectedTag={setSelectedTag}

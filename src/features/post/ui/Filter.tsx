@@ -1,10 +1,17 @@
 import { Search } from "lucide-react"
-import { Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../shared/ui"
+import {
+  Input,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../../shared/ui"
 
 interface FilterProps {
   searchQuery: string
-  setSearchQuery: React.Dispatch<React.SetStateAction<string>>
-  searchPosts: () => void
+  setSearchQuery: (e: React.ChangeEvent<HTMLInputElement>) => void
+  handleEnterSearchQuery: (e: React.KeyboardEvent<HTMLInputElement>) => void
   tags: { slug: string; url: string }[]
   selectedTag: string
   setSelectedTag: React.Dispatch<React.SetStateAction<string>>
@@ -19,7 +26,7 @@ interface FilterProps {
 const Filter: React.FC<FilterProps> = ({
   searchQuery,
   setSearchQuery,
-  searchPosts,
+  handleEnterSearchQuery,
   tags,
   selectedTag,
   setSelectedTag,
@@ -39,8 +46,8 @@ const Filter: React.FC<FilterProps> = ({
             placeholder="게시물 검색..."
             className="pl-8"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyPress={(e) => e.key === "Enter" && searchPosts()}
+            onChange={setSearchQuery}
+            onKeyDown={handleEnterSearchQuery}
           />
         </div>
       </div>
