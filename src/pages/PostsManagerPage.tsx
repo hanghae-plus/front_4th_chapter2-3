@@ -13,18 +13,17 @@ import { FilterableSearch } from "../components/FilterableSearch"
 import { getTags } from "../api/tag"
 import { usePosts } from "../hooks/usePosts"
 import { useParams } from "../hooks/useParams"
+import { useTags } from "../hooks/useTags"
 
 const PostsManager = () => {
   // 상태 관리
   const { limit, selectedTag, skip, sortBy, sortOrder, changeLimit, changeSkip } = useParams()
+  const { tags } = useTags()
+  const { posts, loading, total } = usePosts(selectedTag, skip, limit, sortBy, sortOrder)
 
   const [selectedPost, setSelectedPost] = useState(null)
 
   const [newPost, setNewPost] = useState({ title: "", body: "", userId: 1 })
-
-  const [tags, setTags] = useState([])
-
-  const { posts, loading, total } = usePosts(selectedTag, skip, limit, sortBy, sortOrder)
 
   const [comments, setComments] = useState({})
   const [selectedComment, setSelectedComment] = useState(null)
@@ -38,22 +37,6 @@ const PostsManager = () => {
   const [showUserModal, setShowUserModal] = useState(false)
 
   const [selectedUser, setSelectedUser] = useState(null)
-
-  // URL 업데이트 함수
-
-  // 태그 가져오기
-  const fetchTags = async () => {
-    try {
-      const data = await getTags()
-      setTags(data)
-    } catch (error) {
-      console.error("태그 가져오기 오류:", error)
-    }
-  }
-
-  useEffect(() => {
-    fetchTags()
-  }, [])
 
   return (
     <Card className="w-full max-w-6xl mx-auto">
