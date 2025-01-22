@@ -26,9 +26,10 @@ export const PostDetailDialog = ({
 }: PostDetailDialogProps) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <Dialog.Content className="max-w-3xl">
+      <Dialog.Content aria-describedby="post-detail-description">
         <Dialog.Header>
-          <Dialog.Title>{post?.title}</Dialog.Title>
+          <Dialog.Title>게시물 상세</Dialog.Title>
+          <p id="post-detail-description">게시물의 상세 내용과 댓글을 확인할 수 있습니다.</p>
         </Dialog.Header>
         <CommentList
           post={post}

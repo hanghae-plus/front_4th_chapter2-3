@@ -29,7 +29,7 @@ export const CommentFormDialog = ({
         <div className="space-y-4">
           <Textarea
             placeholder="댓글 내용"
-            value={isEdit ? (comment?.body ?? "") : ""}
+            value={comment?.body ?? ""}
             onChange={(e) => onBodyChange(e.target.value)}
           />
           <div className="flex justify-end gap-2 mt-4">

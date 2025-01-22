@@ -25,14 +25,19 @@ export const PostFormDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <Dialog.Content>
+      <Dialog.Content aria-describedby="dialog-description">
         <Dialog.Header>
           <Dialog.Title>{isEdit ? "게시물 수정" : "새 게시물 추가"}</Dialog.Title>
+          <p id="dialog-description">
+            {isEdit
+              ? "게시물을 수정하려면 아래 양식을 작성해주세요."
+              : "새 게시물을 작성하려면 아래 양식을 작성해주세요."}
+          </p>
         </Dialog.Header>
         <PostFormContainer
           isEdit={isEdit}
-          title={isEdit ? (post?.title ?? "") : ""}
-          body={isEdit ? (post?.body ?? "") : ""}
+          title={post?.title ?? ""}
+          body={post?.body ?? ""}
           onTitleChange={onTitleChange ?? (() => {})}
           onBodyChange={onBodyChange ?? (() => {})}
           onSubmit={onSubmit}

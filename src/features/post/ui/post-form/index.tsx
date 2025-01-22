@@ -9,7 +9,19 @@ interface PostFormProps {
 
 export const PostForm = ({ title, body, onTitleChange, onBodyChange }: PostFormProps) => (
   <div className="space-y-4">
-    <Input placeholder="제목" value={title} onChange={(e) => onTitleChange(e.target.value)} />
-    <Textarea placeholder="내용" value={body} onChange={(e) => onBodyChange(e.target.value)} />
+    <Input
+      placeholder="제목"
+      value={title}
+      onChange={(e) => {
+        onTitleChange(e.target.value)
+      }}
+    />
+    <Textarea
+      placeholder="내용"
+      value={body}
+      onChange={(e) => {
+        onBodyChange(e.target.value)
+      }}
+    />
   </div>
 )

@@ -218,11 +218,11 @@ const PostsManager = () => {
     if (!comment) return
 
     try {
-      const data = await commentsApi.likeComment(id, comment.likes)
+      const data = await commentsApi.likeComment(id, comment.likes ?? 0)
       setComments((prev) => ({
         ...prev,
         [postId]:
-          prev[postId]?.map((comment) => (comment.id === data.id ? { ...data, likes: comment.likes + 1 } : comment)) ||
+          prev[postId]?.map((comment) => (comment.id === data.id ? { ...data, likes: comment.likes ?? 0 + 1 } : comment)) ||
           [],
       }))
     } catch (error) {
@@ -326,6 +326,7 @@ const PostsManager = () => {
         mode="add"
         open={showAddDialog}
         onOpenChange={setShowAddDialog}
+        post={{ ...newPost, id: 0 }}
         onTitleChange={(title) => setNewPost({ ...newPost, title })}
         onBodyChange={(body) => setNewPost({ ...newPost, body })}
         onSubmit={addPost}
@@ -345,6 +346,7 @@ const PostsManager = () => {
         mode="add"
         open={showAddCommentDialog}
         onOpenChange={setShowAddCommentDialog}
+        comment={{ id: 0, body: newComment.body, postId: newComment.postId ?? 0, userId: newComment.userId }}
         onBodyChange={(body) => setNewComment({ ...newComment, body })}
         onSubmit={addComment}
       />

@@ -3,8 +3,8 @@ export interface Comment {
   body: string
   postId: number
   userId: number
-  likes: number
-  user: {
+  likes?: number
+  user?: {
     username: string
   }
 }
