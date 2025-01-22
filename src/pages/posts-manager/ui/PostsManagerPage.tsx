@@ -33,6 +33,7 @@ import {
   TableRow,
   Textarea,
 } from '@/shared/ui';
+import { HighlightedText } from '@/shared/ui/HighlightedText';
 
 import type { Comment, Tag, Users } from '../model/types';
 
@@ -354,23 +355,6 @@ export const PostsManagerPage = () => {
     }
   }, [postsData, usersData, setPosts]);
 
-  // 하이라이트 함수 추가
-  const highlightText = (text: string, highlight: string) => {
-    if (!text) return null;
-    if (!highlight.trim()) {
-      return <span>{text}</span>;
-    }
-    const regex = new RegExp(`(${highlight})`, 'gi');
-    const parts = text.split(regex);
-    return (
-      <span>
-        {parts.map((part, i) =>
-          regex.test(part) ? <mark key={i}>{part}</mark> : <span key={i}>{part}</span>,
-        )}
-      </span>
-    );
-  };
-
   // 게시물 테이블 렌더링
   const renderPostTable = () => (
     <Table>
@@ -389,8 +373,9 @@ export const PostsManagerPage = () => {
             <TableCell>{post.id}</TableCell>
             <TableCell>
               <div className='space-y-1'>
-                <div>{highlightText(post.title, searchQuery)}</div>
-
+                <div>
+                  <HighlightedText text={post.title} highlight={searchQuery} />
+                </div>
                 <div className='flex flex-wrap gap-1'>
                   {post.tags?.map((tag) => (
                     <span
@@ -479,7 +464,9 @@ export const PostsManagerPage = () => {
           <div key={comment.id} className='flex items-center justify-between text-sm border-b pb-1'>
             <div className='flex items-center space-x-2 overflow-hidden'>
               <span className='font-medium truncate'>{comment.user.username}:</span>
-              <span className='truncate'>{highlightText(comment.body, searchQuery)}</span>
+              <span className='truncate'>
+                <HighlightedText text={comment.body} highlight={searchQuery} />
+              </span>
             </div>
             <div className='flex items-center space-x-1'>
               <Button variant='ghost' size='sm' onClick={() => likeComment(comment.id, postId)}>
@@ -703,11 +690,17 @@ export const PostsManagerPage = () => {
         <DialogContent className='max-w-3xl'>
           <DialogHeader>
             <DialogTitle>
-              {selectedPost?.title && highlightText(selectedPost?.title, searchQuery)}
+              {selectedPost?.title && (
+                <HighlightedText text={selectedPost?.title} highlight={searchQuery} />
+              )}
             </DialogTitle>
           </DialogHeader>
           <div className='space-y-4'>
-            <p>{selectedPost?.body && highlightText(selectedPost?.body, searchQuery)}</p>
+            <p>
+              {selectedPost?.body && (
+                <HighlightedText text={selectedPost?.body} highlight={searchQuery} />
+              )}
+            </p>
             {selectedPost?.id ? renderComments(selectedPost?.id) : null}
           </div>
         </DialogContent>
