@@ -13,6 +13,7 @@
     "typecheck": "tsc -w --noEmit -p ./tsconfig.app.json --noEmit"
   },
   "dependencies": {
+    "@toss/utils": "^1.6.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
