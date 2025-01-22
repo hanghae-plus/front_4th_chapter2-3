@@ -6,3 +6,6 @@ export { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 export { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./Table";
 export { Textarea } from "./Textarea";
 export { HighlightText } from "./HighlightText";
+export { Pagination } from "./Pagination";
+export { Loading } from "./Loading";
+export { Badge } from "./Badge";
