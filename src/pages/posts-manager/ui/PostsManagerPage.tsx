@@ -2,11 +2,12 @@ import { Edit2, MessageSquare, Plus, Search, ThumbsDown, ThumbsUp, Trash2 } from
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { postsApi } from '@/entities/posts/api';
 import type { Post } from '@/entities/posts/model';
 import type { User } from '@/entities/users/model';
+import { useCreatePost, useDeletePost, useQueryPosts, useUpdatePost } from '@/features/posts/api';
 import { usePostsStoreSelector } from '@/features/posts/model';
 import type { Posts } from '@/features/posts/model/Posts';
+import { useQueryUsers } from '@/features/users/api/useUsersQueries';
 import { get, patch, post, put, remove } from '@/shared/api/fetch';
 import {
   Button,
@@ -76,6 +77,18 @@ export const PostsManagerPage = () => {
   const [showUserModal, setShowUserModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
+  // 게시물 관련 훅
+  const {
+    data: postsData,
+    isLoading: postsLoading,
+    error: postsError,
+  } = useQueryPosts(limit, skip);
+  const { mutateAsync: mutatePostCreate } = useCreatePost();
+  const { mutateAsync: mutatePostUpdate } = useUpdatePost();
+  const { mutateAsync: mutatePostDelete } = useDeletePost();
+
+  const { data: usersData, isLoading: usersLoading, error: usersError } = useQueryUsers();
+
   // URL 업데이트 함수
   const updateURL = () => {
     const params = new URLSearchParams();
@@ -89,32 +102,27 @@ export const PostsManagerPage = () => {
   };
 
   // 게시물 가져오기
-  const fetchPosts = () => {
-    setLoading(true);
-    let postsData: Posts;
-    let usersData: Users['users'];
+  const fetchPosts = async () => {
+    // setLoading(true);
 
-    postsApi
-      .fetchPosts(limit, skip)
-      .then((data) => {
-        postsData = data;
-        return get('/api/users?limit=0&select=username,image');
-      })
-      .then((users) => {
-        usersData = users.users;
-        const postsWithUsers = postsData.posts.map((post) => ({
-          ...post,
-          author: usersData.find((user) => user.id === post.userId) as User,
-        }));
-        setPosts(postsWithUsers);
-        setTotal(postsData.total);
-      })
-      .catch((error) => {
-        console.error('게시물 가져오기 오류:', error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    if (postsLoading || usersLoading) return;
+    if (postsError || usersError) {
+      console.error('게시물 또는 사용자 정보 가져오기 오류:', postsError || usersError);
+      return;
+    }
+    if (!postsData || !usersData) return;
+
+    // const usersData: Users['users'] = await get('/api/users?limit=0&select=username,image').then(
+    //   (users) => users.users,
+    // );
+    const postsWithUsers = postsData.posts.map((post) => ({
+      ...post,
+      author: usersData.find((user) => user.id === post.userId),
+    }));
+    console.log('🚀 ~ postsWithUsers ~ postsWithUsers:', postsWithUsers);
+    setPosts(postsWithUsers);
+    setTotal(postsData.total);
+    // setLoading(false);
   };
 
   // 태그 가져오기
@@ -163,6 +171,7 @@ export const PostsManagerPage = () => {
         ...post,
         author: usersData.users.find((user) => user.id === post.userId) as User,
       }));
+      console.log('🚀 ~ postsWithUsers ~ postsWithUsers:', postsWithUsers);
 
       setPosts(postsWithUsers);
       setTotal(postsData.total);
@@ -175,10 +184,13 @@ export const PostsManagerPage = () => {
   // 게시물 추가
   const handlePostAdd = async () => {
     try {
-      const data = await postsApi.createPost(newPost);
-      addPost(data);
-      setShowAddDialog(false);
-      setNewPost({ title: '', body: '', userId: 1 });
+      await mutatePostCreate(newPost, {
+        onSuccess: (post) => {
+          addPost(post);
+          setShowAddDialog(false);
+          setNewPost({ title: '', body: '', userId: 1 });
+        },
+      });
     } catch (error) {
       console.error('게시물 추가 오류:', error);
     }
@@ -188,9 +200,12 @@ export const PostsManagerPage = () => {
   const handlePostUpdate = async () => {
     if (!selectedPost) return;
     try {
-      const data = await postsApi.updatePost(selectedPost);
-      updatePost(data);
-      setShowEditDialog(false);
+      await mutatePostUpdate(selectedPost, {
+        onSuccess: (updatedPost) => {
+          updatePost(updatedPost);
+          setShowEditDialog(false);
+        },
+      });
     } catch (error) {
       console.error('게시물 업데이트 오류:', error);
     }
@@ -199,8 +214,11 @@ export const PostsManagerPage = () => {
   // 게시물 삭제
   const handlePostDelete = async (id: number) => {
     try {
-      await postsApi.deletePost(id);
-      deletePost(id);
+      await mutatePostDelete(id, {
+        onSuccess: () => {
+          deletePost(id);
+        },
+      });
     } catch (error) {
       console.error('게시물 삭제 오류:', error);
     }
@@ -323,6 +341,18 @@ export const PostsManagerPage = () => {
     setSortOrder(params.get('sortOrder') || 'asc');
     setSelectedTag(params.get('tag') || '');
   }, [location.search]);
+
+  useEffect(() => {
+    if (postsData && usersData) {
+      setTotal(postsData.total);
+      const postsWithUsers = postsData.posts.map((post) => ({
+        ...post,
+        author: usersData?.users?.find((user) => user.id === post.userId),
+      }));
+      setPosts(postsWithUsers);
+      setLoading(false);
+    }
+  }, [postsData, usersData, setPosts]);
 
   // 하이라이트 함수 추가
   const highlightText = (text: string, highlight: string) => {

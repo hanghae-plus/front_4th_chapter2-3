@@ -5,7 +5,7 @@ import type { Post } from '@/entities/posts/model';
 import { postsQueryKeys } from '../config/postsQueryKeys';
 import type { Posts } from '../model';
 
-export const usePostsList = (limit: number, skip: number) =>
+export const useQueryPosts = (limit: number, skip: number) =>
   useQuery<
     Posts,
     Error,
@@ -16,7 +16,7 @@ export const usePostsList = (limit: number, skip: number) =>
     placeholderData: (previousData) => previousData,
   });
 
-export const usePost = (id: number) =>
+export const useQueryPostBy = (id: number) =>
   useQuery<Post, Error, Post, readonly ['posts', 'detail', number]>({
     ...postsQueryKeys.detail(id),
     enabled: Boolean(id),
