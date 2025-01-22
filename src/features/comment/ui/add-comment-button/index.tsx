@@ -1,6 +1,6 @@
+import { ThumbsUp, Edit2, Trash2 } from "lucide-react"
 import { Button } from "@shared/ui"
 import { Comment } from "@entities/comment/model"
-import { ThumbsUp, Edit2, Trash2 } from "lucide-react"
 
 interface CommentActionButtonsProps {
   comment: Comment

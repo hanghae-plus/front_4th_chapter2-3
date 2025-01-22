@@ -1,1 +1,1 @@
-export { UserInfoDialog } from "./UserInfoDialog"
+export { UserInfoDialog } from "./user-info-dialog"

@@ -1,13 +1,13 @@
 import { Input } from "@shared/ui"
 import { Search } from "lucide-react"
 
-interface PostSearchProps {
+interface SearchPostProps {
   value: string
   onChange: (value: string) => void
   onSearch: () => void
 }
 
-export const PostSearch = ({ value, onChange, onSearch }: PostSearchProps) => (
+export const SearchPost = ({ value, onChange, onSearch }: SearchPostProps) => (
   <div className="relative">
     <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
     <Input

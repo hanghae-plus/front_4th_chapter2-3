@@ -1,6 +1,6 @@
 import { Dialog } from "@shared/ui"
 import { User } from "@entities/user/model"
-import { UserInfo } from "@features/user/ui"
+import { UserProfile } from "@entities/user/ui"
 
 interface UserInfoDialogProps {
   open: boolean
@@ -14,7 +14,7 @@ export const UserInfoDialog = ({ open, onOpenChange, user }: UserInfoDialogProps
       <Dialog.Header>
         <Dialog.Title>사용자 정보</Dialog.Title>
       </Dialog.Header>
-      <UserInfo user={user} />
+      <UserProfile user={user} />
     </Dialog.Content>
   </Dialog>
 )

@@ -1,6 +1,6 @@
-import { Dialog, Button } from "@shared/ui"
+import { Dialog } from "@shared/ui"
 import { Post } from "@entities/post/model"
-import { PostForm } from "@features/post/ui"
+import { PostFormContainer } from "@features/post/ui"
 
 interface PostFormDialogProps {
   mode: "add" | "edit"
@@ -29,15 +29,14 @@ export const PostFormDialog = ({
         <Dialog.Header>
           <Dialog.Title>{isEdit ? "게시물 수정" : "새 게시물 추가"}</Dialog.Title>
         </Dialog.Header>
-        <PostForm
+        <PostFormContainer
+          isEdit={isEdit}
           title={isEdit ? (post?.title ?? "") : ""}
           body={isEdit ? (post?.body ?? "") : ""}
           onTitleChange={onTitleChange ?? (() => {})}
           onBodyChange={onBodyChange ?? (() => {})}
+          onSubmit={onSubmit}
         />
-        <div className="flex justify-end gap-2 mt-4">
-          <Button onClick={onSubmit}>{isEdit ? "게시물 업데이트" : "게시물 추가"}</Button>
-        </div>
       </Dialog.Content>
     </Dialog>
   )

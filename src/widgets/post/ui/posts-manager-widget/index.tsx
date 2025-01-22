@@ -1,9 +1,8 @@
-import { Card, Button, LoadingSpinner, Pagination } from "@shared/ui"
 import { Plus } from "lucide-react"
+import { Card, Button, LoadingSpinner, Pagination } from "@shared/ui"
 import { Post, PostTag } from "@entities/post/model"
 import { User } from "@entities/user/model"
-import { PostsTable } from "./PostsTable"
-import { PostsSearchFilter } from "@widgets/post/ui"
+import { PostsTable, PostsSearchFilter } from "@widgets/post/ui"
 
 interface PostsManageProps {
   loading: boolean

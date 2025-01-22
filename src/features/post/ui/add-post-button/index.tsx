@@ -1,6 +1,6 @@
+import { MessageSquare, Edit2, Trash2 } from "lucide-react"
 import { Button } from "@shared/ui/Button"
 import { Post } from "@entities/post/model"
-import { MessageSquare, Edit2, Trash2 } from "lucide-react"
 
 interface PostActionButtonsProps {
   post: Post

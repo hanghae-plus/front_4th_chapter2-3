@@ -1,5 +1,4 @@
-import { PostSearch } from "@features/post/ui"
-import { PostFilter } from "@features/post/ui"
+import { SearchPost, PostFilter } from "@features/post/ui"
 import { PostTag } from "@entities/post/model"
 
 interface PostsSearchFilterProps {
@@ -29,7 +28,7 @@ export const PostsSearchFilter = ({
 }: PostsSearchFilterProps) => (
   <div className="flex gap-4">
     <div className="flex-1">
-      <PostSearch value={searchQuery} onChange={onSearchChange} onSearch={onSearch} />
+      <SearchPost value={searchQuery} onChange={onSearchChange} onSearch={onSearch} />
     </div>
     <PostFilter
       selectedTag={selectedTag}

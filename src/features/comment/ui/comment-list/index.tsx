@@ -1,9 +1,9 @@
 import { Plus } from "lucide-react"
 import { Button } from "@shared/ui"
 import { Comment } from "@entities/comment/model"
-import { Post } from "@entities/post/model"
 import { CommentView } from "@entities/comment/ui"
 import { CommentActionButtons } from "@features/comment/ui"
+import { Post } from "@entities/post/model"
 
 interface CommentListProps {
   post: Post | null

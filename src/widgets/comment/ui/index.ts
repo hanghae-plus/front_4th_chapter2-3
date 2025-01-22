@@ -1,1 +1,1 @@
-export { CommentFormDialog } from "./CommentFormDialog"
+export { CommentFormDialog } from "./common-form-dialog"

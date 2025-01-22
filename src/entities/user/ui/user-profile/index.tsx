@@ -1,10 +1,10 @@
 import { User } from "@entities/user/model"
 
-interface UserInfoProps {
+interface UserProfileProps {
   user: User | null
 }
 
-export const UserInfo = ({ user }: UserInfoProps) => (
+export const UserProfile = ({ user }: UserProfileProps) => (
   <div className="space-y-4">
     {user && (
       <>
