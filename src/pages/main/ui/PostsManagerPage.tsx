@@ -35,11 +35,11 @@ import { Comment } from "../../../entities/comment/model/types"
 import { postMutations } from "../../../entities/post/api/mutations"
 import { commentMutations } from "../../../entities/comment/api/mutations"
 import { useViewUserProfile } from "../../../features/view-user-profile/model/use-view-user-profile"
-import { UserProfileModal } from "../../../entities/user/ui/UserProfileModal"
-import { useAddPost } from "../../../features/add-post/model/useAddPost"
-import { AddPostModal } from "../../../entities/post/ui/AddPostModal"
-import { useEditPost } from "../../../features/edit-post/model/useEditPost"
-import { EditPostModal } from "../../../features/edit-post/ui/EditPostModal"
+import { UserProfileModal } from "../../../entities/user/ui/user-profile-modal"
+import { useAddPost } from "../../../features/add-post/model/use-add-post"
+import { AddPostModal } from "../../../entities/post/ui/add-post-modal"
+import { useEditPost } from "../../../features/edit-post/model/use-edit-post"
+import { EditPostModal } from "../../../features/edit-post/ui/edit-post-modal"
 
 const PostsManager = () => {
   const navigate = useNavigate()
