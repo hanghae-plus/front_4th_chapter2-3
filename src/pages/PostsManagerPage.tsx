@@ -26,6 +26,7 @@ import {
   Textarea,
 } from "../shared/ui"
 import UserProfile from "../entities/user/ui/UserProfile"
+import UserDialog from "../entities/user/ui/UserDialog"
 
 interface Post {
   id: number
@@ -192,6 +193,8 @@ const PostsManager = () => {
   // Dialogs and modals state
   const [showPostDetailDialog, setShowPostDetailDialog] = useState<boolean>(false)
   const [showUserModal, setShowUserModal] = useState<boolean>(false)
+
+  //user
   const [selectedUser, setSelectedUser] = useState<UserDetail | null>(null)
 
   // URL 업데이트 함수
@@ -810,14 +813,7 @@ const PostsManager = () => {
       </Dialog>
 
       {/* 사용자 모달 */}
-      <Dialog open={showUserModal} onOpenChange={setShowUserModal}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>사용자 정보</DialogTitle>
-          </DialogHeader>
-          <UserProfile user={selectedUser} />
-        </DialogContent>
-      </Dialog>
+      <UserDialog open={showUserModal} onOpenChange={setShowUserModal} selectedUser={selectedUser} />
     </Card>
   )
 }
