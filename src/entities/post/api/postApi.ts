@@ -8,13 +8,13 @@ export const postApi = {
 
   // 게시물 가져오기
   getPosts: async (params: { limit: number; skip: number }) => {
-    const response = await apiClient.get<PostsResponse>("/posts", { params })
+    const response = await apiClient.get<PostsResponse>("/posts", params)
     return response.data
   },
 
   // 게시물 검색
   getSearchPosts: async (params: { q: string }) => {
-    const response = await apiClient.get<PostsResponse>("/posts/search", { params })
+    const response = await apiClient.get<PostsResponse>("/posts/search", params)
     return response.data
   },
 
@@ -53,7 +53,7 @@ export const postApi = {
   /* --------------------------------
    * DELETE Requests
    * -------------------------------- */
-  
+
   deletePost: async (id: number) => {
     const response = await apiClient.delete(`/posts/${id}`)
     return response.data

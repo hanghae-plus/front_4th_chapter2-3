@@ -8,7 +8,7 @@ export const userApi = {
 
   // 전체 사용자 정보 가져오기
   getUsers: async (params: { limit: number; select: string }) => {
-    const response = await apiClient.get<UserResponse>("/users", { params })
+    const response = await apiClient.get<UserResponse>("/users", params)
     return response.data
   },
 

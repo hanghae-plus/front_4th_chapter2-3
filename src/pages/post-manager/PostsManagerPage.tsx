@@ -64,6 +64,7 @@ const PostsManager = () => {
 
   // 게시물 검색
   const searchPosts = async () => {
+    console.log("검색")
     if (!searchQuery) {
       fetchPosts()
       return
