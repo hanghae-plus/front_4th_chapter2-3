@@ -3,7 +3,7 @@ import { Plus } from "lucide-react"
 import { Button } from "../../../shared/ui"
 
 interface PostCommentProps {
-  setNewComment: (post: { body: ""; postId: null; userId: 1 }) => void
+  setNewComment: (post: any) => void
   setShowAddCommentDialog: (open: boolean) => void
 }
 

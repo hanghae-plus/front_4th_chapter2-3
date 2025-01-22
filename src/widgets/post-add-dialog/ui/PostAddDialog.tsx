@@ -2,13 +2,13 @@ import { PostAddButton } from "../../../features/post/ui/PostAddButton"
 import { PostAddForm } from "../../../features/post/ui/PostAddForm"
 import { Dialog } from "../../../shared/ui"
 
-import type { Post } from "../../../entities/post/model/types/post"
+import type { PostWithUser } from "../../../entities/post/model/types/post"
 
 interface PostAddDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  newPost: Pick<Post, "title" | "body" | "userId">
-  setNewPost: (post: Post) => void
+  newPost: Pick<PostWithUser, "title" | "body" | "userId">
+  setNewPost: (post: PostWithUser) => void
 }
 
 export const PostAddDialog = ({ open, onOpenChange, newPost, setNewPost }: PostAddDialogProps) => {

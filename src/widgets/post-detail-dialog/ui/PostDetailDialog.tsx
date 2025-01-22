@@ -8,12 +8,12 @@ import {
 import { Dialog, HighlightText } from "../../../shared/ui"
 
 import type { Comment } from "../../../entities/comment/model/types/comments"
-import type { Post } from "../../../entities/post/model/types/post"
+import type { PostWithUser } from "../../../entities/post/model/types/post"
 
 interface PostDetailDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  selectedPost: Post | null
+  selectedPost: PostWithUser | null
   searchQuery: string
   comments: Record<number, Comment[]>
   postId?: number

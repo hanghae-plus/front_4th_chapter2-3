@@ -1,10 +1,10 @@
 import { Input, Textarea } from "../../../shared/ui"
 
-import type { Post } from "../../../entities/post/model/types/post"
+import type { PostWithUser } from "../../../entities/post/model/types/post"
 
 interface PostAddFormProps {
-  newPost: Post
-  setNewPost: (post: Post) => void
+  newPost: PostWithUser
+  setNewPost: (post: PostWithUser) => void
 }
 
 export const PostAddForm = ({ newPost, setNewPost }: PostAddFormProps) => {

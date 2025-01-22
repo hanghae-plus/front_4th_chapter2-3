@@ -1,11 +1,11 @@
 import { Button, Input, Textarea } from "../../../shared/ui"
 import { useQueryEditPost } from "../model/hooks/useQueryEditPost"
 
-import type { Post } from "../../../entities/post/model/types/post"
+import type { PostWithUser } from "../../../entities/post/model/types/post"
 
 interface PostEditFormProps {
-  posts: Post[]
-  selectedPost: Post
+  posts: PostWithUser[]
+  selectedPost: PostWithUser
   onChangeSelectedPost: (...args: any) => void
   onShowEditDialog: (open: boolean) => void
   onChangeEditPosts: (posts: any[]) => void

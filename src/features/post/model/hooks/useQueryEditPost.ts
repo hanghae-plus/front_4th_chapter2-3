@@ -1,10 +1,10 @@
 // TODO: react-query 적용 예정
 
-import type { Post } from "../../../../entities/post/model/types/post"
+import type { PostWithUser } from "../../../../entities/post/model/types/post"
 
 export const useQueryEditPost = (
-  selectedPost: Post,
-  posts: Post[],
+  selectedPost: PostWithUser,
+  posts: PostWithUser[],
   onShowEditDialog: (open: boolean) => void,
   onChangeEditPosts: (posts: any[]) => void,
 ) => {

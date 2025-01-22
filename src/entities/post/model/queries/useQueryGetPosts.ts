@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query"
 
 import type { User } from "../../../user/model/types/user"
-import type { Post } from "../types/post"
+import type { PostWithUser } from "../types/post"
 
 export interface PostsResponse {
-  posts: Post[]
+  posts: PostWithUser[]
   total: number
 }
 
