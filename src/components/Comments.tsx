@@ -1,15 +1,17 @@
-import { ThumbsUp } from "lucide-react"
+import { Edit2, Plus, ThumbsUp, Trash2 } from "lucide-react"
 import { Button } from "../shared/ui"
 import { highlightText } from "../utils/html"
 import { deleteComment as deleteCommentFunction, likeComment as likeCommentFunction } from "../api/comment"
 import { Comment } from "../types/comment"
+import { DialogType } from "../hooks/useDialog"
 
 interface Props {
   postId?: number
   onSelectComment: (comment: Comment) => void
+  onOpenChange: (dialogType: DialogType, open: boolean) => void
 }
 
-export const Comments = ({ postId, onSelectComment }: Props) => {
+export const Comments = ({ postId, onSelectComment, onOpenChange }: Props) => {
   const deleteComment = async (id, postId) => {
     try {
       await deleteCommentFunction(id)
@@ -43,8 +45,7 @@ export const Comments = ({ postId, onSelectComment }: Props) => {
         <Button
           size="sm"
           onClick={() => {
-            setNewComment((prev) => ({ ...prev, postId }))
-            setShowAddCommentDialog(true)
+            onOpenChange("addCommentDialog", true)
           }}
         >
           <Plus className="w-3 h-3 mr-1" />
@@ -68,7 +69,7 @@ export const Comments = ({ postId, onSelectComment }: Props) => {
                 size="sm"
                 onClick={() => {
                   onSelectComment(comment)
-                  setShowEditCommentDialog(true)
+                  onOpenChange("editCommentDialog", true)
                 }}
               >
                 <Edit2 className="w-3 h-3" />

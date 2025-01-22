@@ -4,10 +4,16 @@ import { addComment as addCommentFunction } from "../api/comment"
 import { useForm } from "../hooks/useForm"
 import { DialogComponentProps } from "../hooks/useDialog"
 
-type Props = DialogComponentProps
+interface Props extends DialogComponentProps {
+  postId?: number
+}
 
-export const CommentAddDialog = ({ open, onOpenChange }: Props) => {
-  const { formState: newComment, handleChange, reset } = useForm({ body: "", postId: null, userId: 1 })
+export const CommentAddDialog = ({ open, onOpenChange, postId }: Props) => {
+  const {
+    formState: newComment,
+    handleChange,
+    reset,
+  } = useForm({ body: "", postId: postId ? postId : null, userId: 1 })
 
   const addComment = async () => {
     try {
@@ -16,7 +22,7 @@ export const CommentAddDialog = ({ open, onOpenChange }: Props) => {
         ...prev,
         [data.postId]: [...(prev[data.postId] || []), data],
       }))
-      setShowAddCommentDialog(false)
+      onOpenChange(false)
       reset()
     } catch (error) {
       console.error("댓글 추가 오류:", error)

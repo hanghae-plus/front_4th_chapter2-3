@@ -79,6 +79,7 @@ const PostsManager = () => {
       <CommentAddDialog
         open={dialogs["addCommentDialog"]}
         onOpenChange={(open: boolean) => onOpenChange("addCommentDialog", open)}
+        postId={selectedPost?.id}
       />
       <CommentUpdateDialog
         open={dialogs["editCommentDialog"]}
@@ -88,7 +89,7 @@ const PostsManager = () => {
       />
       <PostDetailDialog
         open={dialogs["postDetailDialog"]}
-        onOpenChange={(open: boolean) => onOpenChange("postDetailDialog", open)}
+        onOpenChange={onOpenChange}
         selectedPost={selectedPost}
         onSelectComment={setSelectedComment}
       />

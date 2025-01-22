@@ -2,25 +2,26 @@ import { Dialog, DialogContent, DialogTitle } from "@radix-ui/react-dialog"
 import { DialogHeader } from "../shared/ui"
 import { Comments } from "./Comments"
 import { highlightText } from "../utils/html"
-import { DialogComponentProps } from "../hooks/useDialog"
+import { DialogType } from "../hooks/useDialog"
 import { PostWithUser } from "../types/post"
 import { Comment } from "../types/comment"
 
-interface Props extends DialogComponentProps {
+interface Props {
   selectedPost: PostWithUser | null
   onSelectComment: (comment: Comment) => void
+  open: boolean
+  onOpenChange: (dialogType: DialogType, open: boolean) => void
 }
-
 export const PostDetailDialog = ({ selectedPost, open, onOpenChange, onSelectComment }: Props) => {
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={(open: boolean) => onOpenChange("postDetailDialog", open)}>
       <DialogContent className="max-w-3xl">
         <DialogHeader>
           <DialogTitle>{highlightText(selectedPost?.title, searchQuery)}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           <p>{highlightText(selectedPost?.body, searchQuery)}</p>
-          <Comments postId={selectedPost?.id} onSelectComment={onSelectComment} />
+          <Comments postId={selectedPost?.id} onSelectComment={onSelectComment} onOpenChange={onOpenChange} />
         </div>
       </DialogContent>
     </Dialog>
