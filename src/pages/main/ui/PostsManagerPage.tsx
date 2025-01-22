@@ -38,6 +38,8 @@ import { useViewUserProfile } from "../../../features/view-user-profile/model/us
 import { UserProfileModal } from "../../../entities/user/ui/UserProfileModal"
 import { useAddPost } from "../../../features/add-post/model/useAddPost"
 import { AddPostModal } from "../../../entities/post/ui/AddPostModal"
+import { useEditPost } from "../../../features/edit-post/model/useEditPost"
+import { EditPostModal } from "../../../features/edit-post/ui/EditPostModal"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -133,13 +135,6 @@ const PostsManager = () => {
     ...postQueries.tagQuery(),
   })
 
-  const updatePostMutation = useMutation({
-    ...postMutations.updateMutation(),
-    onError: (error) => {
-      console.error("게시물 업데이트 오류:", error)
-    },
-  })
-
   const deletePostMutation = useMutation({
     ...postMutations.deleteMutation(),
     onError: (error) => {
@@ -202,21 +197,6 @@ const PostsManager = () => {
       search: value || null,
       skip: "0",
     })
-  }
-
-  // 게시물 업데이트
-  const updatePost = async () => {
-    if (!selectedPost) return
-
-    await updatePostMutation.mutateAsync({
-      id: selectedPost.id,
-      post: {
-        title: selectedPost.title,
-        body: selectedPost.body,
-        userId: selectedPost.userId,
-      },
-    })
-    updateURLParams({ selectedPostId: null, mode: null })
   }
 
   // 게시물 삭제
@@ -292,6 +272,7 @@ const PostsManager = () => {
   }
 
   const { isOpen, handleViewProfile, handleClose, user } = useViewUserProfile()
+
   const {
     isOpen: isAddOpen,
     formData,
@@ -301,6 +282,16 @@ const PostsManager = () => {
     handleSubmit: submitAddPost,
     isSubmitting: isAddSubmitting,
   } = useAddPost()
+
+  const {
+    isOpen: isEditOpen,
+    post: editingPost,
+    handleEdit,
+    handleClose: closeEditPost,
+    handleChange: handleEditChange,
+    handleSubmit: submitEditPost,
+    isSubmitting: isEditSubmitting,
+  } = useEditPost()
 
   // 하이라이트 함수 추가
   const highlightText = (text: string, highlight: string) => {
@@ -389,16 +380,7 @@ const PostsManager = () => {
                 >
                   <MessageSquare className="w-4 h-4" />
                 </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() =>
-                    updateURLParams({
-                      selectedPostId: post.id.toString(),
-                      mode: "edit",
-                    })
-                  }
-                >
+                <Button variant="ghost" size="sm" onClick={() => handleEdit(post.id)}>
                   <Edit2 className="w-4 h-4" />
                 </Button>
                 <Button variant="ghost" size="sm" onClick={() => deletePost(post.id)}>
@@ -593,48 +575,10 @@ const PostsManager = () => {
       >
         <DialogContent className={mode === "detail" ? "max-w-3xl" : ""}>
           <DialogHeader>
-            <DialogTitle>
-              {mode === "edit" ? "게시물 수정" : highlightText(selectedPost?.title ?? "", searchQuery)}
-            </DialogTitle>
+            <DialogTitle>{highlightText(selectedPost?.title ?? "", searchQuery)}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            {mode === "edit" ? (
-              // 편집 모드 UI
-              <>
-                <Input
-                  placeholder="제목"
-                  value={selectedPost?.title || ""}
-                  onChange={(e) => {
-                    if (!selectedPost) return
-                    updatePostMutation.mutate({
-                      id: selectedPost.id,
-                      post: {
-                        ...selectedPost,
-                        title: e.target.value,
-                      },
-                    })
-                  }}
-                />
-                <Textarea
-                  rows={15}
-                  placeholder="내용"
-                  value={selectedPost?.body || ""}
-                  onChange={(e) => {
-                    if (!selectedPost) return
-                    updatePostMutation.mutate({
-                      id: selectedPost.id,
-                      post: {
-                        ...selectedPost,
-                        body: e.target.value,
-                      },
-                    })
-                  }}
-                />
-                <Button onClick={updatePost} disabled={updatePostMutation.isPending}>
-                  {updatePostMutation.isPending ? "업데이트 중..." : "게시물 업데이트"}
-                </Button>
-              </>
-            ) : (
+            {mode !== "edit" && (
               // 상세 보기 모드 UI
               <div className="overflow-hidden">
                 <p className="break-words">{highlightText(selectedPost?.body ?? "", searchQuery)}</p>
@@ -688,6 +632,14 @@ const PostsManager = () => {
         onChange={handleChange}
         onSubmit={submitAddPost}
         isSubmitting={isAddSubmitting}
+      />
+      <EditPostModal
+        isOpen={isEditOpen}
+        onClose={closeEditPost}
+        post={editingPost}
+        onChange={handleEditChange}
+        onSubmit={submitEditPost}
+        isSubmitting={isEditSubmitting}
       />
     </Card>
   )
