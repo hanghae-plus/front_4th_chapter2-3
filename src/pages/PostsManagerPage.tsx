@@ -13,10 +13,10 @@ import { FilterableSearch } from "../components/FilterableSearch"
 import { usePosts } from "../hooks/usePosts"
 import { useParams } from "../hooks/useParams"
 import { useTags } from "../hooks/useTags"
-import { useDialog } from "../hooks/useDialog"
 import { PostWithUser } from "../types/post"
 import { User } from "../types/user"
 import { Comment } from "../types/comment"
+import { useDialogStore } from "../store/dialog"
 
 const PostsManager = () => {
   // 상태 관리
@@ -35,15 +35,18 @@ const PostsManager = () => {
     onChangeSortOrder,
     updateURL,
   } = useParams()
+
   const { tags } = useTags()
+
   const { posts, loading, total } = usePosts({ selectedTag, skip, limit, sortBy, sortOrder, searchQuery })
+
   const [comments, setComments] = useState({})
 
   const [selectedPost, setSelectedPost] = useState<PostWithUser | null>(null)
   const [selectedComment, setSelectedComment] = useState<Comment | null>(null)
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
 
-  const { onOpenChange, dialogs } = useDialog()
+  const { onOpenChange } = useDialogStore()
 
   return (
     <Card className="w-full max-w-6xl mx-auto">
@@ -75,12 +78,12 @@ const PostsManager = () => {
           ) : (
             <PostTable
               posts={posts}
-              onDialogOpenChange={onOpenChange}
               onSelectPost={setSelectedPost}
               onSelectUser={setSelectedUser}
-              selectedTag={selectedTag}
               onSelectTag={onSelectTag}
+              selectedTag={selectedTag}
               searchQuery={searchQuery}
+              updateURL={updateURL}
             />
           )}
           <Pagination
@@ -92,39 +95,12 @@ const PostsManager = () => {
           />
         </div>
       </CardContent>
-      <PostAddDialog
-        open={dialogs["addPostDialog"]}
-        onOpenChange={(open: boolean) => onOpenChange("addPostDialog", open)}
-      />
-      <PostUpdateDialog
-        open={dialogs["editPostDialog"]}
-        onOpenChange={(open: boolean) => onOpenChange("editPostDialog", open)}
-        selectedPost={selectedPost}
-        onSelectPost={setSelectedPost}
-      />
-      <CommentAddDialog
-        open={dialogs["addCommentDialog"]}
-        onOpenChange={(open: boolean) => onOpenChange("addCommentDialog", open)}
-        postId={selectedPost?.id}
-      />
-      <CommentUpdateDialog
-        open={dialogs["editCommentDialog"]}
-        onOpenChange={(open: boolean) => onOpenChange("editCommentDialog", open)}
-        selectedComment={selectedComment}
-        onSelectComment={setSelectedComment}
-      />
-      <PostDetailDialog
-        open={dialogs["postDetailDialog"]}
-        onOpenChange={onOpenChange}
-        selectedPost={selectedPost}
-        onSelectComment={setSelectedComment}
-        searchQuery={searchQuery}
-      />
-      <UserModal
-        selectedUser={selectedUser}
-        open={dialogs["userModal"]}
-        onOpenChange={(open: boolean) => onOpenChange("userModal", open)}
-      />
+      <PostAddDialog />
+      <PostUpdateDialog selectedPost={selectedPost} onSelectPost={setSelectedPost} />
+      <CommentAddDialog postId={selectedPost?.id} />
+      <CommentUpdateDialog selectedComment={selectedComment} onSelectComment={setSelectedComment} />
+      <PostDetailDialog selectedPost={selectedPost} onSelectComment={setSelectedComment} searchQuery={searchQuery} />
+      <UserModal selectedUser={selectedUser} />
     </Card>
   )
 }
@@ -132,6 +108,6 @@ const PostsManager = () => {
 export default PostsManager
 
 // todo: hooks로 분리할 수 있는 거 다 분리
-// todo: 위에서 분리한 거 전역 상태로 끌어올리기 - ui 상태는 아마 제외.
+// todo: 위에서 분리한 거 전역 상태로 끌어올리기
 // todo: tanstack + typescript 제대로 적용
 // todo: fsd식 파일 분리

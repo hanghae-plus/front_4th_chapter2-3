@@ -1,15 +1,16 @@
 import { Dialog, DialogContent, DialogTitle } from "@radix-ui/react-dialog"
 import { DialogHeader } from "../shared/ui"
-import { DialogComponentProps } from "../hooks/useDialog"
 import { User } from "../types/user"
+import { useDialogStore } from "../store/dialog"
 
-interface Props extends DialogComponentProps {
+interface Props {
   selectedUser: User | null
 }
 
-export const UserModal = ({ open, onOpenChange, selectedUser }: Props) => {
+export const UserModal = ({ selectedUser }: Props) => {
+  const { dialogs, onOpenChange } = useDialogStore()
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={dialogs["userModal"]} onOpenChange={(open: boolean) => onOpenChange("userModal", open)}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>사용자 정보</DialogTitle>

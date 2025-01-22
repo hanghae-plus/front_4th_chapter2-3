@@ -3,16 +3,16 @@ import { Button } from "../shared/ui"
 import { highlightText } from "../utils/html"
 import { deleteComment as deleteCommentFunction, likeComment as likeCommentFunction } from "../api/comment"
 import { Comment } from "../types/comment"
-import { DialogType } from "../hooks/useDialog"
+import { useDialogStore } from "../store/dialog"
 
 interface Props {
   postId?: number
   onSelectComment: (comment: Comment) => void
-  onOpenChange: (dialogType: DialogType, open: boolean) => void
   searchQuery: string
 }
 
-export const Comments = ({ postId, onSelectComment, onOpenChange, searchQuery }: Props) => {
+export const Comments = ({ postId, onSelectComment, searchQuery }: Props) => {
+  const { onOpenChange } = useDialogStore()
   const deleteComment = async (id, postId) => {
     try {
       await deleteCommentFunction(id)

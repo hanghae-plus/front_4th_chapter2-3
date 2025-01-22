@@ -5,28 +5,29 @@ import { deletePost as deletePostFunction } from "../api/post"
 import { getUser } from "../api/user"
 import { getComments } from "../api/comment"
 import { PostWithUser } from "../types/post"
-import { DialogType } from "../hooks/useDialog"
 import { User } from "../types/user"
+import { useDialogStore } from "../store/dialog"
 
 interface Props {
   posts: PostWithUser[]
-  onDialogOpenChange: (key: DialogType, open: boolean) => void
   selectedTag: string
   onSelectTag: (tag: string) => void
   onSelectPost: (post: PostWithUser | null) => void
   onSelectUser: (user: User | null) => void
   searchQuery: string
+  updateURL: () => void
 }
 
 export const PostTable = ({
   posts,
-  onDialogOpenChange,
   onSelectPost,
   onSelectUser,
   onSelectTag,
   selectedTag,
   searchQuery,
+  updateURL,
 }: Props) => {
+  const { onOpenChange } = useDialogStore()
   // 댓글 가져오기
   const fetchComments = async (postId) => {
     if (comments[postId]) return // 이미 불러온 댓글이 있으면 다시 불러오지 않음
@@ -41,14 +42,14 @@ export const PostTable = ({
   const openPostDetail = (post: PostWithUser) => {
     onSelectPost(post)
     fetchComments(post.id)
-    onDialogOpenChange("postDetailDialog", true)
+    onOpenChange("postDetailDialog", true)
   }
 
   const openUserModal = async (user: User) => {
     try {
       const data = await getUser(user.id)
       onSelectUser(data)
-      onDialogOpenChange("userModal", true)
+      onOpenChange("userModal", true)
     } catch (error) {
       console.error("사용자 정보 가져오기 오류:", error)
     }
@@ -126,7 +127,7 @@ export const PostTable = ({
                   size="sm"
                   onClick={() => {
                     onSelectPost(post)
-                    onDialogOpenChange("editPostDialog", true)
+                    onOpenChange("editPostDialog", true)
                   }}
                 >
                   <Edit2 className="w-4 h-4" />

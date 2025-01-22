@@ -2,13 +2,14 @@ import { Dialog, DialogContent, DialogTitle } from "@radix-ui/react-dialog"
 import { Button, DialogHeader, Textarea } from "../shared/ui"
 import { addComment as addCommentFunction } from "../api/comment"
 import { useForm } from "../hooks/useForm"
-import { DialogComponentProps } from "../hooks/useDialog"
+import { useDialogStore } from "../store/dialog"
 
-interface Props extends DialogComponentProps {
+interface Props {
   postId?: number
 }
 
-export const CommentAddDialog = ({ open, onOpenChange, postId }: Props) => {
+export const CommentAddDialog = ({ postId }: Props) => {
+  const { dialogs, onOpenChange } = useDialogStore()
   const {
     formState: newComment,
     handleChange,
@@ -22,7 +23,7 @@ export const CommentAddDialog = ({ open, onOpenChange, postId }: Props) => {
         ...prev,
         [data.postId]: [...(prev[data.postId] || []), data],
       }))
-      onOpenChange(false)
+      onOpenChange("addCommentDialog", false)
       reset()
     } catch (error) {
       console.error("댓글 추가 오류:", error)
@@ -30,7 +31,7 @@ export const CommentAddDialog = ({ open, onOpenChange, postId }: Props) => {
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={dialogs["addCommentDialog"]} onOpenChange={(open: boolean) => onOpenChange("addCommentDialog", open)}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>새 댓글 추가</DialogTitle>

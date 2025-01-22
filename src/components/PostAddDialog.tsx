@@ -2,25 +2,24 @@ import { Dialog, DialogContent, DialogTitle } from "@radix-ui/react-dialog"
 import { Button, DialogHeader, Input, Textarea } from "../shared/ui"
 import { addPost as addPostFunction } from "../api/post"
 import { useForm } from "../hooks/useForm"
-import { DialogComponentProps } from "../hooks/useDialog"
+import { useDialogStore } from "../store/dialog"
 
-type Props = DialogComponentProps
-
-export const PostAddDialog = ({ onOpenChange, open }: Props) => {
+export const PostAddDialog = () => {
+  const { dialogs, onOpenChange } = useDialogStore()
   const { formState: newPost, handleChange, reset } = useForm({ title: "", body: "", userId: 1 })
 
   const addPost = async () => {
     try {
       const data = await addPostFunction(newPost)
       setPosts([data, ...posts])
-      onOpenChange(false)
+      onOpenChange("addPostDialog", false)
       reset()
     } catch (error) {
       console.error("게시물 추가 오류:", error)
     }
   }
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={dialogs["addPostDialog"]} onOpenChange={(open: boolean) => onOpenChange("addPostDialog", open)}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>새 게시물 추가</DialogTitle>
