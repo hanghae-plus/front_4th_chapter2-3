@@ -17,7 +17,7 @@ import { useDialog } from "../hooks/useDialog"
 
 const PostsManager = () => {
   // 상태 관리
-  const { limit, selectedTag, skip, sortBy, sortOrder, changeLimit, changeSkip } = useParams()
+  const { limit, selectedTag, skip, sortBy, sortOrder, onChangeLimit, onChangeSkip } = useParams()
   const { tags } = useTags()
   const { posts, loading, total } = usePosts(selectedTag, skip, limit, sortBy, sortOrder)
   const [comments, setComments] = useState({})
@@ -42,8 +42,18 @@ const PostsManager = () => {
       <CardContent>
         <div className="flex flex-col gap-4">
           <FilterableSearch />
-          {loading ? <div className="flex justify-center p-4">로딩 중...</div> : <PostTable posts={posts} />}
-          <Pagination skip={skip} total={total} limit={limit} onChangeLimit={changeLimit} onChangeSkip={changeSkip} />
+          {loading ? (
+            <div className="flex justify-center p-4">로딩 중...</div>
+          ) : (
+            <PostTable posts={posts} onDialogOpenChange={onOpenChange} />
+          )}
+          <Pagination
+            skip={skip}
+            total={total}
+            limit={limit}
+            onChangeLimit={onChangeLimit}
+            onChangeSkip={onChangeSkip}
+          />
         </div>
       </CardContent>
       <PostAddDialog

@@ -1,11 +1,18 @@
-import { MessageSquare, Table, ThumbsDown, ThumbsUp } from "lucide-react"
+import { Edit2, MessageSquare, Table, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react"
 import { Button, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../shared/ui"
 import { highlightText } from "../utils/html"
 import { deletePost as deletePostFunction } from "../api/post"
 import { getUser } from "../api/user"
 import { getComments } from "../api/comment"
+import { PostWithUser } from "../types/post"
+import { DialogType } from "../hooks/useDialog"
 
-export const PostTable = (posts) => {
+interface Props {
+  posts: PostWithUser[]
+  onDialogOpenChange: (key: DialogType, open: boolean) => void
+}
+
+export const PostTable = ({ posts, onDialogOpenChange }: Props) => {
   // 댓글 가져오기
   const fetchComments = async (postId) => {
     if (comments[postId]) return // 이미 불러온 댓글이 있으면 다시 불러오지 않음
@@ -17,17 +24,17 @@ export const PostTable = (posts) => {
     }
   }
 
-  const openPostDetail = (post) => {
+  const openPostDetail = (post: PostWithUser) => {
     setSelectedPost(post)
     fetchComments(post.id)
-    setShowPostDetailDialog(true)
+    onDialogOpenChange("postDetailDialog", true)
   }
 
   const openUserModal = async (user) => {
     try {
       const data = getUser(user.id)
       setSelectedUser(data)
-      setShowUserModal(true)
+      onDialogOpenChange("userModal", true)
     } catch (error) {
       console.error("사용자 정보 가져오기 오류:", error)
     }
@@ -105,7 +112,7 @@ export const PostTable = (posts) => {
                   size="sm"
                   onClick={() => {
                     setSelectedPost(post)
-                    setShowEditDialog(true)
+                    onDialogOpenChange("editPostDialog", true)
                   }}
                 >
                   <Edit2 className="w-4 h-4" />

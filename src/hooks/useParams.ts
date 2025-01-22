@@ -24,11 +24,11 @@ export const useParams = () => {
     navigate(`?${params.toString()}`)
   }, [limit, skip, searchQuery, sortBy, sortOrder, selectedTag, navigate])
 
-  const changeSkip = (skip: 0 | 1) => {
+  const onChangeSkip = (skip: 0 | 1) => {
     setSkip(skip)
   }
 
-  const changeLimit = (limit: number) => {
+  const onChangeLimit = (limit: number) => {
     setLimit(limit)
   }
 
@@ -54,7 +54,7 @@ export const useParams = () => {
     sortOrder,
     selectedTag,
     updateURL,
-    changeSkip,
-    changeLimit,
+    onChangeSkip,
+    onChangeLimit,
   }
 }
