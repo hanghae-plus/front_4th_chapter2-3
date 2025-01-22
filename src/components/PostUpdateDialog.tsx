@@ -2,15 +2,19 @@ import { Dialog, DialogContent, DialogTitle } from "@radix-ui/react-dialog"
 import { Button, DialogHeader, Input, Textarea } from "../shared/ui"
 import { updatePost as updatePostFunction } from "../api/post"
 import { DialogComponentProps } from "../hooks/useDialog"
+import { PostWithUser } from "../types/post"
 
-type Props = DialogComponentProps
+interface Props extends DialogComponentProps {
+  selectedPost: PostWithUser | null
+  onSelectPost: (post: PostWithUser | null) => void
+}
 
-export const PostUpdateDialog = ({ open, onOpenChange }: Props) => {
+export const PostUpdateDialog = ({ open, onOpenChange, selectedPost, onSelectPost }: Props) => {
   const updatePost = async () => {
     try {
       const data = await updatePostFunction(selectedPost)
       setPosts(posts.map((post) => (post.id === data.id ? data : post)))
-      setShowEditDialog(false)
+      onOpenChange(false)
     } catch (error) {
       console.error("게시물 업데이트 오류:", error)
     }
@@ -25,13 +29,21 @@ export const PostUpdateDialog = ({ open, onOpenChange }: Props) => {
           <Input
             placeholder="제목"
             value={selectedPost?.title || ""}
-            onChange={(e) => setSelectedPost({ ...selectedPost, title: e.target.value })}
+            onChange={(e) => {
+              if (selectedPost) {
+                onSelectPost({ ...selectedPost, title: e.target.value })
+              }
+            }}
           />
           <Textarea
             rows={15}
             placeholder="내용"
             value={selectedPost?.body || ""}
-            onChange={(e) => setSelectedPost({ ...selectedPost, body: e.target.value })}
+            onChange={(e) => {
+              if (selectedPost) {
+                onSelectPost({ ...selectedPost, body: e.target.value })
+              }
+            }}
           />
           <Button onClick={updatePost}>게시물 업데이트</Button>
         </div>

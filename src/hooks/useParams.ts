@@ -32,6 +32,10 @@ export const useParams = () => {
     setLimit(limit)
   }
 
+  const onSelectTag = (tag: string) => {
+    setSelectedTag(tag)
+  }
+
   useEffect(() => {
     const params = new URLSearchParams(location.search)
     setSkip(parseInt(params.get("skip") || "0"))
@@ -56,5 +60,6 @@ export const useParams = () => {
     updateURL,
     onChangeSkip,
     onChangeLimit,
+    onSelectTag,
   }
 }

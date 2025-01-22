@@ -1,10 +1,13 @@
 import { Dialog, DialogContent, DialogTitle } from "@radix-ui/react-dialog"
 import { DialogHeader } from "../shared/ui"
 import { DialogComponentProps } from "../hooks/useDialog"
+import { User } from "../types/user"
 
-type Props = DialogComponentProps
+interface Props extends DialogComponentProps {
+  selectedUser: User | null
+}
 
-export const UserModal = ({ open, onOpenChange }: Props) => {
+export const UserModal = ({ open, onOpenChange, selectedUser }: Props) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>

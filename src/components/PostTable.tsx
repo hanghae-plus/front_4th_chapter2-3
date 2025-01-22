@@ -6,13 +6,25 @@ import { getUser } from "../api/user"
 import { getComments } from "../api/comment"
 import { PostWithUser } from "../types/post"
 import { DialogType } from "../hooks/useDialog"
+import { User } from "../types/user"
 
 interface Props {
   posts: PostWithUser[]
   onDialogOpenChange: (key: DialogType, open: boolean) => void
+  selectedTag: string
+  onSelectTag: (tag: string) => void
+  onSelectPost: (post: PostWithUser | null) => void
+  onSelectUser: (user: User | null) => void
 }
 
-export const PostTable = ({ posts, onDialogOpenChange }: Props) => {
+export const PostTable = ({
+  posts,
+  onDialogOpenChange,
+  onSelectPost,
+  onSelectUser,
+  onSelectTag,
+  selectedTag,
+}: Props) => {
   // 댓글 가져오기
   const fetchComments = async (postId) => {
     if (comments[postId]) return // 이미 불러온 댓글이 있으면 다시 불러오지 않음
@@ -25,15 +37,15 @@ export const PostTable = ({ posts, onDialogOpenChange }: Props) => {
   }
 
   const openPostDetail = (post: PostWithUser) => {
-    setSelectedPost(post)
+    onSelectPost(post)
     fetchComments(post.id)
     onDialogOpenChange("postDetailDialog", true)
   }
 
-  const openUserModal = async (user) => {
+  const openUserModal = async (user: User) => {
     try {
-      const data = getUser(user.id)
-      setSelectedUser(data)
+      const data = await getUser(user.id)
+      onSelectUser(data)
       onDialogOpenChange("userModal", true)
     } catch (error) {
       console.error("사용자 정보 가져오기 오류:", error)
@@ -78,7 +90,7 @@ export const PostTable = ({ posts, onDialogOpenChange }: Props) => {
                           : "text-blue-800 bg-blue-100 hover:bg-blue-200"
                       }`}
                       onClick={() => {
-                        setSelectedTag(tag)
+                        onSelectTag(tag)
                         updateURL()
                       }}
                     >
@@ -111,7 +123,7 @@ export const PostTable = ({ posts, onDialogOpenChange }: Props) => {
                   variant="ghost"
                   size="sm"
                   onClick={() => {
-                    setSelectedPost(post)
+                    onSelectPost(post)
                     onDialogOpenChange("editPostDialog", true)
                   }}
                 >

@@ -14,17 +14,20 @@ import { usePosts } from "../hooks/usePosts"
 import { useParams } from "../hooks/useParams"
 import { useTags } from "../hooks/useTags"
 import { useDialog } from "../hooks/useDialog"
+import { PostWithUser } from "../types/post"
+import { User } from "../types/user"
+import { Comment } from "../types/comment"
 
 const PostsManager = () => {
   // 상태 관리
-  const { limit, selectedTag, skip, sortBy, sortOrder, onChangeLimit, onChangeSkip } = useParams()
+  const { limit, selectedTag, skip, sortBy, sortOrder, onChangeLimit, onChangeSkip, onSelectTag } = useParams()
   const { tags } = useTags()
   const { posts, loading, total } = usePosts(selectedTag, skip, limit, sortBy, sortOrder)
   const [comments, setComments] = useState({})
 
-  const [selectedPost, setSelectedPost] = useState(null)
-  const [selectedComment, setSelectedComment] = useState(null)
-  const [selectedUser, setSelectedUser] = useState(null)
+  const [selectedPost, setSelectedPost] = useState<PostWithUser | null>(null)
+  const [selectedComment, setSelectedComment] = useState<Comment | null>(null)
+  const [selectedUser, setSelectedUser] = useState<User | null>(null)
 
   const { onOpenChange, dialogs } = useDialog()
 
@@ -45,7 +48,14 @@ const PostsManager = () => {
           {loading ? (
             <div className="flex justify-center p-4">로딩 중...</div>
           ) : (
-            <PostTable posts={posts} onDialogOpenChange={onOpenChange} />
+            <PostTable
+              posts={posts}
+              onDialogOpenChange={onOpenChange}
+              onSelectPost={setSelectedPost}
+              onSelectUser={setSelectedUser}
+              selectedTag={selectedTag}
+              onSelectTag={onSelectTag}
+            />
           )}
           <Pagination
             skip={skip}
@@ -63,6 +73,8 @@ const PostsManager = () => {
       <PostUpdateDialog
         open={dialogs["editPostDialog"]}
         onOpenChange={(open: boolean) => onOpenChange("editPostDialog", open)}
+        selectedPost={selectedPost}
+        onSelectPost={setSelectedPost}
       />
       <CommentAddDialog
         open={dialogs["addCommentDialog"]}
@@ -71,12 +83,20 @@ const PostsManager = () => {
       <CommentUpdateDialog
         open={dialogs["editCommentDialog"]}
         onOpenChange={(open: boolean) => onOpenChange("editCommentDialog", open)}
+        selectedComment={selectedComment}
+        onSelectComment={setSelectedComment}
       />
       <PostDetailDialog
         open={dialogs["postDetailDialog"]}
         onOpenChange={(open: boolean) => onOpenChange("postDetailDialog", open)}
+        selectedPost={selectedPost}
+        onSelectComment={setSelectedComment}
       />
-      <UserModal open={dialogs["userModal"]} onOpenChange={(open: boolean) => onOpenChange("userModal", open)} />
+      <UserModal
+        selectedUser={selectedUser}
+        open={dialogs["userModal"]}
+        onOpenChange={(open: boolean) => onOpenChange("userModal", open)}
+      />
     </Card>
   )
 }

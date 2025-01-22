@@ -2,10 +2,14 @@ import { Dialog, DialogContent, DialogTitle } from "@radix-ui/react-dialog"
 import { Button, DialogHeader, Textarea } from "../shared/ui"
 import { updateComment as updateCommentFunction } from "../api/comment"
 import { DialogComponentProps } from "../hooks/useDialog"
+import { Comment } from "../types/comment"
 
-type Props = DialogComponentProps
+interface Props extends DialogComponentProps {
+  selectedComment: Comment | null
+  onSelectComment: (comment: Comment) => void
+}
 
-export const CommentUpdateDialog = ({ open, onOpenChange }: Props) => {
+export const CommentUpdateDialog = ({ open, onOpenChange, selectedComment, onSelectComment }: Props) => {
   const updateComment = async () => {
     try {
       const data = await updateCommentFunction(selectedComment)
@@ -13,7 +17,7 @@ export const CommentUpdateDialog = ({ open, onOpenChange }: Props) => {
         ...prev,
         [data.postId]: prev[data.postId].map((comment) => (comment.id === data.id ? data : comment)),
       }))
-      setShowEditCommentDialog(false)
+      onOpenChange(false)
     } catch (error) {
       console.error("댓글 업데이트 오류:", error)
     }
@@ -28,7 +32,11 @@ export const CommentUpdateDialog = ({ open, onOpenChange }: Props) => {
           <Textarea
             placeholder="댓글 내용"
             value={selectedComment?.body || ""}
-            onChange={(e) => setSelectedComment({ ...selectedComment, body: e.target.value })}
+            onChange={(e) => {
+              if (selectedComment) {
+                onSelectComment({ ...selectedComment, body: e.target.value })
+              }
+            }}
           />
           <Button onClick={updateComment}>댓글 업데이트</Button>
         </div>

@@ -13,7 +13,7 @@ export const PostAddDialog = ({ onOpenChange, open }: Props) => {
     try {
       const data = await addPostFunction(newPost)
       setPosts([data, ...posts])
-      setShowAddDialog(false)
+      onOpenChange(false)
       reset()
     } catch (error) {
       console.error("게시물 추가 오류:", error)

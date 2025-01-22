@@ -2,12 +2,14 @@ import { ThumbsUp } from "lucide-react"
 import { Button } from "../shared/ui"
 import { highlightText } from "../utils/html"
 import { deleteComment as deleteCommentFunction, likeComment as likeCommentFunction } from "../api/comment"
+import { Comment } from "../types/comment"
 
 interface Props {
-  postId?: string
+  postId?: number
+  onSelectComment: (comment: Comment) => void
 }
 
-export const Comments = ({ postId }: Props) => {
+export const Comments = ({ postId, onSelectComment }: Props) => {
   const deleteComment = async (id, postId) => {
     try {
       await deleteCommentFunction(id)
@@ -65,7 +67,7 @@ export const Comments = ({ postId }: Props) => {
                 variant="ghost"
                 size="sm"
                 onClick={() => {
-                  setSelectedComment(comment)
+                  onSelectComment(comment)
                   setShowEditCommentDialog(true)
                 }}
               >

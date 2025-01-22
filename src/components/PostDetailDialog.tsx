@@ -3,10 +3,15 @@ import { DialogHeader } from "../shared/ui"
 import { Comments } from "./Comments"
 import { highlightText } from "../utils/html"
 import { DialogComponentProps } from "../hooks/useDialog"
+import { PostWithUser } from "../types/post"
+import { Comment } from "../types/comment"
 
-type Props = DialogComponentProps
+interface Props extends DialogComponentProps {
+  selectedPost: PostWithUser | null
+  onSelectComment: (comment: Comment) => void
+}
 
-export const PostDetailDialog = ({ open, onOpenChange }: Props) => {
+export const PostDetailDialog = ({ selectedPost, open, onOpenChange, onSelectComment }: Props) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl">
@@ -15,7 +20,7 @@ export const PostDetailDialog = ({ open, onOpenChange }: Props) => {
         </DialogHeader>
         <div className="space-y-4">
           <p>{highlightText(selectedPost?.body, searchQuery)}</p>
-          <Comments postId={selectedPost?.id} />
+          <Comments postId={selectedPost?.id} onSelectComment={onSelectComment} />
         </div>
       </DialogContent>
     </Dialog>
