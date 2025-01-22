@@ -1,3 +1,5 @@
+import { ListResponse } from "@/shared/model";
+
 import { Post } from "../model";
 
 export interface GetPostsByTagProps {
@@ -13,7 +15,7 @@ export const getPostsByTag = async ({ limit, skip, tag }: GetPostsByTagProps) =>
     throw new Error(`HTTP error! status: ${response.status}`);
   }
 
-  const data = (await response.json()) as { posts: Post[] };
+  const data = (await response.json()) as ListResponse<{ posts: Post[] }>;
 
   return data;
 };

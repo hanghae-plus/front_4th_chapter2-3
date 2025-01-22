@@ -1,3 +1,5 @@
+import { ListResponse } from "@/shared/model";
+
 import { Post } from "../model";
 
 export const getPosts = async (limit: number, skip: number) => {
@@ -7,7 +9,7 @@ export const getPosts = async (limit: number, skip: number) => {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
 
-  const data = (await response.json()) as { posts: Post[] };
+  const data = (await response.json()) as ListResponse<{ posts: Post[] }>;
 
   return data;
 };

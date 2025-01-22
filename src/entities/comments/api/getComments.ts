@@ -1,3 +1,5 @@
+import { ListResponse } from "@/shared/model";
+
 import { Comment } from "../model";
 
 export const getComments = async (postId: Comment["postId"]) => {
@@ -7,7 +9,7 @@ export const getComments = async (postId: Comment["postId"]) => {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
 
-  const data = (await response.json()) as { comments: Comment[] };
+  const data = (await response.json()) as ListResponse<{ comments: Comment[] }>;
 
   return data;
 };
