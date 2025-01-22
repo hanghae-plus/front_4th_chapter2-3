@@ -70,7 +70,12 @@ interface Comment {
   }
 }
 
-// API 응답 타입 정의
+interface Tag {
+  id: number
+  slug: string
+  url: string
+}
+
 interface PostsResponse {
   posts: Post[]
   total: number
@@ -89,20 +94,14 @@ const PostsManager = () => {
   const location = useLocation()
   const queryParams = new URLSearchParams(location.search)
 
-  // 상태 관리
-
   const [posts, setPosts] = useState<Post[]>([])
   const [selectedPost, setSelectedPost] = useState<Post | null>(null)
-  const [newPost, setNewPost] = useState<Omit<Post, "id">>({ title: "", body: "", userId: 1 })
+  const [newPost, setNewPost] = useState<Partial<Post>>({ title: "", body: "", userId: 1 })
   const [comments, setComments] = useState<Record<number, Comment[]>>({})
   const [selectedComment, setSelectedComment] = useState<Comment | null>(null)
-  const [newComment, setNewComment] = useState<Omit<Comment, "id" | "user" | "likes">>({
-    body: "",
-    postId: 0,
-    userId: 1,
-  })
+  const [newComment, setNewComment] = useState<Partial<Comment>>({ body: "", postId: 0, userId: 1 })
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
-  const [tags, setTags] = useState<Array<{ slug: string; url: string }>>([])
+  const [tags, setTags] = useState<Tag[]>([])
 
   const [total, setTotal] = useState(0)
   const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"))
@@ -119,7 +118,6 @@ const PostsManager = () => {
   const [showPostDetailDialog, setShowPostDetailDialog] = useState(false)
   const [showUserModal, setShowUserModal] = useState(false)
 
-  // URL 업데이트 함수
   const updateURL = () => {
     const params = new URLSearchParams()
     if (skip) params.set("skip", skip.toString())
@@ -131,7 +129,6 @@ const PostsManager = () => {
     navigate(`?${params.toString()}`)
   }
 
-  // 게시물 가져오기
   const fetchPosts = async () => {
     setLoading(true)
     try {
@@ -157,7 +154,6 @@ const PostsManager = () => {
     }
   }
 
-  // 태그 가져오기
   const fetchTags = async () => {
     try {
       const response = await fetch("/api/posts/tags")
@@ -168,7 +164,6 @@ const PostsManager = () => {
     }
   }
 
-  // 게시물 검색
   const searchPosts = async () => {
     if (!searchQuery) {
       fetchPosts()
@@ -186,7 +181,6 @@ const PostsManager = () => {
     setLoading(false)
   }
 
-  // 태그별 게시물 가져오기
   const fetchPostsByTag = async (tag: string) => {
     if (!tag || tag === "all") {
       fetchPosts()
@@ -215,7 +209,6 @@ const PostsManager = () => {
     setLoading(false)
   }
 
-  // 게시물 추가
   const addPost = async () => {
     try {
       const response = await fetch("/api/posts/add", {
@@ -232,7 +225,6 @@ const PostsManager = () => {
     }
   }
 
-  // 게시물 업데이트
   const updatePost = async () => {
     if (!selectedPost) return
 
@@ -250,7 +242,6 @@ const PostsManager = () => {
     }
   }
 
-  // 게시물 삭제
   const deletePost = async (id: number) => {
     try {
       await fetch(`/api/posts/${id}`, {
@@ -262,7 +253,6 @@ const PostsManager = () => {
     }
   }
 
-  // 댓글 가져오기
   const fetchComments = async (postId: number) => {
     if (comments[postId]) return
     try {
@@ -274,7 +264,6 @@ const PostsManager = () => {
     }
   }
 
-  // 댓글 추가
   const addComment = async () => {
     try {
       const response = await fetch("/api/comments/add", {
@@ -294,7 +283,6 @@ const PostsManager = () => {
     }
   }
 
-  // 댓글 업데이트
   const updateComment = async () => {
     if (!selectedComment) return
 
@@ -315,7 +303,6 @@ const PostsManager = () => {
     }
   }
 
-  // 댓글 삭제
   const deleteComment = async (id: number, postId: number) => {
     try {
       await fetch(`/api/comments/${id}`, {
@@ -330,7 +317,6 @@ const PostsManager = () => {
     }
   }
 
-  // 댓글 좋아요
   const likeComment = async (id: number, postId: number) => {
     const comment = comments[postId]?.find((c) => c.id === id)
     if (!comment) return
@@ -353,7 +339,6 @@ const PostsManager = () => {
     }
   }
 
-  // 게시물 상세 보기
   const openPostDetail = (post: Post) => {
     if (!post) return
 
@@ -362,7 +347,6 @@ const PostsManager = () => {
     setShowPostDetailDialog(true)
   }
 
-  // 사용자 모달 열기
   const openUserModal = async (user: User | undefined) => {
     if (!user) return
 
@@ -378,6 +362,7 @@ const PostsManager = () => {
 
   useEffect(() => {
     fetchTags()
+    fetchPosts()
   }, [])
 
   useEffect(() => {
@@ -399,7 +384,6 @@ const PostsManager = () => {
     setSelectedTag(params.get("tag") || "")
   }, [location.search])
 
-  // 하이라이트 함수 추가
   const highlightText = (text: string | undefined, highlight: string): React.ReactNode => {
     if (!text) return null
     if (!highlight.trim()) {
@@ -414,7 +398,6 @@ const PostsManager = () => {
     )
   }
 
-  // 게시물 테이블 렌더링
   const renderPostTable = () => (
     <Table>
       <TableHeader>
@@ -433,7 +416,6 @@ const PostsManager = () => {
             <TableCell>
               <div className="space-y-1">
                 <div>{highlightText(post.title, searchQuery)}</div>
-
                 <div className="flex flex-wrap gap-1">
                   {post.tags?.map((tag) => (
                     <span
@@ -494,7 +476,6 @@ const PostsManager = () => {
     </Table>
   )
 
-  // 댓글 렌더링
   const renderComments = (postId: number) => (
     <div className="mt-2">
       <div className="flex items-center justify-between mb-2">
@@ -555,7 +536,6 @@ const PostsManager = () => {
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-4">
-          {/* 검색 및 필터 컨트롤 */}
           <div className="flex gap-4">
             <div className="flex-1">
               <div className="relative">
@@ -611,10 +591,8 @@ const PostsManager = () => {
             </Select>
           </div>
 
-          {/* 게시물 테이블 */}
           {loading ? <div className="flex justify-center p-4">로딩 중...</div> : renderPostTable()}
 
-          {/* 페이지네이션 */}
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
               <span>표시</span>
@@ -642,7 +620,6 @@ const PostsManager = () => {
         </div>
       </CardContent>
 
-      {/* 게시물 추가 대화상자 */}
       <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
         <DialogContent>
           <DialogHeader>
@@ -655,7 +632,6 @@ const PostsManager = () => {
               onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}
             />
             <Textarea
-              rows={30}
               placeholder="내용"
               value={newPost.body}
               onChange={(e) => setNewPost({ ...newPost, body: e.target.value })}
@@ -671,7 +647,6 @@ const PostsManager = () => {
         </DialogContent>
       </Dialog>
 
-      {/* 게시물 수정 대화상자 */}
       <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
         <DialogContent>
           <DialogHeader>
@@ -684,7 +659,6 @@ const PostsManager = () => {
               onChange={(e) => setSelectedPost({ ...selectedPost, title: e.target.value })}
             />
             <Textarea
-              rows={15}
               placeholder="내용"
               value={selectedPost?.body || ""}
               onChange={(e) => setSelectedPost({ ...selectedPost, body: e.target.value })}
@@ -694,7 +668,6 @@ const PostsManager = () => {
         </DialogContent>
       </Dialog>
 
-      {/* 댓글 추가 대화상자 */}
       <Dialog open={showAddCommentDialog} onOpenChange={setShowAddCommentDialog}>
         <DialogContent>
           <DialogHeader>
@@ -711,7 +684,6 @@ const PostsManager = () => {
         </DialogContent>
       </Dialog>
 
-      {/* 댓글 수정 대화상자 */}
       <Dialog open={showEditCommentDialog} onOpenChange={setShowEditCommentDialog}>
         <DialogContent>
           <DialogHeader>
@@ -728,7 +700,6 @@ const PostsManager = () => {
         </DialogContent>
       </Dialog>
 
-      {/* 게시물 상세 보기 대화상자 */}
       <Dialog open={showPostDetailDialog} onOpenChange={setShowPostDetailDialog}>
         <DialogContent className="max-w-3xl">
           <DialogHeader>
@@ -736,12 +707,11 @@ const PostsManager = () => {
           </DialogHeader>
           <div className="space-y-4">
             <p>{highlightText(selectedPost?.body, searchQuery)}</p>
-            {renderComments(selectedPost?.id)}
+            {selectedPost && renderComments(selectedPost.id)}
           </div>
         </DialogContent>
       </Dialog>
 
-      {/* 사용자 모달 */}
       <Dialog open={showUserModal} onOpenChange={setShowUserModal}>
         <DialogContent>
           <DialogHeader>
