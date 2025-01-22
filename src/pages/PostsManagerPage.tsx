@@ -3,8 +3,11 @@ import { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 
 import { Textarea, Button, Card, Dialog, Input, Select, Table } from "../shared/ui"
+import { PostDetailDialog } from "../widgets/post-detail-dialog/ui/PostDetailDialog"
 import { PostEditDialog } from "../widgets/post-edit-dialog/ui/PostEditDialog"
 import { UserDialog } from "../widgets/user-dialog/ui/UserDialog"
+
+import type { Post } from "../entities/post/model/types/post"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -12,12 +15,12 @@ const PostsManager = () => {
   const queryParams = new URLSearchParams(location.search)
 
   // 상태 관리
-  const [posts, setPosts] = useState([])
+  const [posts, setPosts] = useState<Post[]>([])
   const [total, setTotal] = useState(0)
   const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"))
   const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"))
   const [searchQuery, setSearchQuery] = useState(queryParams.get("search") || "")
-  const [selectedPost, setSelectedPost] = useState(null)
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null)
   const [sortBy, setSortBy] = useState(queryParams.get("sortBy") || "")
   const [sortOrder, setSortOrder] = useState(queryParams.get("sortOrder") || "asc")
   const [showAddDialog, setShowAddDialog] = useState(false)
@@ -652,18 +655,12 @@ const PostsManager = () => {
       </Dialog>
 
       {/* 게시물 상세 보기 대화상자 */}
-      {/* Widget */}
-      <Dialog open={showPostDetailDialog} onOpenChange={setShowPostDetailDialog}>
-        <Dialog.Content className="max-w-3xl">
-          <Dialog.Header>
-            <Dialog.Title>{highlightText(selectedPost?.title, searchQuery)}</Dialog.Title>
-          </Dialog.Header>
-          <div className="space-y-4">
-            <p>{highlightText(selectedPost?.body, searchQuery)}</p>
-            {renderComments(selectedPost?.id)}
-          </div>
-        </Dialog.Content>
-      </Dialog>
+      <PostDetailDialog
+        open={showPostDetailDialog}
+        onOpenChange={setShowPostDetailDialog}
+        selectedPost={selectedPost}
+        searchQuery={searchQuery}
+      />
 
       {/* 사용자 모달 */}
       <UserDialog open={showUserModal} onOpenChange={setShowUserModal} selectedUser={selectedUser} />
