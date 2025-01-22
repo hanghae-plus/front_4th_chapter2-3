@@ -36,6 +36,8 @@ import { postMutations } from "../../../entities/post/api/mutations"
 import { commentMutations } from "../../../entities/comment/api/mutations"
 import { useViewUserProfile } from "../../../features/view-user-profile/model/use-view-user-profile"
 import { UserProfileModal } from "../../../entities/user/ui/UserProfileModal"
+import { useAddPost } from "../../../features/add-post/model/useAddPost"
+import { AddPostModal } from "../../../entities/post/ui/AddPostModal"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -51,9 +53,6 @@ const PostsManager = () => {
   const selectedTag = queryParams.get("tag") || ""
   const selectedPostId = queryParams.get("selectedPostId")
   const mode = queryParams.get("mode")
-
-  const [showAddDialog, setShowAddDialog] = useState(false)
-  const [newPost, setNewPost] = useState({ title: "", body: "", userId: 1 })
 
   const [, setComments] = useState({})
   const [selectedComment, setSelectedComment] = useState(null)
@@ -134,13 +133,6 @@ const PostsManager = () => {
     ...postQueries.tagQuery(),
   })
 
-  const addPostMutation = useMutation({
-    ...postMutations.addMutation(),
-    onError: (error) => {
-      console.error("게시물 추가 오류:", error)
-    },
-  })
-
   const updatePostMutation = useMutation({
     ...postMutations.updateMutation(),
     onError: (error) => {
@@ -210,13 +202,6 @@ const PostsManager = () => {
       search: value || null,
       skip: "0",
     })
-  }
-
-  // 게시물 추가
-  const addPost = async () => {
-    await addPostMutation.mutateAsync(newPost)
-    setShowAddDialog(false)
-    setNewPost({ title: "", body: "", userId: 1 })
   }
 
   // 게시물 업데이트
@@ -307,6 +292,15 @@ const PostsManager = () => {
   }
 
   const { isOpen, handleViewProfile, handleClose, user } = useViewUserProfile()
+  const {
+    isOpen: isAddOpen,
+    formData,
+    handleChange,
+    handleOpen: openAddPost,
+    handleClose: closeAddPost,
+    handleSubmit: submitAddPost,
+    isSubmitting: isAddSubmitting,
+  } = useAddPost()
 
   // 하이라이트 함수 추가
   const highlightText = (text: string, highlight: string) => {
@@ -471,7 +465,7 @@ const PostsManager = () => {
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <span>게시물 관리자</span>
-          <Button onClick={() => setShowAddDialog(true)}>
+          <Button onClick={openAddPost}>
             <Plus className="w-4 h-4 mr-2" />
             게시물 추가
           </Button>
@@ -588,35 +582,6 @@ const PostsManager = () => {
         </div>
       </CardContent>
 
-      {/* 게시물 추가 대화상자 */}
-      <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>새 게시물 추가</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <Input
-              placeholder="제목"
-              value={newPost.title}
-              onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}
-            />
-            <Textarea
-              rows={30}
-              placeholder="내용"
-              value={newPost.body}
-              onChange={(e) => setNewPost({ ...newPost, body: e.target.value })}
-            />
-            <Input
-              type="number"
-              placeholder="사용자 ID"
-              value={newPost.userId}
-              onChange={(e) => setNewPost({ ...newPost, userId: Number(e.target.value) })}
-            />
-            <Button onClick={addPost}>게시물 추가</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-
       {/* 게시물 수정 대화상자 */}
       <Dialog
         open={!!selectedPostId}
@@ -716,6 +681,14 @@ const PostsManager = () => {
       </Dialog>
 
       <UserProfileModal isOpen={isOpen} onClose={handleClose} user={user} />
+      <AddPostModal
+        isOpen={isAddOpen}
+        onClose={closeAddPost}
+        formData={formData}
+        onChange={handleChange}
+        onSubmit={submitAddPost}
+        isSubmitting={isAddSubmitting}
+      />
     </Card>
   )
 }
