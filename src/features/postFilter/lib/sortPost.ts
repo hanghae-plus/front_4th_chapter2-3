@@ -1,16 +1,16 @@
 import { Post } from "@/types/post";
 
-export const sortPosts = (posts: Post[], sortBy: string, sortOrder: string): Post[] => {
-  if (sortBy === "none") return posts;
+export const sortPost = (posts: Post[], column: string, order: string): Post[] => {
+  if (column === "none") return posts;
 
   return [...posts].sort((a, b) => {
     let comparison = 0;
-    switch (sortBy) {
+    switch (column) {
       case "id":
-        comparison = Number(b.id) - Number(a.id);
+        comparison = Number(a.id) - Number(b.id);
         break;
       case "title":
-        comparison = b.title.localeCompare(a.title);
+        comparison = a.title.localeCompare(b.title);
         break;
       case "reactions":
         comparison = a.reactions.likes - b.reactions.likes;
@@ -18,6 +18,6 @@ export const sortPosts = (posts: Post[], sortBy: string, sortOrder: string): Pos
       default:
         return 0;
     }
-    return sortOrder === "asc" ? comparison : -comparison;
+    return order === "asc" ? comparison : -comparison;
   });
 };

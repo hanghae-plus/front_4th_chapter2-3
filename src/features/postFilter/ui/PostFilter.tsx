@@ -5,19 +5,7 @@ import { usePostFilter } from "@features/postFilter/model/usePostFilter.ts";
 import { useTagStore } from "@core/store/useTagStore.ts";
 
 function PostFilter() {
-  const {
-    searchQuery,
-    setSearchQuery,
-    selectedTag,
-    setSelectedTag,
-    sortColumn,
-    handleSortColumn,
-    sortOrder,
-    setSortOrder,
-    searchPosts,
-    fetchPostsByTag,
-    updateURL,
-  } = usePostFilter();
+  const { sortColumn, handleSortColumn, sortOrder, handleSortOrder, selectedTag, handleSelectTag } = usePostFilter();
 
   const { tags } = useTagStore();
 
@@ -31,20 +19,13 @@ function PostFilter() {
             <Input
               placeholder="게시물 검색..."
               className="pl-8"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyPress={(e) => e.key === "Enter" && searchPosts()}
+              // value={searchQuery}
+              // onChange={(e) => setSearchQuery(e.target.value)}
+              // onKeyPress={(e) => e.key === "Enter" && searchPosts()}
             />
           </div>
         </div>
-        <Select
-          value={selectedTag}
-          onValueChange={(value) => {
-            setSelectedTag(value);
-            fetchPostsByTag(value);
-            updateURL();
-          }}
-        >
+        <Select value={selectedTag} onValueChange={(value) => handleSelectTag(value)}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="태그 선택" />
           </SelectTrigger>
@@ -68,7 +49,7 @@ function PostFilter() {
             <SelectItem value="reactions">반응</SelectItem>
           </SelectContent>
         </Select>
-        <Select value={sortOrder} onValueChange={setSortOrder}>
+        <Select value={sortOrder} onValueChange={handleSortOrder}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="정렬 순서" />
           </SelectTrigger>

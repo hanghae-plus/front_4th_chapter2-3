@@ -1,11 +1,14 @@
 import { Edit2, MessageSquare, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@shared/table/ui";
-import { usePostStore } from "@core/store/usePostStore.ts";
 import { Button } from "@shared/button/ui";
+import { usePostFilter } from "@features/postFilter/model/usePostFilter.ts";
+import { usePostStore } from "@core/store/usePostStore.ts";
+import { useTagStore } from "@core/store/useTagStore.ts";
 
 function PostTable() {
-  const { posts } = usePostStore();
-
+  const { filteredPosts } = usePostStore();
+  const { selectedTag } = useTagStore();
+  const { handleSelectTag } = usePostFilter();
   return (
     <Table>
       <TableHeader>
@@ -18,26 +21,29 @@ function PostTable() {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {posts.map((post) => (
+        {filteredPosts.map((post) => (
           <TableRow key={post.id}>
             <TableCell>{post.id}</TableCell>
             <TableCell>
-              {post.title}
-              <div className="flex flex-wrap gap-1">
-                {post.tags?.map((tag) => (
-                  <span
-                    key={tag}
-                    className={`px-1 text-[9px] font-semibold rounded-[4px] cursor-pointer ${
-                      false ? "text-white bg-blue-500 hover:bg-blue-600" : "text-blue-800 bg-blue-100 hover:bg-blue-200"
-                    }`}
-                    onClick={() => {
-                      // setSelectedTag(tag);
-                      // updateURL();
-                    }}
-                  >
-                    {tag}
-                  </span>
-                ))}
+              <div className="space-y-1">
+                <div>{post.title}</div>
+                <div className="flex flex-wrap gap-1">
+                  {post.tags?.map((tag) => {
+                    return (
+                      <span
+                        key={tag}
+                        className={`px-1 text-[9px] font-semibold rounded-[4px] cursor-pointer ${
+                          selectedTag?.slug === tag
+                            ? "text-white bg-blue-500 hover:bg-blue-600"
+                            : "text-blue-800 bg-blue-100 hover:bg-blue-200"
+                        }`}
+                        onClick={() => handleSelectTag(tag)}
+                      >
+                        {tag}
+                      </span>
+                    );
+                  })}
+                </div>
               </div>
             </TableCell>
             <TableCell>

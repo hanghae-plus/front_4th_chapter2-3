@@ -90,7 +90,6 @@ const PostsManager = () => {
     try {
       const response = await fetch("/api/posts/tags");
       const data: Tag[] = await response.json();
-      console.log(data);
       setTags(data);
     } catch (error) {
       console.error("태그 가져오기 오류:", error);
