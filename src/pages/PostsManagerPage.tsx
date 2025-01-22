@@ -1,16 +1,14 @@
 import { Fragment, useEffect, useState } from "react"
 import { Edit2, Plus, ThumbsUp, Trash2 } from "lucide-react"
 import { useNavigate } from "react-router-dom"
-
 import { Button } from "../shared/ui/Button/ui"
 import { Card, CardContent, CardHeader, CardTitle } from "../shared/ui/Card/ui"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../shared/ui/Dialog/ui"
 import { Input } from "../shared/ui/Input/ui"
-
 import { Textarea } from "../shared/ui/Textarea/ui"
 import { useDeletePosts, useGetPosts, useGetSearchPosts, usePostPosts, usePutPosts } from "../features/post/api"
 import { useGetPostsByTag, useGetTags } from "../features/tag/api"
-import UserModal from "../entities/user/ui/UserModal"
+import UserModal from "../features/user/ui/UserModal"
 import { highlightText } from "../util/highlightText"
 import PostTable from "../components/PostTable"
 import Pagination from "../components/Pagination"
@@ -67,7 +65,6 @@ const PostsManager = () => {
   // 상태 관리
   const [posts, setPosts] = useState<Post[]>([])
   const [total, setTotal] = useState<number>(0)
-
   const [selectedPost, setSelectedPost] = useState<Post | null>(null)
   const [showAddDialog, setShowAddDialog] = useState<boolean>(false)
   const [showEditDialog, setShowEditDialog] = useState<boolean>(false)
@@ -312,7 +309,7 @@ const PostsManager = () => {
           <div key={comment.id} className="flex items-center justify-between text-sm border-b pb-1">
             <div className="flex items-center space-x-2 overflow-hidden">
               <span className="font-medium truncate">{comment.user?.username}:</span>
-              <span className="truncate">{highlightText(comment.body || "", searchQuery)}</span>
+              <span className="truncate">{highlightText(comment.body || "", search)}</span>
             </div>
             <div className="flex items-center space-x-1">
               <Button variant="ghost" size="sm" onClick={() => likeComment(comment.id, postId)}>
@@ -346,7 +343,13 @@ const PostsManager = () => {
           <CardTitle className="flex items-center justify-between">
             <span>게시물 관리자</span>
             <div className="flex gap-4">
-              <Button onClick={() => resetSearchParams()}>검색 초기화</Button>
+              <Button
+                onClick={() => {
+                  resetSearchParams()
+                }}
+              >
+                검색 초기화
+              </Button>
               <Button onClick={() => setShowAddDialog(true)}>
                 <Plus className="w-4 h-4 mr-2" />
                 게시물 추가
@@ -424,6 +427,19 @@ const PostsManager = () => {
         </DialogContent>
       </Dialog>
 
+      {/* 게시물 상세 보기 대화상자 */}
+      <Dialog open={showPostDetailDialog} onOpenChange={setShowPostDetailDialog}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>{highlightText(selectedPost?.title || "", search)}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p>{highlightText(selectedPost?.body || "", search)}</p>
+            {selectedPost?.id !== undefined && renderComments(selectedPost.id)}
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {/* 댓글 추가 대화상자 */}
       <Dialog open={showAddCommentDialog} onOpenChange={setShowAddCommentDialog}>
         <DialogContent>
@@ -456,19 +472,6 @@ const PostsManager = () => {
               }
             />
             <Button onClick={updateComment}>댓글 업데이트</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* 게시물 상세 보기 대화상자 */}
-      <Dialog open={showPostDetailDialog} onOpenChange={setShowPostDetailDialog}>
-        <DialogContent className="max-w-3xl">
-          <DialogHeader>
-            <DialogTitle>{highlightText(selectedPost?.title || "", search)}</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <p>{highlightText(selectedPost?.body || "", search)}</p>
-            {selectedPost?.id !== undefined && renderComments(selectedPost.id)}
           </div>
         </DialogContent>
       </Dialog>

@@ -1,4 +1,4 @@
-import { useModalStore } from "../../../shared/model/useModal"
+import { useModalStore } from "../../../shared/model/useModalStore"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../../shared/ui/Dialog/ui"
 
 function UserModal() {
