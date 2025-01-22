@@ -1,11 +1,10 @@
 import { useSearchParams } from "react-router-dom";
 
-import { Comments } from "@/features/comments";
+import { Comments } from "@/widgets/comments";
 
 import { Post } from "@/entities/posts";
 
-import { getHighlightText } from "@/shared/lib";
-import { DialogContent, DialogHeader, DialogTitle } from "@/shared/ui";
+import { DialogContent, DialogHeader, DialogTitle, HighlightText } from "@/shared/ui";
 
 interface PostDetailModalProps {
   post: Post;
@@ -18,16 +17,12 @@ export const PostDetailModal = ({ post }: PostDetailModalProps) => {
     <DialogContent className="max-w-3xl">
       <DialogHeader>
         <DialogTitle>
-          {getHighlightText(post.title, searchQuery).map((result, i) =>
-            result.isHighlight ? <mark key={i}>{result.text}</mark> : <span key={i}>{result.text}</span>,
-          )}
+          <HighlightText text={post.title} highlight={searchQuery} />
         </DialogTitle>
       </DialogHeader>
       <div className="space-y-4">
         <p>
-          {getHighlightText(post.body, searchQuery).map((result, i) =>
-            result.isHighlight ? <mark key={i}>{result.text}</mark> : <span key={i}>{result.text}</span>,
-          )}
+          <HighlightText text={post.body} highlight={searchQuery} />
         </p>
         <Comments postId={post.id} />
       </div>
