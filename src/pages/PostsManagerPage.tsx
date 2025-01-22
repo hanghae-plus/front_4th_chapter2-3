@@ -25,8 +25,8 @@ import {
   TableRow,
   Textarea,
 } from "../shared/ui"
-import UserProfile from "../entities/user/ui/UserProfile"
 import UserDialog from "../entities/user/ui/UserDialog"
+import { useGetTags } from "../entities/tag/api/useGetTag"
 
 interface Post {
   id: number
@@ -176,8 +176,9 @@ const PostsManager = () => {
   const [loading, setLoading] = useState<boolean>(false)
 
   // Tags state
-  const [tags, setTags] = useState<Tag[]>([])
+  //const [tags, setTags] = useState<Tag[]>([])
   const [selectedTag, setSelectedTag] = useState<string>(queryParams.get("tag") || "")
+  const { data: tags = [] } = useGetTags()
 
   // Comments state
   const [comments, setComments] = useState<Record<Post["id"], Comment[]>>({})
@@ -231,17 +232,6 @@ const PostsManager = () => {
       console.error("게시물 가져오기 오류:", error)
     } finally {
       setLoading(false)
-    }
-  }
-
-  // 태그 가져오기
-  const fetchTags = async () => {
-    try {
-      const response = await fetch("/api/posts/tags")
-      const data = (await response.json()) as TagResponse
-      setTags(data)
-    } catch (error) {
-      console.error("태그 가져오기 오류:", error)
     }
   }
 
@@ -446,10 +436,6 @@ const PostsManager = () => {
       console.error("사용자 정보 가져오기 오류:", error)
     }
   }
-
-  useEffect(() => {
-    fetchTags()
-  }, [])
 
   useEffect(() => {
     if (selectedTag) {

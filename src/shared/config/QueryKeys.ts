@@ -3,4 +3,5 @@ export const QUERY_KEYS = {
     all: ["users"],
     getUser: (userId: string) => [...QUERY_KEYS.USER.all, "get", userId],
   },
+  TAG: ["tags"],
 }
