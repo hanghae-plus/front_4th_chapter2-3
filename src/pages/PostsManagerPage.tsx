@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 
 import { Textarea, Button, Card, Dialog, Input, Select, Table } from "../shared/ui"
+import { PostAddDialog } from "../widgets/post-add-dialog/ui/PostAddDialog"
 import { PostDetailDialog } from "../widgets/post-detail-dialog/ui/PostDetailDialog"
 import { PostEditDialog } from "../widgets/post-edit-dialog/ui/PostEditDialog"
 import { UserDialog } from "../widgets/user-dialog/ui/UserDialog"
@@ -140,24 +141,6 @@ const PostsManager = () => {
       console.error("태그별 게시물 가져오기 오류:", error)
     }
     setLoading(false)
-  }
-
-  // 게시물 추가
-  // Feature
-  const addPost = async () => {
-    try {
-      const response = await fetch("/api/posts/add", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newPost),
-      })
-      const data = await response.json()
-      setPosts([data, ...posts])
-      setShowAddDialog(false)
-      setNewPost({ title: "", body: "", userId: 1 })
-    } catch (error) {
-      console.error("게시물 추가 오류:", error)
-    }
   }
 
   // // 게시물 업데이트
@@ -529,34 +512,7 @@ const PostsManager = () => {
       </Card.Content>
 
       {/* 게시물 추가 대화상자 */}
-      {/* Widget */}
-      <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
-        <Dialog.Content>
-          <Dialog.Header>
-            <Dialog.Title>새 게시물 추가</Dialog.Title>
-          </Dialog.Header>
-          <div className="space-y-4">
-            <Input
-              placeholder="제목"
-              value={newPost.title}
-              onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}
-            />
-            <Textarea
-              rows={30}
-              placeholder="내용"
-              value={newPost.body}
-              onChange={(e) => setNewPost({ ...newPost, body: e.target.value })}
-            />
-            <Input
-              type="number"
-              placeholder="사용자 ID"
-              value={newPost.userId}
-              onChange={(e) => setNewPost({ ...newPost, userId: Number(e.target.value) })}
-            />
-            <Button onClick={addPost}>게시물 추가</Button>
-          </div>
-        </Dialog.Content>
-      </Dialog>
+      <PostAddDialog open={showAddDialog} onOpenChange={setShowAddDialog} newPost={newPost} setNewPost={setNewPost} />
 
       {/* 게시물 수정 대화상자 */}
       <PostEditDialog
