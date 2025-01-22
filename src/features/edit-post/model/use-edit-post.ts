@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react"
-
-import { useModal } from "../../../shared/lib/hooks/modal/use-modal"
 import { useMutation, useQuery } from "@tanstack/react-query"
+
 import { postMutations } from "../../../entities/post/api/mutations"
 import { postQueries } from "../../../entities/post/api/queries"
 import { queryClient } from "../../../shared/api/query-client"
 import { Post } from "../../../entities/post/model/types"
+import { useModal } from "../../../shared/lib/hooks/modal/use-modal"
 
 export const useEditPost = () => {
   const { isOpen, open, close } = useModal()
@@ -45,7 +45,7 @@ export const useEditPost = () => {
     setEditingPost(undefined)
   }
 
-  const handleChange = (field: keyof Post, value: string | number) => {
+  const handleChange = (field: string, value: string | number) => {
     if (!editingPost) return
     setEditingPost((prev) => {
       if (!prev) return prev

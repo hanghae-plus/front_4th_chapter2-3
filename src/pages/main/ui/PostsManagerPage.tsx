@@ -39,7 +39,7 @@ import { UserProfileModal } from "../../../features/view-user-profile/ui/UserPro
 import { useAddPost } from "../../../features/add-post/model/use-add-post"
 import { PostAddModal } from "../../../features/add-post/ui/PostAddModal"
 import { useEditPost } from "../../../features/edit-post/model/use-edit-post"
-import { PostEditModal } from "../../../features/edit-post/ui/PostEditModal"
+import { PostEditModal } from "../../../features/edit-post/ui/modal/PostEditModal"
 
 const PostsManager = () => {
   const navigate = useNavigate()

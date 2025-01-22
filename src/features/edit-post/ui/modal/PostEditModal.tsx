@@ -1,6 +1,6 @@
-import { Modal } from "../../../shared/ui/modal/Modal"
-import { Post } from "../../../entities/post/model/types"
-import { PostForm } from "../../../entities/post/ui/PostForm"
+import { Modal } from "../../../../shared/ui/modal/Modal"
+import { Post } from "../../../../entities/post/model/types"
+import { PostForm } from "../../../../entities/post/ui/PostForm"
 
 interface PostEditModalProps {
   post?: Post

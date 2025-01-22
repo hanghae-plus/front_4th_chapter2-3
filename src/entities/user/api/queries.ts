@@ -1,9 +1,9 @@
 import { queryOptions } from "@tanstack/react-query"
+
 import { userApi } from "."
 
 export const userQueries = {
   all: () => ["users"] as const,
-
   list: () => [...userQueries.all(), "list"] as const,
   listQuery: () =>
     queryOptions({
