@@ -2,10 +2,12 @@ import { Edit2, MessageSquare, Plus, Search, ThumbsDown, ThumbsUp, Trash2 } from
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
+import { postsApi } from '@/entities/posts/api';
 import type { Post } from '@/entities/posts/model';
 import type { User } from '@/entities/users/model';
 import { usePostsStoreSelector } from '@/features/posts/model';
 import type { Posts } from '@/features/posts/model/Posts';
+import { get, patch, post, put, remove } from '@/shared/api/fetch';
 import {
   Button,
   Card,
@@ -31,7 +33,6 @@ import {
   Textarea,
 } from '@/shared/ui';
 
-import { get, patch, post, put, remove } from '@/shared/api/fetch';
 import type { Comment, Tag, Users } from '../model/types';
 
 export const PostsManagerPage = () => {
@@ -93,7 +94,8 @@ export const PostsManagerPage = () => {
     let postsData: Posts;
     let usersData: Users['users'];
 
-    get(`/api/posts?limit=${limit}&skip=${skip}`)
+    postsApi
+      .fetchPosts(limit, skip)
       .then((data) => {
         postsData = data;
         return get('/api/users?limit=0&select=username,image');
@@ -173,7 +175,7 @@ export const PostsManagerPage = () => {
   // 게시물 추가
   const handlePostAdd = async () => {
     try {
-      const data = await post('/api/posts/add', newPost);
+      const data = await postsApi.createPost(newPost);
       addPost(data);
       setShowAddDialog(false);
       setNewPost({ title: '', body: '', userId: 1 });
@@ -186,7 +188,7 @@ export const PostsManagerPage = () => {
   const handlePostUpdate = async () => {
     if (!selectedPost) return;
     try {
-      const data = await put(`/api/posts/${selectedPost.id}`, selectedPost);
+      const data = await postsApi.updatePost(selectedPost);
       updatePost(data);
       setShowEditDialog(false);
     } catch (error) {
@@ -197,7 +199,7 @@ export const PostsManagerPage = () => {
   // 게시물 삭제
   const handlePostDelete = async (id: number) => {
     try {
-      await remove(`/api/posts/${id}`);
+      await postsApi.deletePost(id);
       deletePost(id);
     } catch (error) {
       console.error('게시물 삭제 오류:', error);
