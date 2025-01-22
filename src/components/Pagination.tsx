@@ -8,16 +8,13 @@ interface PaginationProps {
 
 function Pagination(props: PaginationProps) {
   const { total } = props
-  const { searchParams, updateSearchParams } = useSearchStore()
+  const { limit, skip, updateLimit, updateSkip } = useSearchStore()
 
   return (
     <div className="flex justify-between items-center">
       <div className="flex items-center gap-2">
         <span>표시</span>
-        <Select
-          value={searchParams.limit.toString()}
-          onValueChange={(value) => updateSearchParams("limit", Number(value))}
-        >
+        <Select value={limit.toString()} onValueChange={(value) => updateLimit(Number(value))}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="10" />
           </SelectTrigger>
@@ -30,16 +27,10 @@ function Pagination(props: PaginationProps) {
         <span>항목</span>
       </div>
       <div className="flex gap-2">
-        <Button
-          disabled={searchParams.skip === 0}
-          onClick={() => updateSearchParams("limit", Math.max(0, (searchParams.skip || 0) - searchParams.limit))}
-        >
+        <Button disabled={skip === 0} onClick={() => updateLimit(Math.max(0, (skip || 0) - limit))}>
           이전
         </Button>
-        <Button
-          disabled={(searchParams.skip || 0) + searchParams.limit >= total}
-          onClick={() => updateSearchParams("skip", (searchParams.skip || 0) + searchParams.limit)}
-        >
+        <Button disabled={(skip || 0) + limit >= total} onClick={() => updateSkip((skip || 0) + limit)}>
           다음
         </Button>
       </div>
