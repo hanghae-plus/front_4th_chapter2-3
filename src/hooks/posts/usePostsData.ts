@@ -12,6 +12,8 @@ export const usePostsData = () => {
   const fetchPosts = async (skip: number, limit: number) => {
     setLoading(true)
     try {
+      console.log(`/api/posts?limit=${limit}&skip=${skip}`)
+
       const response = await fetch(`/api/posts?limit=${limit}&skip=${skip}`)
       const data = await response.json()
       setPosts(data.posts)

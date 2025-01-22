@@ -11,6 +11,7 @@ import { usePagination } from "../hooks/posts/usePagination"
 import { usePostsFilter } from "../hooks/posts/usePostsFilter"
 import { useComments } from "../hooks/posts/useComments"
 import { useUsers } from "../hooks/posts/useUsers"
+import { useEffect } from "react"
 
 const PostsManagerPage = () => {
   const {
@@ -47,6 +48,10 @@ const PostsManagerPage = () => {
   } = usePostsFilter(() => {
     fetchPosts(skip, limit)
   })
+
+  useEffect(() => {
+    fetchPosts(skip, limit)
+  }, [])
 
   const {
     comments,
