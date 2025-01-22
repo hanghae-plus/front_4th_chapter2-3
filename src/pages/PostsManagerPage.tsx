@@ -11,42 +11,29 @@ import { PostDetailDialog } from "../components/PostDetailDialog"
 import { UserModal } from "../components/UserModal"
 import { FilterableSearch } from "../components/FilterableSearch"
 import { usePosts } from "../hooks/usePosts"
-import { useParams } from "../hooks/useParams"
 import { useTags } from "../hooks/useTags"
 import { PostWithUser } from "../types/post"
 import { User } from "../types/user"
 import { Comment } from "../types/comment"
 import { useDialogStore } from "../store/dialog"
+import { useInitUpdateURL, useSyncParamsWithURL } from "../store/params"
 
 const PostsManager = () => {
   // 상태 관리
-  const {
-    limit,
-    selectedTag,
-    skip,
-    sortBy,
-    sortOrder,
-    searchQuery,
-    onChangeLimit,
-    onChangeSkip,
-    onSelectTag,
-    onChangeSearchQuery,
-    onChangeSortBy,
-    onChangeSortOrder,
-    updateURL,
-  } = useParams()
+  useSyncParamsWithURL()
+  useInitUpdateURL()
+
+  const { onOpenChange } = useDialogStore()
 
   const { tags } = useTags()
 
-  const { posts, loading, total } = usePosts({ selectedTag, skip, limit, sortBy, sortOrder, searchQuery })
+  const { posts, loading, total } = usePosts()
 
   const [comments, setComments] = useState({})
 
   const [selectedPost, setSelectedPost] = useState<PostWithUser | null>(null)
   const [selectedComment, setSelectedComment] = useState<Comment | null>(null)
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
-
-  const { onOpenChange } = useDialogStore()
 
   return (
     <Card className="w-full max-w-6xl mx-auto">
@@ -61,45 +48,20 @@ const PostsManager = () => {
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-4">
-          <FilterableSearch
-            sortBy={sortBy}
-            sortOrder={sortOrder}
-            tags={tags}
-            selectedTag={selectedTag}
-            searchQuery={searchQuery}
-            onSelectTag={onSelectTag}
-            onChangeSortBy={onChangeSortBy}
-            onChangeSearchQuery={onChangeSearchQuery}
-            onChangeSortOrder={onChangeSortOrder}
-            updateURL={updateURL}
-          />
+          <FilterableSearch tags={tags} />
           {loading ? (
             <div className="flex justify-center p-4">로딩 중...</div>
           ) : (
-            <PostTable
-              posts={posts}
-              onSelectPost={setSelectedPost}
-              onSelectUser={setSelectedUser}
-              onSelectTag={onSelectTag}
-              selectedTag={selectedTag}
-              searchQuery={searchQuery}
-              updateURL={updateURL}
-            />
+            <PostTable posts={posts} onSelectPost={setSelectedPost} onSelectUser={setSelectedUser} />
           )}
-          <Pagination
-            skip={skip}
-            total={total}
-            limit={limit}
-            onChangeLimit={onChangeLimit}
-            onChangeSkip={onChangeSkip}
-          />
+          <Pagination total={total} />
         </div>
       </CardContent>
       <PostAddDialog />
       <PostUpdateDialog selectedPost={selectedPost} onSelectPost={setSelectedPost} />
       <CommentAddDialog postId={selectedPost?.id} />
       <CommentUpdateDialog selectedComment={selectedComment} onSelectComment={setSelectedComment} />
-      <PostDetailDialog selectedPost={selectedPost} onSelectComment={setSelectedComment} searchQuery={searchQuery} />
+      <PostDetailDialog selectedPost={selectedPost} onSelectComment={setSelectedComment} />
       <UserModal selectedUser={selectedUser} />
     </Card>
   )
@@ -111,3 +73,4 @@ export default PostsManager
 // todo: 위에서 분리한 거 전역 상태로 끌어올리기
 // todo: tanstack + typescript 제대로 적용
 // todo: fsd식 파일 분리
+// ! 전역 상태 훅은 최상위에서만? 필요한 곳에 전부? (컴포넌트는 필요한 곳에서 전부. 그렇다면 훅은?)

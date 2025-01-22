@@ -7,28 +7,20 @@ import { getComments } from "../api/comment"
 import { PostWithUser } from "../types/post"
 import { User } from "../types/user"
 import { useDialogStore } from "../store/dialog"
+import { useParamsStore } from "../store/params"
+import { useNavigate } from "react-router-dom"
 
 interface Props {
   posts: PostWithUser[]
-  selectedTag: string
-  onSelectTag: (tag: string) => void
   onSelectPost: (post: PostWithUser | null) => void
   onSelectUser: (user: User | null) => void
-  searchQuery: string
-  updateURL: () => void
 }
 
-export const PostTable = ({
-  posts,
-  onSelectPost,
-  onSelectUser,
-  onSelectTag,
-  selectedTag,
-  searchQuery,
-  updateURL,
-}: Props) => {
+export const PostTable = ({ posts, onSelectPost, onSelectUser }: Props) => {
   const { onOpenChange } = useDialogStore()
-  // 댓글 가져오기
+  const { searchQuery, selectedTag, updateURL, setParams } = useParamsStore()
+  const navigate = useNavigate()
+
   const fetchComments = async (postId) => {
     if (comments[postId]) return // 이미 불러온 댓글이 있으면 다시 불러오지 않음
     try {
@@ -93,8 +85,8 @@ export const PostTable = ({
                           : "text-blue-800 bg-blue-100 hover:bg-blue-200"
                       }`}
                       onClick={() => {
-                        onSelectTag(tag)
-                        updateURL()
+                        setParams("selectedTag", tag)
+                        updateURL(navigate)
                       }}
                     >
                       {tag}

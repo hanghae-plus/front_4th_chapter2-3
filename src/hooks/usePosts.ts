@@ -1,16 +1,9 @@
 import { useCallback, useEffect, useState } from "react"
 import { getPosts, getPostsBySearchQuery, getPostsByTag } from "../api/post"
+import { useParamsStore } from "../store/params"
 
-interface usePostsArgs {
-  selectedTag: string
-  skip: 0 | 1
-  limit: number
-  sortBy: string
-  sortOrder: string
-  searchQuery: string
-}
-
-export const usePosts = ({ selectedTag, skip, limit, sortBy, sortOrder, searchQuery }: usePostsArgs) => {
+export const usePosts = () => {
+  const { selectedTag, skip, limit, sortBy, sortOrder, searchQuery } = useParamsStore()
   const [posts, setPosts] = useState([])
   const [loading, setLoading] = useState(false)
   const [total, setTotal] = useState(0)

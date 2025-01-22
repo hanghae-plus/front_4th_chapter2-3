@@ -5,14 +5,15 @@ import { highlightText } from "../utils/html"
 import { PostWithUser } from "../types/post"
 import { Comment } from "../types/comment"
 import { useDialogStore } from "../store/dialog"
+import { useParamsStore } from "../store/params"
 
 interface Props {
   selectedPost: PostWithUser | null
   onSelectComment: (comment: Comment) => void
-  searchQuery: string
 }
-export const PostDetailDialog = ({ selectedPost, onSelectComment, searchQuery }: Props) => {
+export const PostDetailDialog = ({ selectedPost, onSelectComment }: Props) => {
   const { dialogs, onOpenChange } = useDialogStore()
+  const { searchQuery } = useParamsStore()
 
   return (
     <Dialog open={dialogs["postDetailDialog"]} onOpenChange={(open: boolean) => onOpenChange("postDetailDialog", open)}>
@@ -22,7 +23,7 @@ export const PostDetailDialog = ({ selectedPost, onSelectComment, searchQuery }:
         </DialogHeader>
         <div className="space-y-4">
           <p>{highlightText(selectedPost?.body, searchQuery)}</p>
-          <Comments postId={selectedPost?.id} onSelectComment={onSelectComment} searchQuery={searchQuery} />
+          <Comments postId={selectedPost?.id} onSelectComment={onSelectComment} />
         </div>
       </DialogContent>
     </Dialog>

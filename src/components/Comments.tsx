@@ -4,15 +4,17 @@ import { highlightText } from "../utils/html"
 import { deleteComment as deleteCommentFunction, likeComment as likeCommentFunction } from "../api/comment"
 import { Comment } from "../types/comment"
 import { useDialogStore } from "../store/dialog"
+import { useParamsStore } from "../store/params"
 
 interface Props {
   postId?: number
   onSelectComment: (comment: Comment) => void
-  searchQuery: string
 }
 
-export const Comments = ({ postId, onSelectComment, searchQuery }: Props) => {
+export const Comments = ({ postId, onSelectComment }: Props) => {
   const { onOpenChange } = useDialogStore()
+  const { searchQuery } = useParamsStore()
+
   const deleteComment = async (id, postId) => {
     try {
       await deleteCommentFunction(id)
