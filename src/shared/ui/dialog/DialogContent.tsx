@@ -7,10 +7,8 @@ type DialogContentProps = React.ComponentPropsWithoutRef<typeof DialogPrimitive.
 };
 
 // 대화상자 컴포넌트
-export const Dialog = DialogPrimitive.Root;
-export const DialogTrigger = DialogPrimitive.Trigger;
-export const DialogPortal = DialogPrimitive.Portal;
-export const DialogOverlay = DialogPrimitive.Overlay;
+const DialogPortal = DialogPrimitive.Portal;
+const DialogOverlay = DialogPrimitive.Overlay;
 
 export const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(
   ({ className = '', children, ...props }, ref) => (
