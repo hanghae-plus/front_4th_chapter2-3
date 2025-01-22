@@ -31,7 +31,6 @@ interface UsersResponse {
   users: UserResponse[]
 }
 
-// 나중에 한 번에 export 가능
 export type {
   UserResponse,
   Reactions,
