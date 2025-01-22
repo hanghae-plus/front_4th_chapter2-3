@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import type { Post } from '@/entities/posts/model';
 import type { User } from '@/entities/users/model';
+import { usePostsStoreSelector } from '@/features/posts/model';
 import type { Posts } from '@/features/posts/model/Posts';
 import {
   Button,
@@ -38,13 +39,19 @@ export const PostsManagerPage = () => {
   const queryParams = new URLSearchParams(location.search);
 
   // 상태 관리
-  const [posts, setPosts] = useState<(Post & { author: User })[]>([]);
+  const { posts, setPosts, addPost, updatePost, deletePost } = usePostsStoreSelector([
+    'posts',
+    'setPosts',
+    'addPost',
+    'updatePost',
+    'deletePost',
+  ]);
   const [searchQuery, setSearchQuery] = useState(queryParams.get('search') || '');
   const [loading, setLoading] = useState(false);
   const [selectedTag, setSelectedTag] = useState(queryParams.get('tag') || '');
   const [total, setTotal] = useState(0);
-  const [skip, setSkip] = useState(parseInt(queryParams.get('skip') || '0'));
-  const [limit, setLimit] = useState(parseInt(queryParams.get('limit') || '10'));
+  const [skip, setSkip] = useState(Number(queryParams.get('skip') || '0'));
+  const [limit, setLimit] = useState(Number(queryParams.get('limit') || '10'));
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [sortBy, setSortBy] = useState(queryParams.get('sortBy') || '');
   const [sortOrder, setSortOrder] = useState(queryParams.get('sortOrder') || 'asc');
@@ -167,7 +174,7 @@ export const PostsManagerPage = () => {
   };
 
   // 게시물 추가
-  const addPost = async () => {
+  const handlePostAdd = async () => {
     try {
       const response = await fetch('/api/posts/add', {
         method: 'POST',
@@ -175,7 +182,7 @@ export const PostsManagerPage = () => {
         body: JSON.stringify(newPost),
       });
       const data = await response.json();
-      setPosts([data, ...posts]);
+      addPost(data);
       setShowAddDialog(false);
       setNewPost({ title: '', body: '', userId: 1 });
     } catch (error) {
@@ -184,7 +191,7 @@ export const PostsManagerPage = () => {
   };
 
   // 게시물 업데이트
-  const updatePost = async () => {
+  const handlePostUpdate = async () => {
     if (!selectedPost) return;
     try {
       const response = await fetch(`/api/posts/${selectedPost.id}`, {
@@ -193,7 +200,7 @@ export const PostsManagerPage = () => {
         body: JSON.stringify(selectedPost),
       });
       const data = await response.json();
-      setPosts(posts.map((post) => (post.id === data.id ? data : post)));
+      updatePost(data);
       setShowEditDialog(false);
     } catch (error) {
       console.error('게시물 업데이트 오류:', error);
@@ -201,12 +208,12 @@ export const PostsManagerPage = () => {
   };
 
   // 게시물 삭제
-  const deletePost = async (id: number) => {
+  const handlePostDelete = async (id: number) => {
     try {
       await fetch(`/api/posts/${id}`, {
         method: 'DELETE',
       });
-      setPosts(posts.filter((post) => post.id !== id));
+      deletePost(id);
     } catch (error) {
       console.error('게시물 삭제 오류:', error);
     }
@@ -340,8 +347,8 @@ export const PostsManagerPage = () => {
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    setSkip(parseInt(params.get('skip') || '0'));
-    setLimit(parseInt(params.get('limit') || '10'));
+    setSkip(Number(params.get('skip') || '0'));
+    setLimit(Number(params.get('limit') || '10'));
     setSearchQuery(params.get('search') || '');
     setSortBy(params.get('sortBy') || '');
     setSortOrder(params.get('sortOrder') || 'asc');
@@ -441,7 +448,7 @@ export const PostsManagerPage = () => {
                 >
                   <Edit2 className='w-4 h-4' />
                 </Button>
-                <Button variant='ghost' size='sm' onClick={() => deletePost(post.id)}>
+                <Button variant='ghost' size='sm' onClick={() => handlePostDelete(post.id)}>
                   <Trash2 className='w-4 h-4' />
                 </Button>
               </div>
@@ -624,7 +631,7 @@ export const PostsManagerPage = () => {
               value={newPost.userId}
               onChange={(e) => setNewPost({ ...newPost, userId: Number(e.target.value) })}
             />
-            <Button onClick={addPost}>게시물 추가</Button>
+            <Button onClick={handlePostAdd}>게시물 추가</Button>
           </div>
         </DialogContent>
       </Dialog>
@@ -651,7 +658,7 @@ export const PostsManagerPage = () => {
                 selectedPost && setSelectedPost({ ...selectedPost, body: e.target.value })
               }
             />
-            <Button onClick={updatePost}>게시물 업데이트</Button>
+            <Button onClick={handlePostUpdate}>게시물 업데이트</Button>
           </div>
         </DialogContent>
       </Dialog>
