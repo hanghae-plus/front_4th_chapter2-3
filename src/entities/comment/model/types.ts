@@ -8,3 +8,8 @@ export interface Comment {
   }
   likes: number
 }
+export interface CommentsMap {
+  [key: number]: Comment[]
+}
+
+export type NewComment = Pick<Comment, "body" | "postId" | "userId">

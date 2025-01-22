@@ -1,4 +1,4 @@
-import { User } from "../../user/model"
+import { User } from "../../user/model/types"
 
 interface Reactions {
   likes: number
@@ -12,10 +12,12 @@ export interface Post {
   userId: number
   tags?: string[]
   reactions?: Reactions
-  author?: User
+  author: User
 }
 
 export interface Tag {
   url: string
   slug: string
 }
+
+export type NewPost = Pick<Post, "body" | "title" | "userId">

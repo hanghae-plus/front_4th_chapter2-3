@@ -25,13 +25,11 @@ import {
   TableRow,
   Textarea,
 } from "../shared/ui"
-import { User } from "../entities/user/model"
-import { Post, Tag } from "../entities/post/model"
-import { Comment } from "../entities/comment/model"
-
-interface CommentsMap {
-  [key: number]: Comment[]
-}
+import { Post, Tag } from "../entities/post/model/types"
+import { User } from "../entities/user/model/types"
+import { useCommentStore } from "../features/comment/model/store"
+import { NewComment } from "../entities/comment/model/types"
+import { usePostStore } from "../features/post/model/store"
 
 const PostsManager: React.FC = () => {
   const navigate = useNavigate()
@@ -39,28 +37,25 @@ const PostsManager: React.FC = () => {
   const queryParams = new URLSearchParams(location.search)
 
   // 상태 관리
-  const [posts, setPosts] = useState<Post[]>([])
+
   const [total, setTotal] = useState(0)
   const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"))
   const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"))
   const [searchQuery, setSearchQuery] = useState(queryParams.get("search") || "")
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null)
   const [sortBy, setSortBy] = useState(queryParams.get("sortBy") || "")
   const [sortOrder, setSortOrder] = useState(queryParams.get("sortOrder") || "asc")
   const [showAddDialog, setShowAddDialog] = useState(false)
   const [showEditDialog, setShowEditDialog] = useState(false)
-  const [newPost, setNewPost] = useState<Partial<Post>>({ title: "", body: "", userId: 1 })
   const [loading, setLoading] = useState(false)
   const [tags, setTags] = useState<Tag[]>([])
   const [selectedTag, setSelectedTag] = useState(queryParams.get("tag") || "")
-  const [comments, setComments] = useState<CommentsMap>({})
-  const [selectedComment, setSelectedComment] = useState<Comment | null>(null)
-  const [newComment, setNewComment] = useState<Partial<Comment>>({ body: "", postId: null, userId: 1 })
   const [showAddCommentDialog, setShowAddCommentDialog] = useState(false)
   const [showEditCommentDialog, setShowEditCommentDialog] = useState(false)
   const [showPostDetailDialog, setShowPostDetailDialog] = useState(false)
   const [showUserModal, setShowUserModal] = useState(false)
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
+  const { comments, setComments, selectedComment, setSelectedComment, newComment, setNewComment } = useCommentStore()
+  const { posts, setPosts, selectedPost, setSelectedPost, newPost, setNewPost } = usePostStore()
 
   // URL 업데이트 함수
   const updateURL = () => {
@@ -271,7 +266,7 @@ const PostsManager: React.FC = () => {
       const response = await fetch(`/api/comments/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ likes: comments[postId].find((c) => c.id === id).likes + 1 }),
+        body: JSON.stringify({ likes: (comments[postId].find((c) => c.id === id)?.likes || 0) + 1 }),
       })
       const data = await response.json()
       setComments((prev) => ({
@@ -328,7 +323,7 @@ const PostsManager: React.FC = () => {
   }, [location.search])
 
   // 하이라이트 함수 추가
-  const highlightText = (text: string, highlight: string) => {
+  const highlightText = (text: string | undefined, highlight: string) => {
     if (!text) return null
     if (!highlight.trim()) {
       return <span>{text}</span>
@@ -430,7 +425,7 @@ const PostsManager: React.FC = () => {
         <Button
           size="sm"
           onClick={() => {
-            setNewComment((prev) => ({ ...prev, postId }))
+            setNewComment({ ...newComment, postId } as NewComment)
             setShowAddCommentDialog(true)
           }}
         >
@@ -609,13 +604,13 @@ const PostsManager: React.FC = () => {
             <Input
               placeholder="제목"
               value={selectedPost?.title || ""}
-              onChange={(e) => setSelectedPost({ ...selectedPost, title: e.target.value })}
+              onChange={(e) => selectedPost && setSelectedPost({ ...selectedPost, title: e.target.value })}
             />
             <Textarea
               rows={15}
               placeholder="내용"
               value={selectedPost?.body || ""}
-              onChange={(e) => setSelectedPost({ ...selectedPost, body: e.target.value })}
+              onChange={(e) => selectedPost && setSelectedPost({ ...selectedPost, body: e.target.value })}
             />
             <Button onClick={updatePost}>게시물 업데이트</Button>
           </div>
@@ -631,7 +626,7 @@ const PostsManager: React.FC = () => {
           <div className="space-y-4">
             <Textarea
               placeholder="댓글 내용"
-              value={newComment.body}
+              value={newComment?.body}
               onChange={(e) => setNewComment({ ...newComment, body: e.target.value })}
             />
             <Button onClick={addComment}>댓글 추가</Button>
@@ -649,7 +644,7 @@ const PostsManager: React.FC = () => {
             <Textarea
               placeholder="댓글 내용"
               value={selectedComment?.body || ""}
-              onChange={(e) => setSelectedComment({ ...selectedComment, body: e.target.value })}
+              onChange={(e) => selectedComment && setSelectedComment({ ...selectedComment, body: e.target.value })}
             />
             <Button onClick={updateComment}>댓글 업데이트</Button>
           </div>
