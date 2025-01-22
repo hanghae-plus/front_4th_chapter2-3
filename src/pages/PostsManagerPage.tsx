@@ -11,7 +11,6 @@ import { PostDetailDialog } from "../components/PostDetailDialog"
 import { UserModal } from "../components/UserModal"
 import { FilterableSearch } from "../components/FilterableSearch"
 import { usePosts } from "../hooks/usePosts"
-import { useTags } from "../hooks/useTags"
 import { PostWithUser } from "../types/post"
 import { User } from "../types/user"
 import { Comment } from "../types/comment"
@@ -19,13 +18,10 @@ import { useDialogStore } from "../store/dialog"
 import { useInitUpdateURL, useSyncParamsWithURL } from "../store/params"
 
 const PostsManager = () => {
-  // 상태 관리
   useSyncParamsWithURL()
   useInitUpdateURL()
 
   const { onOpenChange } = useDialogStore()
-
-  const { tags } = useTags()
 
   const { posts, loading, total } = usePosts()
 
@@ -48,7 +44,7 @@ const PostsManager = () => {
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-4">
-          <FilterableSearch tags={tags} />
+          <FilterableSearch />
           {loading ? (
             <div className="flex justify-center p-4">로딩 중...</div>
           ) : (

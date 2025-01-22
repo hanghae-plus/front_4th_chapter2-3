@@ -1,17 +1,15 @@
 import { Search } from "lucide-react"
 import { Input } from "../shared/ui"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@radix-ui/react-select"
-import { Tag } from "../types/tag"
 import { useParamsStore } from "../store/params"
 import { useNavigate } from "react-router-dom"
+import { useTags } from "../hooks/useTags"
 
-interface Props {
-  tags: Tag[]
-}
-
-export const FilterableSearch = ({ tags }: Props) => {
+export const FilterableSearch = () => {
   const navigate = useNavigate()
+  const { tags } = useTags()
   const { searchQuery, sortBy, sortOrder, selectedTag, setParams, updateURL } = useParamsStore()
+
   return (
     <div className="flex gap-4">
       <div className="flex-1">
@@ -39,11 +37,12 @@ export const FilterableSearch = ({ tags }: Props) => {
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">모든 태그</SelectItem>
-          {tags.map((tag) => (
-            <SelectItem key={tag.url} value={tag.slug}>
-              {tag.slug}
-            </SelectItem>
-          ))}
+          {tags &&
+            tags.map((tag) => (
+              <SelectItem key={tag.url} value={tag.slug}>
+                {tag.slug}
+              </SelectItem>
+            ))}
         </SelectContent>
       </Select>
       <Select value={sortBy} onValueChange={(value) => setParams("sortBy", value)}>
