@@ -26,13 +26,15 @@ import {
   Textarea,
 } from "../../../shared/ui"
 import { useMutation, useQuery } from "@tanstack/react-query"
-import { postMutations, postQueries } from "../../../entities/post/api/queries"
+import { postQueries } from "../../../entities/post/api/queries"
 import { SortOrder } from "../../../entities/post/model/types"
 import { userQueries } from "../../../entities/user/api/queries"
 import { User } from "../../../entities/user/model/types"
-import { commentMutations, commentQueries } from "../../../entities/comment/api/queries"
+import { commentQueries } from "../../../entities/comment/api/queries"
 import { queryClient } from "../../../shared/api/query-client"
 import { Comment } from "../../../entities/comment/model/types"
+import { postMutations } from "../../../entities/post/api/mutations"
+import { commentMutations } from "../../../entities/comment/api/mutations"
 
 const PostsManager = () => {
   const navigate = useNavigate()
