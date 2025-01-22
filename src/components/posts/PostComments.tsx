@@ -4,28 +4,19 @@ import { Comment } from "@/types/posts"
 
 interface PostCommentsProps {
   comments: Comment[]
-  searchQuery: string
   onCommentLike: (id: number, postId: number) => void
   onCommentEdit: (comment: Comment) => void
   onCommentDelete: (id: number, postId: number) => void
-  highlightText: (text: string | undefined, highlight: string) => React.ReactNode
 }
 
-export const PostComments = ({
-  comments,
-  searchQuery,
-  onCommentLike,
-  onCommentEdit,
-  onCommentDelete,
-  highlightText,
-}: PostCommentsProps) => {
+export const PostComments = ({ comments, onCommentLike, onCommentEdit, onCommentDelete }: PostCommentsProps) => {
   return (
     <div className="space-y-1">
       {comments.map((comment) => (
         <div key={comment.id} className="flex items-center justify-between text-sm border-b pb-1">
           <div className="flex items-center space-x-2 overflow-hidden">
             <span className="font-medium truncate">{comment.user.username}:</span>
-            <span className="truncate">{highlightText(comment.body, searchQuery)}</span>
+            <span className="truncate">{comment.body}</span>
           </div>
           <div className="flex items-center space-x-1">
             <Button variant="ghost" size="sm" onClick={() => onCommentLike(comment.id, comment.postId)}>
