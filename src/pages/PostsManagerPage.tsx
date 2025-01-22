@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom"
 
 import { Textarea, Button, Card, Dialog, Input, Select, Table } from "../shared/ui"
 import { CommentAddDialog } from "../widgets/comment-add-dialog/ui/CommentAddDialog"
+import { CommentEditDialog } from "../widgets/comment-edit-dialog/ui/CommentEditDialog"
 import { PostAddDialog } from "../widgets/post-add-dialog/ui/PostAddDialog"
 import { PostDetailDialog } from "../widgets/post-detail-dialog/ui/PostDetailDialog"
 import { PostEditDialog } from "../widgets/post-edit-dialog/ui/PostEditDialog"
@@ -514,22 +515,12 @@ const PostsManager = () => {
       />
 
       {/* 댓글 수정 대화상자 */}
-      {/* Widget */}
-      <Dialog open={showEditCommentDialog} onOpenChange={setShowEditCommentDialog}>
-        <Dialog.Content>
-          <Dialog.Header>
-            <Dialog.Title>댓글 수정</Dialog.Title>
-          </Dialog.Header>
-          <div className="space-y-4">
-            <Textarea
-              placeholder="댓글 내용"
-              value={selectedComment?.body || ""}
-              onChange={(e) => setSelectedComment({ ...selectedComment, body: e.target.value })}
-            />
-            <Button onClick={updateComment}>댓글 업데이트</Button>
-          </div>
-        </Dialog.Content>
-      </Dialog>
+      <CommentEditDialog
+        open={showEditCommentDialog}
+        setShowEditCommentDialog={setShowEditCommentDialog}
+        selectedComment={selectedComment}
+        setSelectedComment={setSelectedComment}
+      />
 
       {/* 게시물 상세 보기 대화상자 */}
       <PostDetailDialog
