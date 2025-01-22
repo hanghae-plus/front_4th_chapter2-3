@@ -2,12 +2,18 @@ import { Edit2, MessageSquare, Plus, Search, ThumbsDown, ThumbsUp, Trash2 } from
 import { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 
+import { PostAddButton } from "../features/post/ui/PostAddButton"
+import { PostSearchForm } from "../features/post/ui/PostSearchForm"
 import { Textarea, Button, Card, Dialog, Input, Select, Table } from "../shared/ui"
 import { CommentAddDialog } from "../widgets/comment-add-dialog/ui/CommentAddDialog"
 import { CommentEditDialog } from "../widgets/comment-edit-dialog/ui/CommentEditDialog"
+import { Pagination } from "../widgets/pagination/ui/Pagination"
 import { PostAddDialog } from "../widgets/post-add-dialog/ui/PostAddDialog"
 import { PostDetailDialog } from "../widgets/post-detail-dialog/ui/PostDetailDialog"
 import { PostEditDialog } from "../widgets/post-edit-dialog/ui/PostEditDialog"
+import { SortBySelect } from "../widgets/sort-by-select/ui/SortBySelect"
+import { SortOrderSelect } from "../widgets/sort-order-select/ui/SortOrderSelect"
+import { TagSelect } from "../widgets/tag-select/ui/TagSelect"
 import { UserDialog } from "../widgets/user-dialog/ui/UserDialog"
 
 import type { Comment } from "../entities/comment/model/types/comments"
@@ -389,106 +395,27 @@ const PostsManager = () => {
 
   return (
     <Card className="w-full max-w-6xl mx-auto">
-      {/* Widget - ?? */}
       <Card.Header>
         <Card.Title className="flex items-center justify-between">
           <span>게시물 관리자</span>
-          <Button onClick={() => setShowAddDialog(true)}>
-            <Plus className="w-4 h-4 mr-2" />
-            게시물 추가
-          </Button>
+          <PostAddButton />
         </Card.Title>
       </Card.Header>
       <Card.Content>
         <div className="flex flex-col gap-4">
           {/* 검색 및 필터 컨트롤 */}
           <div className="flex gap-4">
-            {/* Feature */}
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="게시물 검색..."
-                  className="pl-8"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyPress={(e) => e.key === "Enter" && searchPosts()}
-                />
-              </div>
-            </div>
-            {/* Feature */}
-            <Select
-              value={selectedTag}
-              onValueChange={(value) => {
-                setSelectedTag(value)
-                fetchPostsByTag(value)
-                updateURL()
-              }}
-            >
-              <Select.Trigger className="w-[180px]">
-                <Select.Value placeholder="태그 선택" />
-              </Select.Trigger>
-              <Select.Content>
-                <Select.Item value="all">모든 태그</Select.Item>
-                {tags.map((tag) => (
-                  <Select.Item key={tag.url} value={tag.slug}>
-                    {tag.slug}
-                  </Select.Item>
-                ))}
-              </Select.Content>
-            </Select>
-            {/* Feature - ??? */}
-            <Select value={sortBy} onValueChange={setSortBy}>
-              <Select.Trigger className="w-[180px]">
-                <Select.Value placeholder="정렬 기준" />
-              </Select.Trigger>
-              <Select.Content>
-                <Select.Item value="none">없음</Select.Item>
-                <Select.Item value="id">ID</Select.Item>
-                <Select.Item value="title">제목</Select.Item>
-                <Select.Item value="reactions">반응</Select.Item>
-              </Select.Content>
-            </Select>
-            <Select value={sortOrder} onValueChange={setSortOrder}>
-              <Select.Trigger className="w-[180px]">
-                <Select.Value placeholder="정렬 순서" />
-              </Select.Trigger>
-              <Select.Content>
-                <Select.Item value="asc">오름차순</Select.Item>
-                <Select.Item value="desc">내림차순</Select.Item>
-              </Select.Content>
-            </Select>
+            <PostSearchForm searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+            <TagSelect tags={tags} selectedTag={setSelectedTag} updateURL={updateURL} />
+            <SortBySelect sortBy={sortBy} setSortBy={setSortBy} />
+            <SortOrderSelect sortOrder={sortOrder} setSortOrder={setSortOrder} />
           </div>
 
           {/* 게시물 테이블 */}
           {loading ? <div className="flex justify-center p-4">로딩 중...</div> : renderPostTable()}
 
           {/* 페이지네이션 */}
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2">
-              <span>표시</span>
-              <Select value={limit.toString()} onValueChange={(value) => setLimit(Number(value))}>
-                <Select.Trigger className="w-[180px]">
-                  <Select.Value placeholder="10" />
-                </Select.Trigger>
-                <Select.Content>
-                  <Select.Item value="10">10</Select.Item>
-                  <Select.Item value="20">20</Select.Item>
-                  <Select.Item value="30">30</Select.Item>
-                </Select.Content>
-              </Select>
-              <span>항목</span>
-            </div>
-            {/* Feature - ?? */}
-            <div className="flex gap-2">
-              <Button disabled={skip === 0} onClick={() => setSkip(Math.max(0, skip - limit))}>
-                이전
-              </Button>
-              <Button disabled={skip + limit >= total} onClick={() => setSkip(skip + limit)}>
-                다음
-              </Button>
-            </div>
-          </div>
+          <Pagination skip={skip} setSkip={setSkip} limit={limit} setLimit={setLimit} total={total} />
         </div>
       </Card.Content>
 
