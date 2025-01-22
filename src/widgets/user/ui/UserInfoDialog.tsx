@@ -1,6 +1,6 @@
 import { Dialog } from "@shared/ui"
 import { User } from "@entities/user/model"
-import { UserInfo } from "@features/user/ui/user-info/UserInfo"
+import { UserInfo } from "@features/user/ui"
 
 interface UserInfoDialogProps {
   open: boolean

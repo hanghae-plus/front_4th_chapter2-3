@@ -1,1 +1,1 @@
-export * from "./CommentView"
+export { CommentView } from "./CommentView"

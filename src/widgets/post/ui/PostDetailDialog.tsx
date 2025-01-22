@@ -1,7 +1,7 @@
 import { Dialog } from "@shared/ui"
 import { Post } from "@entities/post/model"
 import { Comment } from "@entities/comment/model"
-import { PostCommentsFeature } from "@features/comment/ui"
+import { CommentList } from "@features/comment/ui"
 
 interface PostDetailDialogProps {
   open: boolean
@@ -30,7 +30,7 @@ export const PostDetailDialog = ({
         <Dialog.Header>
           <Dialog.Title>{post?.title}</Dialog.Title>
         </Dialog.Header>
-        <PostCommentsFeature
+        <CommentList
           post={post}
           comments={comments}
           onAddComment={onAddComment}

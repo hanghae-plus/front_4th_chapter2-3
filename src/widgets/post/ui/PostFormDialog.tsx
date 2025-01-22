@@ -1,6 +1,6 @@
 import { Dialog, Button } from "@shared/ui"
 import { Post } from "@entities/post/model"
-import { PostFormFields } from "@features/post/ui/post-form/PostFormFields"
+import { PostForm } from "@features/post/ui"
 
 interface PostFormDialogProps {
   mode: "add" | "edit"
@@ -29,7 +29,7 @@ export const PostFormDialog = ({
         <Dialog.Header>
           <Dialog.Title>{isEdit ? "게시물 수정" : "새 게시물 추가"}</Dialog.Title>
         </Dialog.Header>
-        <PostFormFields
+        <PostForm
           title={isEdit ? (post?.title ?? "") : ""}
           body={isEdit ? (post?.body ?? "") : ""}
           onTitleChange={onTitleChange ?? (() => {})}

@@ -1,3 +1,3 @@
-export * from "./comment-form"
-export * from "./comment-list"
-export * from "./comment-management"
+export { CommentForm } from "./comment-form"
+export { CommentList } from "./comment-list"
+export { CommentActionButtons } from "./add-comment-button"

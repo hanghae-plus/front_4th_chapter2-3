@@ -1,1 +1,1 @@
-export * from "./PostPreview"
+export { PostPreview } from "./PostPreview"

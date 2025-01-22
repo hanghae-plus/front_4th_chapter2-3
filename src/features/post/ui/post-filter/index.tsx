@@ -1,7 +1,7 @@
 import { Select } from "@shared/ui"
 import { PostTag } from "@entities/post/model"
 
-interface FilterControlsProps {
+interface PostFilterProps {
   selectedTag: string
   tags: PostTag[]
   onTagChange: (tag: string) => void
@@ -11,7 +11,7 @@ interface FilterControlsProps {
   onSortOrderChange: (value: string) => void
 }
 
-export const FilterControls = ({
+export const PostFilter = ({
   selectedTag,
   tags,
   onTagChange,
@@ -19,7 +19,7 @@ export const FilterControls = ({
   onSortByChange,
   sortOrder,
   onSortOrderChange,
-}: FilterControlsProps) => (
+}: PostFilterProps) => (
   <div className="flex gap-4">
     <Select value={selectedTag} onValueChange={onTagChange}>
       <Select.Trigger className="w-[180px]">
