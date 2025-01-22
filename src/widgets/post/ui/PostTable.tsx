@@ -2,7 +2,7 @@ import { Post } from "@/entities/post/model/types"
 import { User } from "@/entities/user/model/types"
 import { Table, TableBody } from "@/shared/ui"
 import { PostTableHeader } from "../../../features/post/post-table/ui/PostTableHead"
-import { usePost } from "@/features/model/store"
+import { usePost } from "@/features/post/model/store"
 import { PostTableRow } from "../../../features/post/post-table/ui/PostTableRow"
 
 interface PostTableProps {

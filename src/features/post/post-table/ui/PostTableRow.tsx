@@ -31,6 +31,7 @@ export const PostTableRow = ({
   setShowEditDialog,
   deletePost,
 }: PostTableRowProps) => {
+
   return (
     <TableRow key={post.id}>
       <TableCell>{post.id}</TableCell>

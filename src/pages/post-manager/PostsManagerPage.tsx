@@ -1,13 +1,7 @@
 import { useEffect, useState } from "react"
 import { Plus } from "lucide-react"
 import { useLocation, useNavigate } from "react-router-dom"
-import {
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "../../shared/ui"
+import { Button, Card, CardContent, CardHeader, CardTitle } from "../../shared/ui"
 import { CreatePost, Post, PostsResponse, Tag } from "../../entities/post/model/types"
 import { Comment, NewComment } from "../../entities/comment/model/types"
 import { User } from "../../entities/user/model/types"
@@ -16,7 +10,7 @@ import { userApi } from "@/entities/user/api/userApi"
 import { commentApi } from "@/entities/comment/api/commentApi"
 import { INITIAL_NEW_POST_STATE } from "@/entities/post/model/constants"
 import { INITIAL_NEW_COMMENT_STATE } from "@/entities/comment/model/constants"
-import { usePost } from "@/features/model/store"
+import { usePost } from "@/features/post/model/store"
 import { PostTable } from "@/widgets/post/ui/PostTable"
 import { PostPagination } from "@/widgets/post/ui/PostPagination"
 import { PostTableFilter } from "@/widgets/post/ui/PostTableFilter"
@@ -33,9 +27,9 @@ const PostsManager = () => {
   const queryParams = new URLSearchParams(location.search)
 
   // 상태 관리
-  const [total, setTotal] = useState(0)
-  const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"))
-  const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"))
+  // const [total, setTotal] = useState(0)
+  // const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"))
+  // const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"))
   const [searchQuery, setSearchQuery] = useState(queryParams.get("search") || "")
   const [selectedPost, setSelectedPost] = useState<Post>()
   const [sortBy, setSortBy] = useState(queryParams.get("sortBy") || "")
@@ -43,7 +37,7 @@ const PostsManager = () => {
   const [showAddDialog, setShowAddDialog] = useState(false)
   const [showEditDialog, setShowEditDialog] = useState(false)
   const [newPost, setNewPost] = useState<CreatePost>(INITIAL_NEW_POST_STATE)
-  const [loading, setLoading] = useState(false)
+  // const [loading, setLoading] = useState(false)
   const [tags, setTags] = useState<Tag[]>([])
   const [selectedTag, setSelectedTag] = useState(queryParams.get("tag") || "")
   const [comments, setComments] = useState<Record<number, Comment[] | []>>({})
@@ -56,8 +50,7 @@ const PostsManager = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
 
   // 전역 상태 관리
-  const posts = usePost((state) => state.posts)
-  const setPosts = usePost((state) => state.setPosts)
+  const { posts, total,skip, limit, loading, setPosts, setTotal, setSkip,setLimit,setLoading } = usePost()
 
   // URL 업데이트 함수
   const updateURL = () => {
