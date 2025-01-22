@@ -1,11 +1,11 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/shared/dialog/ui";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@shared/dialog/ui";
 import { useState } from "react";
 import { Input } from "@shared/input/ui";
-import { Textarea } from "@/shared/textarea/ui";
-import { Button } from "@/shared/button/ui";
+import { Textarea } from "@shared/textarea/ui";
+import { Button } from "@shared/button/ui";
 import { NewPost } from "@/types/post.ts";
 import { useDialog } from "@shared/dialog/model/useDialog.ts";
-import { usePost } from "@features/post/model/usePost.ts";
+import { usePost } from "@entities/post/model/usePost.ts";
 
 const PostAddDialog = () => {
   const { isOpen, close } = useDialog();

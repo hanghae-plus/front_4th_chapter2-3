@@ -1,22 +1,26 @@
-import React from "react";
 import { Search } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@shared/select/ui";
 import { Input } from "@shared/input/ui";
+import { usePostFilter } from "@features/postFilter/model/usePostFilter.ts";
+import { useTagStore } from "@core/store/useTagStore.ts";
 
-function PostFilter({
-  searchQuery,
-  setSearchQuery,
-  searchPosts,
-  selectedTag,
-  setSelectedTag,
-  fetchPostsByTag,
-  tags,
-  sortBy,
-  setSortBy,
-  sortOrder,
-  setSortOrder,
-  updateURL,
-}) {
+function PostFilter() {
+  const {
+    searchQuery,
+    setSearchQuery,
+    selectedTag,
+    setSelectedTag,
+    sortColumn,
+    handleSortColumn,
+    sortOrder,
+    setSortOrder,
+    searchPosts,
+    fetchPostsByTag,
+    updateURL,
+  } = usePostFilter();
+
+  const { tags } = useTagStore();
+
   return (
     <>
       검색 및 필터 컨트롤
@@ -53,7 +57,7 @@ function PostFilter({
             ))}
           </SelectContent>
         </Select>
-        <Select value={sortBy} onValueChange={setSortBy}>
+        <Select value={sortColumn} onValueChange={handleSortColumn}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="정렬 기준" />
           </SelectTrigger>

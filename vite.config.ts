@@ -5,6 +5,14 @@ import path from "path";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  build: {
+    rollupOptions: {
+      input: {
+        main: path.resolve(__dirname, "index.html"),
+        legacy: path.resolve(__dirname, "index.legacy.html"),
+      },
+    },
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
@@ -17,6 +25,7 @@ export default defineConfig({
     },
   },
   server: {
+    open: process.env.MODE === "legacy" ? "/index.legacy.html" : "/index.html",
     proxy: {
       "/api": {
         // target: 'https://jsonplaceholder.typicode.com',

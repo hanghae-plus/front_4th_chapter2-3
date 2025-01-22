@@ -1,4 +1,4 @@
-import { NewPost, Post } from "../../../types/post.ts";
+import { NewPost, Post } from "@/types/post.ts";
 
 export const createPost = async (newPost: NewPost) => {
   const response = await fetch("/api/posts/add", {

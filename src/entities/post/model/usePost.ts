@@ -1,15 +1,15 @@
 import { fetchPosts } from "../api/fetchPosts.ts";
-import { useState } from "react";
-import { usePostStore } from "./usePostStore.ts";
-import { NewPost, Post } from "../../../types/post.ts";
+import { useCallback, useState } from "react";
+import { usePostStore } from "@core/store/usePostStore.ts";
 import { createPost } from "../api/createPost.ts";
-import { updatePostById } from "../api/updatePostById.ts";
+import { NewPost, Post } from "@/types/post.ts";
 
 export const usePost = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { posts, setPosts } = usePostStore();
 
   const initializePosts = async () => {
+    setIsLoading(true);
     try {
       const fetchedPosts = await fetchPosts();
       setPosts(fetchedPosts);
@@ -33,15 +33,13 @@ export const usePost = () => {
     }
   };
 
-  const updatePosts = async (postId: string | number, selectedPost: Partial<Post>) => {
-    try {
-      const updatedPost = await updatePostById(postId.toString(), selectedPost);
-
-      setPosts(posts.map((post) => (post.id === updatedPost.id ? updatedPost : post)));
-    } catch (error) {
-      console.error("게시물 업데이트 오류:", error);
-    }
-  };
+  const updatePosts = useCallback(
+    (updateFn: (currentPosts: Post[]) => Post[]) => {
+      const updatedPosts = updateFn(posts);
+      setPosts(updatedPosts);
+    },
+    [posts],
+  );
 
   return {
     isLoading,

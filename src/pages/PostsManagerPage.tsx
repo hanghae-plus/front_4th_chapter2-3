@@ -3,15 +3,16 @@ import { Edit2, Plus, ThumbsUp, Trash2 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/card/ui";
 import PostTable from "../widgets/post/PostTable.tsx";
-import Pagination from "@features/post/ui/pagination.tsx";
-import PostFilter from "@features/post/ui/PostFilter.tsx";
+import Pagination from "@features/ui/pagination.tsx";
+import PostFilter from "@features/postFilter/ui/PostFilter.tsx";
 import { NewPost, Post, PostResponse } from "../types/post.ts";
 import { User, UserResponse } from "../types/user.ts";
 import { Tag } from "../types/tag.ts";
-import { usePostStore } from "@features/post/model/usePostStore.ts";
+import { usePostStore } from "@core/store/usePostStore.ts";
 import { Button } from "@shared/button/ui";
 import { useDialog } from "@shared/dialog/model/useDialog.ts";
-import PostAddDialog from "@features/post/ui/PostAddDialog.tsx";
+import PostAddDialog from "@features/ui/PostAddDialog.tsx";
+import { useTagStore } from "@core/store/useTagStore.ts";
 
 const PostsManager = () => {
   const navigate = useNavigate();
@@ -19,8 +20,9 @@ const PostsManager = () => {
   const queryParams = new URLSearchParams(location.search);
 
   const { posts, setPosts } = usePostStore();
+  const { tags, setTags } = useTagStore();
   // UI 데이터
-  const [tags, setTags] = useState<Tag[]>([]);
+
   const [comments, setComments] = useState({});
 
   // 페이지네이션 데이터
@@ -42,14 +44,7 @@ const PostsManager = () => {
   const [selectedComment, setSelectedComment] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
 
-  // dialog trigger
-  const [showEditDialog, setShowEditDialog] = useState(false);
-  const [showAddCommentDialog, setShowAddCommentDialog] = useState(false);
-  const [showEditCommentDialog, setShowEditCommentDialog] = useState(false);
-  const [showPostDetailDialog, setShowPostDetailDialog] = useState(false);
-  const [showUserModal, setShowUserModal] = useState(false);
-
-  const { open, close } = useDialog();
+  const { open } = useDialog();
 
   // URL 업데이트 함수
   const updateURL = () => {
@@ -94,7 +89,8 @@ const PostsManager = () => {
   const fetchTags = async () => {
     try {
       const response = await fetch("/api/posts/tags");
-      const data = await response.json();
+      const data: Tag[] = await response.json();
+      console.log(data);
       setTags(data);
     } catch (error) {
       console.error("태그 가져오기 오류:", error);
@@ -392,7 +388,7 @@ const PostsManager = () => {
   );
 
   const handleOpenAddDialog = () => {
-    open(<PostAddDialog addPost={addPost} />);
+    open(<PostAddDialog />);
   };
   return (
     <Card className="w-full max-w-6xl mx-auto">
@@ -407,20 +403,7 @@ const PostsManager = () => {
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-4">
-          <PostFilter
-            searchQuery={searchQuery}
-            fetchPostsByTag={fetchPostsByTag}
-            searchPosts={searchPosts}
-            setSelectedTag={setSelectedTag}
-            selectedTag={selectedTag}
-            setSearchQuery={setSearchQuery}
-            tags={tags}
-            setSortBy={setSortBy}
-            sortBy={sortBy}
-            setSortOrder={setSortOrder}
-            sortOrder={sortOrder}
-            updateURL={updateURL}
-          />
+          <PostFilter />
           {/* 게시물 테이블 */}
           {loading ? <div className="flex justify-center p-4">로딩 중...</div> : <PostTable />}
           {/* 페이지네이션 */}
