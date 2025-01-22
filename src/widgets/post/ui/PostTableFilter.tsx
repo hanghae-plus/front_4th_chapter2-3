@@ -1,6 +1,5 @@
 import { Tag } from "@/entities/post/model/types"
-import { Input } from "@/shared/ui"
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@radix-ui/react-select"
+import { Input, Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/shared/ui"
 import { Search } from "lucide-react"
 
 interface PostTableFilterProps {

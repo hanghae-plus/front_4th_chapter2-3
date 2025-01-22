@@ -1,9 +1,9 @@
 import { Post } from "@/entities/post/model/types"
 import { User } from "@/entities/user/model/types"
 import { Table, TableBody } from "@/shared/ui"
-import { PostTableHeader } from "../../../../features/post/post-table/ui/PostTableHead"
+import { PostTableHeader } from "../../../features/post/post-table/ui/PostTableHead"
 import { usePost } from "@/features/model/store"
-import { PostTableRow } from "../../../../features/post/post-table/ui/PostTableRow"
+import { PostTableRow } from "../../../features/post/post-table/ui/PostTableRow"
 
 interface PostTableProps {
   searchQuery: string
