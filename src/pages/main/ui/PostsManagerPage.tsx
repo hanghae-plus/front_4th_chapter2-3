@@ -41,6 +41,8 @@ import { PostAddModal } from "../../../features/add-post/ui/PostAddModal"
 import { useEditPost } from "../../../features/edit-post/model/use-edit-post"
 import { PostEditModal } from "../../../features/edit-post/ui/modal/PostEditModal"
 import { highlightText } from "../../../shared/lib/utils/highlight-text"
+import { usePostDetail } from "../../../features/view-post-detail/model/use-post-detail"
+import { PostDetailModal } from "../../../features/view-post-detail/ui/PostDetailModal"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -57,8 +59,7 @@ const PostsManager = () => {
   const selectedPostId = queryParams.get("selectedPostId")
   const mode = queryParams.get("mode")
 
-  const [, setComments] = useState({})
-  const [selectedComment, setSelectedComment] = useState(null)
+  const [selectedComment, setSelectedComment] = useState<Comment | null>(null)
   const [newComment, setNewComment] = useState({ body: "", postId: null, userId: 1 })
   const [showAddCommentDialog, setShowAddCommentDialog] = useState(false)
   const [showEditCommentDialog, setShowEditCommentDialog] = useState(false)
@@ -120,11 +121,6 @@ const PostsManager = () => {
     }),
   })
 
-  const { data: selectedPost } = useQuery({
-    ...postQueries.detailQuery(selectedPostId || ""),
-    enabled: !!selectedPostId,
-  })
-
   const { data: { users } = { users: [] } } = useQuery({
     ...userQueries.listQuery(),
     select: (data) => ({
@@ -141,11 +137,6 @@ const PostsManager = () => {
     onError: (error) => {
       console.error("게시물 삭제 오류:", error)
     },
-  })
-
-  const { data: comments } = useQuery({
-    ...commentQueries.byPostQuery(Number(selectedPostId) || 0),
-    select: (data) => data?.comments,
   })
 
   const addCommentMutation = useMutation({
@@ -227,10 +218,7 @@ const PostsManager = () => {
         body: JSON.stringify({ body: selectedComment.body }),
       })
       const data = await response.json()
-      setComments((prev) => ({
-        ...prev,
-        [data.postId]: prev[data.postId].map((comment) => (comment.id === data.id ? data : comment)),
-      }))
+      setSelectedComment({ ...selectedComment, body: data.body })
       setShowEditCommentDialog(false)
     } catch (error) {
       console.error("댓글 업데이트 오류:", error)
@@ -243,10 +231,7 @@ const PostsManager = () => {
       await fetch(`/api/comments/${id}`, {
         method: "DELETE",
       })
-      setComments((prev) => ({
-        ...prev,
-        [postId]: prev[postId].filter((comment) => comment.id !== id),
-      }))
+      setSelectedComment(null)
     } catch (error) {
       console.error("댓글 삭제 오류:", error)
     }
@@ -258,15 +243,10 @@ const PostsManager = () => {
       const response = await fetch(`/api/comments/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ likes: comments[postId].find((c) => c.id === id).likes + 1 }),
+        body: JSON.stringify({ likes: comments.find((c) => c.id === id).likes + 1 }),
       })
       const data = await response.json()
-      setComments((prev) => ({
-        ...prev,
-        [postId]: prev[postId].map((comment) =>
-          comment.id === data.id ? { ...data, likes: comment.likes + 1 } : comment,
-        ),
-      }))
+      setSelectedComment({ ...selectedComment, likes: data.likes + 1 })
     } catch (error) {
       console.error("댓글 좋아요 오류:", error)
     }
@@ -293,6 +273,14 @@ const PostsManager = () => {
     handleSubmit: submitEditPost,
     isSubmitting: isEditSubmitting,
   } = useEditPost()
+
+  const {
+    isOpen: isDetailOpen,
+    post: selectedPost,
+    comments,
+    handleView: handleViewDetail,
+    handleClose: closeDetail,
+  } = usePostDetail()
 
   // 게시물 테이블 렌더링
   const renderPostTable = () => (
@@ -354,16 +342,7 @@ const PostsManager = () => {
             </TableCell>
             <TableCell>
               <div className="flex items-center gap-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() =>
-                    updateURLParams({
-                      selectedPostId: post.id.toString(),
-                      mode: "detail",
-                    })
-                  }
-                >
+                <Button variant="ghost" size="sm" onClick={() => handleViewDetail(post.id.toString())}>
                   <MessageSquare className="w-4 h-4" />
                 </Button>
                 <Button variant="ghost" size="sm" onClick={() => handleEdit(post.id)}>
@@ -550,31 +529,6 @@ const PostsManager = () => {
         </div>
       </CardContent>
 
-      {/* 게시물 수정 대화상자 */}
-      <Dialog
-        open={!!selectedPostId}
-        onOpenChange={(open) => {
-          if (!open) {
-            updateURLParams({ selectedPostId: null, mode: null })
-          }
-        }}
-      >
-        <DialogContent className={mode === "detail" ? "max-w-3xl" : ""}>
-          <DialogHeader>
-            <DialogTitle>{highlightText(selectedPost?.title ?? "", searchQuery)}</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            {mode !== "edit" && (
-              // 상세 보기 모드 UI
-              <div className="overflow-hidden">
-                <p className="break-words">{highlightText(selectedPost?.body ?? "", searchQuery)}</p>
-                {renderComments()}
-              </div>
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
-
       <Dialog open={showAddCommentDialog} onOpenChange={setShowAddCommentDialog}>
         <DialogContent>
           <DialogHeader>
@@ -626,6 +580,14 @@ const PostsManager = () => {
         onChange={handleEditChange}
         onSubmit={submitEditPost}
         isSubmitting={isEditSubmitting}
+      />
+      <PostDetailModal
+        isOpen={isDetailOpen}
+        onClose={closeDetail}
+        post={selectedPost}
+        comments={comments ?? []}
+        searchQuery={searchQuery}
+        renderComments={renderComments}
       />
     </Card>
   )
