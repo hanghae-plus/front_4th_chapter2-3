@@ -8,7 +8,6 @@ import eslintPluginPrettier from 'eslint-plugin-prettier';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import security from 'eslint-plugin-security';
-import sonarjs from 'eslint-plugin-sonarjs';
 import unicorn from 'eslint-plugin-unicorn';
 import globals from 'globals';
 
@@ -16,7 +15,6 @@ export default [
   {
     ignores: ['**/node_modules/**', 'dist/**'], // 구성 개체가 적용되지 않아야 하는 파일을 나타내는 glob패턴, 지정하지 않으면 모든 파일에 적용
   },
-  sonarjs.configs.recommended,
   {
     files: ['**/*.{js,jsx,ts,tsx}'], // 구성 개체가 적용되어야 하는 피일을 나타는 glob패턴, 지정하지 않으면 모든 파일에 적용
     languageOptions: {
@@ -100,11 +98,6 @@ export default [
       'security/detect-object-injection': 'warn', // 객체 속성 주입 방지
       'security/detect-non-literal-require': 'warn', // 동적 require 경고
       'security/detect-eval-with-expression': 'error', // eval 사용 금지
-
-      // 코드 품질 향상 (SonarJS)
-      'sonarjs/cognitive-complexity': 'warn', // 복잡도 제한
-      'sonarjs/no-identical-expressions': 'warn', // 동일한 표현식 방지
-      'sonarjs/pseudo-random': 'warn', // 난수 사용 경고
 
       // 모던 JavaScript (Unicorn)
       'unicorn/prefer-module': 'error', // ESM 모듈 사용
