@@ -1,11 +1,11 @@
 import { useState } from "react"
-import { User } from "@/types/posts"
+import { User } from "../../types/posts"
 
 export const useUsers = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
   const [showUserModal, setShowUserModal] = useState(false)
 
-  const fetchUserDetails = async (userId: number) => {
+  const handleUserDetail = async (userId: number) => {
     try {
       const response = await fetch(`/api/users/${userId}`)
       const user = await response.json()
@@ -16,14 +16,5 @@ export const useUsers = () => {
     }
   }
 
-  const handleUserDetail = (userId: number) => {
-    fetchUserDetails(userId)
-  }
-
-  return {
-    selectedUser,
-    showUserModal,
-    setShowUserModal,
-    handleUserDetail,
-  }
+  return { selectedUser, showUserModal, setShowUserModal, handleUserDetail }
 }

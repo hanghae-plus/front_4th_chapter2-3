@@ -1,5 +1,5 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/shared/ui"
-import { User } from "@/types/posts"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../shared/ui"
+import { User } from "../../types/posts"
 
 interface UserDetailDialogProps {
   open: boolean

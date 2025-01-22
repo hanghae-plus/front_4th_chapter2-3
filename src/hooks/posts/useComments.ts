@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Comment } from "@/types/posts"
+import { Comment } from "../../types/posts"
 
 export const useComments = () => {
   const [comments, setComments] = useState<Record<number, Comment[]>>({})

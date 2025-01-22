@@ -1,5 +1,5 @@
-import { Button, Dialog, DialogContent, DialogHeader, DialogTitle, Input, Textarea } from "@/shared/ui"
-import { Post } from "@/types/posts"
+import { Button, Dialog, DialogContent, DialogHeader, DialogTitle, Input, Textarea } from "../../shared/ui"
+import { Post } from "../../types/posts"
 
 interface PostEditDialogProps {
   open: boolean

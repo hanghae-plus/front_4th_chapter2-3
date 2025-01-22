@@ -1,5 +1,5 @@
-import { Button, Dialog, DialogContent, DialogHeader, DialogTitle, Textarea } from "@/shared/ui"
-import { Comment } from "@/types/posts"
+import { Button, Dialog, DialogContent, DialogHeader, DialogTitle, Textarea } from "../../shared/ui"
+import { Comment } from "../../types/posts"
 
 interface CommentEditDialogProps {
   open: boolean

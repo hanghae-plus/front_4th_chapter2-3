@@ -1,5 +1,5 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/shared/ui"
-import { Post, Comment } from "@/types/posts"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../shared/ui"
+import { Post, Comment } from "../../types/posts"
 import { PostComments } from "./PostComments"
 
 interface PostDetailDialogProps {
@@ -7,7 +7,6 @@ interface PostDetailDialogProps {
   onOpenChange: (open: boolean) => void
   post: Post | null
   comments: Comment[]
-  searchQuery: string
   onCommentLike: (id: number, postId: number) => void
   onCommentEdit: (comment: Comment) => void
   onCommentDelete: (id: number, postId: number) => void
@@ -18,7 +17,6 @@ export const PostDetailDialog = ({
   onOpenChange,
   post,
   comments,
-  searchQuery,
   onCommentLike,
   onCommentEdit,
   onCommentDelete,

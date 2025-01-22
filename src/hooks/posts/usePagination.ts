@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 
 export const usePagination = (onPageChange: (skip: number, limit: number) => void) => {
   const [skip, setSkip] = useState(0)

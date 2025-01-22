@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react"
-import { Post } from "@/types/posts"
+import { useState } from "react"
+import { Post } from "../../types/posts"
 
 export const usePostsData = () => {
   const [posts, setPosts] = useState<Post[]>([])
@@ -22,7 +22,7 @@ export const usePostsData = () => {
     setLoading(false)
   }
 
-  const handlePostDetail = async (post: Post) => {
+  const handlePostDetail = (post: Post) => {
     setSelectedPost(post)
     setShowPostDetailDialog(true)
   }

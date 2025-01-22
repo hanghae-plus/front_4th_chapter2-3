@@ -1,33 +1,23 @@
-import { useState, useEffect } from "react"
-import { Tag } from "@/types/posts"
+import { useState } from "react"
+import { Tag } from "../../types/posts"
 
 export const usePostsFilter = (onFilterChange: () => void) => {
   const [searchQuery, setSearchQuery] = useState("")
-  const [sortBy, setSortBy] = useState("")
+  const [selectedTag, setSelectedTag] = useState("all")
+  const [sortBy, setSortBy] = useState("none")
   const [sortOrder, setSortOrder] = useState("asc")
-  const [selectedTag, setSelectedTag] = useState("")
-  const [tags, setTags] = useState<Tag[]>([])
-
-  const fetchTags = async () => {
-    try {
-      const response = await fetch("/api/tags")
-      const data = await response.json()
-      setTags(data.tags)
-    } catch (error) {
-      console.error("태그 가져오기 오류:", error)
-    }
-  }
+  const [tags] = useState<Tag[]>([])
 
   const handleSearchChange = (value: string) => {
     setSearchQuery(value)
   }
 
-  const handleSearch = async () => {
+  const handleSearch = () => {
     onFilterChange()
   }
 
-  const handleTagChange = async (tag: string) => {
-    setSelectedTag(tag)
+  const handleTagChange = (value: string) => {
+    setSelectedTag(value)
     onFilterChange()
   }
 
@@ -40,10 +30,6 @@ export const usePostsFilter = (onFilterChange: () => void) => {
     setSortOrder(value)
     onFilterChange()
   }
-
-  useEffect(() => {
-    fetchTags()
-  }, [])
 
   return {
     searchQuery,

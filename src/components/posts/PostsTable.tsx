@@ -1,6 +1,6 @@
 import { Edit2, MessageSquare, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react"
-import { Button, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shared/ui"
-import { Post } from "@/types/posts"
+import { Button, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../shared/ui"
+import { Post } from "../../types/posts"
 
 interface PostsTableProps {
   posts: Post[]
@@ -15,7 +15,6 @@ interface PostsTableProps {
 
 export const PostsTable = ({
   posts,
-  searchQuery,
   selectedTag,
   onTagSelect,
   onPostDetail,
