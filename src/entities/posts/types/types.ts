@@ -1,8 +1,4 @@
-export interface InfUser {
- id : number;
- fullName : string;
- username: string;
-}
+
 
 export interface InfPost {
  id ?: string;

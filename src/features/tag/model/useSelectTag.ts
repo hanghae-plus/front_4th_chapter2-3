@@ -1,7 +1,7 @@
 import { useAtom } from "jotai"
-import { selectedTagAtom, useTagsQuery } from "./store.ts"
-import updateSearchParams from "../../../modules/model/updateSearchParams.ts"
-import usePosts from "../../posts/model/actions.ts"
+import { selectedTagAtom, useTagsQuery } from "./tagStores.ts"
+import updateSearchParams from "../../../modules/search/model/updateSearchParams.ts"
+import usePosts from "../../posts/model/usePostsQuery.ts"
 
 export default function useSelectTag() {
   const [selectedTag, setSelectedTag] = useAtom(selectedTagAtom);

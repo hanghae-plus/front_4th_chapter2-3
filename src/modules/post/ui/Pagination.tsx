@@ -1,7 +1,7 @@
 import { Button, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../shared/ui"
 import { useAtom, useAtomValue } from "jotai"
-import { limitAtom, skipAtom } from "../../model/store.ts"
-import { totalAtom } from "../../../features/posts/model/store.ts"
+import { limitAtom, skipAtom } from "../../search/model/store.ts"
+import { totalAtom } from "../../../features/posts/model/postsStore.ts"
 
 export default function Pagination() {
   const [limit, setLimit] = useAtom(limitAtom);

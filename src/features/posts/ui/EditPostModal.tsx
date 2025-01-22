@@ -1,8 +1,8 @@
 import { Button, Input, Modal, Textarea } from "../../../shared/ui"
 import { useAtom } from "jotai"
-import { showEditDialogAtom } from "../../../entities/modal/model/store.ts"
-import { selectedPostsAtom } from "../model/store.ts"
-import usePostData from "../hooks/usePostData.ts"
+import { showEditDialogAtom } from "../../../entities/modal/model/modalOpenerStore.ts"
+import { selectedPostsAtom } from "../model/postsStore.ts"
+import usePostData from "../model/usePostData.ts"
 
 {/* 게시물 수정 대화상자 */}
 export default function EditPostModal() {
@@ -27,7 +27,7 @@ export default function EditPostModal() {
           value={selectedPost?.body || ""}
           onChange={(e) => setSelectedPost({ ...selectedPost, body: e.target.value })}
         />
-        <Button onClick={updatePost}>게시물 업데이트</Button>
+        <Button onClick={() => updatePost(selectedPost)}>게시물 업데이트</Button>
       </div>
     </Modal>
   )

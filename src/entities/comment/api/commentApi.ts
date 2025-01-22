@@ -1,4 +1,4 @@
-import { InfComment, InfComments } from "../type/types.ts"
+import { InfComment, InfComments } from "../type/commentTypes.ts"
 
 export const getCommentsApi = async (postId : number) : Promise<InfComments>  => {
   const response = await fetch(`/api/comments/post/${postId}`)

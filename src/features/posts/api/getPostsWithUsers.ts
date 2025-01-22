@@ -1,16 +1,23 @@
-import { fetchPosts } from "../../../entities/posts/api/fetchPosts.ts"
-import { fetchUsers } from "../../../entities/posts/api/fetchUsers.ts"
+import { postsApi } from "../../../entities/posts/api/postsApi.ts"
+import { getUsers } from "../../../entities/user/api/usersApi.ts"
 
-export const getPostsWithUsers = async ({ limit, skip }: any) => {
-  const [postsData, usersData] = await Promise.all([
-    fetchPosts({ limit, skip }),
-    fetchUsers()
+// Posts와 Users를 조회하는 함수
+export const getPostsWithUsers = async (params) => {
+  const [postsResponse, usersResponse] = await Promise.all([
+    postsApi(params),
+    getUsers()
   ]);
+  
+  const postsData = await postsResponse;
+  const { users: usersData } = await usersResponse;
+  
+  const posts = postsData.posts.map((post) => ({
+    ...post,
+    author: usersData.find((user) => user.id === post.userId),
+  }));
+  
   return {
-    posts: postsData.posts.map((post) => ({
-      ...post,
-      author: usersData.users.find((user) => user.id === post.userId),
-    })),
-    total: postsData.total
+    ...postsData,
+    posts : posts
   };
 };

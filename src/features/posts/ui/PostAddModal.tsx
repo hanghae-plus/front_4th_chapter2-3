@@ -1,8 +1,8 @@
 import { Button, Input, Modal, Textarea } from "../../../shared/ui"
 import { useAtom, useAtomValue } from "jotai"
-import { showAddDialogAtom } from "../../../entities/modal/model/store.ts"
-import { newPostsAtom } from "../model/store.ts"
-import usePostData from "../hooks/usePostData.ts"
+import { showAddDialogAtom } from "../../../entities/modal/model/modalOpenerStore.ts"
+import { newPostsAtom } from "../model/postsStore.ts"
+import usePostData from "../model/usePostData.ts"
 
 {/* 게시물 추가 대화상자 */}
 export default function PostAddModal() {
@@ -33,7 +33,9 @@ export default function PostAddModal() {
           value={newPost.userId}
           onChange={(e) => setNewPost({ ...newPost, userId: Number(e.target.value) })}
         />
-        <Button onClick={addPost}>게시물 추가</Button>
+        <Button onClick={() => {
+          addPost(newPost)
+        }}>게시물 추가</Button>
       </div>
     </Modal>
   )

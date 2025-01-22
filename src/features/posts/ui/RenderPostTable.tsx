@@ -1,9 +1,9 @@
 import { Button, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../shared/ui"
 import { Edit2, MessageSquare, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react"
-import usePosts from "../model/actions.ts"
-import usePostData from "../hooks/usePostData.ts"
+import usePosts from "../model/usePostsQuery.ts"
+import usePostData from "../model/usePostData.ts"
 import { highlightText } from "../lib/highlightText.tsx"
-import updateSearchParams from "../../../modules/model/updateSearchParams.ts"
+import updateSearchParams from "../../../modules/search/model/updateSearchParams.ts"
 import { useAtomValue } from "jotai"
 import { isLoadingAtom } from "../../../shared/model/store.ts"
 

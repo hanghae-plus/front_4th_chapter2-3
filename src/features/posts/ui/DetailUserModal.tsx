@@ -1,7 +1,7 @@
 import { Modal } from "../../../shared/ui"
 import { useAtom, useAtomValue } from "jotai"
-import { showUserModalAtom } from "../../../entities/modal/model/store.ts"
-import { selectedUserAtom } from "../model/store.ts"
+import { showUserModalAtom } from "../../../entities/modal/model/modalOpenerStore.ts"
+import { selectedUserAtom } from "../../users/model/usersStore.ts"
 
 {/* 사용자 모달 */}
 export default function DetailUserModal() {

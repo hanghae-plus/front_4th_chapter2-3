@@ -1,13 +1,8 @@
-import { InfPost, TypeLimit, TypeSkip } from "../types/types.ts"
+import { InfPost } from "../types/types.ts"
 
-interface fetchPostsProps {
-  limit : TypeLimit;
-  skip : TypeSkip;
-}
 
-export const fetchPosts = async ({ limit, skip }: fetchPostsProps): Promise<InfPost[]> => {
-  const response = await fetch(`/api/posts?limit=${limit}&skip=${skip}`);
-  console.log("response", response)
+export const postsApi = async (params: string): Promise<InfPost[]> => {
+  const response = await fetch(`/api/posts${params}`);
   return response.json();
 };
 

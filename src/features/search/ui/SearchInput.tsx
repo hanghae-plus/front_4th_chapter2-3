@@ -1,13 +1,11 @@
-import { SearchInputProps } from "../model/types.ts"
 import { Search } from "lucide-react"
 import { Input } from "../../../shared/ui"
-import useSearchActions from "../model/actions.ts"
+import useSearchActions from "../model/useSearchActions.ts"
 
-export default function SearchInput(props : SearchInputProps) {
+export default function SearchInput() {
   const {
     searchQuery,
     setSearchQuery,
-    // searchPosts
   } = useSearchActions();
   return (
     <div className="flex-1">

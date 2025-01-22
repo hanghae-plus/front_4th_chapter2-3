@@ -1,10 +1,10 @@
 import { Button } from "../../../shared/ui"
 import { Edit2, Plus, ThumbsUp, Trash2 } from "lucide-react"
 import { highlightText } from "../../posts/lib/highlightText.tsx"
-import useComments from "../model/action.ts"
+import useComments from "../model/useComments.ts"
 import { useAtomValue, useSetAtom } from "jotai"
-import { showAddCommentDialogAtom } from "../../../entities/modal/model/store.ts"
-import { searchQueryAtom } from "../../search/model/store.ts"
+import { showAddCommentDialogAtom } from "../../../entities/modal/model/modalOpenerStore.ts"
+import { searchQueryAtom } from "../../search/model/searchQueryStore.ts"
 
 // 댓글 렌더링
 export default function RenderComments(postId)  {
@@ -18,7 +18,6 @@ export default function RenderComments(postId)  {
     setShowEditCommentDialog,
   } = useComments();
   const searchQuery = useAtomValue(searchQueryAtom);
-
   
   return (
     <div className="mt-2">

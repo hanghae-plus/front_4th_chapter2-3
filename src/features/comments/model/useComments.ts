@@ -1,6 +1,6 @@
 import { useAtom, useSetAtom } from "jotai"
-import { commentsAtom, newCommentAtom, selectedCommentAtom } from "../../../entities/comment/model/store.ts"
-import { showAddCommentDialogAtom, showEditCommentDialogAtom } from "../../../entities/modal/model/store.ts"
+import { commentsAtom, newCommentAtom, selectedCommentAtom } from "../../../entities/comment/model/commentStore.ts"
+import { showAddCommentDialogAtom, showEditCommentDialogAtom } from "../../../entities/modal/model/modalOpenerStore.ts"
 import {
   createCommentApi,
   deleteCommentApi,
@@ -12,8 +12,8 @@ export default function useComments() {
   const [comments, setComments] = useAtom(commentsAtom);
   const [newComment, setNewComment] = useAtom(newCommentAtom);
   const [selectedComment, setSelectedComment] = useAtom(selectedCommentAtom);
-  const setShowAddCommentDialog = useSetAtom(showAddCommentDialogAtom);
-  const setShowEditCommentDialog = useSetAtom(showEditCommentDialogAtom);
+  const [showAddCommentDialog, setShowAddCommentDialog] = useAtom(showAddCommentDialogAtom);
+  const [showEditCommentDialog, setShowEditCommentDialog] = useAtom(showEditCommentDialogAtom);
 
   
   const fetchComments = async (postId) => {
@@ -28,6 +28,7 @@ export default function useComments() {
   
   // 댓글 추가
   const addComment = async () => {
+    console.log("newComment", newComment)
     try {
       const data = await createCommentApi(newComment);
       setComments((prev) => ({
@@ -84,14 +85,18 @@ export default function useComments() {
   
   return {
     comments,
+    newComment,
     setNewComment,
+    selectedComment,
     setSelectedComment,
     fetchComments,
     addComment,
     updateComment,
     deleteComment,
     likeComment,
+    showAddCommentDialog,
     setShowAddCommentDialog,
+    showEditCommentDialog,
     setShowEditCommentDialog,
   }
 }

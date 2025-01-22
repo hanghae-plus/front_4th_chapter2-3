@@ -1,7 +1,7 @@
 import { Button, CardHeader, CardTitle } from "../../../shared/ui"
 import { Plus } from "lucide-react"
 import { useSetAtom } from "jotai"
-import { showAddDialogAtom } from "../../../entities/modal/model/store.ts"
+import { showAddDialogAtom } from "../../../entities/modal/model/modalOpenerStore.ts"
 
 export default function PostHeader() {
   const setShowAddDialog = useSetAtom(showAddDialogAtom);

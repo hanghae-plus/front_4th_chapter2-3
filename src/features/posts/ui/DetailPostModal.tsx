@@ -2,9 +2,9 @@ import { Modal } from "../../../shared/ui"
 import { highlightText } from "../lib/highlightText.tsx"
 import RenderComments from "../../comments/ui/RenderComments.tsx"
 import { useAtom, useAtomValue } from "jotai"
-import { showPostDetailDialogAtom } from "../../../entities/modal/model/store.ts"
-import { selectedPostsAtom } from "../model/store.ts"
-import { searchQueryAtom } from "../../search/model/store.ts"
+import { showPostDetailDialogAtom } from "../../../entities/modal/model/modalOpenerStore.ts"
+import { selectedPostsAtom } from "../model/postsStore.ts"
+import { searchQueryAtom } from "../../search/model/searchQueryStore.ts"
 {/* 게시물 상세 보기 대화상자 */}
 export default function DetailPostModal() {
   const [showPostDetailDialog, setShowPostDetailDialog] = useAtom(showPostDetailDialogAtom);

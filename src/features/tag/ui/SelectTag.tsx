@@ -1,6 +1,6 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../shared/ui"
-import useSelectTag from "../model/action.ts"
-import updateSearchParams from "../../../modules/model/updateSearchParams.ts"
+import useSelectTag from "../model/useSelectTag.ts"
+import updateSearchParams from "../../../modules/search/model/updateSearchParams.ts"
 
 export default function SelectTag() {
   const {

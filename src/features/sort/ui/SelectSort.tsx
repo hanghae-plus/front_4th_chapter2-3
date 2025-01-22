@@ -1,5 +1,5 @@
 import { useAtom } from "jotai"
-import { sortByAtom } from "../model/store.ts"
+import { sortByAtom } from "../model/sortStores.ts"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../shared/ui"
 
 export default function SelectSort() {
