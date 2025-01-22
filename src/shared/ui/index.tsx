@@ -25,7 +25,9 @@ export {
   Select, 
   SelectTrigger, 
   SelectContent, 
-  SelectItem 
+  SelectItem,
+  SelectGroup,
+  SelectValue
 } from "./select";
 
 

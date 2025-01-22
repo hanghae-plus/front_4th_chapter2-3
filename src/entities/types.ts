@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from "react";
+
 export interface Post {
   id: number;
   title: string;
@@ -9,6 +11,10 @@ export interface Post {
     dislikes: number;
   };
   author?: User;
+}
+export interface PostApiResponse {
+  posts: Post[];
+  total: number;
 }
 
 export interface PostFilters {
@@ -69,12 +75,12 @@ export interface PostManagementState {
 }
 
 export type PostManagementAction =
-  | { type: 'SET_SELECTED_POST'; payload: Post | null }
-  | { type: 'SET_ADD_DIALOG_OPEN'; payload: boolean }
-  | { type: 'SET_EDIT_DIALOG_OPEN'; payload: boolean }
-  | { type: 'SET_DETAIL_DIALOG_OPEN'; payload: boolean }
-  | { type: 'SET_USER_MODAL_OPEN'; payload: boolean }
-  | { type: 'SET_SELECTED_USER'; payload: User | null }
+  | { type: "SET_SELECTED_POST"; payload: Post | null }
+  | { type: "SET_ADD_DIALOG_OPEN"; payload: boolean }
+  | { type: "SET_EDIT_DIALOG_OPEN"; payload: boolean }
+  | { type: "SET_DETAIL_DIALOG_OPEN"; payload: boolean }
+  | { type: "SET_USER_MODAL_OPEN"; payload: boolean }
+  | { type: "SET_SELECTED_USER"; payload: User | null }
   
 export interface CommentFormState {
   body: string;
@@ -89,6 +95,38 @@ export interface CommentManagementState {
 }
 
 export type CommentManagementAction =
-  | { type: 'SET_SELECTED_COMMENT'; payload: Comment | null }
-  | { type: 'SET_ADD_DIALOG_OPEN'; payload: boolean }
-  | { type: 'SET_EDIT_DIALOG_OPEN'; payload: boolean };
+  | { type: "SET_SELECTED_COMMENT"; payload: Comment | null }
+  | { type: "SET_ADD_DIALOG_OPEN"; payload: boolean }
+  | { type: "SET_EDIT_DIALOG_OPEN"; payload: boolean };
+
+export type SearchTag = string;
+export type SortBy = "none" | "id" | "title" | "reactions";
+export type SortOrder = "asc" | "desc";
+
+export interface PostFiltersProps {
+  searchTerm: string;
+  setSearchTerm: Dispatch<SetStateAction<string>>;
+  selectedTag: SearchTag;
+  setSelectedTag: Dispatch<SetStateAction<SearchTag>>;
+  sortBy: SortBy;
+  setSortBy: (value: SortBy) => void;
+  sortOrder: SortOrder;
+  setSortOrder: (value: SortOrder) => void;
+  tags: { slug: string; url: string }[];
+  updateURL: () => void;
+}
+
+export interface DashboardContentProps {
+  posts: Post[];
+  loading: boolean;
+  total: number;
+}
+
+export interface PostPaginationProps {
+  total: number;
+  skip: number;
+  limit: number;
+  onLimitChange: (value: number) => void;
+  onPrevPage: () => void;
+  onNextPage: () => void;
+}

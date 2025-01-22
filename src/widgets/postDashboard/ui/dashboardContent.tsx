@@ -3,16 +3,17 @@ import { usePostStore } from "../../../entities/post/model/store";
 import { PostTable } from "../../../entities/post/ui/postCard";
 import { postApi } from "../../../entities/post/api/postApi";
 import { usePostManagement } from "../../../features/postManagement/model/context";
-import { Post, User } from "../../../entities/types";
+import { Post, User, DashboardContentProps  } from "../../../entities/types";
 
-export const DashboardContent = () => {
+export const DashboardContent = ({ posts }: DashboardContentProps) => {
   const { 
-    posts, 
-    pagination, 
-    filters, 
-    setPosts, 
-    setTotal,
-    setFilters
+    filters,
+    loading, 
+    total,
+    pagination,
+    setFilters,
+    setPosts,
+    setTotal
   } = usePostStore();
 
   const { dispatch } = usePostManagement();
@@ -77,11 +78,11 @@ export const DashboardContent = () => {
           posts={posts}
           searchQuery={filters.search}
           selectedTag={filters.tag}
-          highlight={filters.search}  // highlight prop 추가
+          highlight={filters.search}
           onEdit={handleEdit}
           onDelete={handleDelete}
           onDetailView={handleDetailView}
-          onTagClick={handleTagClick}
+          onTagClick={(tag) => setFilters({ tag })}
           onUserClick={handleUserClick}
         />
       </div>
