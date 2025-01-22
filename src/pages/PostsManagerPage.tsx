@@ -1,31 +1,16 @@
 import { useEffect, useState } from 'react';
 import { Edit2, MessageSquare, Plus, Search, ThumbsDown, ThumbsUp, Trash2 } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import {
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  Input,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-  Textarea,
-} from '../shared/ui';
+import { Button, Input, Textarea } from '../shared/ui';
 import { Post, Response, User, Comment, Tag } from '../shared/types';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../shared/ui/table';
+import { Card, CardContent, CardHeader, CardTitle } from '../shared/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../shared/ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../shared/ui/dialog';
+import { highlightText } from '../shared/lib';
+import { UserInfo } from '../entities/userInfo/ui';
+import { UserInfoModal } from '../widgets/userInfoModal/ui';
+import { getUserInfo } from '../entities/userInfo/api';
 
 // Post와 User를 합친 새로운 타입 정의
 interface PostWithAuthor extends Post {
@@ -36,6 +21,9 @@ const PostsManager = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
+
+  // 처리된 상태
+  const [showUserModal, setShowUserModal] = useState(false);
 
   // 상태 관리
   const [posts, setPosts] = useState<PostWithAuthor[]>([]);
@@ -58,7 +46,6 @@ const PostsManager = () => {
   const [showAddCommentDialog, setShowAddCommentDialog] = useState(false);
   const [showEditCommentDialog, setShowEditCommentDialog] = useState(false);
   const [showPostDetailDialog, setShowPostDetailDialog] = useState(false);
-  const [showUserModal, setShowUserModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
   // URL 업데이트 함수
@@ -302,10 +289,12 @@ const PostsManager = () => {
   };
 
   // 사용자 모달 열기
-  const openUserModal = async (user?: User) => {
+  // 처분 보류
+  const openUserModal = async (user: User) => {
     try {
-      const response = await fetch(`/api/users/${user?.id}`);
-      const userData = await response.json();
+      // const response = await fetch(`/api/users/${user?.id}`);
+      // const userData = await response.json();
+      const userData = await getUserInfo(user.id);
       setSelectedUser(userData);
       setShowUserModal(true);
     } catch (error) {
@@ -335,23 +324,6 @@ const PostsManager = () => {
     setSortOrder(params.get('sortOrder') || 'asc');
     setSelectedTag(params.get('tag') || '');
   }, [location.search]);
-
-  // 하이라이트 함수 추가
-  const highlightText = (text: string, highlight: string) => {
-    if (!text) return null;
-    if (!highlight.trim()) {
-      return <span>{text}</span>;
-    }
-    const regex = new RegExp(`(${highlight})`, 'gi');
-    const parts = text.split(regex);
-    return (
-      <span>
-        {parts.map((part, i) =>
-          regex.test(part) ? <mark key={i}>{part}</mark> : <span key={i}>{part}</span>,
-        )}
-      </span>
-    );
-  };
 
   // 게시물 테이블 렌더링
   const renderPostTable = () => (
@@ -704,43 +676,9 @@ const PostsManager = () => {
       </Dialog>
 
       {/* 사용자 모달 */}
-      <Dialog open={showUserModal} onOpenChange={setShowUserModal}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>사용자 정보</DialogTitle>
-          </DialogHeader>
-          <div className='space-y-4'>
-            <img
-              src={selectedUser?.image}
-              alt={selectedUser?.username}
-              className='w-24 h-24 rounded-full mx-auto'
-            />
-            <h3 className='text-xl font-semibold text-center'>{selectedUser?.username}</h3>
-            <div className='space-y-2'>
-              <p>
-                <strong>이름:</strong> {selectedUser?.firstName} {selectedUser?.lastName}
-              </p>
-              <p>
-                <strong>나이:</strong> {selectedUser?.age}
-              </p>
-              <p>
-                <strong>이메일:</strong> {selectedUser?.email}
-              </p>
-              <p>
-                <strong>전화번호:</strong> {selectedUser?.phone}
-              </p>
-              <p>
-                <strong>주소:</strong> {selectedUser?.address?.address},{' '}
-                {selectedUser?.address?.city}, {selectedUser?.address?.state}
-              </p>
-              <p>
-                <strong>직장:</strong> {selectedUser?.company?.name} -{' '}
-                {selectedUser?.company?.title}
-              </p>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <UserInfoModal open={showUserModal} onOpenChange={setShowUserModal}>
+        <UserInfo userId={selectedUser?.id || 0} />
+      </UserInfoModal>
     </Card>
   );
 };
