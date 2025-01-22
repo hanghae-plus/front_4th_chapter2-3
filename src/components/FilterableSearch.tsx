@@ -1,22 +1,34 @@
+import { Search } from "lucide-react"
 import { getPostsBySearchQuery } from "../api/post"
+import { Input } from "../shared/ui"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@radix-ui/react-select"
+import { Tag } from "../types/tag"
 
-export const FilterableSearch = () => {
-  const searchPosts = async () => {
-    if (!searchQuery) {
-      fetchPosts()
-      return
-    }
-    setLoading(true)
-    try {
-      const data = await getPostsBySearchQuery(searchQuery)
-      setPosts(data.posts)
-      setTotal(data.total)
-    } catch (error) {
-      console.error("게시물 검색 오류:", error)
-    }
-    setLoading(false)
-  }
+interface Props {
+  searchQuery: string
+  sortBy: string
+  sortOrder: string
+  selectedTag: string
+  tags: Tag[]
+  onChangeSearchQuery: (value: string) => void
+  onSelectTag: (value: string) => void
+  onChangeSortBy: (value: string) => void
+  onChangeSortOrder: (value: string) => void
+  updateURL: () => void
+}
 
+export const FilterableSearch = ({
+  searchQuery,
+  selectedTag,
+  sortBy,
+  sortOrder,
+  tags,
+  onChangeSearchQuery,
+  onChangeSortBy,
+  onChangeSortOrder,
+  onSelectTag,
+  updateURL,
+}: Props) => {
   return (
     <div className="flex gap-4">
       <div className="flex-1">
@@ -26,7 +38,7 @@ export const FilterableSearch = () => {
             placeholder="게시물 검색..."
             className="pl-8"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => onChangeSearchQuery(e.target.value)}
             onKeyPress={(e) => e.key === "Enter" && searchPosts()}
           />
         </div>
@@ -34,7 +46,7 @@ export const FilterableSearch = () => {
       <Select
         value={selectedTag}
         onValueChange={(value) => {
-          setSelectedTag(value)
+          onSelectTag(value)
           fetchPostsByTag(value)
           updateURL()
         }}
@@ -51,7 +63,7 @@ export const FilterableSearch = () => {
           ))}
         </SelectContent>
       </Select>
-      <Select value={sortBy} onValueChange={setSortBy}>
+      <Select value={sortBy} onValueChange={onChangeSortBy}>
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="정렬 기준" />
         </SelectTrigger>
@@ -62,7 +74,7 @@ export const FilterableSearch = () => {
           <SelectItem value="reactions">반응</SelectItem>
         </SelectContent>
       </Select>
-      <Select value={sortOrder} onValueChange={setSortOrder}>
+      <Select value={sortOrder} onValueChange={onChangeSortOrder}>
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="정렬 순서" />
         </SelectTrigger>

@@ -1,7 +1,16 @@
 import { useCallback, useEffect, useState } from "react"
-import { getPosts, getPostsByTag } from "../api/post"
+import { getPosts, getPostsBySearchQuery, getPostsByTag } from "../api/post"
 
-export const usePosts = (selectedTag, skip, limit, sortBy, sortOrder) => {
+interface usePostsArgs {
+  selectedTag: string
+  skip: 0 | 1
+  limit: number
+  sortBy: string
+  sortOrder: string
+  searchQuery: string
+}
+
+export const usePosts = ({ selectedTag, skip, limit, sortBy, sortOrder, searchQuery }: usePostsArgs) => {
   const [posts, setPosts] = useState([])
   const [loading, setLoading] = useState(false)
   const [total, setTotal] = useState(0)
@@ -21,7 +30,7 @@ export const usePosts = (selectedTag, skip, limit, sortBy, sortOrder) => {
   }, [limit, skip])
 
   const fetchPostsByTag = useCallback(
-    async (tag) => {
+    async (tag: string) => {
       if (!tag || tag === "all") {
         fetchPosts()
         return
@@ -39,6 +48,22 @@ export const usePosts = (selectedTag, skip, limit, sortBy, sortOrder) => {
     [fetchPosts],
   )
 
+  const searchPosts = async () => {
+    if (!searchQuery) {
+      fetchPosts()
+      return
+    }
+    setLoading(true)
+    try {
+      const data = await getPostsBySearchQuery(searchQuery)
+      setPosts(data.posts)
+      setTotal(data.total)
+    } catch (error) {
+      console.error("게시물 검색 오류:", error)
+    }
+    setLoading(false)
+  }
+
   useEffect(() => {
     if (selectedTag) {
       fetchPostsByTag(selectedTag)
@@ -53,5 +78,6 @@ export const usePosts = (selectedTag, skip, limit, sortBy, sortOrder) => {
     total,
     fetchPosts,
     fetchPostsByTag,
+    searchPosts,
   }
 }

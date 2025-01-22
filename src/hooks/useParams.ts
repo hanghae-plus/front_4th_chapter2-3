@@ -36,6 +36,16 @@ export const useParams = () => {
     setSelectedTag(tag)
   }
 
+  const onChangeSearchQuery = (searchQuery: string) => {
+    setSearchQuery(searchQuery)
+  }
+  const onChangeSortBy = (sortBy: string) => {
+    setSortBy(sortBy)
+  }
+  const onChangeSortOrder = (sortOrder: string) => {
+    setSortOrder(sortOrder)
+  }
+
   useEffect(() => {
     const params = new URLSearchParams(location.search)
     setSkip(parseInt(params.get("skip") || "0"))
@@ -61,5 +71,8 @@ export const useParams = () => {
     onChangeSkip,
     onChangeLimit,
     onSelectTag,
+    onChangeSearchQuery,
+    onChangeSortBy,
+    onChangeSortOrder,
   }
 }

@@ -20,9 +20,23 @@ import { Comment } from "../types/comment"
 
 const PostsManager = () => {
   // 상태 관리
-  const { limit, selectedTag, skip, sortBy, sortOrder, onChangeLimit, onChangeSkip, onSelectTag } = useParams()
+  const {
+    limit,
+    selectedTag,
+    skip,
+    sortBy,
+    sortOrder,
+    searchQuery,
+    onChangeLimit,
+    onChangeSkip,
+    onSelectTag,
+    onChangeSearchQuery,
+    onChangeSortBy,
+    onChangeSortOrder,
+    updateURL,
+  } = useParams()
   const { tags } = useTags()
-  const { posts, loading, total } = usePosts(selectedTag, skip, limit, sortBy, sortOrder)
+  const { posts, loading, total } = usePosts({ selectedTag, skip, limit, sortBy, sortOrder, searchQuery })
   const [comments, setComments] = useState({})
 
   const [selectedPost, setSelectedPost] = useState<PostWithUser | null>(null)
@@ -44,7 +58,18 @@ const PostsManager = () => {
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-4">
-          <FilterableSearch />
+          <FilterableSearch
+            sortBy={sortBy}
+            sortOrder={sortOrder}
+            tags={tags}
+            selectedTag={selectedTag}
+            searchQuery={searchQuery}
+            onSelectTag={onSelectTag}
+            onChangeSortBy={onChangeSortBy}
+            onChangeSearchQuery={onChangeSearchQuery}
+            onChangeSortOrder={onChangeSortOrder}
+            updateURL={updateURL}
+          />
           {loading ? (
             <div className="flex justify-center p-4">로딩 중...</div>
           ) : (
