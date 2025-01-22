@@ -19,6 +19,6 @@ export const useGetPostsByTag = (tag: string) => {
   return useQuery({
     queryKey: [...queryKeys.search(), tag],
     queryFn: () => getPostsByTag(tag),
-    enabled: tag !== "all",
+    enabled: tag !== "all" && !!tag,
   })
 }

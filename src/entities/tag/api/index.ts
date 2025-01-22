@@ -9,6 +9,6 @@ export const getTags = async (): Promise<getTagsResponse[]> => {
 
 //태그로 게시물 조회
 export const getPostsByTag = async (tag: string): Promise<getPostByTagsRequest> => {
-  const { data } = await axios.get(`/api/posts/tags/${tag}`)
+  const { data } = await axios.get(`/api/posts/tag/${tag}`)
   return data
 }
