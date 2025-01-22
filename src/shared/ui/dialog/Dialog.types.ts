@@ -1,19 +1,15 @@
-import { HTMLAttributes } from "react";
+import * as DialogPrimitive from "@radix-ui/react-dialog";
 
-export interface DialogProps {
-  open?: boolean;
-  onOpenChange?: (open: boolean) => void;
-  children?: React.ReactNode;
-}
+export interface DialogProps extends DialogPrimitive.DialogProps {}
 
-export interface DialogContentProps extends HTMLAttributes<HTMLDivElement> {
+export interface DialogContentProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
 }
 
-export interface DialogHeaderProps extends HTMLAttributes<HTMLDivElement> {
+export interface DialogHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
 }
 
-export interface DialogTitleProps extends HTMLAttributes<HTMLHeadingElement> {
+export interface DialogTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
   className?: string;
 }
