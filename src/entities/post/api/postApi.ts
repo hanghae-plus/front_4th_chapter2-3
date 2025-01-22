@@ -11,11 +11,6 @@ export const getPostsByTag = async (tag: string) => {
   return response.data;
 };
 
-export const getUser = async () => {
-  const response = await api.get("/api/users?limit=0&select=username,image");
-  return response.data;
-};
-
 export const searchPost = async (searchQuery: string) => {
   const response = await api.get(`/api/posts/search?q=${searchQuery}`);
   return response.data;

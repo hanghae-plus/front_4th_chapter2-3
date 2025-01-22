@@ -29,10 +29,10 @@ import {
   deletePost,
   getPosts,
   getPostsByTag,
-  getUser,
   searchPost,
   updatePost,
 } from "../entities/post/api/postApi.ts";
+import { getUser } from "../entities/user/api/userApi.ts";
 import { fetchTag } from "../entities/tag/api/tagApi.ts";
 import {
   addComments,
