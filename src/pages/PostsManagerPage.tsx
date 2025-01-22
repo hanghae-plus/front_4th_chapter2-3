@@ -68,6 +68,7 @@ const PostsManager = () => {
   }
 
   // 게시물 가져오기
+  // entities -> post -> api -> getPosts()
   const fetchPosts = () => {
     setLoading(true)
     let postsData
@@ -109,6 +110,7 @@ const PostsManager = () => {
   }
 
   // 게시물 검색
+  // entities -> post -> api -> getPostsByQuery()
   const searchPosts = async () => {
     if (!searchQuery) {
       fetchPosts()
@@ -127,6 +129,7 @@ const PostsManager = () => {
   }
 
   // 태그별 게시물 가져오기
+  // entities -> post -> api -> getPostsByTag()
   const fetchPostsByTag = async (tag) => {
     if (!tag || tag === "all") {
       fetchPosts()
@@ -155,6 +158,7 @@ const PostsManager = () => {
   }
 
   // 게시물 추가
+  // entities -> post -> model/api -> addPost()
   const addPost = async () => {
     try {
       const response = await fetch("/api/posts/add", {
@@ -172,6 +176,7 @@ const PostsManager = () => {
   }
 
   // 게시물 업데이트
+  // entities -> post -> model/api -> updatePost()
   const updatePost = async () => {
     try {
       const response = await fetch(`/api/posts/${selectedPost.id}`, {
@@ -188,6 +193,7 @@ const PostsManager = () => {
   }
 
   // 게시물 삭제
+  // entities -> post -> model/api -> deletePost()
   const deletePost = async (id) => {
     try {
       await fetch(`/api/posts/${id}`, {
@@ -342,6 +348,7 @@ const PostsManager = () => {
     )
   }
 
+  // entities - post
   // 게시물 테이블 렌더링
   const renderPostTable = () => (
     <Table>
@@ -422,6 +429,7 @@ const PostsManager = () => {
     </Table>
   )
 
+  // entities - comments
   // 댓글 렌더링
   const renderComments = (postId) => (
     <div className="mt-2">
@@ -669,6 +677,7 @@ const PostsManager = () => {
         </DialogContent>
       </Dialog>
 
+      {/* entities - user */}
       {/* 사용자 모달 */}
       <Dialog open={showUserModal} onOpenChange={setShowUserModal}>
         <DialogContent>
