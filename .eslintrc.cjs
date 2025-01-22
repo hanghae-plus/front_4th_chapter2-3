@@ -14,11 +14,10 @@ module.exports = {
       "error",
       {
         patterns: [
-          "**/features/*/ui/**/features/**/ui/**",
-          "**/entities/*/ui/**/entities/**/ui/**",
-          ,
-          "!**/index.ts",
-          "!**/index.tsx",
+          {
+            group: ["**/features/*/ui/**/*.{ts,tsx}", "**/entities/*/ui/**/*.{ts,tsx}", "!**/index.{ts,tsx}"],
+            message: "UI 컴포넌트는 index 파일을 통해서만 import 해야 합니다.",
+          },
         ],
       },
     ],
