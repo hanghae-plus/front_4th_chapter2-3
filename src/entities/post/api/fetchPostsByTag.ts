@@ -1,4 +1,4 @@
-import { request } from "../../../shared/lib/request";
+import { request } from "../../../shared";
 import { PostResponse } from "./types";
 
 export const fetchPostsByTag = (tag: string) => {

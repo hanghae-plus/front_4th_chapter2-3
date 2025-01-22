@@ -1,4 +1,4 @@
-import { request } from "../../../shared/lib/request";
+import { request } from "../../../shared";
 import { TagResponse } from "./types";
 
 export const fetchTags = async () => {

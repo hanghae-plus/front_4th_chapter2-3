@@ -1,4 +1,4 @@
-import { request } from "../../../shared/lib/request";
+import { request } from "../../../shared";
 import { Post } from "../model/types";
 
 export const updatePost = async ({ post }: { post: Post }) => {

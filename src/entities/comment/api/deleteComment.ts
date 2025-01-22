@@ -1,4 +1,4 @@
-import { request } from "../../../shared/lib/request";
+import { request } from "../../../shared";
 
 export const deleteComment = async ({ commentId }: { commentId: number }) => {
   return request.delete(`/api/comments/${commentId}`);

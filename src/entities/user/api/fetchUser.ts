@@ -1,4 +1,4 @@
-import { request } from "../../../shared/lib/request";
+import { request } from "../../../shared";
 import { User, UserDetail } from "../model/types";
 
 export const fetchUser = async ({ id }: { id: User["id"] }) => {

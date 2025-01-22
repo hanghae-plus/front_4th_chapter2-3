@@ -1,4 +1,4 @@
-import { request } from "../../../shared/lib/request";
+import { request } from "../../../shared";
 import { Comment } from "../model/types";
 
 export const createComment = async ({ newComment }: { newComment: Comment }) => {

@@ -1,4 +1,4 @@
-import { request } from "../../../shared/lib/request";
+import { request } from "../../../shared";
 import { CommentResponse } from "../types";
 
 export const fetchCommentsByPostId = async ({ postId }: { postId: number }) => {
