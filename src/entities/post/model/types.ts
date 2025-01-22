@@ -14,10 +14,12 @@ interface Post {
   author: User
 }
 
+type PostDTO = Omit<Post, "author">
+
 interface NewPost {
   title: Post["title"]
   body: Post["body"]
   userId: User["id"]
 }
 
-export type { Post, NewPost }
+export type { Post, PostDTO, NewPost }
