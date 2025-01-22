@@ -35,11 +35,11 @@ import { Comment } from "../../../entities/comment/model/types"
 import { postMutations } from "../../../entities/post/api/mutations"
 import { commentMutations } from "../../../entities/comment/api/mutations"
 import { useViewUserProfile } from "../../../features/view-user-profile/model/use-view-user-profile"
-import { UserProfileModal } from "../../../entities/user/ui/user-profile-modal"
+import { UserProfileModal } from "../../../features/view-user-profile/ui/UserProfileModal"
 import { useAddPost } from "../../../features/add-post/model/use-add-post"
-import { AddPostModal } from "../../../entities/post/ui/add-post-modal"
+import { PostAddModal } from "../../../features/add-post/ui/PostAddModal"
 import { useEditPost } from "../../../features/edit-post/model/use-edit-post"
-import { EditPostModal } from "../../../features/edit-post/ui/edit-post-modal"
+import { PostEditModal } from "../../../features/edit-post/ui/PostEditModal"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -625,7 +625,7 @@ const PostsManager = () => {
       </Dialog>
 
       <UserProfileModal isOpen={isOpen} onClose={handleClose} user={user} />
-      <AddPostModal
+      <PostAddModal
         isOpen={isAddOpen}
         onClose={closeAddPost}
         formData={formData}
@@ -633,7 +633,7 @@ const PostsManager = () => {
         onSubmit={submitAddPost}
         isSubmitting={isAddSubmitting}
       />
-      <EditPostModal
+      <PostEditModal
         isOpen={isEditOpen}
         onClose={closeEditPost}
         post={editingPost}

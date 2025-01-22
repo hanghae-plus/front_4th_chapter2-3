@@ -18,10 +18,10 @@ export const useEditPost = () => {
   })
 
   useEffect(() => {
-    if (post) {
+    if (isOpen && post) {
       setEditingPost(post)
     }
-  }, [post])
+  }, [isOpen, post])
 
   const updatePostMutation = useMutation({
     ...postMutations.updateMutation(),
@@ -39,11 +39,20 @@ export const useEditPost = () => {
     open()
   }
 
-  const handleChange = (field: string, value: string) => {
+  const handleClose = () => {
+    close()
+    setPostId(undefined)
+    setEditingPost(undefined)
+  }
+
+  const handleChange = (field: keyof Post, value: string | number) => {
     if (!editingPost) return
-    setEditingPost({
-      ...editingPost,
-      [field]: value,
+    setEditingPost((prev) => {
+      if (!prev) return prev
+      return {
+        ...prev,
+        [field]: value,
+      }
     })
   }
 
@@ -60,7 +69,7 @@ export const useEditPost = () => {
     isOpen,
     post: editingPost,
     handleEdit,
-    handleClose: close,
+    handleClose,
     handleChange,
     handleSubmit,
     isSubmitting: updatePostMutation.isPending,

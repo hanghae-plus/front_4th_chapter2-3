@@ -1,5 +1,5 @@
-import { User } from "../model/types"
-import { UserProfile } from "./UserProfile"
+import { User } from "../../../entities/user/model/types"
+import { UserProfile } from "../../../entities/user/ui/UserProfile"
 import { Modal } from "../../../shared/ui/modal/Modal"
 
 interface UserProfileModalProps {
