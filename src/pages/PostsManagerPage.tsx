@@ -25,22 +25,18 @@ import {
   TableRow,
   Textarea,
 } from '../shared/ui';
-import {
-  PostItemType,
-  CommentType,
-  PostsDataType,
-  UserType,
-  UserDetailType,
-  TagType,
-} from './PostManager/types';
+import { PostItemType, PostListDataType } from 'src/entities/post/model/types';
+import { CommentType } from 'src/entities/comment/model/types';
+import { UserDetailType, UserType } from 'src/entities/user/model/types';
+import { TagType } from 'src/entities/tag/model/types';
 
-const PostsManager = () => {
+const PostListManager = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
 
   // 상태 관리
-  const [posts, setPosts] = useState<PostItemType[]>([]);
+  const [postList, setPostList] = useState<PostItemType[]>([]);
   const [total, setTotal] = useState(0);
   const [skip, setSkip] = useState(parseInt(queryParams.get('skip') || '0'));
   const [limit, setLimit] = useState(parseInt(queryParams.get('limit') || '10'));
@@ -83,26 +79,26 @@ const PostsManager = () => {
   };
 
   // 게시물 가져오기
-  const fetchPosts = () => {
+  const fetchPostList = () => {
     setLoading(true);
-    let postsData: PostsDataType;
+    let postListData: PostListDataType;
     let usersData: UserType[];
 
-    fetch(`/api/posts?limit=${limit}&skip=${skip}`)
+    fetch(`/api/postList?limit=${limit}&skip=${skip}`)
       .then((response) => response.json())
-      .then((data: PostsDataType) => {
-        postsData = data;
+      .then((data: PostListDataType) => {
+        postListData = data;
         return fetch('/api/users?limit=0&select=username,image');
       })
       .then((response) => response.json())
       .then((users: { users: UserType[] }) => {
         usersData = users.users;
-        const postsWithUsers = postsData.posts.map((post: PostItemType) => ({
+        const postListWithUsers = postListData.postList.map((post: PostItemType) => ({
           ...post,
           author: usersData.find((user) => user.id === post.userId),
         }));
-        setPosts(postsWithUsers);
-        setTotal(postsData.total);
+        setPostList(postListWithUsers);
+        setTotal(postListData.total);
       })
       .catch((error) => {
         console.error('게시물 가져오기 오류:', error);
@@ -115,7 +111,7 @@ const PostsManager = () => {
   // 태그 가져오기
   const fetchTags = async () => {
     try {
-      const response = await fetch('/api/posts/tags');
+      const response = await fetch('/api/postList/tags');
       const data = await response.json();
       setTags(data);
     } catch (error) {
@@ -124,16 +120,16 @@ const PostsManager = () => {
   };
 
   // 게시물 검색
-  const searchPosts = async () => {
+  const searchPostList = async () => {
     if (!searchQuery) {
-      fetchPosts();
+      fetchPostList();
       return;
     }
     setLoading(true);
     try {
-      const response = await fetch(`/api/posts/search?q=${searchQuery}`);
+      const response = await fetch(`/api/postList/search?q=${searchQuery}`);
       const data = await response.json();
-      setPosts(data.posts);
+      setPostList(data.postList);
       setTotal(data.total);
     } catch (error) {
       console.error('게시물 검색 오류:', error);
@@ -142,28 +138,27 @@ const PostsManager = () => {
   };
 
   // 태그별 게시물 가져오기
-  const fetchPostsByTag = async (tag: string) => {
+  const fetchPostListByTag = async (tag: string) => {
     if (!tag || tag === 'all') {
-      fetchPosts();
+      fetchPostList();
       return;
     }
     setLoading(true);
     try {
-      const [postsResponse, usersResponse] = await Promise.all([
-        fetch(`/api/posts/tag/${tag}`),
+      const [postListResponse, usersResponse] = await Promise.all([
+        fetch(`/api/postList/tag/${tag}`),
         fetch('/api/users?limit=0&select=username,image'),
       ]);
-      const postsData = await postsResponse.json();
+      const postListData = await postListResponse.json();
       const usersData = await usersResponse.json();
 
-      const postsWithUsers: PostItemType[] = postsData.posts.map((post: PostItemType) => ({
+      const postListWithUsers: PostItemType[] = postListData.postList.map((post: PostItemType) => ({
         ...post,
         author: usersData.users.find((user: UserType) => user.id === post.userId),
       }));
 
-      setPosts(postsWithUsers);
-      setTotal(postsData.total);
-
+      setPostList(postListWithUsers);
+      setTotal(postListData.total);
     } catch (error) {
       console.error('태그별 게시물 가져오기 오류:', error);
     }
@@ -175,7 +170,7 @@ const PostsManager = () => {
     try {
       if (selectedPost) {
         // 수정 모드
-        const response = await fetch(`/api/posts/${selectedPost?.id}`, {
+        const response = await fetch(`/api/postList/${selectedPost?.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(selectedPost),
@@ -183,11 +178,10 @@ const PostsManager = () => {
 
         const data = await response.json();
 
-        setPosts(posts.map((post) => (post.id === data.id ? data : post)));
-
+        setPostList(postList.map((post) => (post.id === data.id ? data : post)));
       } else {
         // 추가 모드
-        const response = await fetch('/api/posts/add', {
+        const response = await fetch('/api/postList/add', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newPost),
@@ -195,17 +189,14 @@ const PostsManager = () => {
 
         const data = await response.json();
 
-        setPosts([data, ...posts]);
+        setPostList([data, ...postList]);
         setShowPostFormDialog(false);
       }
-
-
     } catch (error) {
       console.error('게시물 처리 오류:', error);
-
     } finally {
       setShowPostFormDialog(false);
-      setSelectedPost(null)
+      setSelectedPost(null);
       // 폼 초기화
       setNewPost({ title: '', body: '', userId: 0 });
     }
@@ -214,11 +205,11 @@ const PostsManager = () => {
   // 게시물 삭제
   const deletePost = async (id: number) => {
     try {
-      await fetch(`/api/posts/${id}`, {
+      await fetch(`/api/postList/${id}`, {
         method: 'DELETE',
       });
 
-      setPosts(posts.filter((post) => post.id !== id));
+      setPostList(postList.filter((post) => post.id !== id));
     } catch (error) {
       console.error('게시물 삭제 오류:', error);
     }
@@ -247,11 +238,11 @@ const PostsManager = () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(selectedComment),
         });
-        
+
         const data = await response.json();
 
         if (!data.postId) {
-          console.error("댓글 수정 오류:", data);
+          console.error('댓글 수정 오류:', data);
           return;
         }
 
@@ -261,7 +252,6 @@ const PostsManager = () => {
             comment.id === data.id ? data : comment,
           ),
         }));
-
       } else {
         // 추가 모드
         const response = await fetch('/api/comments/add', {
@@ -279,14 +269,20 @@ const PostsManager = () => {
       }
     } catch (error) {
       console.error('댓글 처리 오류:', error);
-
     } finally {
       setShowCommentFormDialog(false);
       setSelectedComment(null);
       // 폼 초기화
-      setNewComment({ id: 0, body: '', postId: undefined, userId: 1, likes: 0, user: { id: 0, username: '' } });
+      setNewComment({
+        id: 0,
+        body: '',
+        postId: undefined,
+        userId: 1,
+        likes: 0,
+        user: { id: 0, username: '' },
+      });
     }
-  }
+  };
 
   // 댓글 삭제
   const deleteComment = async (id: number, postId: number) => {
@@ -354,9 +350,9 @@ const PostsManager = () => {
 
   useEffect(() => {
     if (selectedTag) {
-      fetchPostsByTag(selectedTag);
+      fetchPostListByTag(selectedTag);
     } else {
-      fetchPosts();
+      fetchPostList();
     }
     updateURL();
   }, [skip, limit, sortBy, sortOrder, selectedTag]);
@@ -401,7 +397,7 @@ const PostsManager = () => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {posts.map((post) => (
+        {postList.map((post) => (
           <TableRow key={post.id}>
             <TableCell>{post.id}</TableCell>
             <TableCell>
@@ -546,7 +542,7 @@ const PostsManager = () => {
                   className='pl-8'
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && searchPosts()}
+                  onKeyPress={(e) => e.key === 'Enter' && searchPostList()}
                 />
               </div>
             </div>
@@ -554,7 +550,7 @@ const PostsManager = () => {
               value={selectedTag}
               onValueChange={(value) => {
                 setSelectedTag(value);
-                fetchPostsByTag(value);
+                fetchPostListByTag(value);
                 updateURL();
               }}
             >
@@ -627,13 +623,11 @@ const PostsManager = () => {
       <Dialog open={showPostFormDialog} onOpenChange={setShowPostFormDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>
-              {selectedPost ? "게시물 수정" : "새 게시물 추가"}
-            </DialogTitle>
+            <DialogTitle>{selectedPost ? '게시물 수정' : '새 게시물 추가'}</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
+          <div className='space-y-4'>
             <Input
-              placeholder="제목"
+              placeholder='제목'
               value={selectedPost ? selectedPost.title : newPost.title}
               onChange={(e) =>
                 selectedPost
@@ -643,7 +637,7 @@ const PostsManager = () => {
             />
             <Textarea
               rows={selectedPost ? 15 : 30}
-              placeholder="내용"
+              placeholder='내용'
               value={selectedPost ? selectedPost.body : newPost.body}
               onChange={(e) =>
                 selectedPost
@@ -653,16 +647,14 @@ const PostsManager = () => {
             />
             {!selectedPost && (
               <Input
-                type="number"
-                placeholder="사용자 ID"
+                type='number'
+                placeholder='사용자 ID'
                 value={newPost.userId}
-                onChange={(e) =>
-                  setNewPost({ ...newPost, userId: Number(e.target.value) })
-                }
+                onChange={(e) => setNewPost({ ...newPost, userId: Number(e.target.value) })}
               />
             )}
             <Button onClick={handlePostForm}>
-              {selectedPost ? "게시물 업데이트" : "게시물 추가"}
+              {selectedPost ? '게시물 업데이트' : '게시물 추가'}
             </Button>
           </div>
         </DialogContent>
@@ -672,9 +664,7 @@ const PostsManager = () => {
       <Dialog open={showCommentFormDialog} onOpenChange={setShowCommentFormDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>
-              {selectedComment ? "댓글 수정" : "새 댓글 추가"}
-            </DialogTitle>
+            <DialogTitle>{selectedComment ? '댓글 수정' : '새 댓글 추가'}</DialogTitle>
           </DialogHeader>
           <div className='space-y-4'>
             <Textarea
@@ -683,10 +673,11 @@ const PostsManager = () => {
               onChange={(e) =>
                 selectedComment
                   ? setSelectedComment({ ...selectedComment, body: e.target.value })
-                  : setNewComment({ ...newComment, body: e.target.value })}
+                  : setNewComment({ ...newComment, body: e.target.value })
+              }
             />
             <Button onClick={handleCommentForm}>
-              {selectedComment ? "댓글 업데이트" :"댓글 추가"}
+              {selectedComment ? '댓글 업데이트' : '댓글 추가'}
             </Button>
           </div>
         </DialogContent>
@@ -747,4 +738,4 @@ const PostsManager = () => {
   );
 };
 
-export default PostsManager;
+export default PostListManager;

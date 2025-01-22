@@ -1,22 +1,3 @@
-export interface PostItemType {
-  author: UserType | undefined;
-  id: number;
-  title: string;
-  body: string;
-  tags: string[];
-  reactions: {
-    likes: number;
-    dislikes: number;
-  };
-  views: number;
-  userId: number;
-}
-
-export interface PostsDataType {
-  posts: PostItemType[];
-  total: number;
-}
-
 export interface UserDetailType {
   id: number;
   firstName: string;
@@ -82,21 +63,3 @@ export interface UserDetailType {
 type UserCoreData = 'id' | 'username' | 'image';
 
 export type UserType = Pick<UserDetailType, UserCoreData>;
-
-export interface CommentType {
-  id: number;
-  body: string;
-  postId?: number;
-  likes: number;
-
-  userId: number;
-  user: {
-    id: number;
-    username: string;
-  };
-}
-
-export interface TagType {
-  url: string;
-  slug: string;
-}
