@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Plus } from "lucide-react"
 import { Button, Card, CardContent, CardHeader, CardTitle } from "../shared/ui/index"
 import { PostTable } from "../components/PostTable"
@@ -10,40 +10,30 @@ import { CommentUpdateDialog } from "../components/CommentUpdateDialog"
 import { PostDetailDialog } from "../components/PostDetailDialog"
 import { UserModal } from "../components/UserModal"
 import { FilterableSearch } from "../components/FilterableSearch"
-import { getTags } from "../api/tag"
 import { usePosts } from "../hooks/usePosts"
 import { useParams } from "../hooks/useParams"
 import { useTags } from "../hooks/useTags"
+import { useDialog } from "../hooks/useDialog"
 
 const PostsManager = () => {
   // 상태 관리
   const { limit, selectedTag, skip, sortBy, sortOrder, changeLimit, changeSkip } = useParams()
   const { tags } = useTags()
   const { posts, loading, total } = usePosts(selectedTag, skip, limit, sortBy, sortOrder)
+  const [comments, setComments] = useState({})
 
   const [selectedPost, setSelectedPost] = useState(null)
-
-  const [newPost, setNewPost] = useState({ title: "", body: "", userId: 1 })
-
-  const [comments, setComments] = useState({})
   const [selectedComment, setSelectedComment] = useState(null)
-  const [newComment, setNewComment] = useState({ body: "", postId: null, userId: 1 })
-
-  const [showAddDialog, setShowAddDialog] = useState(false)
-  const [showEditDialog, setShowEditDialog] = useState(false)
-  const [showAddCommentDialog, setShowAddCommentDialog] = useState(false)
-  const [showEditCommentDialog, setShowEditCommentDialog] = useState(false)
-  const [showPostDetailDialog, setShowPostDetailDialog] = useState(false)
-  const [showUserModal, setShowUserModal] = useState(false)
-
   const [selectedUser, setSelectedUser] = useState(null)
+
+  const { onOpenChange, dialogs } = useDialog()
 
   return (
     <Card className="w-full max-w-6xl mx-auto">
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <span>게시물 관리자</span>
-          <Button onClick={() => setShowAddDialog(true)}>
+          <Button onClick={() => onOpenChange("addPostDialog", true)}>
             <Plus className="w-4 h-4 mr-2" />
             게시물 추가
           </Button>
@@ -56,12 +46,27 @@ const PostsManager = () => {
           <Pagination skip={skip} total={total} limit={limit} onChangeLimit={changeLimit} onChangeSkip={changeSkip} />
         </div>
       </CardContent>
-      <PostAddDialog />
-      <PostUpdateDialog />
-      <CommentAddDialog />
-      <CommentUpdateDialog />
-      <PostDetailDialog />
-      <UserModal />
+      <PostAddDialog
+        open={dialogs["addPostDialog"]}
+        onOpenChange={(open: boolean) => onOpenChange("addPostDialog", open)}
+      />
+      <PostUpdateDialog
+        open={dialogs["editPostDialog"]}
+        onOpenChange={(open: boolean) => onOpenChange("editPostDialog", open)}
+      />
+      <CommentAddDialog
+        open={dialogs["addCommentDialog"]}
+        onOpenChange={(open: boolean) => onOpenChange("addCommentDialog", open)}
+      />
+      <CommentUpdateDialog
+        open={dialogs["editCommentDialog"]}
+        onOpenChange={(open: boolean) => onOpenChange("editCommentDialog", open)}
+      />
+      <PostDetailDialog
+        open={dialogs["postDetailDialog"]}
+        onOpenChange={(open: boolean) => onOpenChange("postDetailDialog", open)}
+      />
+      <UserModal open={dialogs["userModal"]} onOpenChange={(open: boolean) => onOpenChange("userModal", open)} />
     </Card>
   )
 }

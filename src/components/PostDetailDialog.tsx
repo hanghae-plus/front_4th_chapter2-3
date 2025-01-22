@@ -2,10 +2,13 @@ import { Dialog, DialogContent, DialogTitle } from "@radix-ui/react-dialog"
 import { DialogHeader } from "../shared/ui"
 import { Comments } from "./Comments"
 import { highlightText } from "../utils/html"
+import { DialogComponentProps } from "../hooks/useDialog"
 
-export const PostDetailDialog = () => {
+type Props = DialogComponentProps
+
+export const PostDetailDialog = ({ open, onOpenChange }: Props) => {
   return (
-    <Dialog open={showPostDetailDialog} onOpenChange={setShowPostDetailDialog}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl">
         <DialogHeader>
           <DialogTitle>{highlightText(selectedPost?.title, searchQuery)}</DialogTitle>

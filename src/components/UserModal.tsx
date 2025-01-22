@@ -1,9 +1,12 @@
 import { Dialog, DialogContent, DialogTitle } from "@radix-ui/react-dialog"
 import { DialogHeader } from "../shared/ui"
+import { DialogComponentProps } from "../hooks/useDialog"
 
-export const UserModal = () => {
+type Props = DialogComponentProps
+
+export const UserModal = ({ open, onOpenChange }: Props) => {
   return (
-    <Dialog open={showUserModal} onOpenChange={setShowUserModal}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>사용자 정보</DialogTitle>

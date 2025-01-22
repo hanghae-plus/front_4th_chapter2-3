@@ -1,8 +1,11 @@
 import { Dialog, DialogContent, DialogTitle } from "@radix-ui/react-dialog"
 import { Button, DialogHeader, Input, Textarea } from "../shared/ui"
 import { updatePost as updatePostFunction } from "../api/post"
+import { DialogComponentProps } from "../hooks/useDialog"
 
-export const PostUpdateDialog = () => {
+type Props = DialogComponentProps
+
+export const PostUpdateDialog = ({ open, onOpenChange }: Props) => {
   const updatePost = async () => {
     try {
       const data = await updatePostFunction(selectedPost)
@@ -13,7 +16,7 @@ export const PostUpdateDialog = () => {
     }
   }
   return (
-    <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>게시물 수정</DialogTitle>

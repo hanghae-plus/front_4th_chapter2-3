@@ -1,8 +1,11 @@
 import { Dialog, DialogContent, DialogTitle } from "@radix-ui/react-dialog"
 import { Button, DialogHeader, Textarea } from "../shared/ui"
 import { updateComment as updateCommentFunction } from "../api/comment"
+import { DialogComponentProps } from "../hooks/useDialog"
 
-export const CommentUpdateDialog = () => {
+type Props = DialogComponentProps
+
+export const CommentUpdateDialog = ({ open, onOpenChange }: Props) => {
   const updateComment = async () => {
     try {
       const data = await updateCommentFunction(selectedComment)
@@ -16,7 +19,7 @@ export const CommentUpdateDialog = () => {
     }
   }
   return (
-    <Dialog open={showEditCommentDialog} onOpenChange={setShowEditCommentDialog}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>댓글 수정</DialogTitle>

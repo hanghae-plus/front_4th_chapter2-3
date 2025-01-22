@@ -1,8 +1,14 @@
 import { Dialog, DialogContent, DialogTitle } from "@radix-ui/react-dialog"
 import { Button, DialogHeader, Textarea } from "../shared/ui"
 import { addComment as addCommentFunction } from "../api/comment"
+import { useForm } from "../hooks/useForm"
+import { DialogComponentProps } from "../hooks/useDialog"
 
-export const CommentAddDialog = () => {
+type Props = DialogComponentProps
+
+export const CommentAddDialog = ({ open, onOpenChange }: Props) => {
+  const { formState: newComment, handleChange, reset } = useForm({ body: "", postId: null, userId: 1 })
+
   const addComment = async () => {
     try {
       const data = await addCommentFunction(newComment)
@@ -11,14 +17,14 @@ export const CommentAddDialog = () => {
         [data.postId]: [...(prev[data.postId] || []), data],
       }))
       setShowAddCommentDialog(false)
-      setNewComment({ body: "", postId: null, userId: 1 })
+      reset()
     } catch (error) {
       console.error("댓글 추가 오류:", error)
     }
   }
 
   return (
-    <Dialog open={showAddCommentDialog} onOpenChange={setShowAddCommentDialog}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>새 댓글 추가</DialogTitle>
@@ -27,7 +33,7 @@ export const CommentAddDialog = () => {
           <Textarea
             placeholder="댓글 내용"
             value={newComment.body}
-            onChange={(e) => setNewComment({ ...newComment, body: e.target.value })}
+            onChange={(e) => handleChange("body", e.target.value)}
           />
           <Button onClick={addComment}>댓글 추가</Button>
         </div>
