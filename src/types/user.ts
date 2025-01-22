@@ -1,3 +1,12 @@
+export interface Users {
+  users: PartialUser[]
+  total: number
+  skip: 0 | 1
+  limit: number
+}
+
+export type PartialUser = Pick<User, "id" | "username" | "image">
+
 export interface User {
   id: number
   firstName: string

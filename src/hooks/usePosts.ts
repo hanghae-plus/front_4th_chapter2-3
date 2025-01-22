@@ -1,76 +1,61 @@
-import { useCallback, useEffect, useState } from "react"
-import { getPosts, getPostsBySearchQuery, getPostsByTag } from "../api/post"
+import { addPost, deletePost, getPosts, getPostsBySearchQuery, getPostsByTag, updatePost } from "../api/post"
 import { useParamsStore } from "../store/params"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 export const usePosts = () => {
   const { selectedTag, skip, limit, sortBy, sortOrder, searchQuery } = useParamsStore()
-  const [posts, setPosts] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [total, setTotal] = useState(0)
+  const queryClient = useQueryClient()
+  const queryKey = ["posts", selectedTag, skip, limit, sortBy, sortOrder, searchQuery]
+  const {
+    data: posts,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey,
+    queryFn: async () => {
+      if (searchQuery) {
+        const data = await getPostsBySearchQuery(searchQuery)
+        return { posts: data.posts, total: data.total }
+      }
 
-  // 게시물 가져오기
-  const fetchPosts = useCallback(async () => {
-    setLoading(true)
-    try {
+      if (selectedTag && selectedTag !== "all") {
+        const data = await getPostsByTag(selectedTag)
+        return { posts: data.posts, total: data.total }
+      }
+
       const data = await getPosts(limit, skip)
-      setPosts(data)
-      setTotal(data.total)
-    } catch (error) {
-      console.error("게시글 가져오기 오류:", error)
-    } finally {
-      setLoading(false)
-    }
-  }, [limit, skip])
-
-  const fetchPostsByTag = useCallback(
-    async (tag: string) => {
-      if (!tag || tag === "all") {
-        fetchPosts()
-        return
-      }
-      setLoading(true)
-      try {
-        const data = await getPostsByTag(tag)
-        setPosts(data)
-        setTotal(data.total)
-      } catch (error) {
-        console.error("태그별 게시물 가져오기 오류:", error)
-      }
-      setLoading(false)
+      return { posts: data.posts, total: data.total }
     },
-    [fetchPosts],
-  )
+  })
 
-  const searchPosts = async () => {
-    if (!searchQuery) {
-      fetchPosts()
-      return
-    }
-    setLoading(true)
-    try {
-      const data = await getPostsBySearchQuery(searchQuery)
-      setPosts(data.posts)
-      setTotal(data.total)
-    } catch (error) {
-      console.error("게시물 검색 오류:", error)
-    }
-    setLoading(false)
-  }
+  // ! query와 mutation을 따로 관리하나?
+  const deletePostMutation = useMutation({
+    mutationFn: deletePost,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey })
+    },
+  })
 
-  useEffect(() => {
-    if (selectedTag) {
-      fetchPostsByTag(selectedTag)
-    } else {
-      fetchPosts()
-    }
-  }, [selectedTag, skip, limit, sortBy, sortOrder, fetchPosts, fetchPostsByTag])
+  const addPostMutation = useMutation({
+    mutationFn: addPost,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey })
+    },
+  })
+
+  const updatePostMutation = useMutation({
+    mutationFn: updatePost,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey })
+    },
+  })
 
   return {
     posts,
-    loading,
-    total,
-    fetchPosts,
-    fetchPostsByTag,
-    searchPosts,
+    deletePost: deletePostMutation.mutate,
+    addPost: addPostMutation.mutate,
+    updatePost: updatePostMutation.mutate,
+    loading: isLoading,
+    error,
   }
 }

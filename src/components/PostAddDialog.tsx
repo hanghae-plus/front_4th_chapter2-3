@@ -1,23 +1,23 @@
 import { Dialog, DialogContent, DialogTitle } from "@radix-ui/react-dialog"
 import { Button, DialogHeader, Input, Textarea } from "../shared/ui"
-import { addPost as addPostFunction } from "../api/post"
 import { useForm } from "../hooks/useForm"
 import { useDialogStore } from "../store/dialog"
+import { usePosts } from "../hooks/usePosts"
 
 export const PostAddDialog = () => {
   const { dialogs, onOpenChange } = useDialogStore()
+  const { addPost } = usePosts()
   const { formState: newPost, handleChange, reset } = useForm({ title: "", body: "", userId: 1 })
 
-  const addPost = async () => {
-    try {
-      const data = await addPostFunction(newPost)
-      setPosts([data, ...posts])
-      onOpenChange("addPostDialog", false)
-      reset()
-    } catch (error) {
-      console.error("게시물 추가 오류:", error)
-    }
+  const handleAddPost = () => {
+    addPost(newPost, {
+      onSuccess: () => {
+        onOpenChange("addPostDialog", false)
+        reset()
+      },
+    })
   }
+
   return (
     <Dialog open={dialogs["addPostDialog"]} onOpenChange={(open: boolean) => onOpenChange("addPostDialog", open)}>
       <DialogContent>
@@ -38,7 +38,7 @@ export const PostAddDialog = () => {
             value={newPost.userId}
             onChange={(e) => handleChange("userId", Number(e.target.value))}
           />
-          <Button onClick={addPost}>게시물 추가</Button>
+          <Button onClick={handleAddPost}>게시물 추가</Button>
         </div>
       </DialogContent>
     </Dialog>

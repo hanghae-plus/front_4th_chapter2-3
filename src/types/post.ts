@@ -1,3 +1,12 @@
+import { PartialUser } from "./user"
+
+export interface Posts {
+  posts: PostWithUser[]
+  total: number
+  skip: 0 | 1
+  limit: number
+}
+
 export interface Post {
   id: number
   title: string
@@ -12,8 +21,11 @@ export interface Post {
 }
 
 export interface PostWithUser extends Post {
-  author: {
-    username: string
-    image: string
-  }
+  author: PartialUser
+}
+
+export interface NewPost {
+  title: string
+  body: string
+  userId: number
 }

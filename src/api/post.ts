@@ -1,43 +1,51 @@
+import { NewPost, Post, Posts, PostWithUser } from "../types/post"
+import { PartialUser, Users } from "../types/user"
 import { getAllUsers } from "./user"
 
-export const getPosts = async (limit: number, skip: 1 | 0) => {
+export const getPosts = async (limit: number, skip: 1 | 0): Promise<Posts> => {
   const [postsResponse, usersResponse] = await Promise.all([
     fetch(`/api/posts?limit=${limit}&skip=${skip}`),
     getAllUsers(),
   ])
 
-  const postsData = await postsResponse.json()
-  const usersData = await usersResponse.json()
+  const postsData = (await postsResponse.json()) as Posts
+  const usersData = (await usersResponse.json()) as Users
 
   const postsWithUsers = postsData.posts.map((post) => ({
     ...post,
-    author: usersData.users.find((user) => user.id === post.userId),
+    author: usersData.users.find((user) => user.id === post.userId) as PartialUser,
   }))
 
-  return postsWithUsers
+  return {
+    ...postsData,
+    posts: postsWithUsers,
+  }
 }
 
-export const getPostsByTag = async (tag: string) => {
+export const getPostsByTag = async (tag: string): Promise<Posts> => {
   const [postsResponse, usersResponse] = await Promise.all([fetch(`/api/posts/tag/${tag}`), getAllUsers()])
-  const postsData = await postsResponse.json()
-  const usersData = await usersResponse.json()
+  const postsData = (await postsResponse.json()) as Posts
+  const usersData = (await usersResponse.json()) as Users
 
   const postsWithUsers = postsData.posts.map((post) => ({
     ...post,
-    author: usersData.users.find((user) => user.id === post.userId),
+    author: usersData.users.find((user) => user.id === post.userId) as PartialUser,
   }))
 
-  return postsWithUsers
+  return {
+    ...postsData,
+    posts: postsWithUsers,
+  }
 }
 
-export const getPostsBySearchQuery = async (searchQuery: string) => {
+export const getPostsBySearchQuery = async (searchQuery: string): Promise<Posts> => {
   const response = await fetch(`/api/posts/search?q=${searchQuery}`)
-  const data = await response.json()
+  const data = (await response.json()) as Posts
 
   return data
 }
 
-export const addPost = async (newPost) => {
+export const addPost = async (newPost: NewPost) => {
   const response = await fetch("/api/posts/add", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -47,13 +55,13 @@ export const addPost = async (newPost) => {
   return data
 }
 
-export const deletePost = async (id: string) => {
+export const deletePost = async (id: number) => {
   await fetch(`/api/posts/${id}`, {
     method: "DELETE",
   })
 }
 
-export const updatePost = async (selectedPost) => {
+export const updatePost = async (selectedPost: Post) => {
   const response = await fetch(`/api/posts/${selectedPost.id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },

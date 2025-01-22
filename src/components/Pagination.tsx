@@ -1,13 +1,13 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@radix-ui/react-select"
 import { Button } from "../shared/ui"
 import { useParamsStore } from "../store/params"
+import { usePosts } from "../hooks/usePosts"
 
-interface Props {
-  total: number
-}
-
-export const Pagination = ({ total }: Props) => {
+export const Pagination = () => {
   const { limit, skip, setParams } = useParamsStore()
+  const { posts } = usePosts()
+  const total = posts ? posts.total : 0 // ! 0이라...
+
   return (
     <div className="flex justify-between items-center">
       <div className="flex items-center gap-2">

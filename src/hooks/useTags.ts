@@ -7,6 +7,6 @@ export const useTags = () => {
   return {
     tags,
     error,
-    isLoading,
+    loading: isLoading,
   }
 }

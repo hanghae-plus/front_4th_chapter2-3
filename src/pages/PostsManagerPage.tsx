@@ -11,7 +11,7 @@ import { PostDetailDialog } from "../components/PostDetailDialog"
 import { UserModal } from "../components/UserModal"
 import { FilterableSearch } from "../components/FilterableSearch"
 import { usePosts } from "../hooks/usePosts"
-import { PostWithUser } from "../types/post"
+import { Post } from "../types/post"
 import { User } from "../types/user"
 import { Comment } from "../types/comment"
 import { useDialogStore } from "../store/dialog"
@@ -23,11 +23,11 @@ const PostsManager = () => {
 
   const { onOpenChange } = useDialogStore()
 
-  const { posts, loading, total } = usePosts()
+  const { loading } = usePosts()
 
   const [comments, setComments] = useState({})
 
-  const [selectedPost, setSelectedPost] = useState<PostWithUser | null>(null)
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null)
   const [selectedComment, setSelectedComment] = useState<Comment | null>(null)
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
 
@@ -48,9 +48,9 @@ const PostsManager = () => {
           {loading ? (
             <div className="flex justify-center p-4">로딩 중...</div>
           ) : (
-            <PostTable posts={posts} onSelectPost={setSelectedPost} onSelectUser={setSelectedUser} />
+            <PostTable onSelectPost={setSelectedPost} onSelectUser={setSelectedUser} />
           )}
-          <Pagination total={total} />
+          <Pagination />
         </div>
       </CardContent>
       <PostAddDialog />

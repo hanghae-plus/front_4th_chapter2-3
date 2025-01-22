@@ -2,13 +2,13 @@ import { Dialog, DialogContent, DialogTitle } from "@radix-ui/react-dialog"
 import { DialogHeader } from "../shared/ui"
 import { Comments } from "./Comments"
 import { highlightText } from "../utils/html"
-import { PostWithUser } from "../types/post"
+import { Post } from "../types/post"
 import { Comment } from "../types/comment"
 import { useDialogStore } from "../store/dialog"
 import { useParamsStore } from "../store/params"
 
 interface Props {
-  selectedPost: PostWithUser | null
+  selectedPost: Post | null
   onSelectComment: (comment: Comment) => void
 }
 export const PostDetailDialog = ({ selectedPost, onSelectComment }: Props) => {
