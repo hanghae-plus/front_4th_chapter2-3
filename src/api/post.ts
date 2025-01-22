@@ -1,4 +1,4 @@
-import { NewPost, Post, Posts, PostWithUser } from "../types/post"
+import { NewPost, Post, Posts } from "../types/post"
 import { PartialUser, Users } from "../types/user"
 import { getAllUsers } from "./user"
 

@@ -5,7 +5,7 @@ import { useDialogStore } from "../store/dialog"
 import { usePosts } from "../hooks/usePosts"
 
 interface Props {
-  selectedPost: Post | null
+  selectedPost: Post
   onSelectPost: (post: Post | null) => void
 }
 
@@ -14,13 +14,11 @@ export const PostUpdateDialog = ({ selectedPost, onSelectPost }: Props) => {
   const { updatePost } = usePosts()
 
   const handleUpdatePost = async () => {
-    if (selectedPost) {
-      updatePost(selectedPost, {
-        onSuccess: () => {
-          onOpenChange("editPostDialog", false)
-        },
-      })
-    }
+    updatePost(selectedPost, {
+      onSuccess: () => {
+        onOpenChange("editPostDialog", false)
+      },
+    })
   }
 
   return (

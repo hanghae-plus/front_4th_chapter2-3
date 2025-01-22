@@ -8,7 +8,7 @@ import { useDialogStore } from "../store/dialog"
 import { useParamsStore } from "../store/params"
 
 interface Props {
-  selectedPost: Post | null
+  selectedPost: Post
   onSelectComment: (comment: Comment) => void
 }
 export const PostDetailDialog = ({ selectedPost, onSelectComment }: Props) => {

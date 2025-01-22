@@ -1,11 +1,9 @@
 import { Edit2, MessageSquare, Table, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react"
 import { Button, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../shared/ui"
 import { highlightText } from "../utils/html"
-import { deletePost as deletePostFunction } from "../api/post"
 import { getUser } from "../api/user"
-import { getComments } from "../api/comment"
 import { PostWithUser } from "../types/post"
-import { User } from "../types/user"
+import { PartialUser, User } from "../types/user"
 import { useDialogStore } from "../store/dialog"
 import { useParamsStore } from "../store/params"
 import { useNavigate } from "react-router-dom"
@@ -22,25 +20,14 @@ export const PostTable = ({ onSelectPost, onSelectUser }: Props) => {
   const { searchQuery, selectedTag, updateURL, setParams } = useParamsStore()
   const navigate = useNavigate()
 
-  const fetchComments = async (postId) => {
-    if (comments[postId]) return // 이미 불러온 댓글이 있으면 다시 불러오지 않음
-    try {
-      const data = await getComments(postId)
-      setComments((prev) => ({ ...prev, [postId]: data.comments }))
-    } catch (error) {
-      console.error("댓글 가져오기 오류:", error)
-    }
-  }
-
   const openPostDetail = (post: PostWithUser) => {
     onSelectPost(post)
-    fetchComments(post.id)
     onOpenChange("postDetailDialog", true)
   }
 
-  const openUserModal = async (user: User) => {
+  const openUserModal = async (user: PartialUser) => {
     try {
-      const data = await getUser(user.id)
+      const data = await getUser(user.id) // ! 굳이....
       onSelectUser(data)
       onOpenChange("userModal", true)
     } catch (error) {
@@ -89,7 +76,10 @@ export const PostTable = ({ onSelectPost, onSelectUser }: Props) => {
                 </div>
               </TableCell>
               <TableCell>
-                <div className="flex items-center space-x-2 cursor-pointer" onClick={() => openUserModal(post.author)}>
+                <div
+                  className="flex items-center space-x-2 cursor-pointer"
+                  onClick={() => post.author && openUserModal(post.author)}
+                >
                   <img src={post.author?.image} alt={post.author?.username} className="w-8 h-8 rounded-full" />
                   <span>{post.author?.username}</span>
                 </div>

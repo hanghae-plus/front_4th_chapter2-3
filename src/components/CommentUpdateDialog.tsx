@@ -1,28 +1,29 @@
 import { Dialog, DialogContent, DialogTitle } from "@radix-ui/react-dialog"
 import { Button, DialogHeader, Textarea } from "../shared/ui"
-import { updateComment as updateCommentFunction } from "../api/comment"
 import { Comment } from "../types/comment"
 import { useDialogStore } from "../store/dialog"
+import { useComments } from "../hooks/useComments"
 
 interface Props {
-  selectedComment: Comment | null
+  postId: number
+  selectedComment: Comment
   onSelectComment: (comment: Comment) => void
 }
 
-export const CommentUpdateDialog = ({ selectedComment, onSelectComment }: Props) => {
+export const CommentUpdateDialog = ({ postId, selectedComment, onSelectComment }: Props) => {
   const { dialogs, onOpenChange } = useDialogStore()
-  const updateComment = async () => {
-    try {
-      const data = await updateCommentFunction(selectedComment)
-      setComments((prev) => ({
-        ...prev,
-        [data.postId]: prev[data.postId].map((comment) => (comment.id === data.id ? data : comment)),
-      }))
-      onOpenChange("editCommentDialog", false)
-    } catch (error) {
-      console.error("댓글 업데이트 오류:", error)
-    }
+
+  const { updateComment } = useComments(postId)
+
+  const handleUpdateComment = async () => {
+    // ! null 처리 방식 통일 시켜야됨.. if(selectedComment 할건지...) -> 나는 이 컴포넌트가 켜질 때 selectedComment가 없는 건 말이 안된다라고 간주.
+    updateComment(selectedComment, {
+      onSuccess: () => {
+        onOpenChange("editCommentDialog", false)
+      },
+    })
   }
+
   return (
     <Dialog
       open={dialogs["editCommentDialog"]}
@@ -42,7 +43,7 @@ export const CommentUpdateDialog = ({ selectedComment, onSelectComment }: Props)
               }
             }}
           />
-          <Button onClick={updateComment}>댓글 업데이트</Button>
+          <Button onClick={handleUpdateComment}>댓글 업데이트</Button>
         </div>
       </DialogContent>
     </Dialog>

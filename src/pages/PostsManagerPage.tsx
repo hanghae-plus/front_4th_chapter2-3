@@ -25,8 +25,7 @@ const PostsManager = () => {
 
   const { loading } = usePosts()
 
-  const [comments, setComments] = useState({})
-
+  // ! 얘도 따로 관리해야하나? 흠...
   const [selectedPost, setSelectedPost] = useState<Post | null>(null)
   const [selectedComment, setSelectedComment] = useState<Comment | null>(null)
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
@@ -54,10 +53,16 @@ const PostsManager = () => {
         </div>
       </CardContent>
       <PostAddDialog />
-      <PostUpdateDialog selectedPost={selectedPost} onSelectPost={setSelectedPost} />
-      <CommentAddDialog postId={selectedPost?.id} />
-      <CommentUpdateDialog selectedComment={selectedComment} onSelectComment={setSelectedComment} />
-      <PostDetailDialog selectedPost={selectedPost} onSelectComment={setSelectedComment} />
+      {selectedPost && <PostUpdateDialog selectedPost={selectedPost} onSelectPost={setSelectedPost} />}
+      {selectedPost && <CommentAddDialog postId={selectedPost?.id} />}
+      {selectedPost && selectedComment && (
+        <CommentUpdateDialog
+          postId={selectedPost?.id}
+          selectedComment={selectedComment}
+          onSelectComment={setSelectedComment}
+        />
+      )}
+      {selectedPost && <PostDetailDialog selectedPost={selectedPost} onSelectComment={setSelectedComment} />}
       <UserModal selectedUser={selectedUser} />
     </Card>
   )

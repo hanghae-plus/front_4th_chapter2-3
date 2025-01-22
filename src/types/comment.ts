@@ -1,3 +1,10 @@
+export interface Comments {
+  comments: Comment[]
+  total: number
+  skip: 0 | 1
+  limit: number
+}
+
 export interface Comment {
   id: number
   body: string
@@ -8,4 +15,10 @@ export interface Comment {
     username: string
     fullName: string
   }
+}
+
+export interface NewComment {
+  body: string
+  postId: number
+  userId: number
 }
