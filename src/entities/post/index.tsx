@@ -1,0 +1,1 @@
+export type { Post, PostItem } from "./model/types";
