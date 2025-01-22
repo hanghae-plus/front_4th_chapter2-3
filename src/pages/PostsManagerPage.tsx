@@ -234,6 +234,8 @@ const PostsManager = () => {
 
   // 게시물 업데이트
   const updatePost = async () => {
+    if (!selectedPost) return
+
     try {
       const response = await fetch(`/api/posts/${selectedPost.id}`, {
         method: "PUT",
