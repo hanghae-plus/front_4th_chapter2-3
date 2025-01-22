@@ -29,13 +29,13 @@ import { useMutation, useQuery } from "@tanstack/react-query"
 import { postQueries } from "../../../entities/post/api/queries"
 import { SortOrder } from "../../../entities/post/model/types"
 import { userQueries } from "../../../entities/user/api/queries"
-import { User } from "../../../entities/user/model/types"
 import { commentQueries } from "../../../entities/comment/api/queries"
 import { queryClient } from "../../../shared/api/query-client"
 import { Comment } from "../../../entities/comment/model/types"
 import { postMutations } from "../../../entities/post/api/mutations"
 import { commentMutations } from "../../../entities/comment/api/mutations"
-import { useUserProfileModal } from "../../../features/user-profile/ui/UserProfileModal"
+import { useViewUserProfile } from "../../../features/view-user-profile/model/use-view-user-profile"
+import { UserProfileModal } from "../../../entities/user/ui/UserProfileModal"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -49,7 +49,6 @@ const PostsManager = () => {
   const sortBy = queryParams.get("sortBy") || ""
   const sortOrder = (queryParams.get("sortOrder") || "asc") as SortOrder
   const selectedTag = queryParams.get("tag") || ""
-  const userId = queryParams.get("userId")
   const selectedPostId = queryParams.get("selectedPostId")
   const mode = queryParams.get("mode")
 
@@ -129,11 +128,6 @@ const PostsManager = () => {
     select: (data) => ({
       users: data.users,
     }),
-  })
-
-  const { data: userData } = useQuery({
-    ...userQueries.detailQuery(Number(userId) || 0),
-    enabled: !!userId,
   })
 
   const { data: tags = [] } = useQuery({
@@ -312,9 +306,7 @@ const PostsManager = () => {
     }
   }
 
-  const { UserProfileModal, openUserProfileModal } = useUserProfileModal({
-    user: userData,
-  })
+  const { isOpen, handleViewProfile, handleClose, user } = useViewUserProfile()
 
   // 하이라이트 함수 추가
   const highlightText = (text: string, highlight: string) => {
@@ -373,8 +365,7 @@ const PostsManager = () => {
                 className="flex items-center space-x-2 cursor-pointer"
                 onClick={() => {
                   if (post.author) {
-                    updateURLParams({ userId: post.author.id.toString() })
-                    openUserProfileModal()
+                    handleViewProfile(post.author.id)
                   }
                 }}
               >
@@ -724,7 +715,7 @@ const PostsManager = () => {
         </DialogContent>
       </Dialog>
 
-      <UserProfileModal />
+      <UserProfileModal isOpen={isOpen} onClose={handleClose} user={user} />
     </Card>
   )
 }
