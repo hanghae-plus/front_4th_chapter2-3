@@ -296,6 +296,8 @@ const PostsManager = () => {
 
   // 댓글 업데이트
   const updateComment = async () => {
+    if (!selectedComment) return
+
     try {
       const response = await fetch(`/api/comments/${selectedComment.id}`, {
         method: "PUT",
@@ -330,11 +332,14 @@ const PostsManager = () => {
 
   // 댓글 좋아요
   const likeComment = async (id: number, postId: number) => {
+    const comment = comments[postId]?.find((c) => c.id === id)
+    if (!comment) return
+
     try {
       const response = await fetch(`/api/comments/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ likes: comments[postId].find((c) => c.id === id).likes + 1 }),
+        body: JSON.stringify({ likes: comment.likes + 1 }),
       })
       const data = await response.json()
       setComments((prev) => ({
@@ -350,13 +355,17 @@ const PostsManager = () => {
 
   // 게시물 상세 보기
   const openPostDetail = (post: Post) => {
+    if (!post) return
+
     setSelectedPost(post)
     fetchComments(post.id)
     setShowPostDetailDialog(true)
   }
 
   // 사용자 모달 열기
-  const openUserModal = async (user: User) => {
+  const openUserModal = async (user: User | undefined) => {
+    if (!user) return
+
     try {
       const response = await fetch(`/api/users/${user.id}`)
       const userData = await response.json()
