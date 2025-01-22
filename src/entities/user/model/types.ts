@@ -2,7 +2,7 @@ export interface User {
   id: number;
   name?: string;
   username?: string;
-  image?: string; // 필수 필드
+  image?: string;
   firstName?: string;
   lastName?: string;
   age?: number;

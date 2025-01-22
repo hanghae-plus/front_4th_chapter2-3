@@ -23,7 +23,6 @@ export const CommentIcons: React.FC<CommentIconsProps> = ({
         onClick={() => {
           if (comment?.id && comment.postId)
             onLikeComment(comment?.id, comment.postId);
-          // if (comment?.id) likeComment(comment?.id, postId);
         }}
       >
         <ThumbsUp className="w-3 h-3" />
@@ -32,10 +31,6 @@ export const CommentIcons: React.FC<CommentIconsProps> = ({
       <Button
         variant="ghost"
         size="sm"
-        // onClick={() => {
-        //   setSelectedComment(comment);
-        //   setShowEditCommentDialog(true);
-        // }}
         onClick={() => onEditComment(comment)}
       >
         <Edit2 className="w-3 h-3" />
@@ -46,7 +41,6 @@ export const CommentIcons: React.FC<CommentIconsProps> = ({
         onClick={() => {
           if (comment?.id && comment.postId)
             onDeleteComment(comment.id, comment.postId);
-          // if (comment?.id) deleteComment(comment.id, postId);
         }}
       >
         <Trash2 className="w-3 h-3" />

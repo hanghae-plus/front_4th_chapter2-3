@@ -21,7 +21,7 @@ export const CommentItem: React.FC<CommentItemProps> = ({
   onEditComment,
   onDeleteComment,
 }) => {
-  const flattenedComments = Object.values(comments).flat(); // ✅ 배열로 변환
+  const flattenedComments = Object.values(comments).flat();
 
   return (
     <div className="mt-2">
