@@ -35,6 +35,7 @@ import { queryClient } from "../../../shared/api/query-client"
 import { Comment } from "../../../entities/comment/model/types"
 import { postMutations } from "../../../entities/post/api/mutations"
 import { commentMutations } from "../../../entities/comment/api/mutations"
+import { useUserProfileModal } from "../../../features/user-profile/ui/UserProfileModal"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -311,12 +312,9 @@ const PostsManager = () => {
     }
   }
 
-  // 사용자 모달 열기
-  const openUserModal = (user: User) => {
-    updateURLParams({
-      userId: user.id.toString(),
-    })
-  }
+  const { UserProfileModal, openUserProfileModal } = useUserProfileModal({
+    user: userData,
+  })
 
   // 하이라이트 함수 추가
   const highlightText = (text: string, highlight: string) => {
@@ -375,7 +373,8 @@ const PostsManager = () => {
                 className="flex items-center space-x-2 cursor-pointer"
                 onClick={() => {
                   if (post.author) {
-                    openUserModal(post.author)
+                    updateURLParams({ userId: post.author.id.toString() })
+                    openUserProfileModal()
                   }
                 }}
               >
@@ -725,39 +724,7 @@ const PostsManager = () => {
         </DialogContent>
       </Dialog>
 
-      {/* 사용자 모달 */}
-      <Dialog open={!!userId} onOpenChange={(open) => !open && updateURLParams({ userId: null })}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>사용자 정보</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <img src={userData?.image} alt={userData?.username} className="w-24 h-24 rounded-full mx-auto" />
-            <h3 className="text-xl font-semibold text-center">{userData?.username}</h3>
-            <div className="space-y-2">
-              <p>
-                <strong>이름:</strong> {userData?.firstName} {userData?.lastName}
-              </p>
-              <p>
-                <strong>나이:</strong> {userData?.age}
-              </p>
-              <p>
-                <strong>이메일:</strong> {userData?.email}
-              </p>
-              <p>
-                <strong>전화번호:</strong> {userData?.phone}
-              </p>
-              <p>
-                <strong>주소:</strong> {userData?.address?.address}, {userData?.address?.city},{" "}
-                {userData?.address?.state}
-              </p>
-              <p>
-                <strong>직장:</strong> {userData?.company?.name} - {userData?.company?.title}
-              </p>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <UserProfileModal />
     </Card>
   )
 }
