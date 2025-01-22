@@ -16,7 +16,7 @@ export const useSuspenseQueryGetPosts = ({ limit, skip, searchQuery, tag }: UseS
     queryKey: postsKeys.getPosts({ limit, skip, searchQuery, tag }).queryKey,
     queryFn: () => {
       if (searchQuery) return getPostsByQuery({ searchQuery, limit, skip });
-      if (tag) return getPostsByTag({ tag, limit, skip });
+      if (tag && tag !== "all") return getPostsByTag({ tag, limit, skip });
       return getPosts(limit, skip);
     },
   });
