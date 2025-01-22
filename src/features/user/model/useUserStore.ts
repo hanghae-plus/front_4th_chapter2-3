@@ -1,7 +1,7 @@
-import { User } from '../../../types.ts';
 import { StateCreator } from 'zustand/vanilla';
 import { create } from 'zustand/react';
 import { createStoreSelector } from '../../../shared/model';
+import { User } from '../../../entities/user/model';
 
 interface State {
   showUserModal: boolean;

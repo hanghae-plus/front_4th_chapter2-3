@@ -1,7 +1,7 @@
-import { Tag } from '../../../types.ts';
 import { StateCreator } from 'zustand/vanilla';
 import { create } from 'zustand/react';
 import { createStoreSelector } from '../../../shared/model';
+import { Tag } from '../../../entities/tag/model';
 
 interface State {
   tags: Tag[];

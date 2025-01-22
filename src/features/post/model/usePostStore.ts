@@ -1,8 +1,7 @@
-import { Post } from '../../../types.ts';
 import { StateCreator } from 'zustand/vanilla';
 import { create } from 'zustand/react';
 import { createStoreSelector } from '../../../shared/model';
-import { NewPost } from '../../../pages/initData.ts';
+import { NewPost, Post } from '../../../entities/post/model';
 
 interface State {
   posts: Post[];

@@ -1,8 +1,7 @@
 import { StateCreator } from 'zustand/vanilla';
 import { create } from 'zustand/react';
 import { createStoreSelector } from '../../../shared/model';
-import { Comment } from '../../../types.ts';
-import { NewComment } from '../../../pages/initData.ts';
+import { Comment, NewComment } from '../../../entities/comments/model';
 
 interface State {
   comments: { [postId: number]: Comment[] };
