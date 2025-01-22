@@ -1,23 +1,35 @@
-import { useState, useEffect } from 'react';
+// src/hooks/usePostsManagerState.ts
+import { useAtom } from 'jotai';
+import {
+  postsAtom,
+  commentsAtom,
+  tagsAtom,
+  loadingAtom,
+  skipAtom,
+  limitAtom,
+  searchQueryAtom,
+  sortByAtom,
+  sortOrderAtom,
+  selectedTagAtom,
+} from '../atoms/postManagerAtoms';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Post, Posts, Comment, Comments, Tag, UserThumbnail } from '../models/type';
+import { Post, Posts, UserThumbnail } from '../models/type';
 
 const usePostsManagerState = () => {
+  const [posts, setPosts] = useAtom(postsAtom);
+  const [comments, setComments] = useAtom(commentsAtom);
+  const [tags, setTags] = useAtom(tagsAtom);
+  const [loading, setLoading] = useAtom(loadingAtom);
+
+  const [skip, setSkip] = useAtom(skipAtom);
+  const [limit, setLimit] = useAtom(limitAtom);
+  const [searchQuery, setSearchQuery] = useAtom(searchQueryAtom);
+  const [sortBy, setSortBy] = useAtom(sortByAtom);
+  const [sortOrder, setSortOrder] = useAtom(sortOrderAtom);
+  const [selectedTag, setSelectedTag] = useAtom(selectedTagAtom);
+
   const navigate = useNavigate();
   const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [comments, setComments] = useState<{ [postId: number]: Comment[] }>({});
-  const [tags, setTags] = useState<Tag[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-
-  const [skip, setSkip] = useState<number>(parseInt(queryParams.get('skip') || '0'));
-  const [limit, setLimit] = useState<number>(parseInt(queryParams.get('limit') || '10'));
-  const [searchQuery, setSearchQuery] = useState<string>(queryParams.get('search') || '');
-  const [sortBy, setSortBy] = useState<string>(queryParams.get('sortBy') || '');
-  const [sortOrder, setSortOrder] = useState<string>(queryParams.get('sortOrder') || 'asc');
-  const [selectedTag, setSelectedTag] = useState<string>(queryParams.get('tag') || '');
 
   // 게시물 가져오기
   const fetchPosts = async () => {
@@ -52,11 +64,6 @@ const usePostsManagerState = () => {
     if (selectedTag) params.set('tag', selectedTag);
     navigate(`?${params.toString()}`);
   };
-
-  useEffect(() => {
-    fetchPosts();
-    updateURL();
-  }, [skip, limit, searchQuery, sortBy, sortOrder, selectedTag]);
 
   return {
     posts,
