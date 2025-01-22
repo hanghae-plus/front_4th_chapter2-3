@@ -8,8 +8,6 @@ import { Post, User, DashboardContentProps  } from "../../../entities/types";
 export const DashboardContent = ({ posts }: DashboardContentProps) => {
   const { 
     filters,
-    loading, 
-    total,
     pagination,
     setFilters,
     setPosts,
@@ -51,10 +49,6 @@ export const DashboardContent = ({ posts }: DashboardContentProps) => {
   const handleDetailView = (post: Post) => {
     dispatch({ type: "SET_SELECTED_POST", payload: post });
     dispatch({ type: "SET_DETAIL_DIALOG_OPEN", payload: true });
-  };
-
-  const handleTagClick = (tag: string) => {
-    setFilters({ tag });
   };
 
   const handleUserClick = async (author: User | undefined) => {

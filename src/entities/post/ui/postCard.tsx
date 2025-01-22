@@ -1,5 +1,6 @@
 import { ThumbsUp, ThumbsDown, MessageSquare, Edit2, Trash2 } from "lucide-react";
-import { Post, User } from "../../types";
+import { useState } from "react";
+import { PostTableProps } from "../../types";
 import {
   Table,
   TableBody,
@@ -9,18 +10,6 @@ import {
   TableRow,
   Button
 } from "../../../shared/ui";
-
-interface PostTableProps {
-  posts: Post[];
-  searchQuery: string;
-  selectedTag: string;
-  highlight: string;
-  onEdit: (post: Post) => void;
-  onDelete: (id: number) => void;
-  onDetailView: (post: Post) => void;
-  onTagClick: (tag: string) => void;
-  onUserClick?: (author: User | undefined) => void;
-}
 
 const highlightText = (text: string, highlight: string) => {
   if (!text) return null;
@@ -40,14 +29,18 @@ const highlightText = (text: string, highlight: string) => {
 
 export const PostTable = ({
   posts,
-  selectedTag,
   highlight,
   onEdit,
   onDelete,
   onDetailView,
   onUserClick,
-  onTagClick,
 }: PostTableProps) => {
+
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const handleTagClick = (tag: string) => {
+    setSelectedTag((prevTag) => (prevTag === tag ? null : tag)); // 같은 태그 클릭 시 토글
+  };
+
   return (
     <Table>
       <TableHeader>
@@ -70,12 +63,12 @@ export const PostTable = ({
                   {post.tags?.map((tag) => (
                     <span
                       key={tag}
-                      onClick={() => onTagClick(tag)}
+                      onClick={() => handleTagClick(tag)}
                       className={`
                         px-2 py-0.5 text-xs font-medium rounded-full cursor-pointer
                         ${selectedTag === tag 
-                          ? 'bg-blue-500 text-white hover:bg-blue-600'
-                          : 'bg-blue-100 text-blue-800 hover:bg-blue-200'
+                          ? "bg-blue-500 text-white hover:bg-blue-600"
+                          : "bg-blue-100 text-blue-800 hover:bg-blue-200"
                         }
                       `}
                     >
@@ -88,7 +81,7 @@ export const PostTable = ({
             <TableCell>
               <div 
                 className="flex items-center justify-center gap-2 cursor-pointer" 
-                onClick={() => onUserClick(post.author)}
+                onClick={() => onUserClick?.(post.author)}
               >
                 <img
                   src={post.author?.image}

@@ -6,27 +6,29 @@ import { PostFilters } from "../../pages/postsManager/ui/PostFilters";
 import { useState, useEffect } from "react";
 import { useSearch } from "./hooks/useSearch";
 import { Post, User, PostApiResponse, SortBy, SortOrder } from "../../entities/types";
+import { PostPagination } from "../../features/postManagement/ui/postPagination";
+import { usePostStore } from "../../entities/post/model/store";
 
 export const PostDashboard = () => {
   const navigate = useNavigate()
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
 
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [total, setTotal] = useState(0);
-  const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"));
-  const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"));
-  const [sortBy, setSortBy] = useState<SortBy>(() => {
-    const param = queryParams.get("sortBy");
-    return (param === "none" || param === "id" || param === "title" || param === "reactions") ? param : "none";
-  });
-  const [sortOrder, setSortOrder] = useState<SortOrder>(() => {
-    const param = queryParams.get("sortOrder");
-    return param === "desc" ? "desc" : "asc";
-  });
+  const { 
+    posts,
+    total,
+    pagination: { skip, limit },
+    loading,
+    filters: { sortBy, sortOrder },
+    setPagination,
+    setPosts,
+    setTotal,
+    setLoading,
+    setFilters
+  } = usePostStore();
+  
   const [tags, setTags] = useState([]);
   const [selectedTag, setSelectedTag] = useState(queryParams.get("tag") || "");
-  const [loading, setLoading] = useState(false);
   const { searchTerm, setSearchTerm, filteredPosts } = useSearch(posts, "title");
 
   // URL 업데이트 함수
@@ -110,6 +112,14 @@ export const PostDashboard = () => {
     setLoading(false)
   }
 
+  const handleSortByChange = (value: SortBy) => {
+    setFilters({ sortBy: value });
+  };
+
+  const handleSortOrderChange = (value: SortOrder) => {
+    setFilters({ sortOrder: value });
+  };
+
   // 초기 데이터 로드 및 URL 동기화
   useEffect(() => {
     fetchTags()
@@ -122,28 +132,52 @@ export const PostDashboard = () => {
       fetchPosts()
     }
     updateURL()
-  }, [skip, limit, sortBy, sortOrder, searchTerm, selectedTag])
+  }, [skip, limit, sortBy, sortOrder, searchTerm, selectedTag]);
 
   useEffect(() => {
-    const params = new URLSearchParams(location.search)
-    setSkip(parseInt(params.get("skip") || "0"));
-    setLimit(parseInt(params.get("limit") || "10"));
-    setSearchTerm(params.get("search") || "");
-    // SortBy 처리
-    const sortByParam = params.get("sortBy");
-    setSortBy((sortByParam === "none" || sortByParam === "id" || 
-              sortByParam === "title" || sortByParam === "reactions") 
-              ? sortByParam : "none");
-    
-    // SortOrder 처리
-    const sortOrderParam = params.get("sortOrder");
-    setSortOrder(sortOrderParam === "desc" ? "desc" : "asc");
-    setSelectedTag(params.get("tag") || "");
-  }, [location.search])
+    const params = new URLSearchParams(location.search);
 
+    setPagination({
+     skip: parseInt(params.get("skip") || "0"),
+     limit: parseInt(params.get("limit") || "10")
+   });
+
+    setSearchTerm(params.get("search") || "");
+
+    const sortByParam = params.get("sortBy");
+    const validSortBy = (val: string | null): val is SortBy => 
+      val !== null && ['none', 'id', 'title', 'reactions'].includes(val);
+
+    const sortOrderParam = params.get("sortOrder");
+    const validSortOrder = (val: string | null): val is SortOrder =>
+      val !== null && ['asc', 'desc'].includes(val);
+   
+    setFilters({
+      sortBy: validSortBy(sortByParam) ? sortByParam : 'none',
+      sortOrder: validSortOrder(sortOrderParam) ? sortOrderParam : 'asc'
+    });
+
+    setSelectedTag(params.get("tag") || "");
+  }, [location.search]);
+
+  const handleLimitChange = (newLimit: number) => {
+    setPagination({ limit: newLimit });
+  };
+  
+  const handlePrevPage = () => {
+    setPagination({ 
+      skip: Math.max(0, skip - limit)
+    });
+  };
+  
+  const handleNextPage = () => {
+    setPagination({ 
+      skip: skip + limit 
+    });
+  };
 
   return (
-    <Card className="w-full max-w-7xl mx-auto">
+    <Card className="w-full max-w-7xl mx-auto border border-gray-300 rounded">
       <CardContent className="p-6">
         <DashboardHeader />
         <PostFilters
@@ -151,10 +185,10 @@ export const PostDashboard = () => {
           setSearchTerm={setSearchTerm}
           selectedTag={selectedTag}
           setSelectedTag={setSelectedTag}
-          sortBy={sortBy}
-          setSortBy={setSortBy}
-          sortOrder={sortOrder}
-          setSortOrder={setSortOrder}
+          sortBy={sortBy as SortBy}
+          setSortBy={handleSortByChange}
+          sortOrder={sortOrder as SortOrder}
+          setSortOrder={handleSortOrderChange}
           tags={tags}
           updateURL={updateURL}
         />
@@ -163,7 +197,15 @@ export const PostDashboard = () => {
           loading={loading} 
           total={total} 
         />
-      </CardContent>
+        <PostPagination 
+          total={total}
+          skip={skip}
+          limit={limit}
+          onLimitChange={handleLimitChange}
+          onPrevPage={handlePrevPage}
+          onNextPage={handleNextPage}
+        />
+          </CardContent>
     </Card>
   );
   

@@ -4,15 +4,15 @@ import { usePostManagementStore } from "../../features/postManagement/model/stor
 
 export const PostsManagerPage = () => {
   const {
+    selectedPost,
     showAddDialog,
     showEditDialog,
-    selectedPost,
     setShowAddDialog,
     setShowEditDialog,
   } = usePostManagementStore();
 
   return (
-    <>
+    <div>
       <PostDashboard />
       
       <PostForm
@@ -24,13 +24,13 @@ export const PostsManagerPage = () => {
       />
 
       <PostForm
-        post={selectedPost}
+        {...(selectedPost && { post: selectedPost })}
         isOpen={showEditDialog}
         onClose={() => setShowEditDialog(false)}
         onSuccess={() => {
           // Refresh posts...
         }}
       />
-    </>
+    </div>
   );
 };

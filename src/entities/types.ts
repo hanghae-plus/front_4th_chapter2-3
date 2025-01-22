@@ -130,3 +130,15 @@ export interface PostPaginationProps {
   onPrevPage: () => void;
   onNextPage: () => void;
 }
+
+export interface PostTableProps {
+  posts: Post[];
+  searchQuery: string;
+  selectedTag: string;
+  highlight: string;
+  onEdit: (post: Post) => void;
+  onDelete: (id: number) => void;
+  onDetailView: (post: Post) => void;
+  onTagClick: (tag: string) => void;
+  onUserClick?: (author: User | undefined) => void;
+}
