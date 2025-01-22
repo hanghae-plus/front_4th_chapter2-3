@@ -1,6 +1,29 @@
+import { useEffect } from "react"
+import { useAtom, useAtomValue } from "jotai"
+
+import { useUserQuery } from "../api"
+import { selectedUserAtom, selectedUserIdAtom } from "../model"
+import { dialogAtomFamily } from "../../../shared/model"
 import { DialogContainer, DialogContent, DialogHeader, DialogTitle } from "../../../shared/ui/dialog"
 
-export const UserDialog = ({ showUserModal, setShowUserModal, selectedUser }) => {
+export const UserDialog = () => {
+  const selectedUserId = useAtomValue(selectedUserIdAtom)
+  const [showUserModal, setShowUserModal] = useAtom(dialogAtomFamily("user-detail"))
+  const [selectedUser, setSelectedUser] = useAtom(selectedUserAtom)
+  const { data, isLoading } = useUserQuery(selectedUserId, {
+    enabled: showUserModal,
+  })
+
+  useEffect(() => {
+    if (!isLoading && data) {
+      setSelectedUser(data)
+    }
+  }, [isLoading, data, setSelectedUser])
+
+  if (isLoading) {
+    return null
+  }
+
   return (
     <DialogContainer open={showUserModal} onOpenChange={setShowUserModal}>
       <DialogContent>

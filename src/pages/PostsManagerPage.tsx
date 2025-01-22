@@ -27,8 +27,6 @@ const PostsManager = () => {
   const [newPost, setNewPost] = useState({ title: "", body: "", userId: 1 })
   const [total, setTotal] = useState(0)
   const [tags, setTags] = useState([])
-  // Users
-  const [selectedUser, setSelectedUser] = useState(null)
   // Query Params
   const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"))
   const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"))
@@ -46,7 +44,6 @@ const PostsManager = () => {
   const [showAddCommentDialog, setShowAddCommentDialog] = useState(false)
   const [showEditCommentDialog, setShowEditCommentDialog] = useState(false)
   const [showPostDetailDialog, setShowPostDetailDialog] = useState(false)
-  const [showUserModal, setShowUserModal] = useState(false)
 
   // URL 업데이트 함수
   const updateURL = () => {
@@ -285,18 +282,6 @@ const PostsManager = () => {
     setShowPostDetailDialog(true)
   }
 
-  // 사용자 모달 열기
-  const openUserModal = async (user) => {
-    try {
-      const response = await fetch(`/api/users/${user.id}`)
-      const userData = await response.json()
-      setSelectedUser(userData)
-      setShowUserModal(true)
-    } catch (error) {
-      console.error("사용자 정보 가져오기 오류:", error)
-    }
-  }
-
   useEffect(() => {
     fetchTags()
   }, [])
@@ -363,7 +348,6 @@ const PostsManager = () => {
                 updateURL,
                 setSelectedPost,
                 setShowEditDialog,
-                openUserModal,
                 openPostDetail,
                 deletePost,
                 searchQuery,
@@ -408,7 +392,7 @@ const PostsManager = () => {
       />
 
       {/* 사용자 정보 모달 */}
-      <UserDialog {...{ showUserModal, setShowUserModal, selectedUser }} />
+      <UserDialog />
     </CardContainer>
   )
 }

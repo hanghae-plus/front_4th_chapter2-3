@@ -1,7 +1,11 @@
+import { useSetAtom } from "jotai"
 import { Edit2, MessageSquare, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react"
+
+import { highlightText } from "../../../shared/lib"
 import { Button } from "../../../shared/ui/common"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../shared/ui/table"
-import { highlightText } from "../../../shared/lib"
+import { dialogAtomFamily } from "../../../shared/model"
+import { selectedUserIdAtom } from "../../../entities/user/model"
 
 export const PostsWithUsersTable = ({
   posts,
@@ -10,11 +14,17 @@ export const PostsWithUsersTable = ({
   updateURL,
   setSelectedPost,
   setShowEditDialog,
-  openUserModal,
   openPostDetail,
   deletePost,
   searchQuery,
 }) => {
+  const setSelectedUserId = useSetAtom(selectedUserIdAtom)
+  const setUserModal = useSetAtom(dialogAtomFamily("user-detail"))
+  const openUserModal = (userId: number) => {
+    setSelectedUserId(userId)
+    setUserModal(true)
+  }
+
   return (
     <Table>
       <TableHeader>
@@ -55,7 +65,7 @@ export const PostsWithUsersTable = ({
               </div>
             </TableCell>
             <TableCell>
-              <div className="flex items-center space-x-2 cursor-pointer" onClick={() => openUserModal(post.author)}>
+              <div className="flex items-center space-x-2 cursor-pointer" onClick={() => openUserModal(post.author.id)}>
                 <img src={post.author?.image} alt={post.author?.username} className="w-8 h-8 rounded-full" />
                 <span>{post.author?.username}</span>
               </div>
