@@ -41,53 +41,51 @@ import {
   likeComments,
   updateComments,
 } from "../entities/comment/api/commentApi.ts";
+import { useAtom } from "jotai";
+import {
+  totalAtom,
+  postsAtom,
+  selectedPostAtom,
+  searchQueryAtom,
+  selectedCommentAtom,
+  commentsAtom,
+  selectedUserAtom,
+  selectedTagAtom,
+  loadingAtom,
+} from "../app/store/atom.ts";
+import { useQueryParams } from "../shared/lib/useQueryParams.ts";
 
 const PostsManager = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
+
+  // 전역 변수
+  const [total, setTotal] = useAtom(totalAtom);
+  const [posts, setPosts] = useAtom(postsAtom);
+  const [selectedPost, setSelectedPost] = useAtom(selectedPostAtom);
+  const [searchQuery, setSearchQuery] = useAtom(searchQueryAtom);
+  const [selectedComment, setSelectedComment] = useAtom(selectedCommentAtom);
+  const [comments, setComments] = useAtom(commentsAtom);
+  const [selectedUser, setSelectedUser] = useAtom(selectedUserAtom);
+  const [selectedTag, setSelectedTag] = useAtom(selectedTagAtom);
+  const [loading, setLoading] = useAtom(loadingAtom);
 
   // 상태 관리
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [selectedPost, setSelectedPost] = useState<Post>({
-    id: 0,
-    userId: 0,
-    title: "",
-    body: "",
-  });
   const [newPost, setNewPost] = useState({ title: "", body: "", userId: 1 });
 
-  const [total, setTotal] = useState(0);
-  const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"));
-  const [limit, setLimit] = useState(
-    parseInt(queryParams.get("limit") || "10")
-  );
-  const [searchQuery, setSearchQuery] = useState(
-    queryParams.get("search") || ""
-  );
+  const [skip, setSkip] = useState(parseInt(useQueryParams("skip") || "0"));
+  const [limit, setLimit] = useState(parseInt(useQueryParams("limit") || "10"));
 
-  const [sortBy, setSortBy] = useState(queryParams.get("sortBy") || "");
+  const [sortBy, setSortBy] = useState(useQueryParams("sortBy") || "");
   const [sortOrder, setSortOrder] = useState(
-    queryParams.get("sortOrder") || "asc"
+    useQueryParams("sortOrder") || "asc"
   );
 
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
 
-  const [loading, setLoading] = useState(false);
-
   const [tags, setTags] = useState<Tags[]>([]);
-  const [selectedTag, setSelectedTag] = useState<string>(
-    queryParams.get("tag") || ""
-  );
 
-  const [comments, setComments] = useState<Record<number, Comment[]>>({});
-  const [selectedComment, setSelectedComment] = useState<Comment>({
-    body: "",
-    postId: null,
-    userId: 0,
-    likes: 0,
-  });
   const [newComment, setNewComment] = useState<Comment>({
     body: "",
     postId: null,
@@ -97,10 +95,7 @@ const PostsManager = () => {
   const [showAddCommentDialog, setShowAddCommentDialog] = useState(false);
   const [showEditCommentDialog, setShowEditCommentDialog] = useState(false);
   const [showPostDetailDialog, setShowPostDetailDialog] = useState(false);
-
   const [showUserModal, setShowUserModal] = useState(false);
-
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
   // URL 업데이트 함수
   const updateURL = () => {
@@ -380,8 +375,7 @@ const PostsManager = () => {
         <div className="flex flex-col gap-4">
           {/* 검색 및 필터 컨트롤 */}
           <PostFilter
-            searchQuery={searchQuery}
-            onInputChange={(value: string) => setSearchQuery(value)}
+            // onInputChange={(value: string) => setSearchQuery(value)}
             onKeyDown={handleSearchPost}
             selectedTag={selectedTag}
             tags={tags}
