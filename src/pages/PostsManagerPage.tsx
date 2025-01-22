@@ -70,6 +70,20 @@ interface Comment {
   }
 }
 
+// API 응답 타입 정의
+interface PostsResponse {
+  posts: Post[]
+  total: number
+}
+
+interface UsersResponse {
+  users: User[]
+}
+
+interface CommentsResponse {
+  comments: Comment[]
+}
+
 const PostsManager = () => {
   const navigate = useNavigate()
   const location = useLocation()
@@ -118,33 +132,29 @@ const PostsManager = () => {
   }
 
   // 게시물 가져오기
-  const fetchPosts = () => {
+  const fetchPosts = async () => {
     setLoading(true)
-    let postsData
-    let usersData
+    try {
+      const [postsResponse, usersResponse] = await Promise.all([
+        fetch(`/api/posts?limit=${limit}&skip=${skip}`),
+        fetch("/api/users?limit=0&select=username,image"),
+      ])
 
-    fetch(`/api/posts?limit=${limit}&skip=${skip}`)
-      .then((response) => response.json())
-      .then((data) => {
-        postsData = data
-        return fetch("/api/users?limit=0&select=username,image")
-      })
-      .then((response) => response.json())
-      .then((users) => {
-        usersData = users.users
-        const postsWithUsers = postsData.posts.map((post) => ({
-          ...post,
-          author: usersData.find((user) => user.id === post.userId),
-        }))
-        setPosts(postsWithUsers)
-        setTotal(postsData.total)
-      })
-      .catch((error) => {
-        console.error("게시물 가져오기 오류:", error)
-      })
-      .finally(() => {
-        setLoading(false)
-      })
+      const postsData: PostsResponse = await postsResponse.json()
+      const usersData: UsersResponse = await usersResponse.json()
+
+      const postsWithUsers = postsData.posts.map((post) => ({
+        ...post,
+        author: usersData.users.find((user) => user.id === post.userId),
+      }))
+
+      setPosts(postsWithUsers)
+      setTotal(postsData.total)
+    } catch (error) {
+      console.error("게시물 가져오기 오류:", error)
+    } finally {
+      setLoading(false)
+    }
   }
 
   // 태그 가져오기
@@ -188,8 +198,9 @@ const PostsManager = () => {
         fetch(`/api/posts/tag/${tag}`),
         fetch("/api/users?limit=0&select=username,image"),
       ])
-      const postsData = await postsResponse.json()
-      const usersData = await usersResponse.json()
+
+      const postsData: PostsResponse = await postsResponse.json()
+      const usersData: UsersResponse = await usersResponse.json()
 
       const postsWithUsers = postsData.posts.map((post) => ({
         ...post,
@@ -251,10 +262,10 @@ const PostsManager = () => {
 
   // 댓글 가져오기
   const fetchComments = async (postId: number) => {
-    if (comments[postId]) return // 이미 불러온 댓글이 있으면 다시 불러오지 않음
+    if (comments[postId]) return
     try {
       const response = await fetch(`/api/comments/post/${postId}`)
-      const data = await response.json()
+      const data: CommentsResponse = await response.json()
       setComments((prev) => ({ ...prev, [postId]: data.comments }))
     } catch (error) {
       console.error("댓글 가져오기 오류:", error)
@@ -378,7 +389,7 @@ const PostsManager = () => {
   }, [location.search])
 
   // 하이라이트 함수 추가
-  const highlightText = (text: string, highlight: string) => {
+  const highlightText = (text: string | undefined, highlight: string): React.ReactNode => {
     if (!text) return null
     if (!highlight.trim()) {
       return <span>{text}</span>
