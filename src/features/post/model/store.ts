@@ -2,6 +2,7 @@ import { create } from "zustand"
 import { Post } from "@/entities/post/model/types"
 import { postApi } from "@/entities/post/api/postApi"
 import { userApi } from "@/entities/user/api/userApi"
+import { User } from "@/entities/user/model/types"
 
 interface PostStore {
   posts: Post[]
@@ -17,6 +18,7 @@ interface PostStore {
   setLoading: (loading: boolean) => void
 
   fetchPosts: () => void
+  fetchPostsByTag: (tag: string) => void
 }
 
 export const usePost = create<PostStore>((set, get) => ({
@@ -58,5 +60,34 @@ export const usePost = create<PostStore>((set, get) => ({
     } finally {
       set({ loading: false })
     }
+  },
+
+  // 태그별 게시물 가져오기
+  fetchPostsByTag: async (tag: string) => {
+    if (!tag || tag === "all") {
+      const { fetchPosts } = get()
+      fetchPosts()
+      return
+    }
+
+    set({ loading: true })
+
+    try {
+      const [postsData, usersData] = await Promise.all([
+        postApi.getPostsByTag(tag),
+        userApi.getUsers({ limit: 0, select: "username,image" }),
+      ])
+
+      const postsWithUsers = postsData.posts.map((post: Post) => ({
+        ...post,
+        author: usersData.users.find((user: User) => user.id === post.userId),
+      }))
+
+      set({ posts: postsWithUsers, total: postsData.total })
+    } catch (e) {
+      console.error("태그별 게시물 가져오기 오류:", e)
+    }
+
+    set({ loading: false })
   },
 }))

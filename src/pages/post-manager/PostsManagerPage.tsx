@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { Plus } from "lucide-react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { Button, Card, CardContent, CardHeader, CardTitle } from "../../shared/ui"
-import { CreatePost, Post, PostsResponse, Tag } from "../../entities/post/model/types"
+import { CreatePost, Post } from "../../entities/post/model/types"
 import { Comment, NewComment } from "../../entities/comment/model/types"
 import { User } from "../../entities/user/model/types"
 import { postApi } from "../../entities/post/api/postApi"
@@ -20,6 +20,7 @@ import { CommentAddDialog } from "@/widgets/comment/ui/CommentAddDialog"
 import { CommentEditDialog } from "@/widgets/comment/ui/CommentEditDialog"
 import { PostDetailDialog } from "@/widgets/post/ui/PostDetailDialog"
 import { UserDialog } from "@/widgets/user/ui/UserDialog"
+import { usePostFilter } from "@/features/post/post-filter/model/store"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -27,9 +28,6 @@ const PostsManager = () => {
   const queryParams = new URLSearchParams(location.search)
 
   // 상태 관리
-  // const [total, setTotal] = useState(0)
-  // const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"))
-  // const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"))
   const [searchQuery, setSearchQuery] = useState(queryParams.get("search") || "")
   const [selectedPost, setSelectedPost] = useState<Post>()
   const [sortBy, setSortBy] = useState(queryParams.get("sortBy") || "")
@@ -37,9 +35,6 @@ const PostsManager = () => {
   const [showAddDialog, setShowAddDialog] = useState(false)
   const [showEditDialog, setShowEditDialog] = useState(false)
   const [newPost, setNewPost] = useState<CreatePost>(INITIAL_NEW_POST_STATE)
-  // const [loading, setLoading] = useState(false)
-  const [tags, setTags] = useState<Tag[]>([])
-  const [selectedTag, setSelectedTag] = useState(queryParams.get("tag") || "")
   const [comments, setComments] = useState<Record<number, Comment[] | []>>({})
   const [selectedComment, setSelectedComment] = useState<Comment>()
   const [newComment, setNewComment] = useState<NewComment>(INITIAL_NEW_COMMENT_STATE)
@@ -50,7 +45,10 @@ const PostsManager = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
 
   // 전역 상태 관리
-  const { posts, total,skip, limit, loading, setPosts, setTotal, setSkip,setLimit,setLoading } = usePost()
+  const { posts, total, skip, limit, loading, setPosts, setTotal, setSkip, setLimit, setLoading, fetchPosts } =
+    usePost()
+
+  const { selectedTag, setSelectedTag } = usePostFilter()
 
   // URL 업데이트 함수
   const updateURL = () => {
@@ -62,49 +60,6 @@ const PostsManager = () => {
     if (sortOrder) params.set("sortOrder", sortOrder)
     if (selectedTag) params.set("tag", selectedTag)
     navigate(`?${params.toString()}`)
-  }
-
-  // 게시물 가져오기
-  const fetchPosts = () => {
-    setLoading(true)
-    let postsData: PostsResponse
-    let usersData: User[]
-
-    postApi
-      .getPosts({ limit: limit, skip: skip })
-      .then((data) => {
-        postsData = data
-        return userApi.getUsers({ limit: 0, select: "username,image" })
-      })
-      .then((users) => {
-        usersData = users.users
-        const postsWithUsers = postsData.posts.map((post) => ({
-          ...post,
-          author: usersData.find((user) => user.id === post.userId) ?? {
-            id: post.userId,
-            image: "",
-            username: "",
-          },
-        }))
-        setPosts(postsWithUsers)
-        setTotal(postsData.total)
-      })
-      .catch((error) => {
-        console.error("게시물 가져오기 오류:", error)
-      })
-      .finally(() => {
-        setLoading(false)
-      })
-  }
-
-  // 태그 가져오기
-  const fetchTags = async () => {
-    try {
-      const data = await postApi.getTags()
-      setTags(data)
-    } catch (error) {
-      console.error("태그 가져오기 오류:", error)
-    }
   }
 
   // 게시물 검색
@@ -293,9 +248,9 @@ const PostsManager = () => {
     }
   }
 
-  useEffect(() => {
-    fetchTags()
-  }, [])
+  // useEffect(() => {
+  //   fetchTags()
+  // }, [])
 
   useEffect(() => {
     if (selectedTag) {
@@ -331,7 +286,6 @@ const PostsManager = () => {
         <div className="flex flex-col gap-4">
           <PostTableFilter
             searchQuery={searchQuery}
-            tags={tags}
             selectedTag={selectedTag}
             sortBy={sortBy}
             sortOrder={sortOrder}

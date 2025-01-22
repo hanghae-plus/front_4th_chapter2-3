@@ -1,10 +1,9 @@
-import { Tag } from "@/entities/post/model/types"
+import { SelectTags } from "@/features/post/post-filter/ui/selectTags"
 import { Input, Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/shared/ui"
 import { Search } from "lucide-react"
 
 interface PostTableFilterProps {
   searchQuery: string
-  tags: Tag[]
   selectedTag: string
   sortBy: string
   sortOrder: string
@@ -19,14 +18,10 @@ interface PostTableFilterProps {
 
 export const PostTableFilter = ({
   searchQuery,
-  tags,
-  selectedTag,
   sortBy,
   sortOrder,
   setSearchQuery,
   searchPosts,
-  setSelectedTag,
-  fetchPostsByTag,
   setSortBy,
   setSortOrder,
   updateURL,
@@ -45,26 +40,7 @@ export const PostTableFilter = ({
           />
         </div>
       </div>
-      <Select
-        value={selectedTag}
-        onValueChange={(value) => {
-          setSelectedTag(value)
-          fetchPostsByTag(value)
-          updateURL()
-        }}
-      >
-        <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="태그 선택" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">모든 태그</SelectItem>
-          {tags.map((tag) => (
-            <SelectItem key={tag.url} value={tag.slug}>
-              {tag.slug}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <SelectTags updateURL={updateURL} />
       <Select value={sortBy} onValueChange={setSortBy}>
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="정렬 기준" />
