@@ -33,25 +33,32 @@ const PostsManager = () => {
 
   // 상태 관리
   const [posts, setPosts] = useState([])
+  const [selectedPost, setSelectedPost] = useState(null)
+  const [newPost, setNewPost] = useState({ title: "", body: "", userId: 1 })
+
   const [total, setTotal] = useState(0)
   const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"))
   const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"))
   const [searchQuery, setSearchQuery] = useState(queryParams.get("search") || "")
-  const [selectedPost, setSelectedPost] = useState(null)
   const [sortBy, setSortBy] = useState(queryParams.get("sortBy") || "")
   const [sortOrder, setSortOrder] = useState(queryParams.get("sortOrder") || "asc")
+
   const [showAddDialog, setShowAddDialog] = useState(false)
   const [showEditDialog, setShowEditDialog] = useState(false)
-  const [newPost, setNewPost] = useState({ title: "", body: "", userId: 1 })
+
   const [loading, setLoading] = useState(false)
+
   const [tags, setTags] = useState([])
   const [selectedTag, setSelectedTag] = useState(queryParams.get("tag") || "")
+
   const [comments, setComments] = useState({})
   const [selectedComment, setSelectedComment] = useState(null)
   const [newComment, setNewComment] = useState({ body: "", postId: null, userId: 1 })
+
   const [showAddCommentDialog, setShowAddCommentDialog] = useState(false)
   const [showEditCommentDialog, setShowEditCommentDialog] = useState(false)
   const [showPostDetailDialog, setShowPostDetailDialog] = useState(false)
+
   const [showUserModal, setShowUserModal] = useState(false)
   const [selectedUser, setSelectedUser] = useState(null)
 
@@ -206,6 +213,7 @@ const PostsManager = () => {
   }
 
   // 댓글 가져오기
+  // entities -> comment -> api -> getComments()
   const fetchComments = async (postId) => {
     if (comments[postId]) return // 이미 불러온 댓글이 있으면 다시 불러오지 않음
     try {
@@ -218,6 +226,7 @@ const PostsManager = () => {
   }
 
   // 댓글 추가
+  // entities -> comment -> model/api -> addComment()
   const addComment = async () => {
     try {
       const response = await fetch("/api/comments/add", {
@@ -238,6 +247,7 @@ const PostsManager = () => {
   }
 
   // 댓글 업데이트
+  // entities -> comment -> model/api -> updateComment()
   const updateComment = async () => {
     try {
       const response = await fetch(`/api/comments/${selectedComment.id}`, {
@@ -257,6 +267,7 @@ const PostsManager = () => {
   }
 
   // 댓글 삭제
+  // entities -> comment -> model/api -> deleteComment()
   const deleteComment = async (id, postId) => {
     try {
       await fetch(`/api/comments/${id}`, {
@@ -272,6 +283,7 @@ const PostsManager = () => {
   }
 
   // 댓글 좋아요
+  // entities -> comment -> model/api -> likeComment()
   const likeComment = async (id, postId) => {
     try {
       const response = await fetch(`/api/comments/${id}`, {
@@ -348,7 +360,7 @@ const PostsManager = () => {
     )
   }
 
-  // entities - post
+  // entities - post - ui - postTable()
   // 게시물 테이블 렌더링
   const renderPostTable = () => (
     <Table>
@@ -429,7 +441,7 @@ const PostsManager = () => {
     </Table>
   )
 
-  // entities - comments
+  // entities - comments - ui
   // 댓글 렌더링
   const renderComments = (postId) => (
     <div className="mt-2">
