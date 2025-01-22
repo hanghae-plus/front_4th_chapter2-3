@@ -18,3 +18,4 @@ export {
 } from './Dialog';
 export { Card, CardContent, CardHeader, CardTitle } from './Card';
 export { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './Table';
+export { default as HighlightText } from './HighlightText';

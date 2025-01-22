@@ -17,7 +17,7 @@ interface Action {
     update: (prev: { [postId: number]: Comment[] }) => { [postId: number]: Comment[] },
   ) => void;
   setSelectedComment: (comment: Comment | null) => void;
-  setNewComment: (newComment: NewComment) => void;
+  setNewComment: (update: ((prev: NewComment) => NewComment) | NewComment) => void;
   setShowAddCommentDialog: (show: boolean) => void;
   setShowEditCommentDialog: (show: boolean) => void;
 }
@@ -32,12 +32,15 @@ const useCommentStoreCreator: StateCreator<CommentStoreProps> = (set) => ({
   showEditCommentDialog: false,
   setComments: (update) => set((state) => ({ comments: update(state.comments) })),
   setSelectedComment: (comment) => set({ selectedComment: comment }),
-  setNewComment: (newComment) => set({ newComment }),
+  setNewComment: (update) =>
+    set((state) => ({
+      newComment: typeof update === 'function' ? update(state.newComment) : update,
+    })),
   setShowAddCommentDialog: (show) => set({ showAddCommentDialog: show }),
   setShowEditCommentDialog: (show) => set({ showEditCommentDialog: show }),
 });
 
 const commentStore = create(useCommentStoreCreator);
 
-export const useCommentStore = createStoreSelector(commentStore);
+const useCommentStore = createStoreSelector(commentStore);
 export default useCommentStore;
