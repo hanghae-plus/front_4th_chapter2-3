@@ -1,15 +1,4 @@
-export interface Post {
-  id: number;
-  title: string;
-  body: string;
-  tags: string[];
-  reactions: {
-    likes: number;
-    dislikes: number;
-  };
-  views: number;
-  userId: number;
-}
+import type { ApiResponseWith } from '@/shared/model';
 
 export interface User {
   id: number;
@@ -100,20 +89,9 @@ export interface Comment {
   };
 }
 
-export interface Response {
-  limit: number;
-  skip: number;
-  total: number;
-}
-
-export type ResponseWithData<T, K extends string = `${Lowercase<string & T>}s`> = Response & {
-  [key in K]: T[];
-};
-
-export type Posts = ResponseWithData<Post, 'posts'>;
-export type Users = ResponseWithData<User, 'users'>;
-export type Tags = ResponseWithData<Tag, 'tags'>;
-export type Comments = ResponseWithData<Comment, 'comments'>;
+export type Users = ApiResponseWith<User, 'users'>;
+export type Tags = ApiResponseWith<Tag, 'tags'>;
+export type Comments = ApiResponseWith<Comment, 'comments'>;
 
 export type Nullable<T> = {
   [P in keyof T]: T[P] | null;

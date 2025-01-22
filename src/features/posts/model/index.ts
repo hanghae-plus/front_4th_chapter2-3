@@ -1,0 +1,3 @@
+export type { Posts } from './Posts';
+
+export { usePostsStore, usePostsStoreSelector } from './store';

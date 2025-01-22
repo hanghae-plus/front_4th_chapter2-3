@@ -2,6 +2,9 @@ import { Edit2, MessageSquare, Plus, Search, ThumbsDown, ThumbsUp, Trash2 } from
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
+import type { Post } from '@/entities/posts/model';
+import type { User } from '@/entities/users/model';
+import type { Posts } from '@/features/posts/model/Posts';
 import {
   Button,
   Card,
@@ -27,7 +30,7 @@ import {
   Textarea,
 } from '@/shared/ui';
 
-import { Comment, Post, Posts, Tag, User, Users } from '../model/types';
+import type { Comment, Tag, Users } from '../model/types';
 
 export const PostsManagerPage = () => {
   const navigate = useNavigate();
