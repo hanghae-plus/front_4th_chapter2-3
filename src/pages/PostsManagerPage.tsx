@@ -48,8 +48,7 @@ const PostsManager = () => {
   const [selectedPost, setSelectedPost] = useState<PostItemType | null>(null);
   const [sortBy, setSortBy] = useState(queryParams.get('sortBy') || '');
   const [sortOrder, setSortOrder] = useState(queryParams.get('sortOrder') || 'asc');
-  const [showAddDialog, setShowAddDialog] = useState(false);
-  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [showPostFormDialog, setShowPostFormDialog] = useState(false);
   const [newPost, setNewPost] = useState({ title: '', body: '', userId: 1 });
   const [loading, setLoading] = useState(false);
   const [tags, setTags] = useState([]);
@@ -64,8 +63,7 @@ const PostsManager = () => {
     likes: 0,
     user: { id: 0, username: '' },
   });
-  const [showAddCommentDialog, setShowAddCommentDialog] = useState(false);
-  const [showEditCommentDialog, setShowEditCommentDialog] = useState(false);
+  const [showCommentFormDialog, setShowCommentFormDialog] = useState(false);
   const [showPostDetailDialog, setShowPostDetailDialog] = useState(false);
   const [showUserModal, setShowUserModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState<UserDetailType | null>(null);
@@ -165,47 +163,51 @@ const PostsManager = () => {
 
       setPosts(postsWithUsers);
       setTotal(postsData.total);
+
     } catch (error) {
       console.error('태그별 게시물 가져오기 오류:', error);
     }
     setLoading(false);
   };
 
-  // 게시물 추가
-  const addPost = async () => {
+  // 게시물 추가/수정
+  const handlePostForm = async () => {
     try {
-      const response = await fetch('/api/posts/add', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newPost),
-      });
+      if (selectedPost) {
+        // 수정 모드
+        const response = await fetch(`/api/posts/${selectedPost?.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(selectedPost),
+        });
 
-      const data = await response.json();
+        const data = await response.json();
 
-      setPosts([data, ...posts]);
-      setShowAddDialog(false);
-      setNewPost({ title: '', body: '', userId: 1 });
+        setPosts(posts.map((post) => (post.id === data.id ? data : post)));
+
+      } else {
+        // 추가 모드
+        const response = await fetch('/api/posts/add', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newPost),
+        });
+
+        const data = await response.json();
+
+        setPosts([data, ...posts]);
+        setShowPostFormDialog(false);
+      }
+
+
     } catch (error) {
-      console.error('게시물 추가 오류:', error);
-    }
-  };
+      console.error('게시물 처리 오류:', error);
 
-  // 게시물 업데이트
-  const updatePost = async () => {
-    try {
-      if (!selectedPost) return;
-      const response = await fetch(`/api/posts/${selectedPost?.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(selectedPost),
-      });
-
-      const data = await response.json();
-
-      setPosts(posts.map((post) => (post.id === data.id ? data : post)));
-      setShowEditDialog(false);
-    } catch (error) {
-      console.error('게시물 업데이트 오류:', error);
+    } finally {
+      setShowPostFormDialog(false);
+      setSelectedPost(null)
+      // 폼 초기화
+      setNewPost({ title: '', body: '', userId: 0 });
     }
   };
 
@@ -235,59 +237,56 @@ const PostsManager = () => {
     }
   };
 
-  // 댓글 추가
-  const addComment = async () => {
+  // 댓글 추가/수정
+  const handleCommentForm = async () => {
     try {
-      const response = await fetch('/api/comments/add', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newComment),
-      });
+      if (selectedComment) {
+        // 수정 모드
+        const response = await fetch(`/api/comments/${selectedComment?.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(selectedComment),
+        });
+        
+        const data = await response.json();
 
-      const data = await response.json();
+        if (!data.postId) {
+          console.error("댓글 수정 오류:", data);
+          return;
+        }
 
-      setComments((prev) => ({
-        ...prev,
-        [data.postId]: [...(prev[data.postId] || []), data],
-      }));
-      setShowAddCommentDialog(false);
-      setNewComment({
-        id: 0,
-        body: '',
-        postId: undefined,
-        userId: 1,
-        likes: 0,
-        user: { id: 0, username: '' },
-      });
+        setComments((prev) => ({
+          ...prev,
+          [data.postId]: prev[data.postId].map((comment) =>
+            comment.id === data.id ? data : comment,
+          ),
+        }));
+
+      } else {
+        // 추가 모드
+        const response = await fetch('/api/comments/add', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newComment),
+        });
+
+        const data = await response.json();
+
+        setComments((prev) => ({
+          ...prev,
+          [data.postId]: [...(prev[data.postId] || []), data],
+        }));
+      }
     } catch (error) {
-      console.error('댓글 추가 오류:', error);
+      console.error('댓글 처리 오류:', error);
+
+    } finally {
+      setShowCommentFormDialog(false);
+      setSelectedComment(null);
+      // 폼 초기화
+      setNewComment({ id: 0, body: '', postId: undefined, userId: 1, likes: 0, user: { id: 0, username: '' } });
     }
-  };
-
-  // 댓글 업데이트
-  const updateComment = async () => {
-    try {
-      if (!selectedComment) return;
-
-      const response = await fetch(`/api/comments/${selectedComment?.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ body: selectedComment?.body }),
-      });
-
-      const data = await response.json();
-
-      setComments((prev) => ({
-        ...prev,
-        [data.postId]: prev[data.postId].map((comment) =>
-          comment.id === data.id ? data : comment,
-        ),
-      }));
-      setShowEditCommentDialog(false);
-    } catch (error) {
-      console.error('댓글 업데이트 오류:', error);
-    }
-  };
+  }
 
   // 댓글 삭제
   const deleteComment = async (id: number, postId: number) => {
@@ -460,7 +459,7 @@ const PostsManager = () => {
                   size='sm'
                   onClick={() => {
                     setSelectedPost(post);
-                    setShowEditDialog(true);
+                    setShowPostFormDialog(true);
                   }}
                 >
                   <Edit2 className='w-4 h-4' />
@@ -485,7 +484,7 @@ const PostsManager = () => {
           size='sm'
           onClick={() => {
             setNewComment((prev) => ({ ...prev, postId: postId as CommentType['postId'] }));
-            setShowAddCommentDialog(true);
+            setShowCommentFormDialog(true);
           }}
         >
           <Plus className='w-3 h-3 mr-1' />
@@ -509,7 +508,7 @@ const PostsManager = () => {
                 size='sm'
                 onClick={() => {
                   setSelectedComment(comment);
-                  setShowEditCommentDialog(true);
+                  setShowCommentFormDialog(true);
                 }}
               >
                 <Edit2 className='w-3 h-3' />
@@ -529,7 +528,7 @@ const PostsManager = () => {
       <CardHeader>
         <CardTitle className='flex items-center justify-between'>
           <span>게시물 관리자</span>
-          <Button onClick={() => setShowAddDialog(true)}>
+          <Button onClick={() => setShowPostFormDialog(true)}>
             <Plus className='w-4 h-4 mr-2' />
             게시물 추가
           </Button>
@@ -624,96 +623,71 @@ const PostsManager = () => {
         </div>
       </CardContent>
 
-      {/* 게시물 추가 대화상자 */}
-      <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
+      {/* 게시물 추가/수정 대화상자 */}
+      <Dialog open={showPostFormDialog} onOpenChange={setShowPostFormDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>새 게시물 추가</DialogTitle>
+            <DialogTitle>
+              {selectedPost ? "게시물 수정" : "새 게시물 추가"}
+            </DialogTitle>
           </DialogHeader>
-          <div className='space-y-4'>
+          <div className="space-y-4">
             <Input
-              placeholder='제목'
-              value={newPost.title}
-              onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}
+              placeholder="제목"
+              value={selectedPost ? selectedPost.title : newPost.title}
+              onChange={(e) =>
+                selectedPost
+                  ? setSelectedPost({ ...selectedPost, title: e.target.value })
+                  : setNewPost({ ...newPost, title: e.target.value })
+              }
             />
             <Textarea
-              rows={30}
-              placeholder='내용'
-              value={newPost.body}
-              onChange={(e) => setNewPost({ ...newPost, body: e.target.value })}
+              rows={selectedPost ? 15 : 30}
+              placeholder="내용"
+              value={selectedPost ? selectedPost.body : newPost.body}
+              onChange={(e) =>
+                selectedPost
+                  ? setSelectedPost({ ...selectedPost, body: e.target.value })
+                  : setNewPost({ ...newPost, body: e.target.value })
+              }
             />
-            <Input
-              type='number'
-              placeholder='사용자 ID'
-              value={newPost.userId}
-              onChange={(e) => setNewPost({ ...newPost, userId: Number(e.target.value) })}
-            />
-            <Button onClick={addPost}>게시물 추가</Button>
+            {!selectedPost && (
+              <Input
+                type="number"
+                placeholder="사용자 ID"
+                value={newPost.userId}
+                onChange={(e) =>
+                  setNewPost({ ...newPost, userId: Number(e.target.value) })
+                }
+              />
+            )}
+            <Button onClick={handlePostForm}>
+              {selectedPost ? "게시물 업데이트" : "게시물 추가"}
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
 
-      {/* 게시물 수정 대화상자 */}
-      <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+      {/* 댓글 추가/수정 대화상자 */}
+      <Dialog open={showCommentFormDialog} onOpenChange={setShowCommentFormDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>게시물 수정</DialogTitle>
-          </DialogHeader>
-          <div className='space-y-4'>
-            <Input
-              placeholder='제목'
-              value={selectedPost?.title || ''}
-              onChange={(e) =>
-                setSelectedPost(selectedPost ? { ...selectedPost, title: e.target.value } : null)
-              }
-            />
-            <Textarea
-              rows={15}
-              placeholder='내용'
-              value={selectedPost?.body || ''}
-              onChange={(e) =>
-                setSelectedPost(selectedPost ? { ...selectedPost, body: e.target.value } : null)
-              }
-            />
-            <Button onClick={updatePost}>게시물 업데이트</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* 댓글 추가 대화상자 */}
-      <Dialog open={showAddCommentDialog} onOpenChange={setShowAddCommentDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>새 댓글 추가</DialogTitle>
+            <DialogTitle>
+              {selectedComment ? "댓글 수정" : "새 댓글 추가"}
+            </DialogTitle>
           </DialogHeader>
           <div className='space-y-4'>
             <Textarea
               placeholder='댓글 내용'
-              value={newComment.body}
-              onChange={(e) => setNewComment({ ...newComment, body: e.target.value })}
-            />
-            <Button onClick={addComment}>댓글 추가</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* 댓글 수정 대화상자 */}
-      <Dialog open={showEditCommentDialog} onOpenChange={setShowEditCommentDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>댓글 수정</DialogTitle>
-          </DialogHeader>
-          <div className='space-y-4'>
-            <Textarea
-              placeholder='댓글 내용'
-              value={selectedComment?.body || ''}
+              value={selectedComment ? selectedComment.body : newComment.body}
               onChange={(e) =>
-                setSelectedComment(
-                  selectedComment ? { ...selectedComment, body: e.target.value } : null,
-                )
-              }
+                selectedComment
+                  ? setSelectedComment({ ...selectedComment, body: e.target.value })
+                  : setNewComment({ ...newComment, body: e.target.value })}
             />
-            <Button onClick={updateComment}>댓글 업데이트</Button>
+            <Button onClick={handleCommentForm}>
+              {selectedComment ? "댓글 업데이트" :"댓글 추가"}
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
