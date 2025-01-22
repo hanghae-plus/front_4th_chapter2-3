@@ -1,6 +1,8 @@
 import { Post } from "../model";
 
-export const addPost = async (newPost: Post) => {
+export type AddPostProps = Pick<Post, "title" | "body" | "userId">;
+
+export const addPost = async (newPost: AddPostProps) => {
   const response = await fetch("/api/posts/add", {
     method: "POST",
     headers: { "Content-Type": "application/json" },

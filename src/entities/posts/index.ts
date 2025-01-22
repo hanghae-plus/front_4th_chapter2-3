@@ -1,2 +1,2 @@
 export * from "./api";
-export type { Post } from "./model";
+export type { Post, Tag } from "./model";

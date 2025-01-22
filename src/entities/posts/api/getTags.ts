@@ -1,3 +1,5 @@
+import { Tag } from "../model";
+
 export const getTags = async () => {
   const response = await fetch("/api/posts/tags");
 
@@ -5,7 +7,7 @@ export const getTags = async () => {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
 
-  const data = await response.json();
+  const data = (await response.json()) as Tag[];
 
   return data;
 };

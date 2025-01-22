@@ -12,3 +12,9 @@ export interface Post {
   views: number;
   userId: number;
 }
+
+export interface Tag {
+  slug: string;
+  name: string;
+  url: string;
+}
