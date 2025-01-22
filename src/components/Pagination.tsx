@@ -27,7 +27,7 @@ function Pagination(props: PaginationProps) {
         <span>항목</span>
       </div>
       <div className="flex gap-2">
-        <Button disabled={skip === 0} onClick={() => updateLimit(Math.max(0, (skip || 0) - limit))}>
+        <Button disabled={skip === 0} onClick={() => updateSkip(Math.max(0, (skip || 0) - limit))}>
           이전
         </Button>
         <Button disabled={(skip || 0) + limit >= total} onClick={() => updateSkip((skip || 0) + limit)}>
