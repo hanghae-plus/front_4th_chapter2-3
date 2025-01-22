@@ -2,7 +2,7 @@ import { create } from "zustand"
 import { Post } from "@/entities/post/model/types"
 import { postApi } from "@/entities/post/api/postApi"
 import { userApi } from "@/entities/user/api/userApi"
-import { User } from "@/entities/user/model/types"
+import { postsWithUsers } from "@/entities/post/lib"
 
 interface PostStore {
   posts: Post[]
@@ -45,16 +45,9 @@ export const usePost = create<PostStore>((set, get) => ({
         await userApi.getUsers({ limit: 0, select: "username,image" }),
       ])
 
-      const postsWithUsers = postsData.posts.map((post) => ({
-        ...post,
-        author: usersData.users.find((user) => user.id === post.userId) ?? {
-          id: post.userId,
-          image: "",
-          username: "",
-        },
-      }))
+      const posts = postsWithUsers(postsData, usersData)
 
-      set({ posts: postsWithUsers, total: postsData.total })
+      set({ posts: posts, total: postsData.total })
     } catch (e) {
       console.error("게시물 가져오기 오류:", e)
     } finally {
@@ -78,12 +71,9 @@ export const usePost = create<PostStore>((set, get) => ({
         userApi.getUsers({ limit: 0, select: "username,image" }),
       ])
 
-      const postsWithUsers = postsData.posts.map((post: Post) => ({
-        ...post,
-        author: usersData.users.find((user: User) => user.id === post.userId),
-      }))
+      const posts = postsWithUsers(postsData, usersData)
 
-      set({ posts: postsWithUsers, total: postsData.total })
+      set({ posts: posts, total: postsData.total })
     } catch (e) {
       console.error("태그별 게시물 가져오기 오류:", e)
     }

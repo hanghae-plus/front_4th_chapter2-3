@@ -249,10 +249,6 @@ const PostsManager = () => {
     }
   }
 
-  // useEffect(() => {
-  //   fetchTags()
-  // }, [])
-
   useEffect(() => {
     if (selectedTag) {
       fetchPostsByTag(selectedTag)
