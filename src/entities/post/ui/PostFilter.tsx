@@ -9,10 +9,10 @@ import {
 } from "../../../shared/ui";
 import { Search } from "lucide-react";
 import { Tags } from "../../tag/model/types";
+import { useAtom } from "jotai";
+import { searchQueryAtom } from "../../../app/store/atom";
 
 interface PostFilterProps {
-  searchQuery: string;
-  onInputChange: (value: string) => void;
   onKeyDown: () => void;
   selectedTag: string;
   onValueChange: (value: string) => void;
@@ -24,8 +24,6 @@ interface PostFilterProps {
 }
 
 export const PostFilter: React.FC<PostFilterProps> = ({
-  searchQuery,
-  onInputChange,
   onKeyDown,
   selectedTag,
   onValueChange,
@@ -35,6 +33,8 @@ export const PostFilter: React.FC<PostFilterProps> = ({
   sortOrder,
   onSelectOrderChange,
 }) => {
+  const [SearchQuery, setSearchQuery] = useAtom<string>(searchQueryAtom);
+
   return (
     <div className="flex gap-4">
       <div className="flex-1">
@@ -43,9 +43,9 @@ export const PostFilter: React.FC<PostFilterProps> = ({
           <Input
             placeholder="게시물 검색..."
             className="pl-8"
-            value={searchQuery}
+            value={SearchQuery}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              onInputChange(e.target.value)
+              setSearchQuery(e.target.value)
             }
             onKeyDown={(e) => e.key === "Enter" && onKeyDown()}
           />
