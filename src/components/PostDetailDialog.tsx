@@ -11,8 +11,9 @@ interface Props {
   onSelectComment: (comment: Comment) => void
   open: boolean
   onOpenChange: (dialogType: DialogType, open: boolean) => void
+  searchQuery: string
 }
-export const PostDetailDialog = ({ selectedPost, open, onOpenChange, onSelectComment }: Props) => {
+export const PostDetailDialog = ({ selectedPost, open, onOpenChange, onSelectComment, searchQuery }: Props) => {
   return (
     <Dialog open={open} onOpenChange={(open: boolean) => onOpenChange("postDetailDialog", open)}>
       <DialogContent className="max-w-3xl">
@@ -21,7 +22,12 @@ export const PostDetailDialog = ({ selectedPost, open, onOpenChange, onSelectCom
         </DialogHeader>
         <div className="space-y-4">
           <p>{highlightText(selectedPost?.body, searchQuery)}</p>
-          <Comments postId={selectedPost?.id} onSelectComment={onSelectComment} onOpenChange={onOpenChange} />
+          <Comments
+            postId={selectedPost?.id}
+            onSelectComment={onSelectComment}
+            onOpenChange={onOpenChange}
+            searchQuery={searchQuery}
+          />
         </div>
       </DialogContent>
     </Dialog>

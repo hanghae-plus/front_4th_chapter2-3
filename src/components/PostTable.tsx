@@ -15,6 +15,7 @@ interface Props {
   onSelectTag: (tag: string) => void
   onSelectPost: (post: PostWithUser | null) => void
   onSelectUser: (user: User | null) => void
+  searchQuery: string
 }
 
 export const PostTable = ({
@@ -24,6 +25,7 @@ export const PostTable = ({
   onSelectUser,
   onSelectTag,
   selectedTag,
+  searchQuery,
 }: Props) => {
   // 댓글 가져오기
   const fetchComments = async (postId) => {

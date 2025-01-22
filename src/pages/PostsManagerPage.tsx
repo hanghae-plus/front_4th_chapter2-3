@@ -80,6 +80,7 @@ const PostsManager = () => {
               onSelectUser={setSelectedUser}
               selectedTag={selectedTag}
               onSelectTag={onSelectTag}
+              searchQuery={searchQuery}
             />
           )}
           <Pagination
@@ -117,6 +118,7 @@ const PostsManager = () => {
         onOpenChange={onOpenChange}
         selectedPost={selectedPost}
         onSelectComment={setSelectedComment}
+        searchQuery={searchQuery}
       />
       <UserModal
         selectedUser={selectedUser}

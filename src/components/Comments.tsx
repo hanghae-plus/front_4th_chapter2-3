@@ -9,9 +9,10 @@ interface Props {
   postId?: number
   onSelectComment: (comment: Comment) => void
   onOpenChange: (dialogType: DialogType, open: boolean) => void
+  searchQuery: string
 }
 
-export const Comments = ({ postId, onSelectComment, onOpenChange }: Props) => {
+export const Comments = ({ postId, onSelectComment, onOpenChange, searchQuery }: Props) => {
   const deleteComment = async (id, postId) => {
     try {
       await deleteCommentFunction(id)
