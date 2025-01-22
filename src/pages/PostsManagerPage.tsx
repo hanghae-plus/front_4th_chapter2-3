@@ -106,6 +106,7 @@ const PostsManager = () => {
   }
 
   // 태그 가져오기
+  // entities -> tag -> api -> getTags()
   const fetchTags = async () => {
     try {
       const response = await fetch("/api/posts/tags")
