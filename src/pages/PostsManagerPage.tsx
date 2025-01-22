@@ -135,8 +135,6 @@ interface Tag {
   url: string
 }
 
-type TagResponse = Tag[]
-
 interface Comment {
   id: number
   body: string
