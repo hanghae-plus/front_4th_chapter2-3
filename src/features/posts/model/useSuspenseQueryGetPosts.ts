@@ -1,12 +1,23 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 
-import { getPosts } from "@/entities/posts";
+import { getPosts, getPostsByQuery, getPostsByTag } from "@/entities/posts";
 
 import { postsKeys } from "../lib";
 
-export const useSuspenseQueryGetPosts = (limit: number, skip: number) => {
+interface UseSuspenseQueryGetPostsProps {
+  limit: number;
+  skip: number;
+  searchQuery?: string;
+  tag?: string;
+}
+
+export const useSuspenseQueryGetPosts = ({ limit, skip, searchQuery, tag }: UseSuspenseQueryGetPostsProps) => {
   return useSuspenseQuery({
-    queryKey: postsKeys.getPosts(limit, skip).queryKey,
-    queryFn: () => getPosts(limit, skip),
+    queryKey: postsKeys.getPosts({ limit, skip, searchQuery, tag }).queryKey,
+    queryFn: () => {
+      if (searchQuery) return getPostsByQuery({ searchQuery, limit, skip });
+      if (tag) return getPostsByTag({ tag, limit, skip });
+      return getPosts(limit, skip);
+    },
   });
 };

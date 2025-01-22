@@ -1,9 +1,9 @@
 import { useMutation } from "@tanstack/react-query";
 
-import { addPost, Post } from "@/entities/posts";
+import { addPost, AddPostProps } from "@/entities/posts";
 
 export const useMutationAddPost = () => {
   return useMutation({
-    mutationFn: (newPost: Post) => addPost(newPost),
+    mutationFn: (newPost: AddPostProps) => addPost(newPost),
   });
 };
