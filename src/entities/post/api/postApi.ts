@@ -1,7 +1,7 @@
 import { Post, PostItem } from "../model/types"
 
 // 게시물 조회
-export const fetchPostsList = async (limit: number, skip: number): Promise<Post[]> => {
+export const fetchPostsList = async (limit: number, skip: number): Promise<Post> => {
 	const response = await fetch(`/api/posts?limit=${limit}&skip=${skip}`);
 	return response.json();
 }
