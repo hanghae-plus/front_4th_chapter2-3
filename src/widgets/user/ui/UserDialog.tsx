@@ -8,7 +8,7 @@ interface Props {
 /**
  * 유저 다이얼로그
  */
-export default function UserDialog({ dialogState }: Props) {
+export const UserDialog = ({ dialogState }: Props) => {
   const {
     dialog: { isOpen, close },
     selectedUser,
@@ -45,4 +45,4 @@ export default function UserDialog({ dialogState }: Props) {
       </div>
     </CustomDialog>
   );
-}
+};

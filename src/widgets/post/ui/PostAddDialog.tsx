@@ -11,7 +11,7 @@ interface Props {
 /**
  * 게시물 추가 다이얼로그
  */
-export default function PostAddDialog({ dialogState }: Props) {
+export const PostAddDialog = ({ dialogState }: Props) => {
   const { newPost, updateNewPost, resetNewPost } = useNewPost();
   const { mutateAsync: mutatePostCreate } = useCreatePost();
   const { addPost } = usePostsStoreSelector(['posts', 'addPost']);
@@ -53,4 +53,4 @@ export default function PostAddDialog({ dialogState }: Props) {
       <Button onClick={handlePostAdd}>게시물 추가</Button>
     </CustomDialog>
   );
-}
+};

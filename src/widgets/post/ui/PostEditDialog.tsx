@@ -11,7 +11,7 @@ interface Props {
 /**
  * 게시물 수정 다이얼로그
  */
-export default function PostEditDialog({ dialogState }: Props) {
+export const PostEditDialog = ({ dialogState }: Props) => {
   const { selectedPost, setSelectedPost } = useSelectedPostStore();
   const { mutateAsync: mutatePostUpdate } = useUpdatePost();
   const { updatePost } = usePostsStoreSelector(['updatePost']);
@@ -49,4 +49,4 @@ export default function PostEditDialog({ dialogState }: Props) {
       <Button onClick={handlePostUpdate}>게시물 업데이트</Button>
     </CustomDialog>
   );
-}
+};
