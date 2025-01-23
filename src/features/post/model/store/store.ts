@@ -5,7 +5,7 @@ import {
   setPaginationAction,
   setSortingAction,
   setSearchQueryAction,
-} from './postActions';
+} from './actions';
 import { PostStoreStateType } from 'src/entities/post/model/types';
 
 export const usePostStore = create<PostStoreStateType>((set) => ({
