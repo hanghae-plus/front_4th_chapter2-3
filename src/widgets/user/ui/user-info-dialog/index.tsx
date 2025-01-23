@@ -1,20 +1,19 @@
 import { Dialog } from "@shared/ui"
-import { User } from "@entities/user/model"
 import { UserProfile } from "@entities/user/ui"
+import { useUserStore } from "@features/user/model/stores"
 
-interface UserInfoDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  user: User | null
+export const UserInfoDialog = () => {
+  const showUserModal = useUserStore((state) => state.showUserModal)
+  const setShowUserModal = useUserStore((state) => state.setShowUserModal)
+
+  return (
+    <Dialog open={showUserModal} onOpenChange={setShowUserModal}>
+      <Dialog.Content>
+        <Dialog.Header>
+          <Dialog.Title>사용자 정보</Dialog.Title>
+        </Dialog.Header>
+        <UserProfile />
+      </Dialog.Content>
+    </Dialog>
+  )
 }
-
-export const UserInfoDialog = ({ open, onOpenChange, user }: UserInfoDialogProps) => (
-  <Dialog open={open} onOpenChange={onOpenChange}>
-    <Dialog.Content>
-      <Dialog.Header>
-        <Dialog.Title>사용자 정보</Dialog.Title>
-      </Dialog.Header>
-      <UserProfile user={user} />
-    </Dialog.Content>
-  </Dialog>
-)

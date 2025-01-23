@@ -143,7 +143,7 @@ const PostsManager = () => {
         onSubmit={() => selectedComment && updateComment()}
       />
 
-      <UserInfoDialog open={showUserModal} onOpenChange={setShowUserModal} user={selectedUser} />
+      <UserInfoDialog />
     </>
   )
 }
