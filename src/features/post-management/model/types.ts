@@ -42,3 +42,25 @@ export interface NewComment {
   postId: number | null;
   userId: number;
 }
+
+type SortBy = 'none' | 'id' | 'title' | 'reactions';
+type SortOrder = 'asc' | 'desc';
+
+export interface PostManagementState {
+  // 필터 관련
+  filters: {
+    search: string;
+    tag: string;
+    sortBy: SortBy;
+    sortOrder: SortOrder;
+  };
+
+  // 페이지네이션 관련
+  pagination: {
+    skip: number;
+    limit: number;
+  };
+
+  // UI 상태
+  loading: boolean;
+}
