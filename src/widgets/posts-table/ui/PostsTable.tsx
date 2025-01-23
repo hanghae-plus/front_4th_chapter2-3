@@ -2,6 +2,7 @@ import { ThumbsUp, ThumbsDown, MessageSquare, Edit2, Trash2 } from "lucide-react
 import { Post } from "../../../entities/post/model/types"
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell, Button } from "../../../shared/ui"
 import { User } from "../../../entities/user/model/types"
+import { highlightText } from "../../../shared/lib/utils/highlight-text"
 
 interface PostWithUser extends Post {
   author: User | undefined
@@ -13,9 +14,19 @@ interface PostsTableProps {
   onClickProfile: (id: number) => void
   onEdit: (id: number) => void
   onDelete: (id: number) => void
+  searchQuery: string
+  selectedTag: string
 }
 
-export const PostsTable = ({ posts, onViewDetail, onClickProfile, onEdit, onDelete }: PostsTableProps) => (
+export const PostsTable = ({
+  posts,
+  onViewDetail,
+  onClickProfile,
+  onEdit,
+  onDelete,
+  searchQuery,
+  selectedTag,
+}: PostsTableProps) => (
   <Table>
     <TableHeader>
       <TableRow>
@@ -32,12 +43,12 @@ export const PostsTable = ({ posts, onViewDetail, onClickProfile, onEdit, onDele
           <TableCell>{post.id}</TableCell>
           <TableCell>
             <div className="space-y-1">
-              <div>{post.title}</div>
+              <div>{highlightText(post.title, searchQuery)}</div>
               <div className="flex flex-wrap gap-1">
                 {post.tags?.map((tag) => (
                   <span
                     key={tag}
-                    className="px-1 text-[9px] font-semibold rounded-[4px] cursor-pointer text-blue-800 bg-blue-100 hover:bg-blue-200"
+                    className={`px-1 text-[9px] font-semibold rounded-[4px] cursor-pointer ${selectedTag === tag ? "text-white bg-blue-500 hover:bg-blue-600" : "text-blue-800 bg-blue-100 hover:bg-blue-200"}`}
                   >
                     {tag}
                   </span>
