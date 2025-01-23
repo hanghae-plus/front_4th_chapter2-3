@@ -17,11 +17,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-  Textarea,
 } from "../shared/ui"
 import { Button } from "../shared/ui/button"
 import { Input } from "../shared/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "../widgets/ui/card"
+import { Textarea } from "../shared/ui/textarea"
 
 const PostsManager = () => {
   const navigate = useNavigate()
