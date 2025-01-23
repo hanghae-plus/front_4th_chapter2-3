@@ -16,10 +16,12 @@ export const PostsManagerPage = () => {
   const limit = parseInt(searchParams.get("limit") || "10");
   const searchQuery = searchParams.get("search") || "";
   const tag = searchParams.get("tag") || "";
+  const sortBy = searchParams.get("sortBy") || "id";
+  const order = searchParams.get("sortOrder") || "asc";
 
   const {
     data: { total },
-  } = useSuspenseQueryGetPosts({ searchQuery, skip, limit, tag });
+  } = useSuspenseQueryGetPosts({ searchQuery, skip, limit, tag, sortBy, order });
   const { open } = useModalStore();
 
   const handleOpenPostAddModal = () => {

@@ -21,10 +21,12 @@ export const PostTable = () => {
   const limit = parseInt(searchParams.get("limit") || "10");
   const searchQuery = searchParams.get("search") || "";
   const selectedTag = searchParams.get("tag") || "";
+  const sortBy = searchParams.get("sortBy") || "id";
+  const order = searchParams.get("sortOrder") || "asc";
 
   const {
     data: { posts },
-  } = useSuspenseQueryGetPosts({ searchQuery, tag: selectedTag, limit, skip });
+  } = useSuspenseQueryGetPosts({ searchQuery, tag: selectedTag, limit, skip, sortBy, order });
   const { mutate: deletePost } = useMutationDeletePost();
   const { open } = useModalStore();
 
