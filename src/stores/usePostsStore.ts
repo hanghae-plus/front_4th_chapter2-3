@@ -297,7 +297,7 @@ export const usePostsStore = create<PostsState>()(
 
       fetchTags: async () => {
         try {
-          const response = await fetch("/api/tags")
+          const response = await fetch("/api/posts/tags")
           const data = await response.json()
           set({ tags: data })
         } catch (error) {
