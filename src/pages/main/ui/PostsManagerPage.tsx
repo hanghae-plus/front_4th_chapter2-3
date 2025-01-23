@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query"
-import { Plus, Search } from "lucide-react"
+import { Plus } from "lucide-react"
 import { useMemo } from "react"
 import { useLocation } from "react-router-dom"
 
@@ -10,7 +10,6 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-  Input,
   LoadingIndicator,
   Select,
   SelectContent,
@@ -37,6 +36,7 @@ import { usePagination } from "../../../widgets/pagination/model"
 import { Pagination } from "../../../widgets/pagination/ui"
 import { PostsTable } from "../../../widgets/posts-table/ui"
 import { CommentList } from "../../../entities/comment/ui"
+import { useSearchPost, SearchPostForm } from "../../../features/post/search-post"
 
 export const PostsManagerPage = () => {
   const location = useLocation()
@@ -54,6 +54,17 @@ export const PostsManagerPage = () => {
 
   const { updateURLParams } = useQueryParams()
   const { resetSelectedComment } = useSelectedComment()
+  const {
+    searchResults,
+    isLoading: isSearchLoading,
+    searchPosts,
+  } = useSearchPost({
+    skip,
+    limit,
+    sortBy,
+    sortOrder,
+    searchQuery,
+  })
 
   const { data: list, isLoading: isListLoading } = useQuery({
     ...postQueries.listQuery({
@@ -81,20 +92,6 @@ export const PostsManagerPage = () => {
       total: data.total,
     }),
     enabled: !!selectedTag,
-  })
-
-  const { data: searchResults, isLoading: isSearchLoading } = useQuery({
-    ...postQueries.searchQuery({
-      limit,
-      skip,
-      sortBy,
-      order: sortOrder as SortOrder,
-      search: searchQuery,
-    }),
-    select: (data) => ({
-      posts: data.posts,
-      total: data.total,
-    }),
   })
 
   const { data: { users } = { users: [] } } = useQuery({
@@ -173,14 +170,6 @@ export const PostsManagerPage = () => {
     })
   }, [posts, users])
 
-  // 게시물 검색
-  const searchPosts = (value: string) => {
-    updateURLParams({
-      search: value || null,
-      skip: "0",
-    })
-  }
-
   // 게시물 삭제
   const deletePost = async (id: number) => {
     await deletePostMutation.mutateAsync(id)
@@ -253,15 +242,7 @@ export const PostsManagerPage = () => {
           {/* 검색 및 필터 컨트롤 */}
           <div className="flex gap-4">
             <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="게시물 검색..."
-                  className="pl-8"
-                  value={searchQuery}
-                  onChange={(e) => searchPosts(e.target.value)}
-                />
-              </div>
+              <SearchPostForm searchQuery={searchQuery} onSearch={searchPosts} />
             </div>
             <Select
               value={selectedTag}
