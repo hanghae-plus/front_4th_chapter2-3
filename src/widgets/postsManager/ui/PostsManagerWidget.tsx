@@ -1,7 +1,5 @@
-import { useSetAtom } from "jotai"
-import { Plus } from "lucide-react"
-
 import { useSetSearchParam } from "../../../features/serchPost/lib"
+import { AddPostButton } from "../../../features/addComment/ui"
 import { SearchPost } from "../../../features/serchPost/ui"
 import { PostsWithUsersTable } from "../../../features/postsWithUsers/ui"
 import { Pagination } from "../../../features/pagination/ui"
@@ -11,13 +9,9 @@ import { PostDetailDialog } from "../../../features/postDetail/ui"
 import { AddCommentDialog } from "../../../features/addComment/ui"
 import { UpdateCommentDialog } from "../../../features/updateComment/ui"
 import { UserDialog } from "../../../entities/user/ui"
-import { dialogAtomFamily } from "../../../shared/model"
-import { Button } from "../../../shared/ui/common"
 import { CardContainer, CardContent, CardHeader, CardTitle } from "../../../shared/ui/card"
 
 export const PostsManagerWidget = () => {
-  const setShowAddDialog = useSetAtom(dialogAtomFamily("add-post"))
-
   const { updateURL } = useSetSearchParam()
 
   return (
@@ -26,10 +20,7 @@ export const PostsManagerWidget = () => {
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <span>게시물 관리자</span>
-            <Button onClick={() => setShowAddDialog(true)}>
-              <Plus className="w-4 h-4 mr-2" />
-              게시물 추가
-            </Button>
+            <AddPostButton />
           </CardTitle>
         </CardHeader>
         <CardContent>

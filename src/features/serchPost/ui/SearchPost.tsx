@@ -39,6 +39,7 @@ export const SearchPost = ({ updateURL }: { updateURL: () => void }) => {
   return (
     <div className="flex gap-4">
       <div className="flex-1">
+        {/* SearchQuery */}
         <div className="relative">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
@@ -50,6 +51,7 @@ export const SearchPost = ({ updateURL }: { updateURL: () => void }) => {
           />
         </div>
       </div>
+      {/* Tag */}
       <SelectContainer
         value={selectedTag}
         onValueChange={(value) => {
@@ -69,6 +71,7 @@ export const SearchPost = ({ updateURL }: { updateURL: () => void }) => {
           ))}
         </SelectContent>
       </SelectContainer>
+      {/* Sort */}
       <SelectContainer value={sortBy} onValueChange={setSortBy}>
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="정렬 기준" />
@@ -80,6 +83,7 @@ export const SearchPost = ({ updateURL }: { updateURL: () => void }) => {
           <SelectItem value="reactions">반응</SelectItem>
         </SelectContent>
       </SelectContainer>
+      {/* SortOrder */}
       <SelectContainer value={sortOrder} onValueChange={setSortOrder}>
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="정렬 순서" />
