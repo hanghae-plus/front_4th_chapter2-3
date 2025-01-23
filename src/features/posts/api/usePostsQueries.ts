@@ -2,10 +2,9 @@ import { useQuery } from '@tanstack/react-query';
 
 import { postsApi } from '@/entities/posts/api';
 import type { PostsResponse } from '@/entities/posts/api/PostsResponse';
-import type { Post } from '@/entities/posts/model';
+import type { Post, PostWithUser, PostsUrlParams } from '@/entities/posts/model';
 
 import { postsQueryKeys } from '../config/postsQueryKeys';
-import type { PostsUrlParams } from '../lib';
 
 export const useQueryPosts = (params: PostsUrlParams) =>
   useQuery<PostsResponse>({
@@ -27,4 +26,10 @@ export const useQueryPostBy = (id: number) =>
     queryKey: postsQueryKeys.detail(id).queryKey,
     queryFn: () => postsApi.fetchPostById(id),
     enabled: Boolean(id),
+  });
+
+export const useQueryPostsWithUsers = (params: PostsUrlParams) =>
+  useQuery<PostWithUser[]>({
+    queryKey: postsQueryKeys.listWithUsers(params).queryKey,
+    queryFn: async () => postsApi.fetchPostsWithUsers(params),
   });

@@ -1,18 +1,15 @@
-import { Edit2, Plus, Search, ThumbsUp, Trash2 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Edit2, Plus, ThumbsUp, Trash2 } from 'lucide-react';
+import { useState } from 'react';
 
-import type { PostsResponse } from '@/entities/posts/api/PostsResponse';
-import type { Post, PostWithUser } from '@/entities/posts/model';
-import type { UsersResponse } from '@/entities/users/api';
+import type { Post } from '@/entities/posts/model';
 import type { User } from '@/entities/users/model';
 import { useUserDialog } from '@/features/dialog/model';
 import { usePostAddDialog, usePostEditDialog } from '@/features/dialog/model/usePostDialog';
 import { CustomDialog } from '@/features/dialog/ui/CustomDialog';
-import { useQueryPosts } from '@/features/posts/api';
+import { useQueryPosts } from '@/features/posts/api/usePostsQueries';
 import { useUrlParams } from '@/features/posts/lib';
-import { usePostsStoreSelector, useSelectedPostStore } from '@/features/posts/model';
-import { useTagsQuery } from '@/features/tags/api';
-import { useQueryUsers } from '@/features/users/api/useUsersQueries';
+import { useSelectedPostStore } from '@/features/posts/model';
+import { PostSearchFilter } from '@/features/posts/ui/PostSearchFilter';
 import { get, patch, post, put, remove } from '@/shared/api/fetch';
 import {
   Button,
@@ -20,7 +17,6 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-  Input,
   Select,
   SelectContent,
   SelectItem,
@@ -35,20 +31,9 @@ import { UserDialog } from '@/widgets/user/ui';
 import type { Comment } from '../model/types';
 
 export const PostsManagerPage = () => {
-  const {
-    skip,
-    limit,
-    search: searchQuery,
-    tag: selectedTag,
-    sortBy,
-    sortOrder,
-    updateParams,
-  } = useUrlParams();
+  const { skip, limit, search: searchQuery, tag: selectedTag, updateParams } = useUrlParams();
 
   // 상태 관리
-  const [loading, setLoading] = useState(false);
-  const [total, setTotal] = useState(0);
-  const { setPosts } = usePostsStoreSelector(['setPosts']);
   const { selectedPost, setSelectedPost } = useSelectedPostStore();
 
   const [comments, setComments] = useState<{
@@ -70,80 +55,12 @@ export const PostsManagerPage = () => {
   const userDialogState = useUserDialog();
 
   // 게시물 데이터 가져오기
-  const {
-    data: postsData,
-    isLoading: postsLoading,
-    error: postsError,
-  } = useQueryPosts(limit, skip);
-  // 사용자 데이터 가져오기
-  const { data: usersData, isLoading: usersLoading, error: usersError } = useQueryUsers();
-  // 태그 데이터 가져오기
-  const { data: tags } = useTagsQuery();
-
-  // 게시물 가져오기
-  const fetchPosts = async () => {
-    setLoading(true);
-
-    if (postsLoading || usersLoading) return;
-    if (postsError || usersError) {
-      console.error('게시물 또는 사용자 정보 가져오기 오류:', postsError || usersError);
-      return;
-    }
-    if (!postsData || !usersData) return;
-
-    const postsWithUsers = postsData.posts.map((post) => ({
-      ...post,
-      author: usersData.users.find((user) => user.id === post.userId),
-    })) as PostWithUser[];
-    setPosts(postsWithUsers);
-    setTotal(postsData.total);
-    setLoading(false);
-  };
-
-  // 게시물 검색
-  const searchPosts = async () => {
-    if (!searchQuery) {
-      fetchPosts();
-      return;
-    }
-    setLoading(true);
-    try {
-      const data = await get(`/api/posts/search?q=${searchQuery}`);
-      setPosts(data.posts);
-      setTotal(data.total);
-    } catch (error) {
-      console.error('게시물 검색 오류:', error);
-    }
-    setLoading(false);
-  };
-
-  // 태그별 게시물 가져오기
-  const fetchPostsByTag = async (tag: string) => {
-    if (!tag || tag === 'all') {
-      fetchPosts();
-      return;
-    }
-    setLoading(true);
-    try {
-      const [postsResponse, usersResponse] = await Promise.all([
-        get(`/api/posts/tag/${tag}`),
-        get('/api/users?limit=0&select=username,image'),
-      ]);
-      const postsData: PostsResponse = await postsResponse;
-      const usersData: UsersResponse = await usersResponse;
-
-      const postsWithUsers = postsData.posts.map((post) => ({
-        ...post,
-        author: usersData.users.find((user) => user.id === post.userId) as User,
-      }));
-
-      setPosts(postsWithUsers);
-      setTotal(postsData.total);
-    } catch (error) {
-      console.error('태그별 게시물 가져오기 오류:', error);
-    }
-    setLoading(false);
-  };
+  const { data: postsData, isLoading: loading } = useQueryPosts({
+    limit,
+    skip,
+    search: searchQuery,
+    tag: selectedTag,
+  });
 
   // 댓글 가져오기
   const fetchComments = async (postId: number) => {
@@ -229,26 +146,6 @@ export const PostsManagerPage = () => {
     setShowPostDetailDialog(true);
   };
 
-  useEffect(() => {
-    if (selectedTag) {
-      fetchPostsByTag(selectedTag);
-    } else {
-      fetchPosts();
-    }
-  }, []);
-
-  useEffect(() => {
-    if (postsData && usersData) {
-      setTotal(postsData.total);
-      const postsWithUsers = postsData.posts.map((post) => ({
-        ...post,
-        author: usersData?.users?.find((user) => user.id === post.userId),
-      })) as PostWithUser[];
-      setPosts(postsWithUsers);
-      setLoading(false);
-    }
-  }, [postsData, usersData, setPosts]);
-
   // 댓글 렌더링
   const renderComments = (postId: number) => (
     <div className='mt-2'>
@@ -313,63 +210,7 @@ export const PostsManagerPage = () => {
       <CardContent>
         <div className='flex flex-col gap-4'>
           {/* 검색 및 필터 컨트롤 */}
-          <div className='flex gap-4'>
-            <div className='flex-1'>
-              <div className='relative'>
-                <Search className='absolute left-2 top-2.5 h-4 w-4 text-muted-foreground' />
-                <Input
-                  placeholder='게시물 검색...'
-                  className='pl-8'
-                  value={searchQuery}
-                  onChange={(e) => updateParams({ search: e.target.value })}
-                  onKeyPress={(e) => e.key === 'Enter' && searchPosts()}
-                />
-              </div>
-            </div>
-            <Select
-              value={selectedTag}
-              onValueChange={(value) => {
-                updateParams({ tag: value });
-                fetchPostsByTag(value);
-              }}
-            >
-              <SelectTrigger className='w-[180px]'>
-                <SelectValue placeholder='태그 선택' />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value='all'>모든 태그</SelectItem>
-                {tags?.map((tag) => (
-                  <SelectItem key={tag.url} value={tag.slug}>
-                    {tag.slug}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select value={sortBy} onValueChange={(value) => updateParams({ sortBy: value })}>
-              <SelectTrigger className='w-[180px]'>
-                <SelectValue placeholder='정렬 기준' />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value='none'>없음</SelectItem>
-                <SelectItem value='id'>ID</SelectItem>
-                <SelectItem value='title'>제목</SelectItem>
-                <SelectItem value='reactions'>반응</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select
-              value={sortOrder}
-              onValueChange={(value: 'asc' | 'desc') => updateParams({ sortOrder: value })}
-            >
-              <SelectTrigger className='w-[180px]'>
-                <SelectValue placeholder='정렬 순서' />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value='asc'>오름차순</SelectItem>
-                <SelectItem value='desc'>내림차순</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
+          <PostSearchFilter />
           {/* 게시물 테이블 */}
           {loading ? (
             <div className='flex justify-center p-4'>로딩 중...</div>
@@ -377,7 +218,7 @@ export const PostsManagerPage = () => {
             <PostsTable
               onUserClick={userDialogState.onOpenUserDialog}
               onPostDetail={openPostDetail}
-              onPostAddDialogOpen={postAddDialogState.open}
+              onPostEditDialogOpen={postEditDialogState.open}
             />
           )}
 
@@ -408,7 +249,7 @@ export const PostsManagerPage = () => {
                 이전
               </Button>
               <Button
-                disabled={skip + limit >= total}
+                disabled={skip + limit >= (postsData?.total ?? 0)}
                 onClick={() => updateParams({ skip: skip + limit })}
               >
                 다음
