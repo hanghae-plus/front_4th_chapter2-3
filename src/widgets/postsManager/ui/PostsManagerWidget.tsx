@@ -28,6 +28,7 @@ export const PostsManagerWidget = () => {
           </div>
         </CardContent>
       </CardContainer>
+      {/* Dialog */}
       <AddPostDialog />
       <UpdatePostDialog />
       <PostDetailDialog />
