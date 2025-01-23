@@ -1,8 +1,7 @@
-import { Button, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@shared/ui"
+import { Button, HighlightText, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@shared/ui"
 import { Edit2, MessageSquare, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react"
 import { Post } from "@entities/post/types"
 import { User } from "@entities/user/types"
-import { highlightText } from "@pages/PostsManagerPage.tsx"
 import { useModalStore } from "@shared/model"
 import { PostUpdate } from "@features/post/ui/PostUpdate.tsx"
 import { PostDetail } from "@features/post/ui/PostDetail.tsx"
@@ -47,7 +46,9 @@ export function PostsTable() {
               <TableCell>{post.id}</TableCell>
               <TableCell>
                 <div className="space-y-1">
-                  <div>{highlightText(post.title, searchQuery)}</div>
+                  <div>
+                    <HighlightText text={post.title} highlight={searchQuery} />
+                  </div>
 
                   <div className="flex flex-wrap gap-1">
                     {post.tags?.map((tag, index) => <Tag key={tag + index} tag={tag} />)}

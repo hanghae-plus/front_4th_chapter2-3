@@ -1,12 +1,12 @@
 import { Button } from "@shared/ui"
 import { Edit2, Plus, ThumbsUp, Trash2 } from "lucide-react"
-import { highlightText } from "@pages/PostsManagerPage.tsx"
 import { useCommentsQuery, useDeleteCommentMutation, useLikeCommentsMutation } from "@features/post/model"
 import { Comment } from "@entities/post/types"
 import { useModalStore } from "@shared/model"
 import { CommentUpdate } from "@features/post/ui/CommentUpdate.tsx"
 import { useSearchParams } from "react-router-dom"
 import { CommentAdd } from "@features/post/ui/CommentAdd.tsx"
+import { HighlightText } from "@shared/ui"
 
 interface CommentsProps {
   postId: number
@@ -50,7 +50,9 @@ export function Comments(props: CommentsProps) {
           <div key={comment.id} className="flex items-center justify-between text-sm border-b pb-1">
             <div className="flex items-center space-x-2 overflow-hidden">
               <span className="font-medium truncate">{comment.user.username}:</span>
-              <span className="truncate">{highlightText(comment.body, searchQuery)}</span>
+              <span className="truncate">
+                <HighlightText text={comment.body} highlight={searchQuery} />
+              </span>
             </div>
             <div className="flex items-center space-x-1">
               <Button variant="ghost" size="sm" onClick={() => handleLikeClick(comment.id)}>
