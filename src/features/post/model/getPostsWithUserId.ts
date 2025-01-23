@@ -7,9 +7,11 @@ interface postWithUserProps {
 }
 
 export const getPostsWithUserId = ({ postsList, userList }: postWithUserProps) => {
-  postsList.posts.map((post: PostItem) => {
+  const postsWithUserId = postsList.posts.map((post: PostItem) => {
     const findAuthor = userList.users.find((user: UserInfoType) => user.id === post.userId);
     if (!findAuthor) return post;
     return { ...post, findAuthor };
   });
+
+  return { postsWithUserId }
 }
