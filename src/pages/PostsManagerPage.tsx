@@ -1,8 +1,6 @@
-import { QueryClient } from "@tanstack/react-query"
-
-import { getPostsQueryKeys, useQueryGetPosts } from "../entities/post/model/queries/useQueryGetPosts"
+import { useQueryGetPosts } from "../entities/post/model/queries/useQueryGetPosts"
 import { useQueryGetTags } from "../entities/tag/model/hooks/useQueryGetTags"
-import { useLimit, useSkip } from "../entities/tag/model/store/PageParamProvider"
+import { useLimit, useSelectedTag, useSkip } from "../entities/tag/model/store/PageParamProvider"
 import { PostAddDialogOpenButton } from "../features/post/ui/PostAddDialogOpenButton"
 import { PostSearchForm } from "../features/post/ui/PostSearchForm"
 import { Card } from "../shared/ui"
@@ -14,63 +12,19 @@ import { SortOrderSelect } from "../widgets/sort-order-select/ui/SortOrderSelect
 import { TagSelect } from "../widgets/tag-select/ui/TagSelect"
 
 const PostsManager = () => {
-  // 상태 관리
-  // const [posts, setPosts] = useState<PostWithUser[]>([])
-  // const [total, setTotal] = useState(0)
-
-  const queryClient = new QueryClient()
-
   const skip = useSkip()
   const limit = useLimit()
+  const tag = useSelectedTag()
 
   usePageParam()
-  const { data, isLoading } = useQueryGetPosts({ limit, skip })
+
+  const { data, isLoading } = useQueryGetPosts({ limit, skip, tag })
   const { data: tagsData } = useQueryGetTags()
 
   const posts = data?.posts || []
   const total = data?.total || 0
 
   const tags = tagsData || []
-
-  // 태그별 게시물 가져오기
-  // Feature
-  // const fetchPostsByTag = async (tag: string) => {
-  //   if (!tag || tag === "all") {
-  //     // getPosts()
-  //     return
-  //   }
-
-  //   setLoading(true)
-
-  //   try {
-  //     const [postsResponse, usersResponse] = await Promise.all([fetchTag(tag), fetchUsernameAndImageOnly()])
-  //     const postsData = postsResponse
-  //     const usersData = usersResponse
-
-  //     if (!postsData || !usersData) return
-
-  //     const postsWithUsers = postsData.posts.map((post) => ({
-  //       ...post,
-  //       author: usersData.users.find((user) => user.id === post.userId),
-  //     }))
-
-  //     setPosts(postsWithUsers)
-  //     setTotal(postsData.total)
-  //   } catch (error) {
-  //     console.error("태그별 게시물 가져오기 오류:", error)
-  //   }
-  //   setLoading(false)
-  // }
-
-  // Feature
-  // useEffect(() => {
-  //   if (selectedTag) {
-  //     // fetchPostsByTag(selectedTag)
-  //   } else {
-  //     queryClient.invalidateQueries(getPostsQueryKeys["all"])
-  //   }
-  //   updateURL()
-  // }, [skip, limit, sortBy, sortOrder, selectedTag])
 
   return (
     <Card className="w-full max-w-6xl mx-auto">
