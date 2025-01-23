@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Plus } from "lucide-react"
-import { useLocation, useNavigate } from "react-router-dom"
 import { Button, Card, CardContent, CardHeader, CardTitle } from "../../shared/ui"
 import { CreatePost, Post } from "../../entities/post/model/types"
 import { Comment, NewComment } from "../../entities/comment/model/types"
@@ -20,18 +19,11 @@ import { CommentAddDialog } from "@/widgets/comment/ui/CommentAddDialog"
 import { CommentEditDialog } from "@/widgets/comment/ui/CommentEditDialog"
 import { PostDetailDialog } from "@/widgets/post/ui/PostDetailDialog"
 import { UserDialog } from "@/widgets/user/ui/UserDialog"
-import { usePostFilter } from "@/features/post/post-filter/model/store"
+import { usePostUrl } from "@/features/post/post-url/model"
 
 const PostsManager = () => {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const queryParams = new URLSearchParams(location.search)
-
   // 상태 관리
-  const [searchQuery, setSearchQuery] = useState(queryParams.get("search") || "")
   const [selectedPost, setSelectedPost] = useState<Post>()
-  const [sortBy, setSortBy] = useState(queryParams.get("sortBy") || "")
-  const [sortOrder, setSortOrder] = useState(queryParams.get("sortOrder") || "asc")
   const [showAddDialog, setShowAddDialog] = useState(false)
   const [showEditDialog, setShowEditDialog] = useState(false)
   const [newPost, setNewPost] = useState<CreatePost>(INITIAL_NEW_POST_STATE)
@@ -45,26 +37,26 @@ const PostsManager = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
 
   // 전역 상태 관리
-  const { posts, total, skip, limit, loading, setPosts, setTotal, setSkip, setLimit, setLoading, fetchPosts } =
-    usePost()
+  const { posts, total, loading, setPosts, setTotal, setLoading, fetchPosts, fetchPostsByTag } = usePost()
 
-  const { selectedTag, setSelectedTag } = usePostFilter()
-
-  // URL 업데이트 함수
-  const updateURL = () => {
-    const params = new URLSearchParams()
-    if (skip) params.set("skip", skip.toString())
-    if (limit) params.set("limit", limit.toString())
-    if (searchQuery) params.set("search", searchQuery)
-    if (sortBy) params.set("sortBy", sortBy)
-    if (sortOrder) params.set("sortOrder", sortOrder)
-    if (selectedTag) params.set("tag", selectedTag)
-    navigate(`?${params.toString()}`)
-  }
+  const {
+    skip,
+    limit,
+    searchQuery,
+    sortBy,
+    sortOrder,
+    selectedTag,
+    setSkip,
+    setLimit,
+    setSearchQuery,
+    setSortBy,
+    setSortOrder,
+    setSelectedTag,
+    updateURL,
+  } = usePostUrl()
 
   // 게시물 검색
   const searchPosts = async () => {
-    console.log("검색")
     if (!searchQuery) {
       fetchPosts()
       return
@@ -76,32 +68,6 @@ const PostsManager = () => {
       setTotal(data.total)
     } catch (error) {
       console.error("게시물 검색 오류:", error)
-    }
-    setLoading(false)
-  }
-
-  // 태그별 게시물 가져오기
-  const fetchPostsByTag = async (tag: string) => {
-    if (!tag || tag === "all") {
-      fetchPosts()
-      return
-    }
-    setLoading(true)
-    try {
-      const [postsData, usersData] = await Promise.all([
-        postApi.getPostsByTag(tag),
-        userApi.getUsers({ limit: 0, select: "username,image" }),
-      ])
-
-      const postsWithUsers = postsData.posts.map((post: Post) => ({
-        ...post,
-        author: usersData.users.find((user: User) => user.id === post.userId),
-      }))
-
-      setPosts(postsWithUsers)
-      setTotal(postsData.total)
-    } catch (error) {
-      console.error("태그별 게시물 가져오기 오류:", error)
     }
     setLoading(false)
   }
@@ -249,24 +215,24 @@ const PostsManager = () => {
     }
   }
 
-  useEffect(() => {
-    if (selectedTag) {
-      fetchPostsByTag(selectedTag)
-    } else {
-      fetchPosts()
-    }
-    updateURL()
-  }, [skip, limit, sortBy, sortOrder, selectedTag])
+  // useEffect(() => {
+  //   if (selectedTag) {
+  //     fetchPostsByTag(selectedTag)
+  //   } else {
+  //     fetchPosts()
+  //   }
+  //   updateURL()
+  // }, [skip, limit, sortBy, sortOrder, selectedTag])
 
-  useEffect(() => {
-    const params = new URLSearchParams(location.search)
-    setSkip(parseInt(params.get("skip") || "0"))
-    setLimit(parseInt(params.get("limit") || "10"))
-    setSearchQuery(params.get("search") || "")
-    setSortBy(params.get("sortBy") || "")
-    setSortOrder(params.get("sortOrder") || "asc")
-    setSelectedTag(params.get("tag") || "")
-  }, [location.search])
+  // useEffect(() => {
+  //   const params = new URLSearchParams(location.search)
+  //   setSkip(parseInt(params.get("skip") || "0"))
+  //   setLimit(parseInt(params.get("limit") || "10"))
+  //   setSearchQuery(params.get("search") || "")
+  //   setSortBy(params.get("sortBy") || "")
+  //   setSortOrder(params.get("sortOrder") || "asc")
+  //   setSelectedTag(params.get("tag") || "")
+  // }, [location.search])
 
   return (
     <Card className="w-full max-w-6xl mx-auto">

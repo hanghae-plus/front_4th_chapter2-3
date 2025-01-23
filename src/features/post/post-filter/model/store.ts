@@ -2,21 +2,20 @@ import { postApi } from "@/entities/post/api/postApi"
 import { Tag } from "@/entities/post/model/types"
 import { create } from "zustand"
 import { usePost } from "../../model/store"
+import { usePostUrlStore } from "../../post-url/model"
 
 interface usePostFilterProps {
   tags: Tag[]
-  selectedTag: string
-  setSelectedTag: (tag: string) => void
   fetchTags: () => void
   onChangeTag: (value: string) => void
 }
 
 export const usePostFilter = create<usePostFilterProps>((set) => {
   const fetchPostsByTag = usePost.getState().fetchPostsByTag
+  const setSelectedTag = usePostUrlStore.getState().setSelectedTag
+
   return {
     tags: [],
-    selectedTag: "",
-    setSelectedTag: (tag: string) => set({ selectedTag: tag }),
 
     fetchTags: async () => {
       try {
@@ -28,7 +27,7 @@ export const usePostFilter = create<usePostFilterProps>((set) => {
     },
 
     onChangeTag: (value: string) => {
-      set({ selectedTag: value })
+      setSelectedTag(value)
       fetchPostsByTag(value)
     },
   }
