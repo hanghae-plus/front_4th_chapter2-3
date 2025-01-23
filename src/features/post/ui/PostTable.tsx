@@ -1,11 +1,11 @@
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../../shared/ui';
-import usePostStore from '../model/use-post-store.ts';
 import UserCell from './UserCell.tsx';
 import TitleCell from './TitleCell.tsx';
 import LikeCell from './LikeCell.tsx';
 import PostDetailButton from './PostDetailButton.tsx';
 import PostEditButton from './PostEditButton.tsx';
 import DeletePostButton from './DeletePostButton.tsx';
+import { usePostStore } from '../model';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../../shared/ui';
 
 const PostTable = () => {
   const { posts } = usePostStore();

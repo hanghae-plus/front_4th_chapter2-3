@@ -1,6 +1,8 @@
-import { Button, Textarea } from '../../../shared/ui';
-import useCommentStore from '../../comment/model/use-comment-store.ts';
+import { useCommentStore } from '../model';
+
 import { postComment } from '../../../entities/comments/api';
+
+import { Button, Textarea } from '../../../shared/ui';
 
 const AddCommentForm = () => {
   const { newComment, setNewComment, setComments, setShowAddCommentDialog } = useCommentStore();

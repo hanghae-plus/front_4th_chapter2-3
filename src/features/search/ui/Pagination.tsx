@@ -6,7 +6,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../../../shared/ui';
-import useSearchStore from '../model/use-search-store.ts';
+import { useSearchStore } from '../model';
 
 const Pagination = () => {
   const { limit, setLimit, skip, setSkip, total } = useSearchStore();

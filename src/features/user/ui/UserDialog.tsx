@@ -1,6 +1,6 @@
+import { useUserStore } from '../model';
+import { Profile } from '../../../entities/user/ui';
 import { BaseDialog } from '../../../shared/ui';
-import { useUserStore } from '../model/use-user-store.ts';
-import Profile from '../../../entities/user/ui/Profile.tsx';
 
 const UserDialog = () => {
   const { showUserModal, setShowUserModal, selectedUser } = useUserStore();

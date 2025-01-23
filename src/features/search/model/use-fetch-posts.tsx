@@ -1,5 +1,6 @@
-import usePostStore from '../../post/model/use-post-store.ts';
-import useSearchStore from '../model/use-search-store.ts';
+import { useSearchStore } from './use-search-store.ts';
+import { usePostStore } from '../../post/model';
+
 import { getPosts } from '../../../entities/post/api';
 import { getUsers } from '../../../entities/user/api';
 import { findUserById } from '../../../entities/user/model';

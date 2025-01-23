@@ -1,5 +1,5 @@
 import { BaseDialog } from '../../../shared/ui';
-import useCommentStore from '../../comment/model/use-comment-store.ts';
+import { useCommentStore } from '../model';
 import AddCommentForm from './AddCommentForm.tsx';
 
 const AddCommentDialog = () => {

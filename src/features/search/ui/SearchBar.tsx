@@ -1,13 +1,15 @@
-import { Search } from 'lucide-react';
-import { Input, Select, SelectTrigger, SelectValue } from '../../../shared/ui';
-import useSearchStore from '../model/use-search-store.ts';
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import SelectSortOrder from './SelectSortOrder.tsx';
+import { Search } from 'lucide-react';
+
 import SelectSortBy from './SelectSortBy.tsx';
-import useFetchPostsByTag from './use-fetch-posts-by-tag.tsx';
-import useFetchPostsByQuery from './use-fetch-posts-by-query.tsx';
-import AllTagList from './AllTagList.tsx';
+import SelectSortOrder from './SelectSortOrder.tsx';
+
+import { useSearchStore, useFetchPostsByTag, useFetchPostsByQuery } from '../model';
+
+import { AllTagList } from '../../tag/ui';
+
+import { Input, Select, SelectTrigger, SelectValue } from '../../../shared/ui';
 
 const SearchBar = () => {
   const navigate = useNavigate();

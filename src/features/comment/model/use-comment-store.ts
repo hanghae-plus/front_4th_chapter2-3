@@ -39,6 +39,4 @@ const useCommentStoreCreator: StateCreator<CommentStoreProps> = (set) => ({
   setShowEditCommentDialog: (show) => set({ showEditCommentDialog: show }),
 });
 
-const useCommentStore = create(useCommentStoreCreator);
-
-export default useCommentStore;
+export const useCommentStore = create(useCommentStoreCreator);

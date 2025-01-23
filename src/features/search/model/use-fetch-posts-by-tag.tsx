@@ -1,10 +1,12 @@
-import useFetchPosts from './use-fetch-posts.tsx';
-import usePostStore from '../../post/model/use-post-store.ts';
-import useSearchStore from '../model/use-search-store.ts';
-import { getPostsByTag } from '../../../entities/post/api';
-import { getUsers } from '../../../entities/user/api';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+import useFetchPosts from './use-fetch-posts.tsx';
+import { useSearchStore } from './use-search-store.ts';
+import { usePostStore } from '../../post/model';
+
+import { getPostsByTag } from '../../../entities/post/api';
+import { getUsers } from '../../../entities/user/api';
 import { findUserById } from '../../../entities/user/model';
 
 const useFetchPostsByTag = () => {

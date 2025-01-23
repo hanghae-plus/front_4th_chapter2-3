@@ -46,6 +46,4 @@ const usePostStoreCreator: StateCreator<PostStoreProps> = (set) => ({
   setLoading: (loading) => set({ loading }),
 });
 
-const usePostStore = create(usePostStoreCreator);
-
-export default usePostStore;
+export const usePostStore = create(usePostStoreCreator);

@@ -64,6 +64,4 @@ const useSearchStoreCreator: StateCreator<SearchStoreProps> = (set, get) => ({
   },
 });
 
-const useSearchStore = create(useSearchStoreCreator);
-
-export default useSearchStore;
+export const useSearchStore = create(useSearchStoreCreator);
