@@ -1,6 +1,5 @@
 import { Edit2, MessageSquare, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react"
 import { Button, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../shared/ui"
-import { Post } from "../../types/posts"
 import { usePostsStore } from "../../stores/usePostsStore"
 
 export const PostsTable = () => {
@@ -8,13 +7,12 @@ export const PostsTable = () => {
     posts,
     searchQuery,
     selectedTag,
+    setSelectedTag,
+    fetchPosts,
     handlePostDetail,
     handlePostEdit,
     handlePostDelete,
-    handlePostLike,
-    handlePostDislike,
     handleUserDetail,
-    handleTagSelect,
   } = usePostsStore()
 
   const highlightText = (text: string, highlight: string) => {
@@ -29,6 +27,11 @@ export const PostsTable = () => {
         {parts.map((part, i) => (regex.test(part) ? <mark key={i}>{part}</mark> : <span key={i}>{part}</span>))}
       </span>
     )
+  }
+
+  const handleTagSelect = (tag: string) => {
+    setSelectedTag(tag)
+    fetchPosts(0, 10, tag, searchQuery)
   }
 
   return (
