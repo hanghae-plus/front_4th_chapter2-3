@@ -1,13 +1,13 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@shared/select/ui";
-import { usePostFilter } from "@features/postFilter/model/usePostFilter.ts";
-import { useTagStore } from "@core/store/useTagStore.ts";
+import { usePostFilter } from "@features/posts/model/usePostFilter.ts";
 import { usePostStore } from "@core/store/usePostStore.ts";
-import PostSearch from "@features/post-search/ui/PostSearch.tsx";
+import PostSearch from "@features/posts/ui/PostSearch.tsx";
+import { useFetchTagsQuery } from "@entities/post/api";
 
 function PostFilter() {
   const { filters } = usePostStore();
   const { handleSortChange, handleTagSelect } = usePostFilter();
-  const { tags } = useTagStore();
+  const { data: tags } = useFetchTagsQuery();
 
   return (
     <>
@@ -20,11 +20,12 @@ function PostFilter() {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">모든 태그</SelectItem>
-            {tags.map((tag) => (
-              <SelectItem key={tag.url} value={tag.slug}>
-                {tag.slug}
-              </SelectItem>
-            ))}
+            {tags &&
+              tags.map((tag) => (
+                <SelectItem key={tag.url} value={tag.slug}>
+                  {tag.slug}
+                </SelectItem>
+              ))}
           </SelectContent>
         </Select>
         <Select value={filters.sortBy} onValueChange={(sortBy) => handleSortChange(sortBy, filters.sortOrder)}>

@@ -1,4 +1,4 @@
-import { Post } from "@/types/post";
+import { Post } from "@/types/post.ts";
 
 export const sortPost = (posts: Post[], column: string, order: string): Post[] => {
   if (column === "none") return posts;

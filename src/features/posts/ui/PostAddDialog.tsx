@@ -13,7 +13,7 @@ const PostAddDialog = () => {
   const [newPost, setNewPost] = useState<NewPost>({ title: "", body: "", userId: 1 });
 
   const handleAddPost = (post: NewPost) => {
-    addPost(post, {
+    addPost.mutate(post, {
       onSuccess: () => {
         close();
       },

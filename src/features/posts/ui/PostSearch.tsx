@@ -1,6 +1,6 @@
 import { Search } from "lucide-react";
 import { Input } from "@shared/input/ui";
-import { usePostSearch } from "@features/post-search/model/usePostSearch.ts";
+import { usePostSearch } from "@features/posts/model/usePostSearch.ts";
 import { usePostStore } from "@core/store/usePostStore.ts";
 
 function PostSearch() {

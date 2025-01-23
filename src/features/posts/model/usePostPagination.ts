@@ -6,7 +6,6 @@ export const usePostPagination = () => {
   const [, setSearchParams] = useSearchParams();
 
   const setLimit = (limit: number) => {
-    setPagination({ limit });
     setSearchParams((params) => {
       params.set("limit", limit.toString());
       return params;
@@ -14,7 +13,6 @@ export const usePostPagination = () => {
   };
 
   const setSkip = (skip: number) => {
-    setPagination({ skip });
     setSearchParams((params) => {
       params.set("skip", skip.toString());
       return params;

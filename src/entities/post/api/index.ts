@@ -10,18 +10,18 @@ export const useFetchPostsQuery = (params: {
   skip: number;
 }) => {
   const { searchQuery, tag, limit, skip } = params;
+
   return useQuery<PostResponse>({
-    queryKey: ["posts", { searchQuery, tag, limit, skip }],
+    queryKey: ["posts"],
     queryFn: async () => {
       if (searchQuery) {
         return axios.get(`/api/posts/search?q=${searchQuery}`).then((res) => res.data);
       }
-      if (tag) {
+      if (tag && tag !== "all") {
         return axios.get(`/api/posts/tag/${tag}?limit=${limit}&skip=${skip}`).then((res) => res.data);
       }
       return axios.get(`/api/posts?limit=${limit}&skip=${skip}`).then((res) => res.data);
     },
-    enabled: !searchQuery || !tag,
   });
 };
 
@@ -59,7 +59,7 @@ export const useDeletePostQuery = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (postId: string) => axios.delete(`/api/posts/${postId}`).then((res) => res.data),
+    mutationFn: (postId: number) => axios.delete(`/api/posts/${postId}`).then((res) => res.data),
     meta: {
       invalidates: queryClient.invalidateQueries({ queryKey: ["posts"] }),
     },

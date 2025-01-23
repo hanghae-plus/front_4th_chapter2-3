@@ -1,12 +1,12 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@shared/select/ui";
 import { Button } from "@shared/button/ui";
-import { usePostPagination } from "@features/post-pagination/model/usePostPagination.ts";
+import { usePostPagination } from "@features/posts/model/usePostPagination.ts";
 import {
   calculateNextSkip,
   calculatePrevSkip,
   isFirstPage,
   isLastPage,
-} from "@features/post-pagination/lib/paginationCalculator.ts";
+} from "@features/posts/lib/paginationCalculator.ts";
 import { usePaginationStore } from "@core/store/usePaginationStore.ts";
 
 function PostPagination() {

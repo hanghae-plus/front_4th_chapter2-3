@@ -1,7 +1,7 @@
 import { CardHeader, CardTitle } from "@shared/card/ui";
 import { Button } from "@shared/button/ui";
 import { Plus } from "lucide-react";
-import PostAddDialog from "@features/ui/PostAddDialog.tsx";
+import PostAddDialog from "@features/posts/ui/PostAddDialog.tsx";
 import { useDialog } from "@shared/dialog/model/useDialog.ts";
 
 function PostManagementHeader() {
