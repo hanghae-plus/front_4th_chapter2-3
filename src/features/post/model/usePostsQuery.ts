@@ -2,6 +2,7 @@ import { useSearchParams } from "react-router-dom"
 import { SearchParams } from "@entities/post/types"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getPostsWithUserBySearch, getPostsWithUserByTag, getPostsWithUsers } from "@features/post/lib"
+import { postKeys } from "@entities/post/lib"
 
 export const usePostsQuery = () => {
   const [searchParams] = useSearchParams()
@@ -14,7 +15,7 @@ export const usePostsQuery = () => {
   const params: SearchParams = { skip, limit, sortBy, sortOrder }
 
   return useSuspenseQuery({
-    queryKey: ["/api/posts", { ...params, searchQuery, tag }],
+    queryKey: postKeys.fetch({ ...params, searchQuery, tag }).queryKey,
     queryFn: () => {
       if (searchQuery) {
         return getPostsWithUserBySearch(searchQuery)
