@@ -1,24 +1,12 @@
-import { Post } from "@/entities/post/model/types"
+import { usePostStore } from "@/features/post/model"
 import { Button, Dialog, DialogContent, DialogHeader, DialogTitle, Input, Textarea } from "@/shared/ui"
 
-interface PostEditDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  selectedPost: Post | null
-  setSelectedPost: (post: Post) => void
-  updatePost: () => void
-}
+export const PostEditDialog = () => {
+  const { selectedPost, showEditDialog, setSelectedPost, setShowEditDialog, updatePost } = usePostStore()
 
-export const PostEditDialog = ({
-  open,
-  onOpenChange,
-  selectedPost,
-  setSelectedPost,
-  updatePost,
-}: PostEditDialogProps) => {
   return (
     selectedPost && (
-      <Dialog open={open} onOpenChange={onOpenChange}>
+      <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>게시물 수정</DialogTitle>

@@ -27,9 +27,7 @@ const PostsManager = () => {
     fetchPostsByTag,
     searchPosts,
     setShowAddDialog,
-    updatePost,
     deletePost,
-    showEditDialog,
     setSelectedPost,
     setShowEditDialog,
   } = usePostStore()
@@ -119,13 +117,7 @@ const PostsManager = () => {
       <PostAddDialog />
 
       {/* 게시물 수정 대화상자 */}
-      <PostEditDialog
-        open={showEditDialog}
-        onOpenChange={setShowEditDialog}
-        selectedPost={selectedPost}
-        setSelectedPost={setSelectedPost}
-        updatePost={updatePost}
-      />
+      <PostEditDialog />
 
       {/* 댓글 추가 대화상자 */}
       <CommentAddDialog />
