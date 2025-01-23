@@ -54,8 +54,8 @@ const PostsManager = () => {
         </div>
       </CardContent>
 
-      <PostAddDialog />
       <PostEditDialog />
+      <PostAddDialog />
       <PostDetailDialog />
 
       <CommentAddDialog />

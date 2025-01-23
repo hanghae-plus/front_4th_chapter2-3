@@ -1,47 +1,43 @@
-import { Dialog, DialogContent, DialogTitle, Button, DialogHeader, Input, Textarea } from "@shared/ui";
-
-import { Post, updatePost } from "@entities/post";
-import { useUserQuery } from "@features/user";
-import { getPostWithUser } from "@features/post/model/post";
+import { Dialog, DialogHeader, DialogContent, DialogTitle, Button, Input, Textarea } from "@shared/ui";
 import { usePostStore } from "@features/post";
+import { addPost } from "@entities/post";
 
 const PostAddDialog = () => {
-  const { posts, selectedPost, showEditDialog, setPosts, setSelectedPost, setShowEditDialog } = usePostStore();
+  const { posts, newPost, showAddDialog, setPosts, setShowAddDialog, setNewPost } = usePostStore();
 
-  const { data: usersData } = useUserQuery();
+  const addPostAndUpdate = async () => {
+    const data = await addPost(newPost);
 
-  const editPostAndUpdate = async () => {
-    if (!selectedPost) return;
-
-    const data = await updatePost(selectedPost);
-
-    setPosts(
-      posts.map((post) =>
-        post.id === data.id ? { ...data, author: null } : getPostWithUser(post, usersData?.users ?? []),
-      ),
-    );
-    setShowEditDialog(false);
+    setPosts([data, ...posts]);
+    setShowAddDialog(false);
+    setNewPost({ title: "", body: "", userId: 1 });
   };
 
   return (
-    <Dialog open={showEditDialog && !!selectedPost} onOpenChange={setShowEditDialog}>
+    <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>게시물 수정</DialogTitle>
+          <DialogTitle>새 게시물 추가</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           <Input
             placeholder="제목"
-            value={selectedPost?.title || ""}
-            onChange={(e) => setSelectedPost({ ...(selectedPost as Post), title: e.target.value })}
+            value={newPost.title}
+            onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}
           />
           <Textarea
-            rows={15}
+            rows={30}
             placeholder="내용"
-            value={selectedPost?.body || ""}
-            onChange={(e) => setSelectedPost({ ...(selectedPost as Post), body: e.target.value })}
+            value={newPost.body}
+            onChange={(e) => setNewPost({ ...newPost, body: e.target.value })}
           />
-          <Button onClick={editPostAndUpdate}>게시물 업데이트</Button>
+          <Input
+            type="number"
+            placeholder="사용자 ID"
+            value={newPost.userId}
+            onChange={(e) => setNewPost({ ...newPost, userId: Number(e.target.value) })}
+          />
+          <Button onClick={addPostAndUpdate}>게시물 추가</Button>
         </div>
       </DialogContent>
     </Dialog>
