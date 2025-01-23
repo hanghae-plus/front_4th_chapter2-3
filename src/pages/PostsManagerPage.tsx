@@ -11,7 +11,7 @@ import { usePagination } from "../hooks/posts/usePagination"
 import { usePostsFilter } from "../hooks/posts/usePostsFilter"
 import { useComments } from "../hooks/posts/useComments"
 import { useUsers } from "../hooks/posts/useUsers"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
 const PostsManagerPage = () => {
   const {
@@ -28,10 +28,19 @@ const PostsManagerPage = () => {
     handlePostEdit,
     handlePostDelete,
     handlePostUpdate,
+    handlePostLike,
+    handlePostDislike,
   } = usePostsData()
 
+  const [currentFilters, setCurrentFilters] = useState({
+    tag: "all",
+    search: "",
+    sortBy: "none",
+    sortOrder: "asc",
+  })
+
   const { skip, limit, handleSkipChange, handleLimitChange } = usePagination((skip, limit) => {
-    fetchPosts(skip, limit)
+    fetchPosts(skip, limit, currentFilters.tag, currentFilters.search, currentFilters.sortBy, currentFilters.sortOrder)
   })
 
   const {
@@ -45,12 +54,13 @@ const PostsManagerPage = () => {
     handleTagChange,
     handleSortByChange,
     handleSortOrderChange,
-  } = usePostsFilter(() => {
-    fetchPosts(skip, limit)
+  } = usePostsFilter((tag, search, sortBy, sortOrder) => {
+    setCurrentFilters({ tag, search, sortBy, sortOrder })
+    fetchPosts(skip, limit, tag, search, sortBy, sortOrder)
   })
 
   useEffect(() => {
-    fetchPosts(skip, limit)
+    fetchPosts(skip, limit, currentFilters.tag, currentFilters.search, currentFilters.sortBy, currentFilters.sortOrder)
   }, [])
 
   const {
@@ -98,6 +108,8 @@ const PostsManagerPage = () => {
               onPostEdit={handlePostEdit}
               onPostDelete={handlePostDelete}
               onUserDetail={handleUserDetail}
+              onPostLike={handlePostLike}
+              onPostDislike={handlePostDislike}
             />
           )}
 

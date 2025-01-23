@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react"
 import { Tag } from "../../types/posts"
 
-export const usePostsFilter = (onFilterChange: () => void) => {
+export const usePostsFilter = (
+  onFilterChange: (tag: string, search: string, sortBy: string, sortOrder: string) => void,
+) => {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedTag, setSelectedTag] = useState("all")
   const [sortBy, setSortBy] = useState("none")
@@ -29,22 +31,22 @@ export const usePostsFilter = (onFilterChange: () => void) => {
   }
 
   const handleSearch = () => {
-    onFilterChange()
+    onFilterChange(selectedTag, searchQuery, sortBy, sortOrder)
   }
 
   const handleTagChange = (value: string) => {
     setSelectedTag(value)
-    onFilterChange()
+    onFilterChange(value, searchQuery, sortBy, sortOrder)
   }
 
   const handleSortByChange = (value: string) => {
     setSortBy(value)
-    onFilterChange()
+    onFilterChange(selectedTag, searchQuery, value, sortOrder)
   }
 
   const handleSortOrderChange = (value: string) => {
     setSortOrder(value)
-    onFilterChange()
+    onFilterChange(selectedTag, searchQuery, sortBy, value)
   }
 
   return {

@@ -9,12 +9,26 @@ export const usePostsData = () => {
   const [showPostDetailDialog, setShowPostDetailDialog] = useState(false)
   const [showEditDialog, setShowEditDialog] = useState(false)
 
-  const fetchPosts = async (skip: number, limit: number) => {
+  const fetchPosts = async (
+    skip: number,
+    limit: number,
+    tag?: string,
+    search?: string,
+    sortBy?: string,
+    sortOrder?: string,
+  ) => {
     setLoading(true)
     try {
-      console.log(`/api/posts?limit=${limit}&skip=${skip}`)
+      const params = new URLSearchParams({
+        limit: limit.toString(),
+        skip: skip.toString(),
+        ...(tag && tag !== "all" && { tag }),
+        ...(search && { search }),
+        ...(sortBy && sortBy !== "none" && { sortBy }),
+        ...(sortOrder && { sortOrder }),
+      })
 
-      const response = await fetch(`/api/posts?limit=${limit}&skip=${skip}`)
+      const response = await fetch(`/api/posts?${params}`)
       const data = await response.json()
       setPosts(data.posts)
       setTotal(data.total)
@@ -59,6 +73,14 @@ export const usePostsData = () => {
     }
   }
 
+  const handlePostLike = (post: Post) => {
+    // Implementation of handlePostLike
+  }
+
+  const handlePostDislike = (post: Post) => {
+    // Implementation of handlePostDislike
+  }
+
   return {
     posts,
     total,
@@ -73,5 +95,7 @@ export const usePostsData = () => {
     handlePostEdit,
     handlePostDelete,
     handlePostUpdate,
+    handlePostLike,
+    handlePostDislike,
   }
 }
