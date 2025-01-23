@@ -43,7 +43,7 @@ import {
 import { usePosts } from "../entities/post/lib/usePosts.ts";
 import { useComment } from "../entities/comment/lib/useComment.ts";
 import { useTags } from "../entities/tag/lib/useTags.ts";
-import { useQuery } from "../shared/hook/useQuery.ts";
+import { useParams } from "../shared/hook/useParams.ts";
 import { useInitializePosts } from "../shared/hook/useInitializePosts.ts";
 
 const PostsManager = () => {
@@ -87,7 +87,7 @@ const PostsManager = () => {
     handleFetchTags();
   }, [handleFetchTags]);
 
-  const { updateURL } = useQuery();
+  const { updateURL } = useParams();
 
   // usePost
   useEffect(() => {

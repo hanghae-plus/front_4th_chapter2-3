@@ -1,7 +1,7 @@
 import { useAtom } from "jotai";
 import { selectedTagAtom, tagsAtom } from "../../../app/store/atom";
 import { fetchTag } from "../api/tagApi";
-import { useQuery } from "../../../shared/hook/useQuery";
+import { useParams } from "../../../shared/hook/useParams";
 import { usePosts } from "../../post/lib/usePosts";
 import { useCallback } from "react";
 
@@ -10,7 +10,7 @@ export const useTags = () => {
   const [, setSelectedTag] = useAtom(selectedTagAtom);
 
   const { handleFetchPostsByTag } = usePosts();
-  const { updateURL } = useQuery();
+  const { updateURL } = useParams();
 
   // 태그 가져오기
   const handleFetchTags = useCallback(async () => {

@@ -12,7 +12,7 @@ import { PostAuthor } from "./PostAuthor";
 import { PostIcons } from "./PostIcons";
 import { PostReactions } from "./PostReactions";
 import { usePosts } from "../lib/usePosts";
-import { useQuery } from "../../../shared/hook/useQuery";
+import { useParams } from "../../../shared/hook/useParams";
 
 interface PostRowProps {
   post: Post;
@@ -26,7 +26,7 @@ export const PostRow: React.FC<PostRowProps> = ({ post }) => {
   const [searchQuery] = useAtom(searchQueryAtom);
 
   const { handleDeletePost } = usePosts();
-  const { updateURL } = useQuery();
+  const { updateURL } = useParams();
 
   return (
     <TableRow>

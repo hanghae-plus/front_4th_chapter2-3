@@ -11,7 +11,7 @@ import { useAtom } from "jotai";
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
-export const useQuery = () => {
+export const useParams = () => {
   const navigate = useNavigate();
 
   const [searchQuery] = useAtom(searchQueryAtom);
