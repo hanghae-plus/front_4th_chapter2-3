@@ -1,5 +1,5 @@
-import { putPost } from '@/entities/post/api';
 import { usePostStore } from '@/features/post';
+import { putPost } from '@/entities/post/api';
 import { BaseDialog, Button, Input, Textarea } from '@/shared/ui';
 
 const EditPostDialog = () => {

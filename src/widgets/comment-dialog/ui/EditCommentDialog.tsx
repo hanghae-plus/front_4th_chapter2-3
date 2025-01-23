@@ -1,5 +1,4 @@
-import { EditCommentForm } from '@/features/comment';
-import { useCommentStore } from '@/features/comment';
+import { EditCommentForm, useCommentStore } from '@/features/comment';
 import { BaseDialog } from '@/shared/ui';
 
 const EditCommentDialog = () => {

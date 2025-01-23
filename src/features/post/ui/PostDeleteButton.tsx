@@ -1,5 +1,5 @@
 import { Trash2 } from 'lucide-react';
-import { usePostStore } from '../index.tsx';
+import { usePostStore } from '@/features/post';
 import { deletePost } from '@/entities/post/api';
 import { Button } from '@/shared/ui';
 

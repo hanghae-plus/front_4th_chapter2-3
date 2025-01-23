@@ -1,5 +1,4 @@
-import PostTableRow from '@/features/post/ui/PostTableRow.tsx';
-import { usePostStore } from '@/features/post';
+import { usePostStore, PostTableRow } from '@/features/post';
 import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/shared/ui';
 
 const PostsTable = () => {

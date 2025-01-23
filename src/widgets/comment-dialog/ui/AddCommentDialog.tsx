@@ -1,5 +1,4 @@
-import { useCommentStore } from '@/features/comment';
-import { AddCommentForm } from '@/features/comment';
+import { useCommentStore, AddCommentForm } from '@/features/comment';
 import { BaseDialog } from '@/shared/ui';
 
 const AddCommentDialog = () => {

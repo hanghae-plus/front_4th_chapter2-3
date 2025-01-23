@@ -1,5 +1,4 @@
-import { useQueryStore } from './use-query-store.ts';
-import { usePostStore } from '../index.tsx';
+import { useQueryStore, usePostStore } from '@/features/post';
 
 import { getPosts } from '@/entities/post/api';
 import { getUsers } from '@/entities/user/api';

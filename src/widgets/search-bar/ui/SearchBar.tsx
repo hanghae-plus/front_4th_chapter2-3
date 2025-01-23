@@ -1,11 +1,8 @@
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Search } from 'lucide-react';
-
 import { useQueryStore, useFetchPostsByTag, useFetchPostsByQuery } from '@/features/post/model';
-
 import { AllTagList } from '@/features/tag';
-
 import { Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui';
 
 const SearchBar = () => {
