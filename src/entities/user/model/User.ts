@@ -1,6 +1,6 @@
 import { ResponseWithData } from '../../search/model';
 
-export interface User {
+export interface UserDetail {
   id: number;
   firstName: string;
   lastName: string;
@@ -71,5 +71,5 @@ export interface User {
   role: string;
 }
 
-export type UserThumbnail = Pick<User, 'id' | 'username' | 'image'>;
-export type UserThumbnails = ResponseWithData<UserThumbnail, 'users'>;
+export type User = Pick<UserDetail, 'id' | 'username' | 'image'>;
+export type Users = ResponseWithData<User, 'users'>;

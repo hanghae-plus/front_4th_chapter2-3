@@ -1,5 +1,5 @@
 import { ResponseWithData } from '../../search/model';
-import { UserThumbnail } from '../../user/model';
+import { User } from '../../user/model';
 
 export interface Post {
   id: number;
@@ -13,7 +13,7 @@ export interface Post {
     dislikes: number;
   };
   views?: number;
-  author?: UserThumbnail;
+  author?: User;
 }
 
 export type Posts = ResponseWithData<Post, 'posts'>;
