@@ -1,5 +1,5 @@
-import { useStore } from "../../app/store"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../shared/ui"
+import { useStore } from "../../../app/store"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../../shared/ui"
 
 /**
  * 사용자 모달

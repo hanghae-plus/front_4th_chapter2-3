@@ -1,6 +1,6 @@
-import { useStore } from "../../app/store"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../shared/ui/Dialog"
-import { Textarea, Button } from "../../shared/ui"
+import { useStore } from "../../../app/store"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../../shared/ui/Dialog"
+import { Textarea, Button } from "../../../shared/ui"
 
 /**
  * 댓글 수정 대화상자

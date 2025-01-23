@@ -1,6 +1,6 @@
 import React from "react"
-import { useStore } from "../../app/store"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, Input, Textarea, Button } from "../../shared/ui"
+import { useStore } from "../../../app/store"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, Input, Textarea, Button } from "../../../shared/ui"
 
 /**
  * 게시물 추가 대화상자

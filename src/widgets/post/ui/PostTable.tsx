@@ -1,7 +1,16 @@
-import { useStore } from "../../app/store"
+import { useStore } from "../../../app/store"
 import { Edit2, MessageSquare, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, highlightText, Button } from "../../shared/ui"
-import { useUpdateURL } from "../../shared/api"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+  highlightText,
+  Button,
+} from "../../../shared/ui"
+import { useUpdateURL } from "../../../shared/api"
 
 /**
  * 게시물 테이블 렌더링

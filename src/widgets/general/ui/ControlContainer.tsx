@@ -1,9 +1,9 @@
-import { useStore } from "../../app/store"
+import { useStore } from "../../../app/store"
 import { Search } from "lucide-react"
-import { Input, Pagination, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../shared/ui"
-import { PostTable } from "../../widgets/ui"
-import { searchPosts, fetchPostsByTag } from "../../features/post/api"
-import { useUpdateURL } from "../../shared/api"
+import { Input, Pagination, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../shared/ui"
+import { PostTable } from "../../post/ui"
+import { searchPosts, fetchPostsByTag } from "../../../features/post/api"
+import { useUpdateURL } from "../../../shared/api"
 
 export const ControlContainer = () => {
   const updateURL = useUpdateURL()

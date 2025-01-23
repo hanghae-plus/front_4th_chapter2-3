@@ -1,7 +1,7 @@
-import { useStore } from "../../app/store"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../shared/ui/Dialog"
-import { highlightText } from "../../shared/ui"
-import { Comments } from "./"
+import { useStore } from "../../../app/store"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../../shared/ui/Dialog"
+import { highlightText } from "../../../shared/ui"
+import { Comments } from "../../dialog/ui"
 
 /**
  * 게시물 상세 보기 대화상자자

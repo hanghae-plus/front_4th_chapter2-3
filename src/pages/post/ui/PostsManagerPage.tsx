@@ -1,19 +1,14 @@
 import { useEffect } from "react"
 import { useLocation } from "react-router-dom"
 import { Plus } from "lucide-react"
-import { useStore } from "../app/store"
-import { Button, Card, CardContent, CardHeader, CardTitle } from "../shared/ui"
-import { fetchTags, fetchPostsByTag, fetchPosts } from "../features/post/api"
-import { useUpdateURL } from "../shared/api"
-import {
-  AddPostDialog,
-  EditPostDialog,
-  EditCommentDialog,
-  AddCommentDialog,
-  ViewPostDialog,
-  ControlContainer,
-  UserModalDialog,
-} from "../widgets/ui"
+import { useStore } from "../../../app/store"
+import { Button, Card, CardContent, CardHeader, CardTitle } from "../../../shared/ui"
+import { fetchTags, fetchPostsByTag, fetchPosts } from "../../../features/post/api"
+import { useUpdateURL } from "../../../shared/api"
+import { AddPostDialog, EditPostDialog, ViewPostDialog } from "../../../widgets/post/ui"
+import { EditCommentDialog, AddCommentDialog } from "../../../widgets/dialog/ui"
+import { ControlContainer } from "../../../widgets/general/ui"
+import { UserModalDialog } from "../../../widgets/user/ui/UserModalDialog"
 
 const PostsManager = () => {
   const location = useLocation()

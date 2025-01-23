@@ -1,6 +1,6 @@
-import { useStore } from "../../app/store"
+import { useStore } from "../../../app/store"
 import { Edit2, Plus, ThumbsUp, Trash2 } from "lucide-react"
-import { Button, highlightText } from "../../shared/ui"
+import { Button, highlightText } from "../../../shared/ui"
 
 // 댓글 렌더링
 export const Comments = (postId) => {
