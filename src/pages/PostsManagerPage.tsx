@@ -24,15 +24,7 @@ import { Comment } from "./../entities/comment/model/types";
 import { highlightText } from "../shared/lib/handleHighlightText.tsx";
 import { UserModal } from "../entities/user/ui/UserModal.tsx";
 import { DialogAddPost } from "../entities/post/ui/DialogAddPost.tsx";
-import {
-  addNewPost,
-  deletePost,
-  getPosts,
-  getPostsByTag,
-  searchPost,
-  updatePost,
-} from "../entities/post/api/postApi.ts";
-import { getUser } from "../entities/user/api/userApi.ts";
+
 import { fetchTag } from "../entities/tag/api/tagApi.ts";
 import {
   addComments,
@@ -52,37 +44,41 @@ import {
   selectedUserAtom,
   selectedTagAtom,
   loadingAtom,
+  limitAtom,
+  skipAtom,
+  addDialogAtom,
+  editDialogAtom,
 } from "../app/store/atom.ts";
 import { useQueryParams } from "../shared/lib/useQueryParams.ts";
-
+import { usePosts } from "../entities/post/lib/usePosts.ts";
 const PostsManager = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
   // 전역 변수
-  const [total, setTotal] = useAtom(totalAtom);
-  const [posts, setPosts] = useAtom(postsAtom);
+  const [total] = useAtom(totalAtom);
+  const [posts] = useAtom(postsAtom);
   const [selectedPost, setSelectedPost] = useAtom(selectedPostAtom);
   const [searchQuery, setSearchQuery] = useAtom(searchQueryAtom);
   const [selectedComment, setSelectedComment] = useAtom(selectedCommentAtom);
   const [comments, setComments] = useAtom(commentsAtom);
   const [selectedUser, setSelectedUser] = useAtom(selectedUserAtom);
   const [selectedTag, setSelectedTag] = useAtom(selectedTagAtom);
-  const [loading, setLoading] = useAtom(loadingAtom);
+  const [loading] = useAtom(loadingAtom);
+  const [skip, setSkip] = useAtom(skipAtom);
+  // useState(parseInt(useQueryParams("skip") || "0"));
+  const [limit, setLimit] = useAtom(limitAtom);
+  // useState(parseInt(useQueryParams("limit") || "10"));
+  const [showEditDialog, setShowEditDialog] = useAtom(editDialogAtom);
+
+  const [showAddDialog, setShowAddDialog] = useAtom(addDialogAtom);
 
   // 상태 관리
-  const [newPost, setNewPost] = useState({ title: "", body: "", userId: 1 });
-
-  const [skip, setSkip] = useState(parseInt(useQueryParams("skip") || "0"));
-  const [limit, setLimit] = useState(parseInt(useQueryParams("limit") || "10"));
 
   const [sortBy, setSortBy] = useState(useQueryParams("sortBy") || "");
   const [sortOrder, setSortOrder] = useState(
     useQueryParams("sortOrder") || "asc"
   );
-
-  const [showAddDialog, setShowAddDialog] = useState(false);
-  const [showEditDialog, setShowEditDialog] = useState(false);
 
   const [tags, setTags] = useState<Tags[]>([]);
 
@@ -109,32 +105,6 @@ const PostsManager = () => {
     navigate(`?${params.toString()}`);
   };
 
-  // 게시물 가져오기
-  const handleFetchPost = async () => {
-    try {
-      setLoading(true);
-
-      const [postsData, usersData] = await Promise.all([
-        getPosts(limit, skip),
-        getUser(),
-      ]);
-
-      // postsData에서 posts 배열을 매핑하여 user 정보 추가
-      const postsWithUsers = postsData.posts.map((post: Post) => ({
-        ...post,
-        author: usersData.users.find((user: User) => user.id === post.userId),
-      }));
-
-      // 상태 업데이트
-      setPosts(postsWithUsers);
-      setTotal(postsData.total);
-    } catch (error) {
-      console.error("게시물 가져오기 오류:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   // 태그 가져오기
   const handleFetchTags = async () => {
     try {
@@ -145,90 +115,14 @@ const PostsManager = () => {
     }
   };
 
-  // 게시물 검색
-  const handleSearchPost = async () => {
-    if (!searchQuery) return handleFetchPost();
-
-    setLoading(true);
-
-    try {
-      const data = await searchPost(searchQuery);
-
-      setPosts(data.posts);
-      setTotal(data.total);
-    } catch (error) {
-      console.error("게시물 검색 오류:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // 태그별 게시물 가져오기
-  const fetchPostsByTag = async (tag: string) => {
-    if (!tag || tag === "all") return handleFetchPost();
-
-    setLoading(true);
-    try {
-      const [postsResponse, usersResponse] = await Promise.all([
-        getPostsByTag(tag),
-        getUser(),
-      ]);
-
-      const postsWithUsers = postsResponse.posts.map((post: Post) => ({
-        ...post,
-        author: usersResponse.users.find(
-          (user: User) => user.id === post.userId
-        ),
-      }));
-
-      setPosts(postsWithUsers);
-      setTotal(postsResponse.total);
-    } catch (error) {
-      console.error("태그별 게시물 가져오기 오류:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // 게시물 추가
-  const handleAddPost = async () => {
-    try {
-      const data = await addNewPost(newPost);
-
-      setPosts((prevPost) => [data, ...prevPost]);
-    } catch (error) {
-      console.error("게시물 추가 오류:", error);
-    } finally {
-      setShowAddDialog(false);
-      setNewPost({ title: "", body: "", userId: 1 });
-    }
-  };
-
-  // 게시물 업데이트
-  const handleUpdatePost = async () => {
-    try {
-      const data = await updatePost(selectedPost.id, selectedPost);
-
-      setPosts((prevPosts) =>
-        prevPosts.map((post) => (post.id === data.id ? data : post))
-      );
-    } catch (error) {
-      console.error("게시물 업데이트 오류:", error);
-    } finally {
-      setShowEditDialog(false);
-    }
-  };
-
-  // 게시물 삭제
-  const handleDeletePost = async (id: number) => {
-    try {
-      await deletePost(id);
-
-      setPosts((prevPosts) => prevPosts.filter((post) => post.id !== id));
-    } catch (error) {
-      console.error("게시물 삭제 오류:", error);
-    }
-  };
+  const {
+    handleFetchPost,
+    handleFetchPostsByTag,
+    handleSearchPost,
+    handleAddPost,
+    handleUpdatePost,
+    handleDeletePost,
+  } = usePosts();
 
   // 댓글 가져오기
   const handleFetchComments = async (postId: number) => {
@@ -343,7 +237,7 @@ const PostsManager = () => {
 
   useEffect(() => {
     if (selectedTag) {
-      fetchPostsByTag(selectedTag);
+      handleFetchPostsByTag(selectedTag);
     } else {
       handleFetchPost();
     }
@@ -381,7 +275,7 @@ const PostsManager = () => {
             tags={tags}
             onValueChange={(value: string) => {
               setSelectedTag(value);
-              fetchPostsByTag(value);
+              handleFetchPostsByTag(value);
               updateURL();
             }}
             sortBy={sortBy}
@@ -423,12 +317,8 @@ const PostsManager = () => {
 
       {/* 게시물 추가 대화상자 */}
       <DialogAddPost
-        newPost={newPost}
         onOpen={showAddDialog}
         onOpenChange={setShowAddDialog}
-        onSetNewPost={(field, value) =>
-          setNewPost((prev) => ({ ...prev, [field]: value }))
-        }
         onAddPost={handleAddPost}
       />
 

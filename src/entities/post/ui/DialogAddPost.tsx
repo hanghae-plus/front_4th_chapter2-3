@@ -8,28 +8,23 @@ import {
   Input,
   Button,
 } from "../../../shared/ui";
-import { Post } from "../model/types";
+import { NewPostProps } from "../model/types";
+import { useAtom } from "jotai";
+import { newPostAtom } from "../../../app/store/atom";
 
 interface DialogAddPostProps {
   onOpen: boolean;
   onOpenChange: Dispatch<SetStateAction<boolean>>;
-  newPost: {
-    id?: number;
-    title: string;
-    body: string;
-    userId: number;
-  };
-  onSetNewPost: (field: keyof Post, value: string | number) => void;
-  onAddPost: () => void;
+  onAddPost: (newPost: NewPostProps) => void;
 }
 
 export const DialogAddPost: React.FC<DialogAddPostProps> = ({
-  newPost,
   onOpen,
   onOpenChange,
-  onSetNewPost,
   onAddPost,
 }) => {
+  const [newPost, setNewPost] = useAtom(newPostAtom);
+
   return (
     <Dialog
       open={onOpen}
@@ -43,21 +38,23 @@ export const DialogAddPost: React.FC<DialogAddPostProps> = ({
           <Input
             placeholder="제목"
             value={newPost.title}
-            onChange={(e) => onSetNewPost("title", e.target.value)}
+            onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}
           />
           <Textarea
             rows={30}
             placeholder="내용"
             value={newPost.body}
-            onChange={(e) => onSetNewPost("body", e.target.value)}
+            onChange={(e) => setNewPost({ ...newPost, body: e.target.value })}
           />
           <Input
             type="number"
             placeholder="사용자 ID"
             value={newPost.userId}
-            onChange={(e) => onSetNewPost("userId", Number(e.target.value))}
+            onChange={(e) =>
+              setNewPost({ ...newPost, userId: parseInt(e.target.value) })
+            }
           />
-          <Button onClick={onAddPost}>게시물 추가</Button>
+          <Button onClick={() => onAddPost(newPost)}>게시물 추가</Button>
         </div>
       </DialogContent>
     </Dialog>

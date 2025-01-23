@@ -2,6 +2,7 @@ import { atom } from "jotai";
 import { Post } from "../../entities/post/model/types";
 import { Comment } from "../../entities/comment/model/types";
 import { User } from "../../entities/user/model/types";
+import { NewPostProps } from "../../entities/post/model/types";
 
 // 전체 게시물 개수
 export const totalAtom = atom(0);
@@ -39,3 +40,17 @@ export const searchQueryAtom = atom<string>("");
 
 // 로딩 상태
 export const loadingAtom = atom<boolean>(false);
+
+export const skipAtom = atom<number>(0);
+
+export const limitAtom = atom<number>(10);
+
+export const addDialogAtom = atom<boolean>(false);
+
+export const newPostAtom = atom<NewPostProps>({
+  title: "",
+  body: "",
+  userId: 1,
+});
+
+export const editDialogAtom = atom<boolean>(false);

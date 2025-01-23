@@ -22,3 +22,10 @@ export interface Posts {
   skip: number;
   limit: number;
 }
+
+export interface NewPostProps {
+  id?: number;
+  title: string;
+  body: string;
+  userId: number;
+}
