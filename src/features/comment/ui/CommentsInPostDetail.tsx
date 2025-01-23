@@ -1,16 +1,11 @@
 import { Button, HighlightText } from '../../../shared/ui';
 import { Edit2, Plus, ThumbsUp, Trash2 } from 'lucide-react';
+import useCommentStore from '../model/use-comment-store.ts';
 import { Comment } from '../../../entities/comments/model';
+import useSearchStore from '../../search/model/use-search-store.ts';
 import { deleteComment, patchComment } from '../../../entities/comments/api';
-import useCommentStore from '../../../features/comment/model/use-comment-store.ts';
-import { useSearchStore } from '../../../features/search/model';
 
-interface CommentListProps {
-  postId: number;
-}
-
-const CommentList = ({ postId }: CommentListProps) => {
-  const { searchQuery } = useSearchStore(['searchQuery']);
+const CommentsInPostDetail = ({ postId }: { postId: number }) => {
   const {
     comments,
     setComments,
@@ -26,6 +21,8 @@ const CommentList = ({ postId }: CommentListProps) => {
     'setShowAddCommentDialog',
     'setShowEditCommentDialog',
   ]);
+
+  const { searchQuery } = useSearchStore(['searchQuery']);
 
   // 댓글 추가
   const handleAddComment = (postId: number) => {
@@ -75,6 +72,7 @@ const CommentList = ({ postId }: CommentListProps) => {
       }
     }
   };
+
   return (
     <div className='mt-2'>
       <div className='flex items-center justify-between mb-2'>
@@ -112,4 +110,4 @@ const CommentList = ({ postId }: CommentListProps) => {
   );
 };
 
-export default CommentList;
+export default CommentsInPostDetail;
