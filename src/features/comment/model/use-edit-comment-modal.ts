@@ -8,41 +8,52 @@ import { commentQueries } from "../../../entities/comment/api/queries"
 
 import { Comment } from "../../../entities/comment/model/types"
 
-export const useAddCommentModal = (postId: number | undefined) => {
+export const useEditCommentModal = (postId: number | undefined) => {
   const { isOpen, open, close } = useModal()
+  const [commentId, setCommentId] = useState<number | undefined>(undefined)
   const [body, setBody] = useState<string | null>(null)
 
-  const addCommentMutation = useMutation({
-    ...commentMutations.addMutation(),
+  const updateCommentMutation = useMutation({
+    ...commentMutations.updateMutation(),
     onSuccess: (data) => {
-      if (!body || !postId) return
+      if (!postId || !commentId) return
+
       queryClient.setQueryData<{ comments: Comment[] }>(commentQueries.byPost(postId), (prev) => {
         if (!prev) return { comments: [] }
+
+        const updatedComments = prev.comments.find((comment) => comment.id === commentId)
+
+        if (!updatedComments) return prev
+
         return {
           comments: [
-            ...prev.comments,
-            { id: Date.now(), likes: 0, user: { id: 1, username: "현재 사용자", fullName: "Current User" }, ...data },
+            ...prev.comments.filter((comment) => comment.id !== commentId),
+            { ...updatedComments, body: data.body },
           ],
         }
       })
       onClose()
     },
     onError: (error) => {
-      console.error("댓글 추가 오류:", error)
+      console.error("댓글 업데이트 오류:", error)
     },
   })
+
+  const selectComment = (id: number, body: string) => {
+    setCommentId(id)
+    setBody(body)
+  }
 
   const handleChange = (value: string) => {
     setBody(value)
   }
 
   const handleSubmit = () => {
-    if (!body || !postId) return
+    if (!body || !commentId) return
 
-    addCommentMutation.mutateAsync({
+    updateCommentMutation.mutateAsync({
+      id: commentId,
       body: body,
-      postId: postId,
-      userId: 1,
     })
   }
 
@@ -58,6 +69,7 @@ export const useAddCommentModal = (postId: number | undefined) => {
     handleOpen: open,
     handleClose: onClose,
     handleSubmit,
-    isSubmitting: addCommentMutation.isPending,
+    selectComment,
+    isSubmitting: updateCommentMutation.isPending,
   }
 }

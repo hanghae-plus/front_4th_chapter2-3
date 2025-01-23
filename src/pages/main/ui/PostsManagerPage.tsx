@@ -17,12 +17,6 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
   Textarea,
 } from "../../../shared/ui"
 import { useMutation, useQuery } from "@tanstack/react-query"
@@ -36,18 +30,18 @@ import { postMutations } from "../../../entities/post/api/mutations"
 import { commentMutations } from "../../../entities/comment/api/mutations"
 import { useViewUserProfile } from "../../../features/view-user-profile/model/use-view-user-profile"
 import { UserProfileModal } from "../../../features/view-user-profile/ui/UserProfileModal"
-import { useAddPost } from "../../../features/add-post/model/use-add-post"
+import { useAddPostModal, useDetailPostModal, useEditPostModal } from "../../../features/post/model"
 import { PostAddModal } from "../../../features/add-post/ui/PostAddModal"
-import { useEditPost } from "../../../features/edit-post/model/use-edit-post"
+
 import { PostEditModal } from "../../../features/edit-post/ui/modal/PostEditModal"
 import { highlightText } from "../../../shared/lib/utils/highlight-text"
-import { usePostDetail } from "../../../features/view-post-detail/model/use-post-detail"
+
 import { PostDetailModal } from "../../../features/view-post-detail/ui/PostDetailModal"
 import { Pagination } from "../../../widgets/pagination/ui/Pagination"
 import { usePagination } from "../../../widgets/pagination/model/use-pagination"
 import { PostsTable } from "../../../widgets/posts-table/ui/PostsTable"
-import { useAddCommentModal } from "../../../features/comment/model"
-import { CommentAddModal } from "../../../features/comment/ui"
+import { useAddCommentModal, useEditCommentModal } from "../../../features/comment/model"
+import { CommentAddModal, CommentEditModal } from "../../../features/comment/ui"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -143,87 +137,6 @@ const PostsManager = () => {
     },
   })
 
-  const addCommentMutation = useMutation({
-    ...commentMutations.addMutation(),
-    onSuccess: (data) => {
-      if (!newCommentBody || !selectedPost) return
-      queryClient.setQueryData<{ comments: Comment[] }>(commentQueries.byPost(selectedPost?.id), (prev) => {
-        if (!prev) return { comments: [] }
-        return {
-          comments: [
-            ...prev.comments,
-            { id: Date.now(), likes: 0, user: { id: 1, username: "현재 사용자", fullName: "Current User" }, ...data },
-          ],
-        }
-      })
-    },
-    onError: (error) => {
-      console.error("댓글 추가 오류:", error)
-    },
-  })
-
-  const posts = searchQuery ? searchResults?.posts : selectedTag ? listByTag?.posts : list?.posts
-
-  const total = (searchQuery ? searchResults?.total : selectedTag ? listByTag?.total : list?.total) ?? 0
-
-  const isPostsLoading = isListLoading || isTagLoading || isSearchLoading
-
-  const postsWithUsers = useMemo(() => {
-    if (!posts || !users) return []
-
-    return posts.map((post) => {
-      return {
-        ...post,
-        author: users.find((user) => user.id === post.userId),
-      }
-    })
-  }, [posts, users])
-
-  const resetNewCommentBody = () => setNewCommentBody(null)
-
-  // 게시물 검색
-  const searchPosts = (value: string) => {
-    updateURLParams({
-      search: value || null,
-      skip: "0",
-    })
-  }
-
-  // 게시물 삭제
-  const deletePost = async (id: number) => {
-    await deletePostMutation.mutateAsync(id)
-  }
-
-  // 댓글 추가
-  const addComment = async () => {
-    console.log("addComment", newCommentBody, selectedPost)
-    if (!newCommentBody || !selectedPost?.id) return
-
-    await addCommentMutation.mutateAsync({
-      body: newCommentBody,
-      postId: selectedPost.id,
-      userId: 1,
-    })
-    setShowAddCommentDialog(false)
-    resetNewCommentBody()
-  }
-
-  // 댓글 업데이트
-  const updateComment = async () => {
-    try {
-      const response = await fetch(`/api/comments/${selectedComment.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ body: selectedComment.body }),
-      })
-      const data = await response.json()
-      setSelectedComment({ ...selectedComment, body: data.body })
-      setShowEditCommentDialog(false)
-    } catch (error) {
-      console.error("댓글 업데이트 오류:", error)
-    }
-  }
-
   // 댓글 삭제
   const deleteComment = async (id, postId) => {
     try {
@@ -251,6 +164,36 @@ const PostsManager = () => {
     }
   }
 
+  const posts = searchQuery ? searchResults?.posts : selectedTag ? listByTag?.posts : list?.posts
+
+  const total = (searchQuery ? searchResults?.total : selectedTag ? listByTag?.total : list?.total) ?? 0
+
+  const isPostsLoading = isListLoading || isTagLoading || isSearchLoading
+
+  const postsWithUsers = useMemo(() => {
+    if (!posts || !users) return []
+
+    return posts.map((post) => {
+      return {
+        ...post,
+        author: users.find((user) => user.id === post.userId),
+      }
+    })
+  }, [posts, users])
+
+  // 게시물 검색
+  const searchPosts = (value: string) => {
+    updateURLParams({
+      search: value || null,
+      skip: "0",
+    })
+  }
+
+  // 게시물 삭제
+  const deletePost = async (id: number) => {
+    await deletePostMutation.mutateAsync(id)
+  }
+
   const { isOpen, handleViewProfile, handleClose, user } = useViewUserProfile()
 
   const {
@@ -261,7 +204,7 @@ const PostsManager = () => {
     handleClose: closeAddPost,
     handleSubmit: submitAddPost,
     isSubmitting: isAddSubmitting,
-  } = useAddPost()
+  } = useAddPostModal()
 
   const {
     isOpen: isEditOpen,
@@ -271,7 +214,7 @@ const PostsManager = () => {
     handleChange: handleEditChange,
     handleSubmit: submitEditPost,
     isSubmitting: isEditSubmitting,
-  } = useEditPost()
+  } = useEditPostModal()
 
   const {
     isOpen: isDetailOpen,
@@ -279,15 +222,28 @@ const PostsManager = () => {
     comments,
     handleView: handleViewDetail,
     handleClose: closeDetail,
+  } = useDetailPostModal()
+
   const {
     isOpen: isAddCommentModalOpen,
-    body: newCommentBody,
+    body: newAddCommentBody,
     handleOpen: openAddCommentModal,
     handleClose: closeAddCommentModal,
-    handleChange: handleChangeNewCommentBody,
+    handleChange: handleChangeAddCommentBody,
     handleSubmit: submitAddComment,
     isSubmitting: isAddCommentSubmitting,
   } = useAddCommentModal(selectedPost?.id)
+
+  const {
+    isOpen: isEditCommentModalOpen,
+    body: newEditCommentBody,
+    handleOpen: openEditCommentModal,
+    handleClose: closeEditCommentModal,
+    handleChange: handleChangeEditCommentBody,
+    handleSubmit: submitEditComment,
+    isSubmitting: isEditCommentSubmitting,
+    selectComment: selectEditComment,
+  } = useEditCommentModal(selectedPost?.id)
 
   // 댓글 렌더링
   const renderComments = () => (
@@ -320,8 +276,8 @@ const PostsManager = () => {
                 variant="ghost"
                 size="sm"
                 onClick={() => {
-                  setSelectedComment(comment)
-                  setShowEditCommentDialog(true)
+                  selectEditComment(comment.id, comment.body)
+                  openEditCommentModal()
                 }}
               >
                 <Edit2 className="w-3 h-3" />
@@ -428,23 +384,6 @@ const PostsManager = () => {
         </div>
       </CardContent>
 
-      {/* 댓글 수정 대화상자 */}
-      <Dialog open={showEditCommentDialog} onOpenChange={setShowEditCommentDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>댓글 수정</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <Textarea
-              placeholder="댓글 내용"
-              value={selectedComment?.body || ""}
-              onChange={(e) => setSelectedComment({ ...selectedComment, body: e.target.value })}
-            />
-            <Button onClick={updateComment}>댓글 업데이트</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-
       <UserProfileModal isOpen={isOpen} onClose={handleClose} user={user} />
       <PostAddModal
         isOpen={isAddOpen}
@@ -474,10 +413,19 @@ const PostsManager = () => {
       <CommentAddModal
         isOpen={isAddCommentModalOpen}
         onClose={closeAddCommentModal}
-        body={newCommentBody}
-        onChange={handleChangeNewCommentBody}
+        body={newAddCommentBody}
+        onChange={handleChangeAddCommentBody}
         onSubmit={submitAddComment}
         isSubmitting={isAddCommentSubmitting}
+      />
+
+      <CommentEditModal
+        isOpen={isEditCommentModalOpen}
+        onClose={closeEditCommentModal}
+        body={newEditCommentBody}
+        onChange={handleChangeEditCommentBody}
+        onSubmit={submitEditComment}
+        isSubmitting={isEditCommentSubmitting}
       />
     </Card>
   )
