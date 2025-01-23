@@ -8,38 +8,14 @@ import { useUserStore } from "@/features/user/model/store"
 
 interface PostTableRowProps {
   post: Post
-  searchQuery: string
-  selectedTag: string
-  setSelectedTag: (tag: string) => void
-  updateURL: () => void
-  openPostDetail: (post: Post) => void
-  setSelectedPost: (post: Post) => void
-  setShowEditDialog: (flag: boolean) => void
-  deletePost: (id: number) => void
 }
 
-export const PostTableRow = ({
-  post,
-  searchQuery,
-  selectedTag,
-  setSelectedTag,
-  updateURL,
-  openPostDetail,
-  setSelectedPost,
-  setShowEditDialog,
-  deletePost,
-}: PostTableRowProps) => {
+export const PostTableRow = ({ post }: PostTableRowProps) => {
   const { openUserModal } = useUserStore()
   return (
     <TableRow key={post.id}>
       <TableCell>{post.id}</TableCell>
-      <PostTableTitle
-        post={post}
-        searchQuery={searchQuery}
-        selectedTag={selectedTag}
-        setSelectedTag={setSelectedTag}
-        updateURL={updateURL}
-      />
+      <PostTableTitle post={post} />
       <TableCell>
         <UserAvatar
           image={post.author?.image}
@@ -50,13 +26,7 @@ export const PostTableRow = ({
       <TableCell>
         <PostReaction post={post} />
       </TableCell>
-      <PostTableWork
-        post={post}
-        openPostDetail={openPostDetail}
-        setSelectedPost={setSelectedPost}
-        setShowEditDialog={setShowEditDialog}
-        deletePost={deletePost}
-      />
+      <PostTableWork post={post} />
     </TableRow>
   )
 }

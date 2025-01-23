@@ -1,36 +1,35 @@
 import { Post } from "@/entities/post/model/types"
 import { TableCell, Button } from "@/shared/ui"
 import { MessageSquare, Edit2, Trash2 } from "lucide-react"
+import { usePostStore } from "../../model"
+import { useCommentStore } from "@/features/comment/model"
 
 interface PostTableWorkProps {
   post: Post
-  openPostDetail: (post: Post) => void
-  setSelectedPost: (post: Post) => void
-  setShowEditDialog: (flag: boolean) => void
-  deletePost: (id: number) => void
 }
 
-export const PostTableWork = ({
-  post,
-  openPostDetail,
-  setSelectedPost,
-  setShowEditDialog,
-  deletePost,
-}: PostTableWorkProps) => {
+export const PostTableWork = ({ post }: PostTableWorkProps) => {
+  const { setSelectedPost, setShowEditDialog, deletePost, setShowPostDetailDialog } = usePostStore()
+  const { fetchComments } = useCommentStore()
+
+  const handlePostDetail = (post: Post) => {
+    setSelectedPost(post)
+    fetchComments(post.id)
+    setShowPostDetailDialog(true)
+  }
+
+  const handleEditPost = () => {
+    setSelectedPost(post)
+    setShowEditDialog(true)
+  }
+
   return (
     <TableCell>
       <div className="flex items-center gap-2">
-        <Button variant="ghost" size="sm" onClick={() => openPostDetail(post)}>
+        <Button variant="ghost" size="sm" onClick={() => handlePostDetail(post)}>
           <MessageSquare className="w-4 h-4" />
         </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => {
-            setSelectedPost(post)
-            setShowEditDialog(true)
-          }}
-        >
+        <Button variant="ghost" size="sm" onClick={handleEditPost}>
           <Edit2 className="w-4 h-4" />
         </Button>
         <Button variant="ghost" size="sm" onClick={() => deletePost(post.id)}>

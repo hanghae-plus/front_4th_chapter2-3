@@ -23,11 +23,13 @@ interface PostStore {
   setNewPost: (post: CreatePost) => void
   setSelectedPost: (post: Post) => void
 
-  // 다이얼로그 상태 임시로
+  // 다이얼로그 상태
   showAddDialog: boolean
   setShowAddDialog: (open: boolean) => void
   showEditDialog: boolean
   setShowEditDialog: (open: boolean) => void
+  showPostDetailDialog: boolean
+  setShowPostDetailDialog: (open: boolean) => void
 
   fetchPosts: () => void
   fetchPostsByTag: (tag: string) => void
@@ -46,12 +48,6 @@ export const usePostStore = create<PostStore>((set, get) => ({
   newPost: INITIAL_NEW_POST_STATE,
   selectedPost: null,
 
-  // 임시
-  showAddDialog: false,
-  setShowAddDialog: (open: boolean) => set({ showAddDialog: open }),
-  showEditDialog: false,
-  setShowEditDialog: (open: boolean) => set({ showEditDialog: open }),
-
   setPosts: (posts: Post[]) => set({ posts: posts }),
   setTotal: (total: number) => set({ total: total }),
   setSkip: (skip: number) => set({ skip: skip }),
@@ -59,6 +55,14 @@ export const usePostStore = create<PostStore>((set, get) => ({
   setLoading: (loading: boolean) => set({ loading: loading }),
   setNewPost: (post: CreatePost) => set({ newPost: post }),
   setSelectedPost: (post) => set({ selectedPost: post }),
+
+  // 임시
+  showAddDialog: false,
+  setShowAddDialog: (open: boolean) => set({ showAddDialog: open }),
+  showEditDialog: false,
+  setShowEditDialog: (open: boolean) => set({ showEditDialog: open }),
+  showPostDetailDialog: false,
+  setShowPostDetailDialog: (open: boolean) => set({ showPostDetailDialog: open }),
 
   // 게시물 가져오기
   fetchPosts: async () => {

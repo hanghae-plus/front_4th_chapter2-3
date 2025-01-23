@@ -2,17 +2,15 @@ import { Post } from "@/entities/post/model/types"
 import { PostTags } from "@/entities/post/ui/PostTags"
 import { TableCell } from "@/shared/ui"
 import HighlightText from "@/shared/ui/HighlightText"
+import { usePostUrlStore } from "../../post-url/model"
 
 interface PostTableTitleProps {
   post: Post
-  searchQuery: string
-  selectedTag: string
-  setSelectedTag: (tag: string) => void
-  updateURL: () => void
 }
 
-export const PostTableTitle = ({ post, searchQuery, selectedTag, setSelectedTag, updateURL }: PostTableTitleProps) => {
-  // 태그 선택
+export const PostTableTitle = ({ post }: PostTableTitleProps) => {
+  const { searchQuery, selectedTag, setSelectedTag, updateURL } = usePostUrlStore()
+
   const handleSelectTag = (tag: string) => {
     setSelectedTag(tag)
     updateURL()

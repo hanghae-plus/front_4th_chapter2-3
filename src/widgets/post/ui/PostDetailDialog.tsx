@@ -1,40 +1,25 @@
-import { Comment, NewComment } from "@/entities/comment/model/types"
-import { Post } from "@/entities/post/model/types"
-import { CommentBody } from "@/features/comment/ui/comment-list/CommentBody"
+import { useCommentStore } from "@/features/comment/model"
+import { Header, List } from "@/features/comment/ui/comment-list"
+import { usePostStore } from "@/features/post/model"
+import { usePostUrlStore } from "@/features/post/post-url/model"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/shared/ui"
 import HighlightText from "@/shared/ui/HighlightText"
 
-interface PostDetailDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  postId: number
-  selectedPost: Post
-  comments: Record<number, Comment[]>
-  searchQuery: string
-  setNewComment: (updater: (prev: NewComment) => NewComment) => void
-  setSelectedComment: (comment: Comment) => void
-  likeComment: (id: number, postId: number) => void
-  deleteComment: (id: number, postId: number) => void
-  setShowAddCommentDialog: (show: boolean) => void
-  setShowEditCommentDialog: (show: boolean) => void
-}
-
-export const PostDetailDialog = ({
-  open,
-  onOpenChange,
-  selectedPost,
-  comments,
-  searchQuery,
-  setNewComment,
-  setSelectedComment,
-  likeComment,
-  deleteComment,
-  setShowAddCommentDialog,
-  setShowEditCommentDialog,
-}: PostDetailDialogProps) => {
+export const PostDetailDialog = () => {
+  const { selectedPost, showPostDetailDialog, setShowPostDetailDialog } = usePostStore()
+  const { searchQuery } = usePostUrlStore()
+  const {
+    comments,
+    setSelectedComment,
+    setNewComment,
+    setShowAddCommentDialog,
+    likeComment,
+    deleteComment,
+    setShowEditCommentDialog,
+  } = useCommentStore()
   return (
     selectedPost && (
-      <Dialog open={open} onOpenChange={onOpenChange}>
+      <Dialog open={showPostDetailDialog} onOpenChange={setShowPostDetailDialog}>
         <DialogContent className="max-w-3xl">
           <DialogHeader>
             <DialogTitle>
@@ -45,7 +30,12 @@ export const PostDetailDialog = ({
             <p>
               <HighlightText text={selectedPost.body} highlight={searchQuery} />
             </p>
-            <CommentBody
+            <Header
+              postId={selectedPost.id}
+              setNewComment={setNewComment}
+              setShowAddCommentDialog={setShowAddCommentDialog}
+            />
+            <List
               postId={selectedPost.id}
               comments={comments}
               searchQuery={searchQuery}
@@ -53,8 +43,6 @@ export const PostDetailDialog = ({
               likeComment={likeComment}
               deleteComment={deleteComment}
               setShowEditCommentDialog={setShowEditCommentDialog}
-              setNewComment={setNewComment}
-              setShowAddCommentDialog={setShowAddCommentDialog}
             />
           </div>
         </DialogContent>

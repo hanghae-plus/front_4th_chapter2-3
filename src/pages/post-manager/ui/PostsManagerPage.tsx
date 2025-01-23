@@ -1,6 +1,4 @@
-import { useState } from "react"
 import { Card, CardContent } from "../../../shared/ui"
-import { Post } from "../../../entities/post/model/types"
 import { usePostStore } from "@/features/post/model/store"
 import { PostTable } from "@/widgets/post/ui/PostTable"
 import { PostPagination } from "@/widgets/post/ui/PostPagination"
@@ -12,16 +10,11 @@ import { CommentEditDialog } from "@/widgets/comment/ui/CommentEditDialog"
 import { PostDetailDialog } from "@/widgets/post/ui/PostDetailDialog"
 import { UserDialog } from "@/widgets/user/ui/UserDialog"
 import { usePostUrl } from "@/features/post/post-url/model"
-import { useCommentStore } from "@/features/comment/model/store"
 import { PostsManagerHeader } from "./PostsManagerHeader"
 
 const PostsManager = () => {
-  // 상태 관리
-  const [showPostDetailDialog, setShowPostDetailDialog] = useState(false)
-
   // 전역 상태 관리
-  const { total, loading, selectedPost, fetchPostsByTag, searchPosts, deletePost, setSelectedPost, setShowEditDialog } =
-    usePostStore()
+  const { total, loading, fetchPostsByTag, searchPosts } = usePostStore()
 
   const {
     skip,
@@ -38,24 +31,6 @@ const PostsManager = () => {
     setSelectedTag,
     updateURL,
   } = usePostUrl()
-
-  const {
-    comments,
-    fetchComments,
-    deleteComment,
-    likeComment,
-    setShowAddCommentDialog,
-    setShowEditCommentDialog,
-    setNewComment,
-    setSelectedComment,
-  } = useCommentStore()
-
-  // 게시물 상세 보기
-  const openPostDetail = (post: Post) => {
-    setSelectedPost(post)
-    fetchComments(post.id)
-    setShowPostDetailDialog(true)
-  }
 
   return (
     <Card className="w-full max-w-6xl mx-auto">
@@ -76,21 +51,7 @@ const PostsManager = () => {
             updateURL={updateURL}
           />
 
-          {loading ? (
-            <div className="flex justify-center p-4">로딩 중...</div>
-          ) : (
-            <PostTable
-              searchQuery={searchQuery}
-              selectedTag={selectedTag}
-              setSelectedTag={setSelectedTag}
-              updateURL={updateURL}
-              // openUserModal={openUserModal}
-              openPostDetail={openPostDetail}
-              setSelectedPost={setSelectedPost}
-              setShowEditDialog={setShowEditDialog}
-              deletePost={deletePost}
-            />
-          )}
+          {loading ? <div className="flex justify-center p-4">로딩 중...</div> : <PostTable />}
 
           <PostPagination limit={limit} skip={skip} total={total} setLimit={setLimit} setSkip={setSkip} />
         </div>
@@ -109,20 +70,7 @@ const PostsManager = () => {
       <CommentEditDialog />
 
       {/* 게시물 상세 보기 대화상자 */}
-      <PostDetailDialog
-        open={showPostDetailDialog}
-        onOpenChange={setShowPostDetailDialog}
-        postId={selectedPost?.id || 0}
-        selectedPost={selectedPost!}
-        comments={comments}
-        searchQuery={searchQuery}
-        setSelectedComment={setSelectedComment}
-        likeComment={likeComment}
-        deleteComment={deleteComment}
-        setShowEditCommentDialog={setShowEditCommentDialog}
-        setNewComment={setNewComment}
-        setShowAddCommentDialog={setShowAddCommentDialog}
-      />
+      <PostDetailDialog />
 
       {/* 사용자 모달 */}
       <UserDialog />

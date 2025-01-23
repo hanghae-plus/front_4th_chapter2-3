@@ -13,9 +13,10 @@ interface PostUrlStoreProps {
   setSortBy: (sortBy: string) => void
   setSortOrder: (sortOrder: string) => void
   setSelectedTag: (selectedTag: string) => void
+  updateURL: () => void
 }
 
-export const usePostUrlStore = create<PostUrlStoreProps>((set) => ({
+export const usePostUrlStore = create<PostUrlStoreProps>((set, get) => ({
   skip: 0,
   limit: 10,
   searchQuery: "",
@@ -29,4 +30,15 @@ export const usePostUrlStore = create<PostUrlStoreProps>((set) => ({
   setSortOrder: (sortOrder) => set({ sortOrder }),
   setSelectedTag: (selectedTag) => set({ selectedTag }),
 
+  updateURL: () => {
+    const { skip, limit, searchQuery, sortBy, sortOrder, selectedTag } = get()
+    const params = new URLSearchParams()
+    if (skip) params.set("skip", skip.toString())
+    if (limit) params.set("limit", limit.toString())
+    if (searchQuery) params.set("search", searchQuery)
+    if (sortBy) params.set("sortBy", sortBy)
+    if (sortOrder) params.set("sortOrder", sortOrder)
+    if (selectedTag) params.set("tag", selectedTag)
+    window.history.pushState({}, "", `?${params.toString()}`)
+  },
 }))

@@ -1,11 +1,10 @@
-import { useLocation, useNavigate } from "react-router-dom"
+import { useLocation } from "react-router-dom"
 import { usePostUrlStore } from "./store"
 import { useEffect } from "react"
 import { usePostStore } from "../../model"
 
 export const usePostUrl = () => {
   const location = useLocation()
-  const navigate = useNavigate()
 
   const {
     skip,
@@ -20,20 +19,10 @@ export const usePostUrl = () => {
     setSortBy,
     setSortOrder,
     setSelectedTag,
+    updateURL,
   } = usePostUrlStore()
 
   const { fetchPosts, fetchPostsByTag } = usePostStore()
-
-  const updateURL = () => {
-    const params = new URLSearchParams()
-    if (skip) params.set("skip", skip.toString())
-    if (limit) params.set("limit", limit.toString())
-    if (searchQuery) params.set("search", searchQuery)
-    if (sortBy) params.set("sortBy", sortBy)
-    if (sortOrder) params.set("sortOrder", sortOrder)
-    if (selectedTag) params.set("tag", selectedTag)
-    navigate(`?${params.toString()}`)
-  }
 
   useEffect(() => {
     if (selectedTag) {
