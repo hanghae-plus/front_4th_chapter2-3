@@ -1,10 +1,10 @@
 import { Post } from "@/entities/post/model/types"
-import { User } from "@/entities/user/model/types"
 import { TableRow, TableCell } from "@/shared/ui"
 import { PostTableTitle } from "./PostTableTitle"
 import { PostTableWork } from "./PostTableWork"
 import { PostReaction } from "@/entities/post/ui/PostReaction"
 import { UserAvatar } from "@/entities/user/ui/UserAvatar"
+import { useUserStore } from "@/features/user/model/store"
 
 interface PostTableRowProps {
   post: Post
@@ -12,7 +12,6 @@ interface PostTableRowProps {
   selectedTag: string
   setSelectedTag: (tag: string) => void
   updateURL: () => void
-  openUserModal: (user: Partial<User>) => void
   openPostDetail: (post: Post) => void
   setSelectedPost: (post: Post) => void
   setShowEditDialog: (flag: boolean) => void
@@ -25,13 +24,12 @@ export const PostTableRow = ({
   selectedTag,
   setSelectedTag,
   updateURL,
-  openUserModal,
   openPostDetail,
   setSelectedPost,
   setShowEditDialog,
   deletePost,
 }: PostTableRowProps) => {
-
+  const { openUserModal } = useUserStore()
   return (
     <TableRow key={post.id}>
       <TableCell>{post.id}</TableCell>

@@ -37,7 +37,7 @@ interface PostStore {
   deletePost: (id: Post["id"]) => void
 }
 
-export const usePost = create<PostStore>((set, get) => ({
+export const usePostStore = create<PostStore>((set, get) => ({
   posts: [],
   total: 0,
   loading: false,

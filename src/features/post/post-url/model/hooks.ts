@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom"
 import { usePostUrlStore } from "./store"
 import { useEffect } from "react"
-import { usePost } from "../../model"
+import { usePostStore } from "../../model"
 
 export const usePostUrl = () => {
   const location = useLocation()
@@ -22,7 +22,7 @@ export const usePostUrl = () => {
     setSelectedTag,
   } = usePostUrlStore()
 
-  const { fetchPosts, fetchPostsByTag } = usePost()
+  const { fetchPosts, fetchPostsByTag } = usePostStore()
 
   const updateURL = () => {
     const params = new URLSearchParams()

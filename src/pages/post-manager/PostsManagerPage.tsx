@@ -2,9 +2,7 @@ import { useState } from "react"
 import { Plus } from "lucide-react"
 import { Button, Card, CardContent, CardHeader, CardTitle } from "../../shared/ui"
 import { Post } from "../../entities/post/model/types"
-import { User } from "../../entities/user/model/types"
-import { userApi } from "@/entities/user/api/userApi"
-import { usePost } from "@/features/post/model/store"
+import { usePostStore } from "@/features/post/model/store"
 import { PostTable } from "@/widgets/post/ui/PostTable"
 import { PostPagination } from "@/widgets/post/ui/PostPagination"
 import { PostTableFilter } from "@/widgets/post/ui/PostTableFilter"
@@ -20,8 +18,6 @@ import { useCommentStore } from "@/features/comment/model/store"
 const PostsManager = () => {
   // 상태 관리
   const [showPostDetailDialog, setShowPostDetailDialog] = useState(false)
-  const [showUserModal, setShowUserModal] = useState(false)
-  const [selectedUser, setSelectedUser] = useState<User | null>(null)
 
   // 전역 상태 관리
   const {
@@ -40,7 +36,7 @@ const PostsManager = () => {
     showEditDialog,
     setSelectedPost,
     setShowEditDialog,
-  } = usePost()
+  } = usePostStore()
 
   const {
     skip,
@@ -82,18 +78,6 @@ const PostsManager = () => {
     setShowPostDetailDialog(true)
   }
 
-  // 사용자 모달 열기
-  const openUserModal = async (user: Partial<User>) => {
-    try {
-      const userData = await userApi.getUser(user.id!)
-
-      setSelectedUser(userData)
-      setShowUserModal(true)
-    } catch (error) {
-      console.error("사용자 정보 가져오기 오류:", error)
-    }
-  }
-
   return (
     <Card className="w-full max-w-6xl mx-auto">
       <CardHeader>
@@ -129,7 +113,7 @@ const PostsManager = () => {
               selectedTag={selectedTag}
               setSelectedTag={setSelectedTag}
               updateURL={updateURL}
-              openUserModal={openUserModal}
+              // openUserModal={openUserModal}
               openPostDetail={openPostDetail}
               setSelectedPost={setSelectedPost}
               setShowEditDialog={setShowEditDialog}
@@ -194,7 +178,7 @@ const PostsManager = () => {
       />
 
       {/* 사용자 모달 */}
-      <UserDialog selectedUser={selectedUser} open={showUserModal} onOpenChange={setShowUserModal} />
+      <UserDialog />
     </Card>
   )
 }
