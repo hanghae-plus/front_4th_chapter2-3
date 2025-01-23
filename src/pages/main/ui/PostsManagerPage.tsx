@@ -37,6 +37,7 @@ import { Pagination } from "../../../widgets/pagination/ui"
 import { PostsTable } from "../../../widgets/posts-table/ui"
 import { CommentList } from "../../../entities/comment/ui"
 import { useSearchPost, SearchPostForm } from "../../../features/post/search-post"
+import { TagFilter, useTagFilter } from "../../../features/post/filter-by-tag"
 
 export const PostsManagerPage = () => {
   const [searchParams] = useSearchParams()
@@ -64,6 +65,18 @@ export const PostsManagerPage = () => {
     sortOrder,
     searchQuery,
   })
+  const {
+    tags,
+    listByTag,
+    isLoading: isTagLoading,
+    handleTagChange,
+  } = useTagFilter({
+    skip,
+    limit,
+    sortBy,
+    sortOrder,
+    selectedTag,
+  })
 
   const { data: list, isLoading: isListLoading } = useQuery({
     ...postQueries.listQuery({
@@ -78,30 +91,11 @@ export const PostsManagerPage = () => {
     }),
   })
 
-  const { data: listByTag, isLoading: isTagLoading } = useQuery({
-    ...postQueries.listByTagQuery({
-      limit,
-      skip,
-      sortBy,
-      order: sortOrder as SortOrder,
-      tag: selectedTag,
-    }),
-    select: (data) => ({
-      posts: data.posts,
-      total: data.total,
-    }),
-    enabled: !!selectedTag,
-  })
-
   const { data: { users } = { users: [] } } = useQuery({
     ...userQueries.listQuery(),
     select: (data) => ({
       users: data.users,
     }),
-  })
-
-  const { data: tags = [] } = useQuery({
-    ...postQueries.tagQuery(),
   })
 
   const deletePostMutation = useMutation({
@@ -243,27 +237,7 @@ export const PostsManagerPage = () => {
             <div className="flex-1">
               <SearchPostForm searchQuery={searchQuery} onSearch={searchPosts} />
             </div>
-            <Select
-              value={selectedTag}
-              onValueChange={(value) =>
-                updateURLParams({
-                  tag: value === "all" ? null : value,
-                  skip: "0",
-                })
-              }
-            >
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="태그 선택" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">모든 태그</SelectItem>
-                {tags?.map((tag) => (
-                  <SelectItem key={tag.url} value={tag.slug}>
-                    {tag.slug}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <TagFilter selectedTag={selectedTag} tags={tags} onTagChange={handleTagChange} />
             <Select value={sortBy} onValueChange={(value) => updateURLParams({ sortBy: value || null })}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="정렬 기준" />
