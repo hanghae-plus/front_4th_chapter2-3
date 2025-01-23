@@ -46,6 +46,8 @@ import { PostDetailModal } from "../../../features/view-post-detail/ui/PostDetai
 import { Pagination } from "../../../widgets/pagination/ui/Pagination"
 import { usePagination } from "../../../widgets/pagination/model/use-pagination"
 import { PostsTable } from "../../../widgets/posts-table/ui/PostsTable"
+import { useAddCommentModal } from "../../../features/comment/model"
+import { CommentAddModal } from "../../../features/comment/ui"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -61,7 +63,7 @@ const PostsManager = () => {
   const selectedTag = queryParams.get("tag") || ""
 
   const [selectedComment, setSelectedComment] = useState<Comment | null>(null)
-  const [newCommentBody, setNewCommentBody] = useState<string | null>(null)
+  // const [newCommentBody, setNewCommentBody] = useState<string | null>(null)
   const [showAddCommentDialog, setShowAddCommentDialog] = useState(false)
   const [showEditCommentDialog, setShowEditCommentDialog] = useState(false)
   const { page, pageSize, onPageChange, onPageSizeChange } = usePagination()
@@ -277,7 +279,15 @@ const PostsManager = () => {
     comments,
     handleView: handleViewDetail,
     handleClose: closeDetail,
-  } = usePostDetail()
+  const {
+    isOpen: isAddCommentModalOpen,
+    body: newCommentBody,
+    handleOpen: openAddCommentModal,
+    handleClose: closeAddCommentModal,
+    handleChange: handleChangeNewCommentBody,
+    handleSubmit: submitAddComment,
+    isSubmitting: isAddCommentSubmitting,
+  } = useAddCommentModal(selectedPost?.id)
 
   // 댓글 렌더링
   const renderComments = () => (
@@ -287,8 +297,7 @@ const PostsManager = () => {
         <Button
           size="sm"
           onClick={() => {
-            // setNewComment((prev) => ({ ...prev, postId: selectedPostId }))
-            setShowAddCommentDialog(true)
+            openAddCommentModal()
           }}
         >
           <Plus className="w-3 h-3 mr-1" />
@@ -419,24 +428,6 @@ const PostsManager = () => {
         </div>
       </CardContent>
 
-      <Dialog open={showAddCommentDialog} onOpenChange={setShowAddCommentDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>새 댓글 추가</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <Textarea
-              placeholder="댓글 내용"
-              value={newCommentBody ?? ""}
-              onChange={(e) => setNewCommentBody(e.target.value)}
-            />
-            <Button onClick={addComment} disabled={addCommentMutation.isPending}>
-              {addCommentMutation.isPending ? "추가 중..." : "댓글 추가"}
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-
       {/* 댓글 수정 대화상자 */}
       <Dialog open={showEditCommentDialog} onOpenChange={setShowEditCommentDialog}>
         <DialogContent>
@@ -478,6 +469,15 @@ const PostsManager = () => {
         comments={comments ?? []}
         searchQuery={searchQuery}
         renderComments={renderComments}
+      />
+
+      <CommentAddModal
+        isOpen={isAddCommentModalOpen}
+        onClose={closeAddCommentModal}
+        body={newCommentBody}
+        onChange={handleChangeNewCommentBody}
+        onSubmit={submitAddComment}
+        isSubmitting={isAddCommentSubmitting}
       />
     </Card>
   )
