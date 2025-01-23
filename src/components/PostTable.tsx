@@ -12,9 +12,10 @@ import PostDetail from "./PostDetail"
 interface PostTableProps {
   posts: Post[]
   editPost: (form: postPostsRequest) => void
+  deletePost: (id: number) => void
 }
 function PostTable(props: PostTableProps) {
-  const { posts, editPost } = props
+  const { posts, editPost, deletePost } = props
   const { search, tag: tagItem, updateTag } = useSearchStore()
   const { openPostModal } = usePostModalStore()
 
@@ -59,6 +60,7 @@ function PostTable(props: PostTableProps) {
             <TableCell>
               <UserProfile id={post.userId} />
             </TableCell>
+            {/* 좋아요 */}
             <TableCell>
               <div className="flex items-center gap-2">
                 <ThumbsUp className="w-4 h-4" />
@@ -69,6 +71,7 @@ function PostTable(props: PostTableProps) {
             </TableCell>
             <TableCell>
               <div className="flex items-center gap-2">
+                {/* 게시물 상세 */}
                 <Button
                   variant="ghost"
                   size="sm"
@@ -81,6 +84,8 @@ function PostTable(props: PostTableProps) {
                 >
                   <MessageSquare className="w-4 h-4" />
                 </Button>
+
+                {/* 게시물 수정 */}
                 <Button
                   variant="ghost"
                   size="sm"
@@ -93,6 +98,8 @@ function PostTable(props: PostTableProps) {
                 >
                   <Edit2 className="w-4 h-4" />
                 </Button>
+
+                {/* 게시물 삭제 */}
                 <Button variant="ghost" size="sm" onClick={() => deletePost(post.id)}>
                   <Trash2 className="w-4 h-4" />
                 </Button>

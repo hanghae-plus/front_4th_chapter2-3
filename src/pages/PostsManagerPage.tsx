@@ -46,12 +46,6 @@ interface Comment {
   user?: User
 }
 
-interface NewPost {
-  body: string
-  title: string
-  userId: number
-}
-
 interface NewComment {
   body: string
   postId: number | null
@@ -67,14 +61,12 @@ const PostsManager = () => {
   // 상태 관리
   const [posts, setPosts] = useState<Post[]>([])
   const [total, setTotal] = useState<number>(0)
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null)
 
   const [comments, setComments] = useState<{ [postId: number]: Comment[] }>({})
   const [selectedComment, setSelectedComment] = useState<Comment | null>(null)
   const [newComment, setNewComment] = useState<NewComment>({ body: "", postId: null, userId: 1 })
   const [showAddCommentDialog, setShowAddCommentDialog] = useState<boolean>(false)
   const [showEditCommentDialog, setShowEditCommentDialog] = useState<boolean>(false)
-  const [showPostDetailDialog, setShowPostDetailDialog] = useState<boolean>(false)
 
   //search 값이 변경될때 마다 URL 업데이트 및 조회
   useEffect(() => {
@@ -154,18 +146,6 @@ const PostsManager = () => {
         },
       },
     )
-  }
-
-  // 게시물 삭제
-  const deletePost = async (id: number) => {
-    deletePostMutation(id, {
-      onSuccess: () => {
-        setPosts(posts.filter((post) => post.id !== id))
-      },
-      onError: (error) => {
-        console.error("게시물 삭제 오류:", error)
-      },
-    })
   }
 
   // 댓글 가져오기
@@ -254,15 +234,8 @@ const PostsManager = () => {
     }
   }
 
-  // 게시물 상세 보기
-  const openPostDetail = (post: Post) => {
-    setSelectedPost(post)
-    fetchComments(post.id)
-    setShowPostDetailDialog(true)
-  }
-
-  //게시물 추가 핸들러
-  const addPostSubmit = (form: postPostsRequest) => {
+  //게시물 추가
+  const addPost = (form: postPostsRequest) => {
     addPostMutation(form, {
       onSuccess: (data) => {
         setPosts([data, ...posts])
@@ -274,8 +247,8 @@ const PostsManager = () => {
     })
   }
 
-  //게시물 수정 핸들러
-  const editPostSubmit = (form: postPostsRequest) => {
+  //게시물 수정
+  const editPost = (form: postPostsRequest) => {
     const post = posts.find((p) => p.userId === form.userId)
     const newForm = { ...post!, ...form }
 
@@ -286,6 +259,18 @@ const PostsManager = () => {
       },
       onError: (error) => {
         console.error("게시물 업데이트 오류:", error)
+      },
+    })
+  }
+
+  // 게시물 삭제
+  const deletePost = async (id: number) => {
+    deletePostMutation(id, {
+      onSuccess: () => {
+        setPosts(posts.filter((post) => post.id !== id))
+      },
+      onError: (error) => {
+        console.error("게시물 삭제 오류:", error)
       },
     })
   }
@@ -356,7 +341,7 @@ const PostsManager = () => {
                 onClick={() => {
                   openPostModal({
                     title: "새 게시물 추가",
-                    children: <PostForm onSubmit={addPostSubmit} />,
+                    children: <PostForm onSubmit={addPost} />,
                   })
                 }}
               >
@@ -375,7 +360,7 @@ const PostsManager = () => {
             {postsLoading || tagsLoading ? (
               <div className="flex justify-center p-4">로딩 중...</div>
             ) : (
-              <PostTable posts={posts} editPost={editPostSubmit} />
+              <PostTable posts={posts} editPost={editPost} deletePost={deletePost} />
             )}
 
             {/* 페이지네이션 */}
@@ -383,19 +368,6 @@ const PostsManager = () => {
           </div>
         </CardContent>
       </Card>
-
-      {/* 게시물 상세 보기 대화상자 */}
-      <Dialog open={showPostDetailDialog} onOpenChange={setShowPostDetailDialog}>
-        <DialogContent className="max-w-3xl">
-          <DialogHeader>
-            <DialogTitle>{highlightText(selectedPost?.title || "", search)}</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <p>{highlightText(selectedPost?.body || "", search)}</p>
-            {selectedPost?.id !== undefined && renderComments(selectedPost.id)}
-          </div>
-        </DialogContent>
-      </Dialog>
 
       {/* 댓글 추가 대화상자 */}
       <Dialog open={showAddCommentDialog} onOpenChange={setShowAddCommentDialog}>
