@@ -3,7 +3,7 @@ import { create } from "zustand"
 interface PostModalStore {
   children: string | React.ReactNode
   visible: boolean
-  title?: string
+  title?: string | React.ReactNode
   desc?: string | React.ReactNode
   openPostModal: (data: PostModal, closeAction?: () => void) => void
   closePostModal: (key?: string) => void
@@ -11,7 +11,7 @@ interface PostModalStore {
 
 interface PostModal {
   visible?: boolean
-  title?: string
+  title?: string | React.ReactNode
   desc?: string | React.ReactNode
   children: string | React.ReactNode
 }

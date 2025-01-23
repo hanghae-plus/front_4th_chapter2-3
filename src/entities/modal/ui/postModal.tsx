@@ -4,23 +4,23 @@ import usePostModalStore from "../model/usePostModalStore"
 
 export const PostModal: FC = () => {
   const { visible, children, title, desc, closePostModal } = usePostModalStore()
-
+  console.log(title)
   return (
-    <>
-      <Dialog
-        open={visible}
-        onOpenChange={() => {
-          closePostModal()
-        }}
-      >
+    <Dialog
+      open={visible}
+      onOpenChange={() => {
+        closePostModal()
+      }}
+    >
+      <DialogContent>
         {title && (
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
           </DialogHeader>
         )}
 
-        <DialogContent>{children}</DialogContent>
-      </Dialog>
-    </>
+        {children}
+      </DialogContent>
+    </Dialog>
   )
 }

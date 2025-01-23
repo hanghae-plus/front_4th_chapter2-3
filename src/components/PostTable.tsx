@@ -7,6 +7,7 @@ import { Post, postPostsRequest } from "../entities/post/model/type"
 import { useSearchStore } from "../shared/model/useSearchStore"
 import usePostModalStore from "../entities/modal/model/usePostModalStore"
 import PostForm from "./PostForm"
+import PostDetail from "./PostDetail"
 
 interface PostTableProps {
   posts: Post[]
@@ -68,7 +69,16 @@ function PostTable(props: PostTableProps) {
             </TableCell>
             <TableCell>
               <div className="flex items-center gap-2">
-                <Button variant="ghost" size="sm" onClick={() => openPostDetail(post)}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    openPostModal({
+                      title: highlightText(post.title || "", search),
+                      children: <PostDetail post={post} />,
+                    })
+                  }}
+                >
                   <MessageSquare className="w-4 h-4" />
                 </Button>
                 <Button
