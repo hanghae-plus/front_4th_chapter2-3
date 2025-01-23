@@ -3,8 +3,9 @@ import Header from "./widgets/ui/Header.tsx"
 import Footer from "./widgets/ui/Footer.tsx"
 import PostsManagerPage from "./pages/PostsManagerPage.tsx"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { PostModal } from "./entities/modal/ui/postModal.tsx"
+
 import UserModal from "./features/user/ui/UserModal.tsx"
+import { PostModal } from "./entities/modal/ui/PostModal.tsx"
 
 const App = () => {
   const queryClient = new QueryClient()
