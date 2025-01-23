@@ -14,19 +14,9 @@ interface PostTableProps {
   setSelectedTag: (tag: string) => void
   updateURL: () => void
   selectedTag: string
-  setSelectedPost: (post: PostWithUser) => void
-  setShowEditDialog: (open: boolean) => void
 }
 
-export const PostTable = ({
-  posts,
-  searchQuery,
-  selectedTag,
-  setSelectedTag,
-  updateURL,
-  setSelectedPost,
-  setShowEditDialog,
-}: PostTableProps) => {
+export const PostTable = ({ posts, searchQuery, selectedTag, setSelectedTag, updateURL }: PostTableProps) => {
   return (
     <Table>
       <Table.Header>
@@ -57,11 +47,7 @@ export const PostTable = ({
             <Table.Cell>
               <div className="flex items-center gap-2">
                 <PostDetailOpenButton post={post} searchQuery={searchQuery} />
-                <PostEditDialogOpenButton
-                  post={post}
-                  setSelectedPost={setSelectedPost}
-                  setShowEditDialog={setShowEditDialog}
-                />
+                <PostEditDialogOpenButton post={post} />
                 <PostDeleteButton postId={post.id} />
               </div>
             </Table.Cell>

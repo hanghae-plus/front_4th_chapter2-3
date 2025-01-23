@@ -1,39 +1,29 @@
+import { useDialog } from "../../../app/model/DialogProvider"
 import { PostEditForm } from "../../../features/post/ui/PostEditForm"
 import { Dialog } from "../../../shared/ui"
 
-import type { PostWithUser } from "../../../entities/post/model/types/post"
+import type { Post } from "../../../entities/post/model/types/post"
 
 interface PostEditDialogProps {
   open: boolean
-  onOpenChange: (open: boolean) => void
-  selectedPost: PostWithUser
-  posts: PostWithUser[]
-  onChangeEditPosts: (posts: PostWithUser[]) => void
-  onShowEditDialog: (open: boolean) => void
-  onChangeSelectedPost: (...args: any) => void
+  post: Post
+  dialogId: number
 }
 
-export const PostEditDialog = ({
-  selectedPost,
-  posts,
-  onChangeSelectedPost,
-  onShowEditDialog,
-  onChangeEditPosts,
-  ...props
-}: PostEditDialogProps) => {
+export const PostEditDialog = ({ post, open, dialogId }: PostEditDialogProps) => {
+  const { closeDialog } = useDialog()
+
+  const handleCloseDialog = () => {
+    closeDialog(dialogId)
+  }
+
   return (
-    <Dialog {...props}>
+    <Dialog open={open} onOpenChange={handleCloseDialog}>
       <Dialog.Content>
         <Dialog.Header>
           <Dialog.Title>게시물 수정</Dialog.Title>
         </Dialog.Header>
-        <PostEditForm
-          posts={posts}
-          selectedPost={selectedPost}
-          onChangeSelectedPost={onChangeSelectedPost}
-          onShowEditDialog={onShowEditDialog}
-          onChangeEditPosts={onChangeEditPosts}
-        />
+        <PostEditForm post={post} onCloseDialog={handleCloseDialog} />
       </Dialog.Content>
     </Dialog>
   )

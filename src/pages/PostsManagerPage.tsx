@@ -8,13 +8,10 @@ import { PostAddDialogOpenButton } from "../features/post/ui/PostAddDialogOpenBu
 import { PostSearchForm } from "../features/post/ui/PostSearchForm"
 import { Card } from "../shared/ui"
 import { Pagination } from "../widgets/pagination/ui/Pagination"
-import { PostEditDialog } from "../widgets/post-edit-dialog/ui/PostEditDialog"
 import { PostTable } from "../widgets/post-table/ui/PostTable"
 import { SortBySelect } from "../widgets/sort-by-select/ui/SortBySelect"
 import { SortOrderSelect } from "../widgets/sort-order-select/ui/SortOrderSelect"
 import { TagSelect } from "../widgets/tag-select/ui/TagSelect"
-
-import type { PostWithUser } from "../entities/post/model/types/post"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -27,10 +24,8 @@ const PostsManager = () => {
   const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"))
   const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"))
   const [searchQuery, setSearchQuery] = useState(queryParams.get("search") || "")
-  const [selectedPost, setSelectedPost] = useState<PostWithUser | null>(null)
   const [sortBy, setSortBy] = useState(queryParams.get("sortBy") || "")
   const [sortOrder, setSortOrder] = useState(queryParams.get("sortOrder") || "asc")
-  const [showEditDialog, setShowEditDialog] = useState(false)
   const [loading, setLoading] = useState(false)
   const [tags, setTags] = useState([])
   const [selectedTag, setSelectedTag] = useState(queryParams.get("tag") || "")
@@ -145,8 +140,6 @@ const PostsManager = () => {
               setSelectedTag={setSelectedTag}
               updateURL={updateURL}
               selectedTag={selectedTag}
-              setSelectedPost={setSelectedPost}
-              setShowEditDialog={setShowEditDialog}
             />
           )}
 
@@ -154,17 +147,6 @@ const PostsManager = () => {
           <Pagination skip={skip} setSkip={setSkip} limit={limit} setLimit={setLimit} total={total} />
         </div>
       </Card.Content>
-
-      {/* 게시물 수정 대화상자 */}
-      <PostEditDialog
-        open={showEditDialog}
-        onOpenChange={setShowEditDialog}
-        selectedPost={selectedPost}
-        posts={posts}
-        onChangeEditPosts={(posts: any) => setPosts(posts)}
-        onShowEditDialog={(open: boolean) => setShowEditDialog(open)}
-        onChangeSelectedPost={(args: any) => setSelectedPost(args)}
-      />
     </Card>
   )
 }

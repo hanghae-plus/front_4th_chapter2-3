@@ -1,39 +1,39 @@
-import { Button, Input, Textarea } from "../../../shared/ui"
-import { useQueryEditPost } from "../model/hooks/useQueryEditPost"
+import { useState } from "react"
 
-import type { PostWithUser } from "../../../entities/post/model/types/post"
+import { Button, Input, Textarea } from "../../../shared/ui"
+import { useMutationUpdatePost } from "../model/hooks/useMutationEditPost"
+
+import type { Post } from "../../../entities/post/model/types/post"
 
 interface PostEditFormProps {
-  posts: PostWithUser[]
-  selectedPost: PostWithUser
-  onChangeSelectedPost: (...args: any) => void
-  onShowEditDialog: (open: boolean) => void
-  onChangeEditPosts: (posts: any[]) => void
+  post: Post
+  onCloseDialog: () => void
 }
 
-export const PostEditForm = ({
-  posts,
-  selectedPost,
-  onChangeSelectedPost,
-  onShowEditDialog,
-  onChangeEditPosts,
-}: PostEditFormProps) => {
-  const { onUpdatePost } = useQueryEditPost(selectedPost, posts, onShowEditDialog, onChangeEditPosts)
+export const PostEditForm = ({ post, onCloseDialog }: PostEditFormProps) => {
+  const [currentPost, setCurrentPost] = useState(post)
+
+  const { mutateAsync: updatePostMutation } = useMutationUpdatePost()
+
+  const handleUpdateButtonClick = async () => {
+    await updatePostMutation(currentPost)
+    onCloseDialog()
+  }
 
   return (
     <div className="space-y-4">
       <Input
         placeholder="제목"
-        value={selectedPost?.title || ""}
-        onChange={(e) => onChangeSelectedPost({ ...selectedPost, title: e.target.value })}
+        value={currentPost?.title || ""}
+        onChange={(e) => setCurrentPost({ ...currentPost, title: e.target.value })}
       />
       <Textarea
         rows={15}
         placeholder="내용"
-        value={selectedPost?.body || ""}
-        onChange={(e) => onChangeSelectedPost({ ...selectedPost, body: e.target.value })}
+        value={currentPost?.body || ""}
+        onChange={(e) => setCurrentPost({ ...currentPost, body: e.target.value })}
       />
-      <Button onClick={onUpdatePost}>게시물 업데이트</Button>
+      <Button onClick={handleUpdateButtonClick}>게시물 업데이트</Button>
     </div>
   )
 }
