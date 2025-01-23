@@ -20,6 +20,7 @@ import PTable from "../features/post/ui/PTable"
 import { useAddComment } from "../features/comment/model/useAddComment.query"
 import { useAddPost } from "../features/post/model/useAddPost.query"
 import { useGetPosts } from "../features/post/model/useGetPosts.query"
+import { useUpdatePost } from "../features/post/model/useUpdatePost.query"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -74,7 +75,12 @@ const PostsManager = () => {
     isLoading: isLoadingPosts,
     searchQuery,
     refetchGetPosts,
-    handlers: { handleInputChange, handleKeyDown, handleAddPost },
+    handlers: {
+      handleInputChange,
+      handleKeyDown,
+      handleAddPost,
+      handleUpdatePost,
+    },
   } = useGetPosts({
     limit,
     skip,
@@ -147,21 +153,12 @@ const PostsManager = () => {
   }
 
   // 게시물 업데이트
-  const updatePost = async () => {
-    try {
-      if (!selectedPost) throw new Error("게시물이 선택되지 않았습니다.")
-      const response = await fetch(`/api/posts/${selectedPost.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(selectedPost),
-      })
-      const data = await response.json()
-      // setPosts(posts.map((post) => (post.id === data.id ? data : post)))
+  const { updatePost } = useUpdatePost({
+    onSuccess: (post) => {
+      handleUpdatePost(post)
       setShowEditDialog(false)
-    } catch (error) {
-      console.error("게시물 업데이트 오류:", error)
-    }
-  }
+    },
+  })
 
   // 게시물 삭제
   const deletePost = async (id: Post["id"]) => {

@@ -59,13 +59,24 @@ const useGetPosts = ({ limit, skip }: GetPostsApiParams) => {
     }
   }
 
+  const handleUpdatePost = (post: Post) => {
+    setPosts((prevPosts) =>
+      prevPosts.map((prevPost) => (prevPost.id === post.id ? post : prevPost)),
+    )
+  }
+
   return {
     posts,
     total,
     searchQuery: inputValue,
     isLoading,
     refetchGetPosts: refetch,
-    handlers: { handleAddPost, handleInputChange, handleKeyDown },
+    handlers: {
+      handleAddPost,
+      handleUpdatePost,
+      handleInputChange,
+      handleKeyDown,
+    },
   }
 }
 
