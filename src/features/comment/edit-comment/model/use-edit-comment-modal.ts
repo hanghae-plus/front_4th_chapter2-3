@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import { commentMutations, commentQueries } from "../../../../entities/comment/api"
 import { Comment, useSelectedComment } from "../../../../entities/comment/model"
@@ -11,6 +11,12 @@ export const useEditCommentModal = (postId: number | undefined) => {
   const { selectedComment, setSelectedComment } = useSelectedComment()
   const { onClose } = useToggleState<ToggleKey>()
   const [body, setBody] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!selectedComment?.body) return
+
+    setBody(selectedComment.body)
+  }, [selectedComment])
 
   const updateCommentMutation = useMutation({
     ...commentMutations.updateMutation(),
