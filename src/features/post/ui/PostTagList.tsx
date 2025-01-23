@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useQueryStore } from '../../search/model';
+import { useQueryStore } from '../model';
 
 interface PostTagListProps {
   tags?: string[];

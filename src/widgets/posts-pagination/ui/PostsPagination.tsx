@@ -1,4 +1,4 @@
-import { useQueryStore } from '@/features/search/model';
+import { useQueryStore } from '@/features/post/model';
 import { Button, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui';
 
 export const PostsPagination = () => {

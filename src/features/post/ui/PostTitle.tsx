@@ -1,5 +1,5 @@
 import PostTagList from './PostTagList.tsx';
-import { useQueryStore } from '../../search/model';
+import { useQueryStore } from '../model';
 import { Post } from '@/entities/post/model';
 import { HighlightText } from '@/shared/ui';
 

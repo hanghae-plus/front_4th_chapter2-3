@@ -2,20 +2,27 @@ import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Search } from 'lucide-react';
 
-import SelectSortBy from '@/features/search/ui/SelectSortBy.tsx';
-import SelectSortOrder from '@/features/search/ui/SelectSortOrder.tsx';
-
-import { useQueryStore, useFetchPostsByTag, useFetchPostsByQuery } from '@/features/search/model';
+import { useQueryStore, useFetchPostsByTag, useFetchPostsByQuery } from '@/features/post/model';
 
 import { AllTagList } from '@/features/tag/ui';
 
-import { Input, Select, SelectTrigger, SelectValue } from '@/shared/ui';
+import { Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui';
 
 const SearchBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { searchQuery, setSearchQuery, selectedTag, setSelectedTag, initParams, updateParams } =
-    useQueryStore();
+  const {
+    searchQuery,
+    setSearchQuery,
+    selectedTag,
+    setSelectedTag,
+    initParams,
+    updateParams,
+    setSortBy,
+    sortBy,
+    setSortOrder,
+    sortOrder,
+  } = useQueryStore();
   const { fetchPostsByTag } = useFetchPostsByTag();
   const { fetchPostsByQuery } = useFetchPostsByQuery();
 
@@ -50,8 +57,26 @@ const SearchBar = () => {
         </SelectTrigger>
         <AllTagList />
       </Select>
-      <SelectSortBy />
-      <SelectSortOrder />
+      <Select value={sortBy} onValueChange={setSortBy}>
+        <SelectTrigger className='w-[180px]'>
+          <SelectValue placeholder='정렬 기준' />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value='none'>없음</SelectItem>
+          <SelectItem value='id'>ID</SelectItem>
+          <SelectItem value='title'>제목</SelectItem>
+          <SelectItem value='reactions'>반응</SelectItem>
+        </SelectContent>
+      </Select>
+      <Select value={sortOrder} onValueChange={setSortOrder}>
+        <SelectTrigger className='w-[180px]'>
+          <SelectValue placeholder='정렬 순서' />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value='asc'>오름차순</SelectItem>
+          <SelectItem value='desc'>내림차순</SelectItem>
+        </SelectContent>
+      </Select>
     </div>
   );
 };

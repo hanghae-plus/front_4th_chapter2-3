@@ -1,6 +1,6 @@
 import { CommentList } from '@/widgets/comment-list';
 import { usePostStore } from '@/features/post';
-import { useQueryStore } from '@/features/search/model';
+import { useQueryStore } from '@/features/post/model';
 import { BaseDialog, HighlightText } from '@/shared/ui';
 
 const PostDetailDialog = () => {

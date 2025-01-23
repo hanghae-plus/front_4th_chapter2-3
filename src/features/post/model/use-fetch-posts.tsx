@@ -1,5 +1,5 @@
 import { useQueryStore } from './use-query-store.ts';
-import { usePostStore } from '../../post';
+import { usePostStore } from '../index.ts';
 
 import { getPosts } from '@/entities/post/api';
 import { getUsers } from '@/entities/user/api';

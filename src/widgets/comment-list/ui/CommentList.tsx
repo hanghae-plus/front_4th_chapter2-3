@@ -1,6 +1,6 @@
 import { Edit2, Plus, ThumbsUp, Trash2 } from 'lucide-react';
 import { useCommentStore } from '@/features/comment';
-import { useQueryStore } from '@/features/search/model';
+import { useQueryStore } from '@/features/post/model';
 import { Comment, deleteComment, patchComment } from '@/entities/comments';
 import { Button, HighlightText } from '@/shared/ui';
 
