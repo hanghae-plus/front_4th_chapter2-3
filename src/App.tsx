@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 
 import UserModal from "./features/user/ui/UserModal.tsx"
 import { PostModal } from "./entities/modal/ui/PostModal.tsx"
+import { CommentModal } from "./entities/modal/ui/CommentModal.tsx"
 
 const App = () => {
   const queryClient = new QueryClient()
@@ -20,6 +21,7 @@ const App = () => {
           </main>
           <UserModal />
           <PostModal />
+          <CommentModal />
           <Footer />
         </div>
       </Router>
