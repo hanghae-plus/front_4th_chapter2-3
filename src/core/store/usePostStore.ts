@@ -3,8 +3,6 @@ import { Tag } from "@/types/tag.ts";
 import { Post } from "@/types/post.ts";
 
 export interface FilterState {
-  skip: number;
-  limit: number;
   searchQuery: string;
   sortBy: string;
   sortOrder: "asc" | "desc";
@@ -21,8 +19,6 @@ interface PostState {
 }
 
 const initialFilters: FilterState = {
-  skip: 0,
-  limit: 10,
   searchQuery: "",
   sortBy: "",
   sortOrder: "asc",

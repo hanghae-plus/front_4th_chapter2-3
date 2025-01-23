@@ -3,10 +3,10 @@ import axios from "axios";
 import { Post, PostResponse } from "@/types/post.ts";
 
 // 게시글에서 사용중인 태그 목록 가져오기
-export const useFetchPostsQuery = () => {
+export const useFetchPostsQuery = (limit: number, skip: number) => {
   return useQuery<PostResponse>({
-    queryKey: ["posts"],
-    queryFn: () => axios.get("/api/posts").then((res) => res.data),
+    queryKey: ["posts", limit, skip],
+    queryFn: () => axios.get(`/api/posts?limit=${limit}&skip=${skip}`).then((res) => res.data),
   });
 };
 

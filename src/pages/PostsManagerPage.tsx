@@ -3,6 +3,7 @@ import PostTable from "../widgets/post/PostTable.tsx";
 import PostFilter from "@features/postFilter/ui/PostFilter.tsx";
 import PostManagementHeader from "@widgets/post-management-header/ui/PostManagementHeader.tsx";
 import { useInitializePostStore } from "@pages/model/useInitializePost.ts";
+import PostPagination from "@features/post-pagination/ui/PostPagination.tsx";
 
 const PostsManager = () => {
   const { isLoading } = useInitializePostStore();
@@ -15,7 +16,7 @@ const PostsManager = () => {
           <PostFilter />
           {isLoading ? <div className="flex justify-center p-4">로딩 중...</div> : <PostTable />}
           {/* 페이지네이션 */}
-          {/*<Pagination skip={skip} limit={limit} setLimit={setLimit} setSkip={setSkip} total={total} />*/}
+          <PostPagination />
         </div>
       </CardContent>
     </Card>
