@@ -16,7 +16,6 @@ import {
 } from "../shared/ui";
 import { Post } from "../entities/post/model/types.ts";
 import { User } from "../entities/user/model/types.ts";
-import { Tags } from "../entities/tag/model/types.ts";
 import { PostItem, PostFilter, PostPagination } from "../entities/post/ui";
 
 import { CommentItem } from "../entities/comment/ui/CommentItem.tsx";
@@ -24,8 +23,6 @@ import { Comment } from "./../entities/comment/model/types";
 import { highlightText } from "../shared/lib/handleHighlightText.tsx";
 import { UserModal } from "../entities/user/ui/UserModal.tsx";
 import { DialogAddPost } from "../entities/post/ui/DialogAddPost.tsx";
-
-import { fetchTag } from "../entities/tag/api/tagApi.ts";
 
 import { useAtom } from "jotai";
 import {
@@ -48,6 +45,8 @@ import {
 import { useQueryParams } from "../shared/lib/useQueryParams.ts";
 import { usePosts } from "../entities/post/lib/usePosts.ts";
 import { useComment } from "../entities/comment/lib/useComment.ts";
+import { useTags } from "../entities/tag/lib/useTags.ts";
+
 const PostsManager = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -62,9 +61,7 @@ const PostsManager = () => {
   const [selectedTag, setSelectedTag] = useAtom(selectedTagAtom);
   const [loading] = useAtom(loadingAtom);
   const [skip, setSkip] = useAtom(skipAtom);
-  // useState(parseInt(useQueryParams("skip") || "0"));
   const [limit, setLimit] = useAtom(limitAtom);
-  // useState(parseInt(useQueryParams("limit") || "10"));
   const [showEditDialog, setShowEditDialog] = useAtom(editDialogAtom);
 
   const [showAddDialog, setShowAddDialog] = useAtom(addDialogAtom);
@@ -82,8 +79,6 @@ const PostsManager = () => {
     useQueryParams("sortOrder") || "asc"
   );
 
-  const [tags, setTags] = useState<Tags[]>([]);
-
   const [showPostDetailDialog, setShowPostDetailDialog] = useState(false);
   const [showUserModal, setShowUserModal] = useState(false);
 
@@ -99,15 +94,7 @@ const PostsManager = () => {
     navigate(`?${params.toString()}`);
   };
 
-  // 태그 가져오기
-  const handleFetchTags = async () => {
-    try {
-      const data = await fetchTag();
-      setTags(data);
-    } catch (error) {
-      console.error("태그 가져오기 오류:", error);
-    }
-  };
+  const { handleFetchTags } = useTags();
 
   const {
     handleFetchPost,
@@ -180,10 +167,8 @@ const PostsManager = () => {
         <div className="flex flex-col gap-4">
           {/* 검색 및 필터 컨트롤 */}
           <PostFilter
-            // onInputChange={(value: string) => setSearchQuery(value)}
             onKeyDown={handleSearchPost}
             selectedTag={selectedTag}
-            tags={tags}
             onValueChange={(value: string) => {
               setSelectedTag(value);
               handleFetchPostsByTag(value);

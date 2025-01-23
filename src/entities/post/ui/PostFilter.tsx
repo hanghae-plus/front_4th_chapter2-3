@@ -8,15 +8,13 @@ import {
   SelectItem,
 } from "../../../shared/ui";
 import { Search } from "lucide-react";
-import { Tags } from "../../tag/model/types";
 import { useAtom } from "jotai";
-import { searchQueryAtom } from "../../../app/store/atom";
+import { searchQueryAtom, tagsAtom } from "../../../app/store/atom";
 
 interface PostFilterProps {
   onKeyDown: () => void;
   selectedTag: string;
   onValueChange: (value: string) => void;
-  tags: Tags[];
   sortBy: string;
   onSelectChange: Dispatch<SetStateAction<string>>;
   sortOrder: string;
@@ -27,13 +25,13 @@ export const PostFilter: React.FC<PostFilterProps> = ({
   onKeyDown,
   selectedTag,
   onValueChange,
-  tags,
   sortBy,
   onSelectChange,
   sortOrder,
   onSelectOrderChange,
 }) => {
   const [SearchQuery, setSearchQuery] = useAtom<string>(searchQueryAtom);
+  const [tags] = useAtom(tagsAtom);
 
   return (
     <div className="flex gap-4">

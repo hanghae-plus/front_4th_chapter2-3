@@ -3,6 +3,7 @@ import { Post } from "../../entities/post/model/types";
 import { Comment } from "../../entities/comment/model/types";
 import { User } from "../../entities/user/model/types";
 import { NewPostProps } from "../../entities/post/model/types";
+import { Tags } from "../../entities/tag/model/types";
 
 // 전체 게시물 개수
 export const totalAtom = atom(0);
@@ -65,3 +66,6 @@ export const newCommentAtom = atom<Comment>({
 export const addCommentDialogAtom = atom<boolean>(false);
 
 export const editCommentDialogAtom = atom<boolean>(false);
+
+// tag
+export const tagsAtom = atom<Tags[]>([]);
