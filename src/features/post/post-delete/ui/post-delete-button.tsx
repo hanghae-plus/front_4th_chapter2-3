@@ -1,7 +1,6 @@
-import { usePostStore } from "@/entities/posts"
 import { Button } from "@/shared"
 import { Trash2 } from "lucide-react"
-import { deletePost } from "../api/delete-post"
+import { useMutationDeletePost } from "../model/use-mutation-delete-post"
 
 interface PostDeleteButtonProps {
   postId?: number
@@ -9,17 +8,11 @@ interface PostDeleteButtonProps {
 
 function PostDeleteButton(props: PostDeleteButtonProps) {
   const { postId } = props
-  const { posts, setPosts } = usePostStore()
-  console.log("🚀 ~ PostDeleteButton ~ posts:", posts)
 
-  const handleDeletePost = async () => {
-    if (!postId) return
-    await deletePost(postId)
-    setPosts(posts.filter((post) => post.id !== postId))
-  }
+  const { deletePostMutation, isPending } = useMutationDeletePost({ postId })
 
   return (
-    <Button variant="ghost" size="sm" onClick={handleDeletePost}>
+    <Button variant="ghost" size="sm" onClick={() => deletePostMutation()} disabled={isPending}>
       <Trash2 className="w-4 h-4" />
     </Button>
   )

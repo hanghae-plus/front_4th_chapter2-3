@@ -19,4 +19,9 @@ interface Reactions {
   dislikes: number
 }
 
-export type { Author, Post, Reactions }
+interface PostsResponse {
+  posts: Post[]
+  total: number
+}
+
+export type { Author, Post, PostsResponse, Reactions }

@@ -3,6 +3,10 @@ import { Author, type Post } from "../model/types"
 interface FetchPostsParams {
   limit: number
   skip: number
+  searchQuery?: string
+  sortBy?: string
+  sortOrder?: string
+  tag?: string
 }
 
 interface FetchPostsResponse {
@@ -11,11 +15,18 @@ interface FetchPostsResponse {
 }
 
 async function fetchPostsWithUsers(props: FetchPostsParams): Promise<FetchPostsResponse> {
-  const { limit, skip } = props
+  const { limit, skip, searchQuery, sortBy, sortOrder, tag } = props
 
   try {
+    const postsEndpoint =
+      tag && tag !== "all"
+        ? `/api/posts/tag/${tag}?limit=${limit}&skip=${skip}`
+        : searchQuery
+          ? `/api/posts/search?q=${searchQuery}`
+          : `/api/posts?limit=${limit}&skip=${skip}&&sortBy=${sortBy}&sortOrder=${sortOrder}`
+
     const [postsResponse, usersResponse] = await Promise.all([
-      fetch(`/api/posts?limit=${limit}&skip=${skip}`),
+      fetch(postsEndpoint),
       fetch("/api/users?limit=0&select=username,image"),
     ])
 
@@ -36,5 +47,4 @@ async function fetchPostsWithUsers(props: FetchPostsParams): Promise<FetchPostsR
     throw error
   }
 }
-
 export { fetchPostsWithUsers }

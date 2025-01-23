@@ -1,21 +1,20 @@
-import { Table } from "@/shared"
+import { Table, TableHead, TableHeader, TableRow } from "@/shared"
 
-import { Post } from "@/entities/posts"
-import { PostsTableBody } from "./posts-table-body"
-import { PostsTableHeader } from "./posts-table-header"
+import { PostList } from "@/features/post/post-list"
 
-interface PostsTableProps {
-  posts: Post[]
-}
-
-function PostsTable(props: PostsTableProps) {
-  const { posts } = props
-  console.log("🚀 ~ PostsTable ~ posts:", posts)
-
+function PostsTable() {
   return (
     <Table>
-      <PostsTableHeader />
-      <PostsTableBody posts={posts} />
+      <TableHeader>
+        <TableRow>
+          <TableHead className="w-[50px]">ID</TableHead>
+          <TableHead>제목</TableHead>
+          <TableHead className="w-[150px]">작성자</TableHead>
+          <TableHead className="w-[150px]">반응</TableHead>
+          <TableHead className="w-[150px]">작업</TableHead>
+        </TableRow>
+      </TableHeader>
+      <PostList />
     </Table>
   )
 }
