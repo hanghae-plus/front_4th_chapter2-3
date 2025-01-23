@@ -57,13 +57,13 @@ const PostsManager = () => {
     <>
       <PostsManagerWidget
         loading={loading}
-        posts={posts}
+        posts={posts || []}
         total={total}
         skip={skip}
         limit={limit}
         searchQuery={searchQuery}
         selectedTag={selectedTag}
-        tags={tags}
+        tags={tags || []}
         sortBy={sortBy}
         sortOrder={sortOrder}
         onAddClick={() => setShowAddDialog(true)}

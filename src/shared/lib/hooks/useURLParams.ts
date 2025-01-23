@@ -1,58 +1,66 @@
-import { useEffect, useCallback } from "react"
+// hooks/useUrlParams.ts
+import { useEffect } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
+import { usePostStore } from "@features/post/model/stores"
 
-interface URLParamsConfig<T extends Record<string, string | number>> {
-  params: T
-  setters: {
-    [K in keyof T]: (value: T[K]) => void
-  }
-  defaults?: Partial<T>
+interface UrlParams {
+  skip: number
+  limit: number
+  searchQuery: string
+  sortBy: string
+  sortOrder: "asc" | "desc"
+  selectedTag: string
 }
 
-export const useURLParams = <T extends Record<string, string | number>>(config: URLParamsConfig<T>) => {
+export const useUrlParams = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const { params, setters, defaults = {} } = config
+  const store = usePostStore()
 
-  // URL 파라미터 -> 상태 동기화
-  const syncFromURL = useCallback(() => {
-    const urlParams = new URLSearchParams(location.search)
-    type Keys = keyof typeof params
-    ;(Object.keys(params) as Keys[]).forEach((key: Keys) => {
-      const value = urlParams.get(key as string)
-      const defaultValue = (defaults as T)[key]
-      const currentParam = params[key]
+  const updateURL = (params: UrlParams) => {
+    const searchParams = new URLSearchParams()
+    if (params.skip) searchParams.set("skip", params.skip.toString())
+    if (params.limit) searchParams.set("limit", params.limit.toString())
+    if (params.searchQuery) searchParams.set("search", params.searchQuery)
+    if (params.sortBy) searchParams.set("sortBy", params.sortBy)
+    if (params.sortOrder) searchParams.set("sortOrder", params.sortOrder)
+    if (params.selectedTag) searchParams.set("tag", params.selectedTag)
+    navigate(`?${searchParams.toString()}`)
+  }
 
-      if (typeof currentParam === "number") {
-        const numberValue = value ? Number(value) : ((defaultValue as number) ?? 0)
-        setters[key](numberValue as T[Keys])
-      } else {
-        const stringValue = value ?? (defaultValue as string) ?? ""
-        setters[key](stringValue as T[Keys])
-      }
-    })
-  }, [location.search, params, setters, defaults])
+  const syncUrlToStore = () => {
+    const params = new URLSearchParams(location.search)
+    const urlParams: UrlParams = {
+      skip: parseInt(params.get("skip") || "0"),
+      limit: parseInt(params.get("limit") || "10"),
+      searchQuery: params.get("search") || "",
+      sortBy: params.get("sortBy") || "",
+      sortOrder: (params.get("sortOrder") || "asc") as "asc" | "desc",
+      selectedTag: params.get("tag") || ""
+    }
 
-  // 상태 -> URL 동기화
-  const updateURL = useCallback(() => {
-    const urlParams = new URLSearchParams()
-    Object.entries(params).forEach(([key, value]) => {
-      if (value !== undefined && value !== "") {
-        urlParams.set(key, String(value))
-      }
-    })
-    navigate(`?${urlParams.toString()}`)
-  }, [params, navigate])
+    store.setSkip(urlParams.skip)
+    store.setLimit(urlParams.limit)
+    store.setSearchQuery(urlParams.searchQuery)
+    store.setSortBy(urlParams.sortBy)
+    store.setSortOrder(urlParams.sortOrder)
+    store.setSelectedTag(urlParams.selectedTag)
+  }
 
-  // URL 변경 시 상태 업데이트
   useEffect(() => {
-    syncFromURL()
-  }, [syncFromURL])
+    syncUrlToStore()
+  }, [location.search])
 
-  // 상태 변경 시 URL 업데이트
-  useEffect(() => {
-    updateURL()
-  }, [updateURL])
+  const handleUpdateUrl = () => {
+    updateURL({
+      skip: store.skip,
+      limit: store.limit,
+      searchQuery: store.searchQuery,
+      sortBy: store.sortBy,
+      sortOrder: store.sortOrder,
+      selectedTag: store.selectedTag
+    })
+  }
 
-  return { updateURL }
+  return { handleUpdateUrl }
 }
