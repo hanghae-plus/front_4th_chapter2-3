@@ -6,3 +6,4 @@ export { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 export { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./table"
 export { Textarea } from "./textarea"
 export { Modal } from "./modal"
+export { LoadingIndicator } from "./loading-indicator"
