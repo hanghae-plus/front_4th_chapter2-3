@@ -1,28 +1,13 @@
-import { useEffect, useState } from 'react';
-
-import { Tag, getTags } from '@/entities/tag';
-
+import { useQuery } from '@tanstack/react-query';
+import { tagQueries } from '@/entities/tag';
 import { SelectContent, SelectItem } from '@/shared/ui';
 
 const AllTagList = () => {
-  const [tags, setTags] = useState<Tag[]>([]);
   // 태그 가져오기
-  const fetchTags = async () => {
-    try {
-      const tags = await getTags();
-      setTags(tags);
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error(error.message);
-      } else {
-        console.error(error);
-      }
-    }
-  };
-
-  useEffect(() => {
-    fetchTags();
-  }, []);
+  const { data: tags } = useQuery({
+    ...tagQueries.tags(),
+    initialData: [],
+  });
 
   return (
     <SelectContent>
