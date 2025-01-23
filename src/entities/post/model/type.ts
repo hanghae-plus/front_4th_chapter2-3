@@ -1,4 +1,4 @@
-import { PartialUser } from "./user"
+import { PartialUser } from "../../user/model/type"
 
 export interface Posts {
   posts: PostWithUser[]
