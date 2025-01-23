@@ -1,4 +1,6 @@
-export interface UserApiResponse {
+import type { ApiResponseWith } from '@/shared/api';
+
+interface UserResponse {
   id: number;
   username: string;
   image: string;
@@ -59,3 +61,5 @@ export interface UserApiResponse {
   };
   role: string;
 }
+
+export interface UsersResponse extends ApiResponseWith<UserResponse, 'users'> {}

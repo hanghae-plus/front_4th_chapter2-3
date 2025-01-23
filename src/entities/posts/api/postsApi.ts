@@ -1,7 +1,8 @@
 import type { Post } from '@/entities/posts/model';
 import { get, post, put, remove } from '@/shared/api/fetch';
+import type { PostsResponse } from './PostsResponse';
 
-const fetchPosts = async (limit: number, skip: number) => {
+const fetchPosts = async (limit: number, skip: number): Promise<PostsResponse> => {
   const url = `/api/posts?limit=${limit}&skip=${skip}`;
   return get(url);
 };
@@ -26,10 +27,10 @@ const deletePost = async (id: number) => {
   return remove(url);
 };
 
-export const postsApi = {
-  fetchPosts,
-  fetchPostById,
-  createPost,
-  updatePost,
-  deletePost,
-};
+export const postsApi = new (class {
+  fetchPosts = fetchPosts;
+  fetchPostById = fetchPostById;
+  createPost = createPost;
+  updatePost = updatePost;
+  deletePost = deletePost;
+})();

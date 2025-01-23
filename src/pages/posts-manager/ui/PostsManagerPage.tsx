@@ -2,11 +2,12 @@ import { Edit2, MessageSquare, Plus, Search, ThumbsDown, ThumbsUp, Trash2 } from
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
+import type { PostsResponse } from '@/entities/posts/api/PostsResponse';
 import type { Post } from '@/entities/posts/model';
+import type { UsersResponse } from '@/entities/users/api';
 import type { User } from '@/entities/users/model';
 import { useCreatePost, useDeletePost, useQueryPosts, useUpdatePost } from '@/features/posts/api';
 import { usePostsStoreSelector } from '@/features/posts/model';
-import type { Posts } from '@/features/posts/model/Posts';
 import { useQueryUsers } from '@/features/users/api/useUsersQueries';
 import { get, patch, post, put, remove } from '@/shared/api/fetch';
 import {
@@ -35,7 +36,7 @@ import {
 } from '@/shared/ui';
 import { HighlightedText } from '@/shared/ui/HighlightedText';
 
-import type { Comment, Tag, Users } from '../model/types';
+import type { Comment, Tag } from '../model/types';
 
 export const PostsManagerPage = () => {
   const navigate = useNavigate();
@@ -104,7 +105,7 @@ export const PostsManagerPage = () => {
 
   // 게시물 가져오기
   const fetchPosts = async () => {
-    // setLoading(true);
+    setLoading(true);
 
     if (postsLoading || usersLoading) return;
     if (postsError || usersError) {
@@ -113,17 +114,13 @@ export const PostsManagerPage = () => {
     }
     if (!postsData || !usersData) return;
 
-    // const usersData: Users['users'] = await get('/api/users?limit=0&select=username,image').then(
-    //   (users) => users.users,
-    // );
     const postsWithUsers = postsData.posts.map((post) => ({
       ...post,
-      author: usersData.find((user) => user.id === post.userId),
+      author: usersData.users.find((user) => user.id === post.userId),
     }));
-    console.log('🚀 ~ postsWithUsers ~ postsWithUsers:', postsWithUsers);
     setPosts(postsWithUsers);
     setTotal(postsData.total);
-    // setLoading(false);
+    setLoading(false);
   };
 
   // 태그 가져오기
@@ -165,14 +162,13 @@ export const PostsManagerPage = () => {
         get(`/api/posts/tag/${tag}`),
         get('/api/users?limit=0&select=username,image'),
       ]);
-      const postsData: Posts = await postsResponse;
-      const usersData: Users = await usersResponse;
+      const postsData: PostsResponse = await postsResponse;
+      const usersData: UsersResponse = await usersResponse;
 
       const postsWithUsers = postsData.posts.map((post) => ({
         ...post,
         author: usersData.users.find((user) => user.id === post.userId) as User,
       }));
-      console.log('🚀 ~ postsWithUsers ~ postsWithUsers:', postsWithUsers);
 
       setPosts(postsWithUsers);
       setTotal(postsData.total);

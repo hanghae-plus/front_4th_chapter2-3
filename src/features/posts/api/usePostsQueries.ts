@@ -1,15 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
 
+import type { PostsResponse } from '@/entities/posts/api/PostsResponse';
 import type { Post } from '@/entities/posts/model';
 
 import { postsQueryKeys } from '../config/postsQueryKeys';
-import type { Posts } from '../model';
 
 export const useQueryPosts = (limit: number, skip: number) =>
   useQuery<
-    Posts,
+    PostsResponse,
     Error,
-    Posts,
+    PostsResponse,
     readonly ['posts', 'list', { params: { limit: number; skip: number } }]
   >({
     ...postsQueryKeys.list({ limit, skip }),
