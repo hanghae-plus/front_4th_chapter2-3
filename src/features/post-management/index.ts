@@ -2,7 +2,6 @@ export type {
   PostsRequestParams,
   PostsResponse,
   CommentsState,
-  PostFilters,
   NewPost,
   NewComment,
   FilterState,
