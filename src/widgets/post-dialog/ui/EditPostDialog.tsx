@@ -1,25 +1,38 @@
 import { usePostStore } from '@/features/post';
-import { putPost } from '@/entities/post';
+import { Posts, putPost } from '@/entities/post';
 import { BaseDialog, Button, Input, Textarea } from '@/shared/ui';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 const EditPostDialog = () => {
-  const { showEditDialog, setShowEditDialog, selectedPost, setSelectedPost, setPosts } =
-    usePostStore();
+  const queryClient = useQueryClient();
+  const { showEditDialog, setShowEditDialog, selectedPost, setSelectedPost } = usePostStore();
+
+  const { mutateAsync } = useMutation({
+    mutationFn: putPost,
+    onSuccess: (data) => {
+      queryClient.setQueryData<Posts>(['posts'], (prevData) =>
+        prevData
+          ? {
+              ...prevData,
+              posts: prevData.posts.map((post) =>
+                post.id === data.id ? { ...data, title: data.title, body: data.body } : post,
+              ),
+            }
+          : undefined,
+      );
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+    onSettled: async () => {
+      setShowEditDialog(false);
+    },
+  });
 
   // 게시물 업데이트
   const updatePost = async () => {
     if (!selectedPost) return;
-    try {
-      const data = await putPost(selectedPost);
-      setPosts((prevPosts) => prevPosts.map((post) => (post.id === data.id ? data : post)));
-      setShowEditDialog(false);
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error(error.message);
-      } else {
-        console.error(error);
-      }
-    }
+    await mutateAsync(selectedPost);
   };
 
   return (

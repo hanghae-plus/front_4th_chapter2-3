@@ -1,12 +1,15 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQueryStore } from '@/features/post';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { postsQueries } from '@/entities/post/api/queries.ts';
 
 interface PostTagListProps {
   tags?: string[];
 }
 
 const PostTagList = ({ tags }: PostTagListProps) => {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { selectedTag, setSelectedTag, updateParams } = useQueryStore();
 
@@ -18,9 +21,16 @@ const PostTagList = ({ tags }: PostTagListProps) => {
     [selectedTag],
   );
 
-  const handleClickTag = (tag: string) => {
+  const { refetch } = useQuery({
+    ...postsQueries.postsByTag(selectedTag),
+    enabled: !!selectedTag,
+  });
+
+  const handleClickTag = async (tag: string) => {
     setSelectedTag(tag);
     navigate(updateParams());
+    await queryClient.fetchQuery({ queryKey: ['posts'] });
+    await refetch();
   };
 
   return (

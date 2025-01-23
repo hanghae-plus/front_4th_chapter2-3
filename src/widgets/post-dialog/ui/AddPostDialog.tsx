@@ -2,14 +2,16 @@ import { ChangeEvent } from 'react';
 
 import { usePostStore } from '@/features/post';
 
-import { postPost, NewPost, initNewPost } from '@/entities/post';
+import { postPost, NewPost, initNewPost, Posts } from '@/entities/post';
 
 import { FormTypeElement } from '@/shared/model';
 import { transformFormValue } from '@/shared/lib';
 import { BaseDialog, Button, Input, Textarea } from '@/shared/ui';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 const AddPostDialog = () => {
-  const { showAddDialog, setShowAddDialog, newPost, setNewPost, setPosts } = usePostStore();
+  const queryClient = useQueryClient();
+  const { showAddDialog, setShowAddDialog, newPost, setNewPost } = usePostStore();
 
   const handleChangePost =
     <T extends keyof NewPost>(key: T) =>
@@ -18,20 +20,32 @@ const AddPostDialog = () => {
       setNewPost((prev) => ({ ...prev, ...newValue }));
     };
 
-  // 게시물 추가
-  const addPost = async () => {
-    try {
-      const data = await postPost(newPost);
-      setPosts((prevPosts) => [data, ...prevPosts]);
+  const { mutateAsync } = useMutation({
+    mutationFn: postPost,
+    onSuccess: (data) => {
+      queryClient.setQueryData<Posts>(['posts'], (prevData) =>
+        prevData
+          ? {
+              ...prevData,
+              posts: [
+                { ...data, tags: [], reactions: { likes: 0, dislikes: 0 } },
+                ...prevData.posts,
+              ],
+            }
+          : undefined,
+      );
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+    onSettled: async () => {
       setShowAddDialog(false);
       setNewPost(initNewPost);
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error(error.message);
-      } else {
-        console.error(error);
-      }
-    }
+    },
+  });
+
+  const addPost = async () => {
+    await mutateAsync(newPost);
   };
 
   return (

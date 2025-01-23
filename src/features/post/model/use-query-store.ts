@@ -45,10 +45,10 @@ const useQueryStoreCreator: StateCreator<QueryStoreProps> = (set, get) => ({
     set({
       skip: Number(params.get('skip')) || 0,
       limit: Number(params.get('limit')) || 10,
-      searchQuery: params.get('searchQuery') || '',
+      searchQuery: params.get('search') || '',
       sortBy: params.get('sortBy') || '',
       sortOrder: params.get('sortOrder') || 'asc',
-      selectedTag: params.get('selectedTag') || '',
+      selectedTag: params.get('tag') || '',
     });
   },
   updateParams: () => {
@@ -56,10 +56,10 @@ const useQueryStoreCreator: StateCreator<QueryStoreProps> = (set, get) => ({
     const params = new URLSearchParams();
     if (skip) params.set('skip', skip.toString());
     if (limit) params.set('limit', limit.toString());
-    if (searchQuery) params.set('searchQuery', searchQuery);
+    if (searchQuery) params.set('search', searchQuery);
     if (sortBy) params.set('sortBy', sortBy);
     if (sortOrder) params.set('sortOrder', sortOrder);
-    if (selectedTag) params.set('selectedTag', selectedTag);
+    if (selectedTag) params.set('tag', selectedTag);
     return params.toString() ? `?${params.toString()}` : '';
   },
 });

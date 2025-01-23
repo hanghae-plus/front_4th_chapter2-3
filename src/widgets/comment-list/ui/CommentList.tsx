@@ -1,20 +1,17 @@
 import { Edit2, Plus, ThumbsUp, Trash2 } from 'lucide-react';
 import { useCommentStore } from '@/features/comment';
 import { useQueryStore } from '@/features/post/model';
-import { Comment, deleteComment, patchComment } from '@/entities/comments';
+import { Comment, Comments, deleteComment, patchComment } from '@/entities/comments';
 import { Button, HighlightText } from '@/shared/ui';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 const CommentList = ({ postId }: { postId: number }) => {
-  const {
-    comments,
-    setComments,
-    setNewComment,
-    setSelectedComment,
-    setShowAddCommentDialog,
-    setShowEditCommentDialog,
-  } = useCommentStore();
+  const queryClient = useQueryClient();
+  const comments = queryClient.getQueryData<Comments>(['comments', postId])?.comments || [];
+  const { setNewComment, setSelectedComment, setShowAddCommentDialog, setShowEditCommentDialog } =
+    useCommentStore();
 
-  const searchQuery = useQueryStore((state) => state.searchQuery);
+  const { searchQuery } = useQueryStore();
 
   // 댓글 추가
   const handleAddComment = (postId: number) => {
@@ -28,41 +25,54 @@ const CommentList = ({ postId }: { postId: number }) => {
     setShowEditCommentDialog(true);
   };
 
+  const { mutateAsync: deleteMutate } = useMutation({
+    mutationFn: deleteComment,
+    onSuccess: (_, commentId) => {
+      queryClient.setQueryData<Comments>(['comments', postId], (prevData) =>
+        prevData
+          ? {
+              ...prevData,
+              comments: prevData.comments.filter((comment) => comment.id !== commentId),
+            }
+          : undefined,
+      );
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
+
+  const { mutateAsync: patchMutate } = useMutation({
+    mutationFn: patchComment,
+    onSuccess: (data) => {
+      queryClient.setQueryData<Comments>(['comments', postId], (prevData) =>
+        prevData
+          ? {
+              ...prevData,
+              comments: prevData.comments.map((comment) =>
+                comment.id === data.id ? { ...data, likes: (data.likes ?? 0) + 1 } : comment,
+              ),
+            }
+          : undefined,
+      );
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
+
   // 댓글 삭제
-  const removeComment = async (commentId: number, postId: number) => {
-    try {
-      await deleteComment(commentId);
-      setComments((prev) => ({
-        ...prev,
-        [postId]: prev[postId].filter((comment) => comment.id !== commentId),
-      }));
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error(error.message);
-      } else {
-        console.error(error);
-      }
-    }
+  const removeComment = async (commentId: number) => {
+    await deleteMutate(commentId);
   };
 
   // 댓글 좋아요
   const likeComment = async (commentId: number, postId: number) => {
-    try {
-      const likes = (comments[postId].find((c) => c.id === commentId)?.likes ?? 0) + 1;
-      const data = await patchComment(commentId, { likes });
-      setComments((prev) => ({
-        ...prev,
-        [postId]: prev[postId].map((comment) =>
-          comment.id === data.id ? { ...data, likes: (comment.likes ?? 0) + 1 } : comment,
-        ),
-      }));
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error(error.message);
-      } else {
-        console.error(error);
-      }
-    }
+    const likes =
+      (queryClient
+        .getQueryData<Comments>(['comments', postId])
+        ?.comments.find((c) => c.id === commentId)?.likes ?? 0) + 1;
+    await patchMutate({ commentId, body: { likes } });
   };
 
   return (
@@ -75,7 +85,7 @@ const CommentList = ({ postId }: { postId: number }) => {
         </Button>
       </div>
       <div className='space-y-1'>
-        {comments[postId]?.map((comment) => (
+        {comments?.map((comment) => (
           <div key={comment.id} className='flex items-center justify-between text-sm border-b pb-1'>
             <div className='flex items-center space-x-2 overflow-hidden'>
               <span className='font-medium truncate'>{comment.user.username}:</span>
@@ -91,7 +101,7 @@ const CommentList = ({ postId }: { postId: number }) => {
               <Button variant='ghost' size='sm' onClick={() => handleEditComment(comment)}>
                 <Edit2 className='w-3 h-3' />
               </Button>
-              <Button variant='ghost' size='sm' onClick={() => removeComment(comment.id, postId)}>
+              <Button variant='ghost' size='sm' onClick={() => removeComment(comment.id)}>
                 <Trash2 className='w-3 h-3' />
               </Button>
             </div>

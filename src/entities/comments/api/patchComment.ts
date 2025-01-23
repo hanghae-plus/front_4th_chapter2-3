@@ -1,9 +1,12 @@
 import { Comment } from '@/entities/comments';
 
-export const patchComment = async (
-  commentId: number,
-  body: Partial<Pick<Comment, 'likes' | 'body'>>,
-): Promise<Comment> => {
+export const patchComment = async ({
+  commentId,
+  body,
+}: {
+  commentId: number;
+  body: Partial<Pick<Comment, 'likes' | 'body'>>;
+}): Promise<Comment> => {
   const response = await fetch(`/api/comments/${commentId}`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },

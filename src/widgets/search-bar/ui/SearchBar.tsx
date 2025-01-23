@@ -1,11 +1,13 @@
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Search } from 'lucide-react';
-import { useQueryStore, useFetchPostsByTag, useFetchPostsByQuery } from '@/features/post/model';
+import { useQueryStore } from '@/features/post/model';
 import { AllTagList } from '@/features/tag';
 import { Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui';
+import { useQueryClient } from '@tanstack/react-query';
 
 const SearchBar = () => {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const location = useLocation();
   const {
@@ -20,12 +22,15 @@ const SearchBar = () => {
     setSortOrder,
     sortOrder,
   } = useQueryStore();
-  const { fetchPostsByTag } = useFetchPostsByTag();
-  const { fetchPostsByQuery } = useFetchPostsByQuery();
 
   useEffect(() => {
     initParams(location.search);
   }, [location.search]);
+
+  const fetchPostsByQuery = async () => {
+    await queryClient.invalidateQueries({ queryKey: ['posts'] });
+    navigate(updateParams());
+  };
 
   return (
     <div className='flex gap-4'>
@@ -45,8 +50,7 @@ const SearchBar = () => {
         value={selectedTag}
         onValueChange={(value) => {
           setSelectedTag(value);
-          fetchPostsByTag(value);
-          navigate(updateParams());
+          fetchPostsByQuery();
         }}
       >
         <SelectTrigger className='w-[180px]'>
@@ -54,7 +58,13 @@ const SearchBar = () => {
         </SelectTrigger>
         <AllTagList />
       </Select>
-      <Select value={sortBy} onValueChange={setSortBy}>
+      <Select
+        value={sortBy}
+        onValueChange={(value) => {
+          setSortBy(value);
+          fetchPostsByQuery();
+        }}
+      >
         <SelectTrigger className='w-[180px]'>
           <SelectValue placeholder='정렬 기준' />
         </SelectTrigger>
@@ -65,7 +75,14 @@ const SearchBar = () => {
           <SelectItem value='reactions'>반응</SelectItem>
         </SelectContent>
       </Select>
-      <Select value={sortOrder} onValueChange={setSortOrder}>
+      <Select
+        value={sortOrder}
+        onValueChange={(value) => {
+          setSortOrder(value);
+
+          fetchPostsByQuery();
+        }}
+      >
         <SelectTrigger className='w-[180px]'>
           <SelectValue placeholder='정렬 순서' />
         </SelectTrigger>

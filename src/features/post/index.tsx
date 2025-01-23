@@ -1,4 +1,4 @@
-export { usePostStore, useQueryStore, useFetchPostsByTag, useFetchPostsByQuery } from './model';
+export { usePostStore, useQueryStore } from './model';
 export {
   PostDeleteButton,
   PostDetailButton,

@@ -1,38 +1,48 @@
-import { useQueryStore, usePostStore } from '@/features/post';
-
-import { getPosts } from '@/entities/post';
-import { getUsers } from '@/entities/user/api';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { userQueries } from '@/entities/user/api/queries.ts';
 import { findUserById } from '@/entities/user';
+import { useQueryStore } from '@/features/post';
+import { postsQueries } from '@/entities/post/api/queries.ts';
+import { Posts } from '@/entities/post';
 
 const useFetchPosts = () => {
-  const { setLoading, setPosts } = usePostStore();
-  const { limit, skip, setTotal } = useQueryStore();
+  const queryClient = useQueryClient();
+  const { skip, limit } = useQueryStore();
 
-  // 게시물 가져오기
-  const fetchPosts = async () => {
-    try {
-      setLoading(true);
-      const [postsData, usersData] = await Promise.all([getPosts(limit, skip), getUsers()]);
-      const postsWithUsers = postsData.posts.map((post) => ({
+  const { data: userData, isLoading: userLoading } = useQuery({
+    ...userQueries.users(),
+    staleTime: 1000 * 60 * 10,
+  });
+
+  const { data: postsData, isLoading: postLoading } = useQuery({
+    ...postsQueries.posts(skip, limit),
+    select: (data) => ({
+      ...data,
+      skip: data.skip,
+      limit: data.limit,
+      posts: data.posts.map((post) => ({
         ...post,
-        author: findUserById(usersData.users, post.userId),
-      }));
+        author: findUserById(userData?.users || [], post.userId),
+      })),
+      total: data.total,
+    }),
+    enabled: !!userData,
+  });
 
-      setPosts(postsWithUsers);
-      setTotal(postsData.total);
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error(error.message);
-      } else {
-        console.error(error);
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+  queryClient.setQueryData<Posts>(['posts'], (prev) => {
+    if (!postsData) return prev;
+    return {
+      ...postsData,
+      posts: postsData.posts.map((post) => ({
+        ...post,
+        author: findUserById(userData?.users || [], post.userId),
+        total: postsData.total,
+      })),
+    };
+  });
 
   return {
-    fetchPosts,
+    isLoading: userLoading || postLoading,
   };
 };
 

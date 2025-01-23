@@ -7,7 +7,7 @@ const useUserDetailQuery = (user?: User) => {
   const { setSelectedUserId, setShowUserModal } = useUserStore();
 
   const { refetch } = useQuery({
-    ...userQueries.userDetail(user?.id ?? 0),
+    ...userQueries.userDetail(user?.id || 0),
     enabled: false,
   });
 

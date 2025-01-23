@@ -14,8 +14,6 @@ const UserDialog = () => {
     userQueries.userDetail(selectedUserId).queryKey,
   );
 
-  console.log('UserDialog', user);
-
   return (
     <BaseDialog open={showUserModal && !!user} onOpenChange={setShowUserModal} title='사용자 정보'>
       {user && <Profile user={user} />}

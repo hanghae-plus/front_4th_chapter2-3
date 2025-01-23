@@ -6,19 +6,19 @@ import { PostTable } from '@/widgets/posts-table';
 
 import SearchBar from '@/widgets/search-bar/ui/SearchBar.tsx';
 
-import { usePostStore } from '@/features/post';
 import { Card, CardContent } from '@/shared/ui';
 import { PostsPagination } from '@/widgets/posts-pagination';
+import { useFetchPosts } from '@/features/post/model';
 
 const PostsManager = () => {
-  const loading = usePostStore((state) => state.loading);
+  const { isLoading } = useFetchPosts();
   return (
     <Card className='w-full max-w-6xl mx-auto'>
       <PostsManagerHeader />
       <CardContent>
         <div className='flex flex-col gap-4'>
           <SearchBar />
-          {loading ? <div className='flex justify-center p-4'>로딩 중...</div> : <PostTable />}
+          {isLoading ? <div className='flex justify-center p-4'>로딩 중...</div> : <PostTable />}
           <PostsPagination />
         </div>
       </CardContent>

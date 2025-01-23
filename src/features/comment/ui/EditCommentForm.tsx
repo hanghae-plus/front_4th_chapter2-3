@@ -1,34 +1,40 @@
 import { useCommentStore } from '@/features/comment';
 
-import { putComment } from '@/entities/comments';
+import { Comments, putComment } from '@/entities/comments';
 
 import { Button, Textarea } from '@/shared/ui';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 const EditCommentForm = () => {
-  const { setShowEditCommentDialog, setSelectedComment, selectedComment, setComments } =
-    useCommentStore();
+  const queryClient = useQueryClient();
+  const { setShowEditCommentDialog, setSelectedComment, selectedComment } = useCommentStore();
 
   // 댓글 업데이트
   const updateComment = async () => {
     if (!selectedComment) return;
-
-    try {
-      const data = await putComment(selectedComment);
-      setComments((prev) => ({
-        ...prev,
-        [data.postId]: prev[data.postId].map((comment) =>
-          comment.id === data.id ? data : comment,
-        ),
-      }));
-      setShowEditCommentDialog(false);
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error(error.message);
-      } else {
-        console.error(error);
-      }
-    }
+    await mutateAsync(selectedComment);
   };
+
+  const { mutateAsync } = useMutation({
+    mutationFn: putComment,
+    onSuccess: (data) => {
+      queryClient.setQueryData<Comments>(['comments', data.postId], (prevData) =>
+        prevData
+          ? {
+              ...prevData,
+              comments: prevData.comments.map((comment) =>
+                comment.id === data.id ? data : comment,
+              ),
+            }
+          : undefined,
+      );
+      setShowEditCommentDialog(false);
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
+
   return (
     <div className='space-y-4'>
       <Textarea

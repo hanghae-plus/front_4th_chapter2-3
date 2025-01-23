@@ -1,29 +1,39 @@
 import { Trash2 } from 'lucide-react';
 import { usePostStore } from '@/features/post';
-import { deletePost } from '@/entities/post';
+import { deletePost, Posts } from '@/entities/post';
 import { Button } from '@/shared/ui';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 interface DeletePostButtonProps {
   postId: number;
 }
 
 const PostDeleteButton = ({ postId }: DeletePostButtonProps) => {
-  const { posts, setPosts } = usePostStore();
+  const queryClient = useQueryClient();
+  const { posts } = usePostStore();
+
+  const { mutateAsync } = useMutation({
+    mutationFn: deletePost,
+    onSuccess: (_, postId) => {
+      queryClient.setQueryData<Posts>(['posts'], (prevData) =>
+        prevData
+          ? {
+              ...prevData,
+              posts: prevData.posts.filter((post) => post.id !== postId),
+            }
+          : undefined,
+      );
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
 
   // 게시물 삭제
   const removePost = async (id: number) => {
     const post = posts.find((post) => post.id === id);
     if (!post) return;
-    try {
-      await deletePost(id);
-      setPosts(posts.filter((post) => post.id !== id));
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error(error.message);
-      } else {
-        console.error(error);
-      }
-    }
+    await mutateAsync(post.id);
   };
 
   return (
