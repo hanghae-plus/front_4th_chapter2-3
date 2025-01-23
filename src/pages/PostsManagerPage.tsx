@@ -46,7 +46,7 @@ const PostsManager = () => {
     likeComment,
     handleAddComment,
     handleEditComment,
-  } = useCommentManager()
+  } = useCommentManager(selectedPost?.id || 0)
 
   const {  handleUserClick } = useUserManager()
 
@@ -88,7 +88,7 @@ const PostsManager = () => {
         open={showPostDetailDialog}
         onOpenChange={setShowPostDetailDialog}
         post={selectedPost}
-        comments={selectedPost ? comments[selectedPost.id] || [] : []}
+        comments={selectedPost ? comments || [] : []}
         onAddComment={() => handleAddComment(selectedPost?.id || 0)}
         onEditComment={handleEditComment}
         onDeleteComment={deleteComment}
