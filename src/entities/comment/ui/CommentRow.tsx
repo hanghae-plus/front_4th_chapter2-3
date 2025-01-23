@@ -1,22 +1,20 @@
+import { useAtom } from "jotai";
+import { searchQueryAtom } from "../../../app/store/atom";
 import { highlightText } from "../../../shared/lib/handleHighlightText";
 import { Comment } from "../model/types";
 import { CommentIcons } from "./CommentIcons";
 
 interface CommentRowProps {
   comment: Comment;
-  searchQuery: string;
-  onLikeComment: (commentId: number, postId: number) => void;
   onEditComment: (comment: Comment) => void;
-  onDeleteComment: (commentId: number, postId: number) => void;
 }
 
 export const CommentRow: React.FC<CommentRowProps> = ({
   comment,
-  searchQuery,
-  onLikeComment,
   onEditComment,
-  onDeleteComment,
 }) => {
+  const [searchQuery] = useAtom(searchQueryAtom);
+
   return (
     <div
       key={comment.id}
@@ -32,15 +30,7 @@ export const CommentRow: React.FC<CommentRowProps> = ({
       </div>
       <CommentIcons
         comment={comment}
-        onLikeComment={() => {
-          if (comment?.id && comment.postId)
-            onLikeComment(comment.id, comment.postId);
-        }}
         onEditComment={() => onEditComment(comment)}
-        onDeleteComment={() => {
-          if (comment?.id && comment.postId)
-            onDeleteComment(comment.id, comment.postId);
-        }}
       />
     </div>
   );

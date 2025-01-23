@@ -2,25 +2,21 @@ import { Plus } from "lucide-react";
 import { Button } from "../../../shared/ui";
 import { CommentRow } from "./CommentRow";
 import { Comment } from "../model/types";
+import { commentsAtom } from "../../../app/store/atom";
+import { useAtom } from "jotai";
 
 interface CommentItemProps {
-  comments: Record<number, Comment[]>;
   postId: number;
-  searchQuery: string;
   onAdd: () => void;
-  onLikeComment: (comment: Comment) => void;
   onEditComment: (comment: Comment) => void;
-  onDeleteComment: (comment: Comment) => void;
 }
 
 export const CommentItem: React.FC<CommentItemProps> = ({
-  comments,
-  searchQuery,
   onAdd,
-  onLikeComment,
   onEditComment,
-  onDeleteComment,
 }) => {
+  const [comments] = useAtom(commentsAtom);
+
   const flattenedComments = Object.values(comments).flat();
 
   return (
@@ -39,14 +35,7 @@ export const CommentItem: React.FC<CommentItemProps> = ({
         {flattenedComments.map((comment: Comment) => (
           <CommentRow
             comment={comment}
-            searchQuery={searchQuery}
-            onLikeComment={() => {
-              if (comment?.id && comment.postId) onLikeComment(comment);
-            }}
             onEditComment={() => onEditComment(comment)}
-            onDeleteComment={() => {
-              if (comment?.id && comment.postId) onDeleteComment(comment);
-            }}
           />
         ))}
       </div>

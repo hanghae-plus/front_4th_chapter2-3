@@ -26,13 +26,7 @@ import { UserModal } from "../entities/user/ui/UserModal.tsx";
 import { DialogAddPost } from "../entities/post/ui/DialogAddPost.tsx";
 
 import { fetchTag } from "../entities/tag/api/tagApi.ts";
-import {
-  addComments,
-  deleteComments,
-  fetchComments,
-  likeComments,
-  updateComments,
-} from "../entities/comment/api/commentApi.ts";
+
 import { useAtom } from "jotai";
 import {
   totalAtom,
@@ -40,7 +34,6 @@ import {
   selectedPostAtom,
   searchQueryAtom,
   selectedCommentAtom,
-  commentsAtom,
   selectedUserAtom,
   selectedTagAtom,
   loadingAtom,
@@ -48,9 +41,13 @@ import {
   skipAtom,
   addDialogAtom,
   editDialogAtom,
+  newCommentAtom,
+  addCommentDialogAtom,
+  editCommentDialogAtom,
 } from "../app/store/atom.ts";
 import { useQueryParams } from "../shared/lib/useQueryParams.ts";
 import { usePosts } from "../entities/post/lib/usePosts.ts";
+import { useComment } from "../entities/comment/lib/useComment.ts";
 const PostsManager = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -61,7 +58,6 @@ const PostsManager = () => {
   const [selectedPost, setSelectedPost] = useAtom(selectedPostAtom);
   const [searchQuery, setSearchQuery] = useAtom(searchQueryAtom);
   const [selectedComment, setSelectedComment] = useAtom(selectedCommentAtom);
-  const [comments, setComments] = useAtom(commentsAtom);
   const [selectedUser, setSelectedUser] = useAtom(selectedUserAtom);
   const [selectedTag, setSelectedTag] = useAtom(selectedTagAtom);
   const [loading] = useAtom(loadingAtom);
@@ -72,6 +68,12 @@ const PostsManager = () => {
   const [showEditDialog, setShowEditDialog] = useAtom(editDialogAtom);
 
   const [showAddDialog, setShowAddDialog] = useAtom(addDialogAtom);
+  const [newComment, setNewComment] = useAtom(newCommentAtom);
+  const [showAddCommentDialog, setShowAddCommentDialog] =
+    useAtom(addCommentDialogAtom);
+  const [showEditCommentDialog, setShowEditCommentDialog] = useAtom(
+    editCommentDialogAtom
+  );
 
   // 상태 관리
 
@@ -82,14 +84,6 @@ const PostsManager = () => {
 
   const [tags, setTags] = useState<Tags[]>([]);
 
-  const [newComment, setNewComment] = useState<Comment>({
-    body: "",
-    postId: null,
-    userId: 1,
-  });
-
-  const [showAddCommentDialog, setShowAddCommentDialog] = useState(false);
-  const [showEditCommentDialog, setShowEditCommentDialog] = useState(false);
   const [showPostDetailDialog, setShowPostDetailDialog] = useState(false);
   const [showUserModal, setShowUserModal] = useState(false);
 
@@ -124,91 +118,8 @@ const PostsManager = () => {
     handleDeletePost,
   } = usePosts();
 
-  // 댓글 가져오기
-  const handleFetchComments = async (postId: number) => {
-    if (comments[postId]) return; // 이미 불러온 댓글이 있으면 다시 불러오지 않음
-
-    try {
-      const data = await fetchComments(postId);
-
-      setComments((prev) => ({ ...prev, [postId]: data.comments }));
-    } catch (error) {
-      console.error("댓글 가져오기 오류:", error);
-    }
-  };
-
-  // 댓글 추가
-  const handleAddComments = async () => {
-    try {
-      const data = await addComments(newComment);
-
-      setComments((prev) => ({
-        ...prev,
-        [data.postId]: [...(prev[data?.postId] || []), data],
-      }));
-    } catch (error) {
-      console.error("댓글 추가 오류:", error);
-    } finally {
-      setShowAddCommentDialog(false);
-      setNewComment({ body: "", postId: null, userId: 1 });
-    }
-  };
-
-  // 댓글 업데이트
-  const handleUpdateComments = async () => {
-    try {
-      const data = await updateComments(selectedComment.id, {
-        body: selectedComment.body,
-      });
-
-      setComments((prev) => ({
-        ...prev,
-        [data.postId]: prev[data.postId].map((comment) =>
-          comment.id === data.id ? data : comment
-        ),
-      }));
-    } catch (error) {
-      console.error("댓글 업데이트 오류:", error);
-    } finally {
-      setShowEditCommentDialog(false);
-    }
-  };
-
-  // 댓글 삭제
-  const handleDeleteComments = async (id: number, postId: number) => {
-    try {
-      await deleteComments(id);
-
-      setComments((prev) => ({
-        ...prev,
-        [postId]: prev[postId].filter((comment) => comment.id !== id),
-      }));
-    } catch (error) {
-      console.error("댓글 삭제 오류:", error);
-    }
-  };
-
-  // 댓글 좋아요
-  const handleLikeComments = async (id: number, postId: number) => {
-    const foundComment = comments[postId]?.find((c) => c.id === id);
-
-    try {
-      const data = await likeComments(id, {
-        likes: (foundComment?.likes ?? 0) + 1,
-      });
-
-      setComments((prev) => ({
-        ...prev,
-        [postId]: prev[postId].map((comment: Comment) =>
-          comment.id === data.id
-            ? { ...data, likes: (comment.likes ?? 0) + 1 }
-            : comment
-        ),
-      }));
-    } catch (error) {
-      console.error("댓글 좋아요 오류:", error);
-    }
-  };
+  const { handleFetchComments, handleAddComments, handleUpdateComments } =
+    useComment();
 
   // 게시물 상세 보기
   const openPostDetail = (post: Post) => {
@@ -410,9 +321,7 @@ const PostsManager = () => {
           <div className="space-y-4">
             <p>{highlightText(selectedPost.body, searchQuery)}</p>
             <CommentItem
-              comments={comments}
               postId={selectedPost.id}
-              searchQuery={searchQuery}
               onAdd={() => {
                 setNewComment((prev: Comment) => ({
                   ...prev,
@@ -420,17 +329,9 @@ const PostsManager = () => {
                 }));
                 setShowAddCommentDialog(true);
               }}
-              onLikeComment={(comment: Comment) => {
-                if (comment.id && comment.postId)
-                  handleLikeComments(comment.id, comment.postId);
-              }}
               onEditComment={(comment: Comment) => {
                 setSelectedComment(comment);
                 setShowEditCommentDialog(true);
-              }}
-              onDeleteComment={(comment: Comment) => {
-                if (comment?.id && comment.postId)
-                  handleDeleteComments(comment.id, comment.postId);
               }}
             />
           </div>

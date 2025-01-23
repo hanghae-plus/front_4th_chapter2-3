@@ -54,3 +54,14 @@ export const newPostAtom = atom<NewPostProps>({
 });
 
 export const editDialogAtom = atom<boolean>(false);
+
+// comment
+export const newCommentAtom = atom<Comment>({
+  body: "",
+  postId: null,
+  userId: 1,
+});
+
+export const addCommentDialogAtom = atom<boolean>(false);
+
+export const editCommentDialogAtom = atom<boolean>(false);
