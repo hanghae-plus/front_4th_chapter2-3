@@ -1,5 +1,5 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../../shared/ui';
-import usePostStore from '../model/usePostStore.ts';
+import usePostStore from '../model/use-post-store.ts';
 import UserCell from './UserCell.tsx';
 import TitleCell from './TitleCell.tsx';
 import LikeCell from './LikeCell.tsx';

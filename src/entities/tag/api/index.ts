@@ -1,1 +1,1 @@
-export { getTags } from './getTags';
+export { getTags } from './get-tags.ts';

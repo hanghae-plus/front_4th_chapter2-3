@@ -1,1 +1,1 @@
-export type { DefaultResponse, ResponseWithData } from './DefaultResponse';
+export type { Response, ResponseWithData } from './response.ts';

@@ -1,1 +1,1 @@
-export type { FormTypeElement } from './FormTypeElement';
+export type { FormTypeElement } from './form-type-element.ts';

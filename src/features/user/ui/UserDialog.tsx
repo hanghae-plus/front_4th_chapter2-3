@@ -1,5 +1,5 @@
 import { BaseDialog } from '../../../shared/ui';
-import { useUserStore } from '../model/useUserStore.ts';
+import { useUserStore } from '../model/use-user-store.ts';
 import Profile from '../../../entities/user/ui/Profile.tsx';
 
 const UserDialog = () => {

@@ -1,15 +1,15 @@
-import useFetchPost from './useFetchPost.tsx';
-import usePostStore from '../../post/model/usePostStore.ts';
-import useSearchStore from '../model/useSearchStore.ts';
+import useFetchPosts from './use-fetch-posts.tsx';
+import usePostStore from '../../post/model/use-post-store.ts';
+import useSearchStore from '../model/use-search-store.ts';
 import { getPostsByTag } from '../../../entities/post/api';
 import { getUsers } from '../../../entities/user/api';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { findUserById } from '../../../entities/user/model';
 
-const useFetchPostByTag = () => {
+const useFetchPostsByTag = () => {
   const navigate = useNavigate();
-  const { fetchPosts } = useFetchPost();
+  const { fetchPosts } = useFetchPosts();
   const { setPosts, setLoading } = usePostStore(['setPosts', 'setLoading']);
   const { setTotal, skip, limit, sortBy, sortOrder, selectedTag, updateParams } = useSearchStore([
     'setTotal',
@@ -62,4 +62,4 @@ const useFetchPostByTag = () => {
   };
 };
 
-export default useFetchPostByTag;
+export default useFetchPostsByTag;

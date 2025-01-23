@@ -9,7 +9,7 @@ import PostTable from '../features/post/ui/PostTable.tsx';
 import Pagination from '../features/search/ui/Pagination.tsx';
 import SearchBar from '../features/search/ui/SearchBar.tsx';
 import PostHeader from '../features/post/ui/PostHeader.tsx';
-import usePostStore from '../features/post/model/usePostStore.ts';
+import usePostStore from '../features/post/model/use-post-store.ts';
 
 const PostsManager = () => {
   const { loading } = usePostStore(['loading']);

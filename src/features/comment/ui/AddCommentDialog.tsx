@@ -1,5 +1,5 @@
 import { BaseDialog, Button, Textarea } from '../../../shared/ui';
-import useCommentStore from '../model/useCommentStore.ts';
+import useCommentStore from '../model/use-comment-store.ts';
 import { postComment } from '../../../entities/comments/api';
 
 const AddCommentDialog = () => {

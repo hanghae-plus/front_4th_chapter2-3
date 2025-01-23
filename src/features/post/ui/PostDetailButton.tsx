@@ -1,8 +1,8 @@
 import { MessageSquare } from 'lucide-react';
 import { Button } from '../../../shared/ui';
 import { Post } from '../../../entities/post/model';
-import useCommentStore from '../../comment/model/useCommentStore.ts';
-import usePostStore from '../model/usePostStore.ts';
+import useCommentStore from '../../comment/model/use-comment-store.ts';
+import usePostStore from '../model/use-post-store.ts';
 import { getComments } from '../../../entities/comments/api';
 
 interface PostDetailButtonProps {

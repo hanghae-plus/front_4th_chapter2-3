@@ -1,2 +1,2 @@
-export type { UserDetail, User, Users } from './User';
+export type { UserDetail, User, Users } from './user.ts';
 export { findUserById } from './find-user-by-id';

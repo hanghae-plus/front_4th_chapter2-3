@@ -1,6 +1,6 @@
 import { BaseDialog, Button, Input, Textarea } from '../../../shared/ui';
-import usePostStore from '../model/usePostStore.ts';
-import { initNewPost } from '../../../entities/post/config/initData.ts';
+import usePostStore from '../model/use-post-store.ts';
+import { initNewPost } from '../../../entities/post/config/init-data.ts';
 import { postPost } from '../../../entities/post/api';
 import { NewPost } from '../../../entities/post/model';
 import { ChangeEvent } from 'react';

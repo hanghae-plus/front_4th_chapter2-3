@@ -1,2 +1,2 @@
-export type { Post, Posts } from './Post';
-export type { NewPost } from './NewPost';
+export type { Post, Posts } from './post.ts';
+export type { NewPost } from './new-post.ts';

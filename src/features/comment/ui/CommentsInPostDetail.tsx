@@ -1,8 +1,8 @@
 import { Button, HighlightText } from '../../../shared/ui';
 import { Edit2, Plus, ThumbsUp, Trash2 } from 'lucide-react';
-import useCommentStore from '../model/useCommentStore.ts';
+import useCommentStore from '../model/use-comment-store.ts';
 import { Comment } from '../../../entities/comments/model';
-import useSearchStore from '../../search/model/useSearchStore.ts';
+import useSearchStore from '../../search/model/use-search-store.ts';
 import { deleteComment, patchComment } from '../../../entities/comments/api';
 
 const CommentsInPostDetail = ({ postId }: { postId: number }) => {

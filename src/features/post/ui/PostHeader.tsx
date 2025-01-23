@@ -1,6 +1,6 @@
 import { Button, CardHeader, CardTitle } from '../../../shared/ui';
 import { Plus } from 'lucide-react';
-import usePostStore from '../model/usePostStore.ts';
+import usePostStore from '../model/use-post-store.ts';
 
 const PostHeader = () => {
   const { setShowAddDialog } = usePostStore(['setShowAddDialog']);

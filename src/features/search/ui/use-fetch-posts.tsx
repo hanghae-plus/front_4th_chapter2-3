@@ -1,10 +1,10 @@
-import usePostStore from '../../post/model/usePostStore.ts';
-import useSearchStore from '../model/useSearchStore.ts';
+import usePostStore from '../../post/model/use-post-store.ts';
+import useSearchStore from '../model/use-search-store.ts';
 import { getPosts } from '../../../entities/post/api';
 import { getUsers } from '../../../entities/user/api';
 import { findUserById } from '../../../entities/user/model';
 
-const useFetchPost = () => {
+const useFetchPosts = () => {
   const { setLoading, setPosts } = usePostStore(['setLoading', 'setPosts']);
   const { limit, skip, setTotal } = useSearchStore(['limit', 'skip', 'setTotal']);
 
@@ -36,4 +36,4 @@ const useFetchPost = () => {
   };
 };
 
-export default useFetchPost;
+export default useFetchPosts;

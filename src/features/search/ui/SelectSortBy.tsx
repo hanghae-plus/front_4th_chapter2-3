@@ -1,5 +1,5 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../shared/ui';
-import useSearchStore from '../model/useSearchStore.ts';
+import useSearchStore from '../model/use-search-store.ts';
 
 const SelectSortBy = () => {
   const { sortBy, setSortBy } = useSearchStore(['sortBy', 'setSortBy']);

@@ -1,6 +1,6 @@
-export { getPosts } from './getPosts';
-export { postPost } from './postPost';
-export { putPost } from './putPost';
-export { deletePost } from './deletePost';
-export { getPostsByTag } from './getPostsByTag';
-export { getPostsByQuery } from './getPostsByQuery';
+export { getPosts } from './get-posts.ts';
+export { postPost } from './post-post.ts';
+export { putPost } from './put-post.ts';
+export { deletePost } from './delete-post.ts';
+export { getPostsByTag } from './get-posts-by-tag.ts';
+export { getPostsByQuery } from './get-posts-by-query.ts';

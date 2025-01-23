@@ -2,7 +2,7 @@ import { StateCreator } from 'zustand/vanilla';
 import { create } from 'zustand/react';
 import { createStoreSelector } from '../../../shared/lib';
 import { NewPost, Post } from '../../../entities/post/model';
-import { initNewPost } from '../../../entities/post/config/initData.ts';
+import { initNewPost } from '../../../entities/post/config/init-data.ts';
 
 interface State {
   posts: Post[];

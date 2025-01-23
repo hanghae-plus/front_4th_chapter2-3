@@ -1,5 +1,5 @@
 import { Post } from '../../../entities/post/model';
-import useSearchStore from '../../search/model/useSearchStore.ts';
+import useSearchStore from '../../search/model/use-search-store.ts';
 import { useNavigate } from 'react-router-dom';
 import { useMemo } from 'react';
 
