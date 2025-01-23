@@ -57,14 +57,17 @@ export const usePosts = () => {
   const addPostMutation = useMutation({
     mutationFn: addPost,
     onMutate: async (newPost) => {
-      console.log(newPost)
       await queryClient.cancelQueries({ queryKey })
       const previousPosts = queryClient.getQueryData<Posts>(queryKey)
-      const newPosts = {
-        posts: [newPost, ...(previousPosts ? previousPosts.posts : [])],
-        total: previousPosts ? previousPosts.total : 0 + 1,
+      if (previousPosts) {
+        const newPosts = {
+          ...previousPosts,
+          posts: [newPost, ...previousPosts.posts],
+          total: previousPosts.total + 1,
+        }
+        queryClient.setQueryData(queryKey, newPosts)
       }
-      queryClient.setQueryData(queryKey, newPosts)
+
       return { previousPosts }
     },
   })
