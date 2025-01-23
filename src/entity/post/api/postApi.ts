@@ -1,6 +1,6 @@
 export const getPostsApi = async ({ limit, skip }) => {
-  const posts = await fetch(`/api/posts?limit=${limit}&skip=${skip}`).then((response) => response.json())
-
+  const response = await fetch(`/api/posts?limit=${limit}&skip=${skip}`)
+  const posts = await response.json()
   return posts
 }
 

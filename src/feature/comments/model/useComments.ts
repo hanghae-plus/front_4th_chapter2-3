@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react"
 import { deleteCommentApi, getCommentsApi, updateCommentApi } from "../../../entity/comment/api/commentApi"
 import { Comments } from "../../../entity/comment/model/types"
 
-type UseComments = {}
 const useComments = (postId) => {
   const [comments, setComments] = useState<Comments>({})
 
