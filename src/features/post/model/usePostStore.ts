@@ -34,7 +34,7 @@ export const usePostStore = create<PostState>((set) => ({
     set((state) => ({ posts: state.posts.map((post) => (post.id === updatedPost.id ? updatedPost : post)) })),
   deletePost: (id) => set((state) => ({ posts: state.posts.filter((post) => post.id !== id) })),
   setSelectedPost: (selectedPost) => set({ selectedPost }),
-  setNewPost: (newPost) => ({ newPost }),
+  setNewPost: (newPost) => set({ newPost }),
   setShowAddDialog: (showAddDialog) => set({ showAddDialog }),
   setShowEditDialog: (showEditDialog) => set({ showEditDialog }),
   setShowPostDetailDialog: (showPostDetailDialog) => set({ showPostDetailDialog }),
