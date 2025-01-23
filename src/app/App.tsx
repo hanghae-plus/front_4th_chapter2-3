@@ -11,7 +11,13 @@ import { Modal } from "@/features/modal";
 
 import { Loading } from "@/shared/ui";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: Infinity,
+    },
+  },
+});
 
 const App = () => {
   return (
