@@ -1,29 +1,22 @@
-import { useSearchParams } from "react-router-dom";
-
 import { Post } from "@/entities/posts";
 
 import { Badge, HighlightText } from "@/shared/ui";
+
+import { POST_FILTER_PARAM } from "../config";
+import { usePostFilter } from "../model";
 
 interface PostTitleProps {
   post: Post;
 }
 
 export const PostTitle = ({ post }: PostTitleProps) => {
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const selectedTag = searchParams.get("tag") || "";
-  const searchQuery = searchParams.get("search") || "";
-
-  const handleChangeSearchParams = (key: string, value: string) => {
-    searchParams.set(key, value);
-    setSearchParams(searchParams);
-  };
+  const { params, changePostFilterParams } = usePostFilter();
 
   return (
     <div className="space-y-1">
       <div>
         <span>
-          <HighlightText text={post.title} highlight={searchQuery} />
+          <HighlightText text={post.title} highlight={params.searchQuery} />
         </span>
       </div>
       <div className="flex flex-wrap gap-1">
@@ -31,8 +24,8 @@ export const PostTitle = ({ post }: PostTitleProps) => {
           <Badge
             key={tag}
             label={tag}
-            isSelected={selectedTag === tag}
-            onClick={() => handleChangeSearchParams("tag", tag)}
+            isSelected={params.tag === tag}
+            onClick={() => changePostFilterParams(POST_FILTER_PARAM.TAG, tag)}
           />
         ))}
       </div>
