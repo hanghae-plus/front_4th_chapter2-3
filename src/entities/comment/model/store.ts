@@ -5,8 +5,8 @@ interface CommentState {
   comments: Record<string, Comment[]>
   addComment: (comment: Comment) => void
   updateComment: (updatedComment: Comment) => void
-  deleteComment: (postId: string, id: string) => void
-  likeComment: (postId: string, id: string) => void
+  deleteComment: (postId: string, id: number) => void
+  likeComment: (postId: string, id: number) => void
 }
 
 export const useCommentStore = create<CommentState>((set) => ({
@@ -27,14 +27,14 @@ export const useCommentStore = create<CommentState>((set) => ({
         ),
       },
     })),
-  deleteComment: (postId: string, id: string) =>
+  deleteComment: (postId: string, id: number) =>
     set((state) => ({
       comments: {
         ...state.comments,
         [postId]: state.comments[postId]?.filter((comment) => comment.id !== id) || [],
       },
     })),
-  likeComment: (postId: string, id: string) =>
+  likeComment: (postId: string, id: number) =>
     set((state) => ({
       comments: {
         ...state.comments,
