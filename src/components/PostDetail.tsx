@@ -14,7 +14,7 @@ function PostDetail(props: PostDetailProps) {
   return (
     <div className="space-y-4">
       <p>{highlightText(post?.body || "", search)}</p>
-      <CommentList postId={post?.id!} />
+      <CommentList post={post!} />
     </div>
   )
 }

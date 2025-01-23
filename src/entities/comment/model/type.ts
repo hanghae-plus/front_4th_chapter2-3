@@ -8,7 +8,7 @@ export interface getCommentsResponse {
   comments: Comment[]
 }
 
-interface Comment {
+export interface Comment {
   body: string
   id: number
   likes: number
