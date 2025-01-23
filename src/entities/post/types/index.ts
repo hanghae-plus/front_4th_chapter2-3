@@ -1,4 +1,4 @@
-import { User } from "../../../pages/postManagerPage.types"
+import { User } from "../../user/types"
 
 export type Reactions = {
   likes: number
@@ -22,3 +22,10 @@ export interface PostResponse {
   skip: number
   limit: number
 }
+export interface Tag {
+  slug: string
+  name: string
+  url: string
+}
+
+export type TagResponse = Tag[]

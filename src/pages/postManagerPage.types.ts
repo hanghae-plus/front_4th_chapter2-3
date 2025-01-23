@@ -1,11 +1,3 @@
-export interface Tag {
-  slug: string
-  name: string
-  url: string
-}
-
-export type TagResponse = Tag[]
-
 export interface Comment {
   id: number
   body: string
