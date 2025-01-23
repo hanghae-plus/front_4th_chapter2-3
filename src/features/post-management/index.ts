@@ -16,3 +16,4 @@ export type {
 } from './model';
 
 export { usePaginationStore, useFilterStore, useUIStore } from './model';
+export { usePostsQuery, fetchPosts } from './api';
