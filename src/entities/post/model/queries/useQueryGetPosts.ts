@@ -1,6 +1,8 @@
 import { useQuery } from "@tanstack/react-query"
 
-import type { User } from "../../../user/model/types/user"
+import { fetchUsernameAndImageOnly } from "../../../user/api/fetchUsernameAndImageOnly"
+import { fetchPosts } from "../../api/fetchPosts"
+
 import type { PostWithUser } from "../types/post"
 
 export interface PostsResponse {
@@ -8,38 +10,40 @@ export interface PostsResponse {
   total: number
 }
 
-export interface UsersResponse {
-  users: User[]
-}
-
 interface UseQueryGetPostsParams {
   limit: number
   skip: number
 }
 
-const getPostsQueryKeys = {
+export const getPostsQueryKeys = {
   all: ["posts"],
   detail: (limit: number, skip: number) => ["posts", { limit, skip }],
 }
 
 export const useQueryGetPosts = ({ limit, skip }: UseQueryGetPostsParams) => {
   return useQuery({
+    ...{ enabled: !!limit && !!skip },
     queryKey: getPostsQueryKeys.detail(limit, skip),
-    queryFn: async () => {
-      const [postsResponse, usersResponse] = await Promise.all([
-        fetch(`/api/posts?limit=${limit}&skip=${skip}`).then((res) => res.json() as Promise<PostsResponse>),
-        fetch("/api/users?limit=0&select=username,image").then((res) => res.json() as Promise<UsersResponse>),
-      ])
-
-      const postsWithUsers = postsResponse.posts.map((post) => ({
-        ...post,
-        author: usersResponse.users.find((user) => user.id === post.userId),
-      }))
-
-      return {
-        posts: postsWithUsers,
-        total: postsResponse.total,
-      }
-    },
+    queryFn: async () => fetcher(limit, skip),
   })
+}
+
+const fetcher = async (limit: number, skip: number): Promise<PostsResponse | undefined> => {
+  try {
+    const [postsData, usersData] = await Promise.all([fetchPosts(limit, skip), fetchUsernameAndImageOnly()])
+
+    if (!postsData || !usersData) return
+
+    const postsWithUsers = postsData.posts.map((post) => ({
+      ...post,
+      author: usersData.users.find((user) => user.id === post.userId),
+    }))
+
+    return {
+      posts: postsWithUsers,
+      total: postsData.total,
+    }
+  } catch (error) {
+    console.error("게시물 가져오기 오류:", error)
+  }
 }

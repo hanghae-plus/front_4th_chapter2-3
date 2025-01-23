@@ -1,8 +1,10 @@
+import { QueryClient } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 
 import { fetchComments } from "../entities/comment/api/fetchComments"
 import { fetchPosts } from "../entities/post/api/fetchPosts"
+import { getPostsQueryKeys, useQueryGetPosts } from "../entities/post/model/queries/useQueryGetPosts"
 import { fetchTag } from "../entities/tag/api/fetchTag"
 import { fetchTags } from "../entities/tag/api/fetchTags"
 import { fetchUser } from "../entities/user/api/fetchUser"
@@ -32,8 +34,8 @@ const PostsManager = () => {
   const queryParams = new URLSearchParams(location.search)
 
   // 상태 관리
-  const [posts, setPosts] = useState<PostWithUser[]>([])
-  const [total, setTotal] = useState(0)
+  // const [posts, setPosts] = useState<PostWithUser[]>([])
+  // const [total, setTotal] = useState(0)
   const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"))
   const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"))
   const [searchQuery, setSearchQuery] = useState(queryParams.get("search") || "")
@@ -67,59 +69,41 @@ const PostsManager = () => {
     navigate(`?${params.toString()}`)
   }
 
-  // 게시물 가져오기
-  // Feature
-  const getPosts = async () => {
-    setLoading(true)
+  const queryClient = new QueryClient()
+  const { data, isLoading } = useQueryGetPosts({ limit, skip })
 
-    try {
-      const [postsData, usersData] = await Promise.all([fetchPosts(limit, skip), fetchUsernameAndImageOnly()])
-
-      if (!postsData || !usersData) return
-
-      const postsWithUsers = postsData.posts.map((post) => ({
-        ...post,
-        author: usersData.users.find((user) => user.id === post.userId),
-      }))
-
-      setPosts(postsWithUsers)
-      setTotal(postsData.total)
-    } catch (error) {
-      console.error("게시물 가져오기 오류:", error)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const posts = data?.posts || []
+  const total = data?.total || 0
 
   // 태그별 게시물 가져오기
   // Feature
-  const fetchPostsByTag = async (tag: string) => {
-    if (!tag || tag === "all") {
-      getPosts()
-      return
-    }
+  // const fetchPostsByTag = async (tag: string) => {
+  //   if (!tag || tag === "all") {
+  //     // getPosts()
+  //     return
+  //   }
 
-    setLoading(true)
+  //   setLoading(true)
 
-    try {
-      const [postsResponse, usersResponse] = await Promise.all([fetchTag(tag), fetchUsernameAndImageOnly()])
-      const postsData = postsResponse
-      const usersData = usersResponse
+  //   try {
+  //     const [postsResponse, usersResponse] = await Promise.all([fetchTag(tag), fetchUsernameAndImageOnly()])
+  //     const postsData = postsResponse
+  //     const usersData = usersResponse
 
-      if (!postsData || !usersData) return
+  //     if (!postsData || !usersData) return
 
-      const postsWithUsers = postsData.posts.map((post) => ({
-        ...post,
-        author: usersData.users.find((user) => user.id === post.userId),
-      }))
+  //     const postsWithUsers = postsData.posts.map((post) => ({
+  //       ...post,
+  //       author: usersData.users.find((user) => user.id === post.userId),
+  //     }))
 
-      setPosts(postsWithUsers)
-      setTotal(postsData.total)
-    } catch (error) {
-      console.error("태그별 게시물 가져오기 오류:", error)
-    }
-    setLoading(false)
-  }
+  //     setPosts(postsWithUsers)
+  //     setTotal(postsData.total)
+  //   } catch (error) {
+  //     console.error("태그별 게시물 가져오기 오류:", error)
+  //   }
+  //   setLoading(false)
+  // }
 
   // 게시물 상세 보기
   // Feature
@@ -152,9 +136,9 @@ const PostsManager = () => {
   // Feature
   useEffect(() => {
     if (selectedTag) {
-      fetchPostsByTag(selectedTag)
+      // fetchPostsByTag(selectedTag)
     } else {
-      fetchPosts()
+      queryClient.invalidateQueries(getPostsQueryKeys["all"])
     }
     updateURL()
   }, [skip, limit, sortBy, sortOrder, selectedTag])
@@ -189,7 +173,7 @@ const PostsManager = () => {
           </div>
 
           {/* 게시물 테이블 */}
-          {loading ? (
+          {isLoading ? (
             <div className="flex justify-center p-4">로딩 중...</div>
           ) : (
             <PostTable
