@@ -6,7 +6,7 @@ import type { PostsResponse } from '@/entities/posts/api/PostsResponse';
 import type { Post } from '@/entities/posts/model';
 import type { UsersResponse } from '@/entities/users/api';
 import type { User } from '@/entities/users/model';
-import { useDeletePost, useQueryPosts, useUpdatePost } from '@/features/posts/api';
+import { useDeletePost, useQueryPosts } from '@/features/posts/api';
 import { usePostsStoreSelector } from '@/features/posts/model';
 import { useQueryUsers } from '@/features/users/api/useUsersQueries';
 import { get, patch, post, put, remove } from '@/shared/api/fetch';
@@ -33,7 +33,9 @@ import {
 } from '@/shared/ui';
 import { HighlightedText } from '@/shared/ui/HighlightedText';
 
+import { useSelectedPostStore } from '@/features/posts/model/useSelectedPostStore';
 import PostAddDialog from '@/widgets/post/ui/PostAddDialog';
+import PostUpdateDialog from '@/widgets/post/ui/PostUpdateDialog';
 import type { Comment, Tag } from '../model/types';
 
 export const PostsManagerPage = () => {
@@ -42,10 +44,9 @@ export const PostsManagerPage = () => {
   const queryParams = new URLSearchParams(location.search);
 
   // 상태 관리
-  const { posts, setPosts, updatePost, deletePost } = usePostsStoreSelector([
+  const { posts, setPosts, deletePost } = usePostsStoreSelector([
     'posts',
     'setPosts',
-    'updatePost',
     'deletePost',
   ]);
   const [searchQuery, setSearchQuery] = useState(queryParams.get('search') || '');
@@ -54,7 +55,7 @@ export const PostsManagerPage = () => {
   const [total, setTotal] = useState(0);
   const [skip, setSkip] = useState(Number(queryParams.get('skip') || '0'));
   const [limit, setLimit] = useState(Number(queryParams.get('limit') || '10'));
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const { selectedPost, setSelectedPost } = useSelectedPostStore();
   const [sortBy, setSortBy] = useState(queryParams.get('sortBy') || '');
   const [sortOrder, setSortOrder] = useState(queryParams.get('sortOrder') || 'asc');
   const [showAddDialog, setShowAddDialog] = useState(false);
@@ -81,7 +82,6 @@ export const PostsManagerPage = () => {
     isLoading: postsLoading,
     error: postsError,
   } = useQueryPosts(limit, skip);
-  const { mutateAsync: mutatePostUpdate } = useUpdatePost();
   const { mutateAsync: mutatePostDelete } = useDeletePost();
 
   const { data: usersData, isLoading: usersLoading, error: usersError } = useQueryUsers();
@@ -171,21 +171,6 @@ export const PostsManagerPage = () => {
       console.error('태그별 게시물 가져오기 오류:', error);
     }
     setLoading(false);
-  };
-
-  // 게시물 업데이트
-  const handlePostUpdate = async () => {
-    if (!selectedPost) return;
-    try {
-      await mutatePostUpdate(selectedPost, {
-        onSuccess: (updatedPost) => {
-          updatePost(updatedPost);
-          setShowEditDialog(false);
-        },
-      });
-    } catch (error) {
-      console.error('게시물 업데이트 오류:', error);
-    }
   };
 
   // 게시물 삭제
@@ -573,24 +558,7 @@ export const PostsManagerPage = () => {
       <PostAddDialog open={showAddDialog} onOpenChange={setShowAddDialog} />
 
       {/* 게시물 수정 대화상자 */}
-      <CustomDialog open={showEditDialog} onOpenChange={setShowEditDialog} title='게시물 수정'>
-        <Input
-          placeholder='제목'
-          value={selectedPost?.title || ''}
-          onChange={(e) =>
-            selectedPost && setSelectedPost({ ...selectedPost, title: e.target.value })
-          }
-        />
-        <Textarea
-          rows={15}
-          placeholder='내용'
-          value={selectedPost?.body || ''}
-          onChange={(e) =>
-            selectedPost && setSelectedPost({ ...selectedPost, body: e.target.value })
-          }
-        />
-        <Button onClick={handlePostUpdate}>게시물 업데이트</Button>
-      </CustomDialog>
+      <PostUpdateDialog open={showEditDialog} onOpenChange={setShowEditDialog} />
 
       {/* 게시물 상세 보기 대화상자 */}
       <CustomDialog
