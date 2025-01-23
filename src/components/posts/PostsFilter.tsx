@@ -1,7 +1,9 @@
+import { useEffect } from "react"
 import { Search } from "lucide-react"
 import { Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../shared/ui"
 import { usePostsStore } from "../../stores/usePostsStore"
 import { Button } from "../../shared/ui"
+import { Tag } from "../../types/posts"
 
 export const PostsFilter = () => {
   const {
@@ -15,7 +17,12 @@ export const PostsFilter = () => {
     setSortBy,
     setSortOrder,
     fetchPosts,
+    fetchTags,
   } = usePostsStore()
+
+  useEffect(() => {
+    fetchTags()
+  }, [])
 
   const handleSearch = () => {
     fetchPosts(0, 10, selectedTag, searchQuery, sortBy, sortOrder)
@@ -46,7 +53,7 @@ export const PostsFilter = () => {
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">전체</SelectItem>
-          {tags.map((tag) => (
+          {(tags as Tag[]).map((tag) => (
             <SelectItem key={tag.id} value={tag.slug}>
               {tag.slug}
             </SelectItem>

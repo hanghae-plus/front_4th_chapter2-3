@@ -1,6 +1,7 @@
 import { create } from "zustand"
 import { devtools } from "zustand/middleware"
 import { Post, Comment, User } from "../types/posts"
+import { PostsState } from "../types/store"
 
 interface PostsState {
   posts: Post[]
@@ -17,6 +18,7 @@ interface PostsState {
   showEditDialog: boolean
   showEditCommentDialog: boolean
   showUserModal: boolean
+  tags: string[]
 
   // Actions
   setPosts: (posts: Post[]) => void
@@ -45,6 +47,8 @@ interface PostsState {
   setSortOrder: (sortOrder: string) => void
   setShowEditCommentDialog: (show: boolean) => void
   setShowUserModal: (show: boolean) => void
+
+  fetchTags: () => Promise<void>
 }
 
 export const usePostsStore = create<PostsState>()(
@@ -64,6 +68,7 @@ export const usePostsStore = create<PostsState>()(
       showEditDialog: false,
       showEditCommentDialog: false,
       showUserModal: false,
+      tags: [],
 
       setPosts: (posts) => set({ posts }),
       setTotal: (total) => set({ total }),
@@ -262,6 +267,16 @@ export const usePostsStore = create<PostsState>()(
       setSortOrder: (sortOrder: string) => set({ sortOrder }),
       setShowEditCommentDialog: (show: boolean) => set({ showEditCommentDialog: show }),
       setShowUserModal: (show: boolean) => set({ showUserModal: show }),
+
+      fetchTags: async () => {
+        try {
+          const response = await fetch("/api/tags")
+          const data = await response.json()
+          set({ tags: data })
+        } catch (error) {
+          console.error("태그 가져오기 오류:", error)
+        }
+      },
     }),
     { name: "PostsStore" },
   ),

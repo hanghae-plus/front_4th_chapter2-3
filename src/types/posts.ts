@@ -44,7 +44,6 @@ export interface Comment {
 }
 
 export interface Tag {
-  id: number
+  id: string
   slug: string
-  url: string
 }

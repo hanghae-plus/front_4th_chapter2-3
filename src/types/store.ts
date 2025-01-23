@@ -51,4 +51,5 @@ export interface PostsState {
   handleCommentEdit: (comment: Comment) => void
   handleCommentDelete: (id: number, postId: number) => Promise<void>
   handleUserDetail: (userId: number) => Promise<void>
+  fetchTags: () => Promise<void>
 }
