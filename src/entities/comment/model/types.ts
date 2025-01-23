@@ -1,8 +1,8 @@
-import { User } from "../../user/model/types"
+import { UserType } from "../../user/model/types"
 
-export interface Comment {
+export interface CommentType {
 	id: number
-	user: User
+	user: UserType
 	body: string
 	likes: number
 }

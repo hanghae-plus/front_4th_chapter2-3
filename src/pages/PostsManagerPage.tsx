@@ -19,36 +19,80 @@ import {
   SelectValue,
   Table,
   TableBody,
-  TableCell,
   TableHead,
   TableHeader,
   TableRow,
   Textarea,
 } from "../shared/ui"
 import { atom, useAtom, useSetAtom } from "jotai"
-import { User } from "../entities/user/model/types"
 import { Post, PostItem } from "../entities/post"
 import { Tag } from "../entities/tag"
 import { usePostList } from "../features/post"
 import { PostsTableRow } from "../features/post/ui/PostsTableRow"
+import { CommentType } from "../entities/comment/model/types"
+import { UserInfoType } from "../entities/user/model/types"
 
 const posts = atom<Post>({ posts: [], total: 0, skip: 0, limit: 0 });
-const users = atom<User[]>([]);
 const total = atom(0);
 const tags = atom<Tag[]>([]);
 const newPost = atom({ title: "", body: "", userId: 1 });
 const selectedPostAtom = atom<PostItem | null>(null);
-const commentListAtom = atom<{ [key: number]: Comment[] }>([]);
-const selectedCommentAtom = atom<Comment | null>(null);
+const commentListAtom = atom<{ [key: number]: CommentType[] }>([]);
+const selectedCommentAtom = atom<CommentType | null>(null);
 
 const PostsManager = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const queryParams = new URLSearchParams(location.search)
 
+  const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"))
+  const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"))
+  const [searchQuery, setSearchQuery] = useState(queryParams.get("search") || "")
+  const [sortBy, setSortBy] = useState(queryParams.get("sortBy") || "")
+  const [sortOrder, setSortOrder] = useState(queryParams.get("sortOrder") || "asc")
+  const [selectedTag, setSelectedTag] = useState(queryParams.get("tag") || "")
+
+  // URL 업데이트 함수
+  const updateURL = (
+    skip: number, 
+    limit: number, 
+    searchQuery: string, 
+    sortBy: string, 
+    sortOrder: string, 
+    selectedTag: string
+  ) => {
+    const params = new URLSearchParams()
+    if (skip) params.set("skip", skip.toString())
+    if (limit) params.set("limit", limit.toString())
+    if (searchQuery) params.set("search", searchQuery)
+    if (sortBy) params.set("sortBy", sortBy)
+    if (sortOrder) params.set("sortOrder", sortOrder)
+    if (selectedTag) params.set("tag", selectedTag)
+    navigate(`?${params.toString()}`)
+  }
+
+  useEffect(() => {
+    if (selectedTag) {
+      fetchPostsByTag(selectedTag)
+    } else {
+      fetchPosts()
+    }
+    updateURL(skip, limit, searchQuery, sortBy, sortOrder, selectedTag)
+  }, [skip, limit, sortBy, sortOrder, selectedTag])
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search)
+    setSkip(parseInt(params.get("skip") || "0"))
+    setLimit(parseInt(params.get("limit") || "10"))
+    setSearchQuery(params.get("search") || "")
+    setSortBy(params.get("sortBy") || "")
+    setSortOrder(params.get("sortOrder") || "asc")
+    setSelectedTag(params.get("tag") || "")
+  }, [location.search])
+
+
   // 게시물 가져오기
-  
-  const fetchPosts = () => { usePostList(); }
+  const fetchPosts = usePostList(skip, limit);
 	
   // 게시물 검색
   const [postList, setPostList] = useAtom(posts);
@@ -107,7 +151,7 @@ const PostsManager = () => {
 
       const postsWithUsers = postsData.posts.map((post: PostItem) => ({
         ...post,
-        author: usersData.users.find((user: User) => user.id === post.author.id),
+        author: usersData.users.find((user: UserInfoType) => user.id === post.userId),
       }))
 
       setPostList(postsWithUsers)
@@ -152,9 +196,9 @@ const PostsManager = () => {
         body: JSON.stringify(selectedPost),
       })
       const data = await response.json()
-      setPostList((prev) => ({
-        ...prev,
-        posts: prev.posts.map((post) => (post.id === data.id ? data : post)),
+      setPostList((post) => ({
+        ...post,
+        posts: post.posts.map((post) => (post.id === data.id ? data : post)),
       }))
       setShowEditDialog(false)
     } catch (error) {
@@ -168,9 +212,9 @@ const PostsManager = () => {
       await fetch(`/api/posts/${id}`, {
         method: "DELETE",
       })
-      setPostList((postItems) => ({
-        ...postItems,
-        posts: postItems.posts.filter((post) => post.id !== id),
+      setPostList((post) => ({
+        ...post,
+        posts: post.posts.filter((post) => post.id !== id),
       }))
     } catch (error) {
       console.error("게시물 삭제 오류:", error)
@@ -286,7 +330,7 @@ const PostsManager = () => {
   const [selectedUser, setSelectedUser] = useState(null)
   const [showUserModal, setShowUserModal] = useState(false)
 
-  const openUserModal = async (user: User) => {
+  const openUserModal = async (user: UserInfoType) => {
     try {
       const response = await fetch(`/api/users/${user.id}`)
       const userData = await response.json()
@@ -296,44 +340,6 @@ const PostsManager = () => {
       console.error("사용자 정보 가져오기 오류:", error)
     }
   }
-
-  const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"))
-  const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"))
-  const [searchQuery, setSearchQuery] = useState(queryParams.get("search") || "")
-  const [sortBy, setSortBy] = useState(queryParams.get("sortBy") || "")
-  const [sortOrder, setSortOrder] = useState(queryParams.get("sortOrder") || "asc")
-  const [selectedTag, setSelectedTag] = useState(queryParams.get("tag") || "")
-
-  // URL 업데이트 함수
-  const updateURL = () => {
-    const params = new URLSearchParams()
-    if (skip) params.set("skip", skip.toString())
-    if (limit) params.set("limit", limit.toString())
-    if (searchQuery) params.set("search", searchQuery)
-    if (sortBy) params.set("sortBy", sortBy)
-    if (sortOrder) params.set("sortOrder", sortOrder)
-    if (selectedTag) params.set("tag", selectedTag)
-    navigate(`?${params.toString()}`)
-  }
-
-  useEffect(() => {
-    if (selectedTag) {
-      fetchPostsByTag(selectedTag)
-    } else {
-      fetchPosts()
-    }
-    updateURL()
-  }, [skip, limit, sortBy, sortOrder, selectedTag])
-
-  useEffect(() => {
-    const params = new URLSearchParams(location.search)
-    setSkip(parseInt(params.get("skip") || "0"))
-    setLimit(parseInt(params.get("limit") || "10"))
-    setSearchQuery(params.get("search") || "")
-    setSortBy(params.get("sortBy") || "")
-    setSortOrder(params.get("sortOrder") || "asc")
-    setSelectedTag(params.get("tag") || "")
-  }, [location.search])
 
   // 하이라이트 함수 추가
   const highlightText = (text: string, highlight: string) => {
@@ -363,7 +369,7 @@ const PostsManager = () => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {postList.posts.map((post) => (
+        {postList.posts.map((post: PostItem) => (
           <PostsTableRow
 						key={post.id}
 						post={post}
@@ -384,7 +390,7 @@ const PostsManager = () => {
         <Button
           size="sm"
           onClick={() => {
-            setNewComment((prev) => ({ ...prev, postId }))
+            setNewComment((comment) => ({ ...comment, postId }))
             setShowAddCommentDialog(true)
           }}
         >
@@ -393,7 +399,7 @@ const PostsManager = () => {
         </Button>
       </div>
       <div className="space-y-1">
-        {commentList[postId]?.map((comment) => (
+        {commentList[postId]?.map((comment: CommentType) => (
           <div key={comment.id} className="flex items-center justify-between text-sm border-b pb-1">
             <div className="flex items-center space-x-2 overflow-hidden">
               <span className="font-medium truncate">{comment.user.username}:</span>

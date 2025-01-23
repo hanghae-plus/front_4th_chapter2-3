@@ -1,4 +1,4 @@
-import { User } from "../../user/model/types";
+import { UserInfoType } from "../../user/model/types";
 
 export interface PostItem {
   id: number;
@@ -10,8 +10,8 @@ export interface PostItem {
     dislikes: number;
   };
   views: number;
-	// author의 value 값이 User 타입으로 들어오게 설정해야하나..?
-  author: User;
+  userId: number;
+  author: UserInfoType;
 }
 
 export interface Post {

@@ -5,3 +5,4 @@ export { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 export { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './Select';
 export { Textarea } from './Textarea';
 export { Dialog, DialogHeader, DialogContent, DialogTitle } from './Dialog';
+export { HighlightText } from './HighlightText';
