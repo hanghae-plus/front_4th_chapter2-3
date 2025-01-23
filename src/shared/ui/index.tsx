@@ -1,7 +1,20 @@
-export * from './Button';
-export * from './Input';
-export * from './Card';
-export * from './Dialog';
-export * from './Select';
-export * from './Table';
-export * from './Textarea';
+export {
+  Select,
+  SelectGroup,
+  SelectItem,
+  SelectContent,
+  SelectTrigger,
+  SelectValue,
+} from './Select';
+export { Button, Input, Textarea } from './Actions.tsx';
+export {
+  DialogTrigger,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogOverlay,
+  DialogPortal,
+  DialogTitle,
+} from './Dialog';
+export { Card, CardContent, CardHeader, CardTitle } from './Card';
+export { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './Table';

@@ -1,6 +1,6 @@
-import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { forwardRef } from 'react';
 import { X } from 'lucide-react';
+import * as DialogPrimitive from '@radix-ui/react-dialog';
 
 // 대화상자 컴포넌트
 export const Dialog = DialogPrimitive.Root;
@@ -31,3 +31,23 @@ export const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(
   ),
 );
 DialogContent.displayName = DialogPrimitive.Content.displayName;
+
+export const DialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
+  <div className={`flex flex-col space-y-1.5 text-center sm:text-left ${className}`} {...props} />
+);
+DialogHeader.displayName = 'DialogHeader';
+
+interface DialogTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
+  className?: string;
+}
+
+export const DialogTitle = forwardRef<HTMLHeadingElement, DialogTitleProps>(
+  ({ className, ...props }, ref) => (
+    <DialogPrimitive.Title
+      ref={ref}
+      className={`text-lg font-semibold leading-none tracking-tight ${className}`}
+      {...props}
+    />
+  ),
+);
+DialogTitle.displayName = DialogPrimitive.Title.displayName;
