@@ -4,17 +4,17 @@ import { useState } from "react"
 import { queryClient } from "../../../../shared/api"
 import { useModal } from "../../../../shared/lib"
 import { commentQueries, commentMutations } from "../../../../entities/comment/api"
-import { Comment } from "../../../../entities/comment/model"
+import { Comment, useSelectedComment } from "../../../../entities/comment/model"
 
 export const useEditCommentModal = (postId: number | undefined) => {
+  const { selectedComment, setSelectedComment } = useSelectedComment()
   const { isOpen, open, close } = useModal()
-  const [commentId, setCommentId] = useState<number | undefined>(undefined)
   const [body, setBody] = useState<string | null>(null)
 
   const updateCommentMutation = useMutation({
     ...commentMutations.updateMutation(),
-    onSuccess: (data) => {
-      if (!postId || !commentId) return
+    onSuccess: (data, { id: commentId }) => {
+      if (!postId || !selectedComment) return
 
       queryClient.setQueryData<{ comments: Comment[] }>(commentQueries.byPost(postId), (prev) => {
         if (!prev) return { comments: [] }
@@ -37,8 +37,8 @@ export const useEditCommentModal = (postId: number | undefined) => {
     },
   })
 
-  const selectComment = (id: number, body: string) => {
-    setCommentId(id)
+  const selectComment = (comment: Comment) => {
+    setSelectedComment(comment)
     setBody(body)
   }
 
@@ -47,10 +47,10 @@ export const useEditCommentModal = (postId: number | undefined) => {
   }
 
   const handleSubmit = () => {
-    if (!body || !commentId) return
+    if (!body || !selectedComment) return
 
     updateCommentMutation.mutateAsync({
-      id: commentId,
+      id: selectedComment.id,
       body: body,
     })
   }

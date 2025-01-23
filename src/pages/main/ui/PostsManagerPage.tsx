@@ -46,10 +46,10 @@ export const PostsManagerPage = () => {
   const sortOrder = (queryParams.get("sortOrder") || "asc") as SortOrder
   const selectedTag = queryParams.get("tag") || ""
 
-  const [selectedComment, setSelectedComment] = useState<Comment | null>(null)
   const { page, pageSize, onPageChange, onPageSizeChange } = usePagination()
 
   const { updateURLParams } = useQueryParams()
+  const { resetSelectedComment } = useSelectedComment()
 
   const { data: list, isLoading: isListLoading } = useQuery({
     ...postQueries.listQuery({
