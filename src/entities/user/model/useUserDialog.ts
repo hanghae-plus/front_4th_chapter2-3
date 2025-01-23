@@ -8,7 +8,7 @@ export const useUserDialog = () => {
 
   const { data: user, isLoading } = useGetUser(selectedUserId)
 
-  const handleUserDialog = (userId: number) => {
+  const handleDialog = (userId: number) => {
     setSelectedUserId(userId)
     open()
   }
@@ -17,7 +17,7 @@ export const useUserDialog = () => {
     isOpen,
     user,
     isLoading,
-    handleUserDialog,
+    handleDialog,
     handleClose: close,
   }
 }

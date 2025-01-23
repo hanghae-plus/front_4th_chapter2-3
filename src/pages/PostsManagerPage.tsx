@@ -30,6 +30,8 @@ import { useGetTags } from "../entities/tag/api/useGetTag"
 import { useUserDialog } from "../entities/user/model/useUserDialog"
 import { useDeletePost } from "../entities/post/api/useDeletePost"
 import { highlightText } from "../shared/lib/highlightText"
+import { usePostDetailDialog } from "../entities/post/model/usePostDetailDialog"
+import { PostDetailDialog } from "../entities/post/ui/PostDetailDialog"
 
 interface Post {
   id: number
@@ -194,9 +196,15 @@ const PostsManager = () => {
   const [showEditCommentDialog, setShowEditCommentDialog] = useState<boolean>(false)
 
   // Dialogs and modals state
-  const [showPostDetailDialog, setShowPostDetailDialog] = useState<boolean>(false)
+  //const [showPostDetailDialog, setShowPostDetailDialog] = useState<boolean>(false)
   //const [showUserModal, setShowUserModal] = useState<boolean>(false)
-  const { isOpen, handleClose, user, handleUserDialog } = useUserDialog()
+  const {
+    isOpen: isOpenPostDetail,
+    handleDialog: handlePostDetail,
+    handleClose: handleClosePostDetail,
+    post,
+  } = usePostDetailDialog()
+  const { isOpen, handleClose: handleCloseUserDialog, user, handleDialog: handleUserDialog } = useUserDialog()
 
   //user
   //const [selectedUser, setSelectedUser] = useState<UserDetail | null>(null)
@@ -425,11 +433,11 @@ const PostsManager = () => {
   }
 
   // 게시물 상세 보기
-  const openPostDetail = (post: Post) => {
-    setSelectedPost(post)
-    fetchComments(post.id)
-    setShowPostDetailDialog(true)
-  }
+  // const openPostDetail = (post: Post) => {
+  //   setSelectedPost(post)
+  //   fetchComments(post.id)
+  //   setShowPostDetailDialog(true)
+  // }
 
   // 사용자 모달 열기
   // const openUserModal = async (user: User) => {
@@ -521,7 +529,7 @@ const PostsManager = () => {
             </TableCell>
             <TableCell>
               <div className="flex items-center gap-2">
-                <Button variant="ghost" size="sm" onClick={() => openPostDetail(post)}>
+                <Button variant="ghost" size="sm" onClick={() => handlePostDetail(post.id)}>
                   <MessageSquare className="w-4 h-4" />
                 </Button>
                 <Button
@@ -780,20 +788,15 @@ const PostsManager = () => {
       </Dialog>
 
       {/* 게시물 상세 보기 대화상자 */}
-      <Dialog open={showPostDetailDialog} onOpenChange={setShowPostDetailDialog}>
-        <DialogContent className="max-w-3xl">
-          <DialogHeader>
-            <DialogTitle>{highlightText(selectedPost?.title ?? "", searchQuery)}</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <p>{highlightText(selectedPost?.body ?? "", searchQuery)}</p>
-            {renderComments(selectedPost?.id ?? 0)}
-          </div>
-        </DialogContent>
-      </Dialog>
+      <PostDetailDialog
+        open={isOpenPostDetail}
+        onClose={handleClosePostDetail}
+        post={post}
+        renderComments={renderComments}
+      />
 
       {/* 사용자 다이얼로그 */}
-      {user && <UserDialog open={isOpen} onClose={handleClose} user={user} />}
+      {user && <UserDialog open={isOpen} onClose={handleCloseUserDialog} user={user} />}
     </Card>
   )
 }
