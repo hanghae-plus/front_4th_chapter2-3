@@ -5,8 +5,6 @@ import { usePostStore } from "@core/store/usePostStore.ts";
 export const usePostFilter = () => {
   const { posts, setPosts, filters, setFilters } = usePostStore();
 
-  console.log("usePostFilter", posts, filters);
-
   useEffect(() => {
     let filteredList = [...posts];
 

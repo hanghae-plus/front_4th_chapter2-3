@@ -9,15 +9,16 @@ import { usePostStore } from "@core/store/usePostStore.ts";
  */
 export function useInitializePostStore() {
   const [searchParams] = useSearchParams();
-  const { data: postResponse, isLoading: isLoadingPosts } = useFetchPostsQuery();
+  const { data: postResponse, isLoading: isLoadingPosts, isFetching } = useFetchPostsQuery();
   const { data: userResponse, isLoading: isLoadingUsers } = useFetchUsersQuery();
   const [isLoading, setIsLoading] = useState(isLoadingPosts || isLoadingUsers);
   const { setPosts, setFilters } = usePostStore();
 
+  console.log("loading", isFetching, postResponse);
+
   useEffect(() => {
     if (!postResponse || !userResponse) return;
 
-    console.log(postResponse.posts);
     // 1. 게시물에 유저 정보 추가
     const enrichedPosts = postResponse.posts.map((post) => ({
       ...post,
@@ -36,7 +37,6 @@ export function useInitializePostStore() {
 
     // 3. 필터 적용 후 게시물 저장
     setFilters(urlFilters);
-    console.log(enrichedPosts);
     setPosts(enrichedPosts);
     setIsLoading(false);
   }, [postResponse, userResponse, searchParams]);

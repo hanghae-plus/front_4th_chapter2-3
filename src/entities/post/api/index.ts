@@ -41,13 +41,10 @@ export const useAddPostQuery = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (newPost: Partial<Post>) => axios.post("/api/posts/add", newPost).then((res) => res.data),
-    meta: {
-      invalidates: queryClient.invalidateQueries({ queryKey: ["posts"] }),
-    },
+    mutationFn: (newPost: Partial<Post>) => axios.post("/api/posts/add", newPost),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["posts"] }),
   });
 };
-
 // 게시글 업데이트하기
 export const useUpdatePostQuery = () => {
   const queryClient = useQueryClient();

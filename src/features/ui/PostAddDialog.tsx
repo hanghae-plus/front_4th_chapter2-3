@@ -12,9 +12,12 @@ const PostAddDialog = () => {
   const { addPost } = usePost();
   const [newPost, setNewPost] = useState<NewPost>({ title: "", body: "", userId: 1 });
 
-  const handleAddPost = async () => {
-    await addPost(newPost);
-    close();
+  const handleAddPost = (post: NewPost) => {
+    addPost(post, {
+      onSuccess: () => {
+        close();
+      },
+    });
   };
 
   return (
@@ -41,7 +44,7 @@ const PostAddDialog = () => {
             value={newPost.userId}
             onChange={(e) => setNewPost({ ...newPost, userId: Number(e.target.value) })}
           />
-          <Button onClick={handleAddPost}>게시물 추가</Button>
+          <Button onClick={() => handleAddPost(newPost)}>게시물 추가</Button>
         </div>
       </DialogContent>
     </Dialog>
