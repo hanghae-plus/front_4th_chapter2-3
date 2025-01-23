@@ -1,14 +1,15 @@
 import { FC } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../../shared/ui/Dialog/ui"
-import useCommentModalStore from "../model/useCommentModalStore"
+import usePostModalStore from "../model/usePostModalStore"
 
-export const CommentModal: FC = () => {
-  const { visible, children, title, closeCommentModal } = useCommentModalStore()
+export const PostModal: FC = () => {
+  const { visible, children, title, closePostModal } = usePostModalStore()
+
   return (
     <Dialog
       open={visible}
       onOpenChange={() => {
-        closeCommentModal()
+        closePostModal()
       }}
     >
       <DialogContent>
