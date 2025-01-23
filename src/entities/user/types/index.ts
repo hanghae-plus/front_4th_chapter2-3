@@ -1,80 +1,34 @@
+export interface Address {
+  address: string
+  city: string
+  state: string
+}
+
+interface Company {
+  name: string
+  title: string
+}
+
 export interface User {
   id: number
-  username: string
   image: string
+  username: string
+  firstName: string
+  lastName: string
+  age: number
+  email: string
+  phone: string
+  address: Address
+  company: Company
 }
 
 export interface UserResponse {
-  users: User[]
-  total: number
-  skip: number
   limit: number
+  skip: number
+  total: number
+  users: User[]
 }
 
-export interface UserDetail extends User {
-  firstName: string
-  lastName: string
-  maidenName: string
-  age: number
-  gender: string
-  email: string
-  phone: string
-  password: string
-  birthDate: string
-  bloodGroup: string
-  height: number
-  weight: number
-  eyeColor: string
-  hair: {
-    color: string
-    type: string
-  }
-  ip: string
-  address: {
-    address: string
-    city: string
-    state: string
-    stateCode: string
-    postalCode: string
-    coordinates: {
-      lat: number
-      lng: number
-    }
-    country: string
-  }
-  macAddress: string
-  university: string
-  bank: {
-    cardExpire: string
-    cardNumber: string
-    cardType: string
-    currency: string
-    iban: string
-  }
-  company: {
-    department: string
-    name: string
-    title: string
-    address: {
-      address: string
-      city: string
-      state: string
-      stateCode: string
-      postalCode: string
-      coordinates: {
-        lat: number
-        lng: number
-      }
-      country: string
-    }
-  }
-  ein: string
-  ssn: string
-  userAgent: string
-  crypto: {
-    coin: string
-    wallet: string
-    network: string
-  }
-  role: string
+export type CommentUser = Pick<User, "id" | "username"> & {
+  fullName: string
 }
