@@ -2,6 +2,10 @@ import { BaseDialog, Button, Input, Textarea } from '../../../shared/ui';
 import usePostStore from '../model/usePostStore.ts';
 import { initNewPost } from '../../../entities/post/config/initData.ts';
 import { postPost } from '../../../entities/post/api';
+import { NewPost } from '../../../entities/post/model';
+import { ChangeEvent } from 'react';
+import { transformFormValue } from '../../../shared/lib';
+import { FormTypeElement } from '../../../shared/model';
 
 const AddPostDialog = () => {
   const { showAddDialog, setShowAddDialog, newPost, setNewPost, setPosts } = usePostStore([
@@ -11,6 +15,13 @@ const AddPostDialog = () => {
     'setNewPost',
     'setPosts',
   ]);
+
+  const handleChangePost =
+    <T extends keyof NewPost>(key: T) =>
+    (e: ChangeEvent<FormTypeElement>) => {
+      const newValue = transformFormValue<NewPost, T>(e, key);
+      setNewPost((prev) => ({ ...prev, ...newValue }));
+    };
 
   // 게시물 추가
   const addPost = async () => {
@@ -31,24 +42,18 @@ const AddPostDialog = () => {
   return (
     <BaseDialog open={showAddDialog} onOpenChange={setShowAddDialog} title='새 게시물 추가'>
       <div className='space-y-4'>
-        <Input
-          placeholder='제목'
-          value={newPost.title}
-          onChange={(e) => setNewPost((prevPost) => ({ ...prevPost, title: e.target.value }))}
-        />
+        <Input placeholder='제목' value={newPost.title} onChange={handleChangePost('title')} />
         <Textarea
           rows={30}
           placeholder='내용'
           value={newPost.body}
-          onChange={(e) => setNewPost((prevPost) => ({ ...prevPost, body: e.target.value }))}
+          onChange={handleChangePost('body')}
         />
         <Input
           type='number'
           placeholder='사용자 ID'
           value={newPost.userId}
-          onChange={(e) =>
-            setNewPost((prevPost) => ({ ...prevPost, userId: Number(e.target.value) }))
-          }
+          onChange={handleChangePost('userId')}
         />
         <Button onClick={addPost}>게시물 추가</Button>
       </div>
