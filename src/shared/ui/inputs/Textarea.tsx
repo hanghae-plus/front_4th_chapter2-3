@@ -1,6 +1,6 @@
 import { forwardRef } from "react"
 
-export const Textarea = forwardRef<HTMLTextAreaElement, React.HTMLAttributes<HTMLTextAreaElement>>(
+export const Textarea = forwardRef<HTMLTextAreaElement, React.ComponentProps<"textarea">>(
   ({ className, ...props }, ref) => {
     return (
       <textarea
