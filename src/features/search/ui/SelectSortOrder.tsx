@@ -1,8 +1,8 @@
-import { useSearchStore } from '../model';
+import { useQueryStore } from '../model';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui';
 
 const SelectSortOrder = () => {
-  const { sortOrder, setSortOrder } = useSearchStore();
+  const { sortOrder, setSortOrder } = useQueryStore();
   return (
     <Select value={sortOrder} onValueChange={setSortOrder}>
       <SelectTrigger className='w-[180px]'>

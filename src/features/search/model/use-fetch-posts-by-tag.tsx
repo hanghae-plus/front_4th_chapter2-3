@@ -2,8 +2,8 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import useFetchPosts from './use-fetch-posts.tsx';
-import { useSearchStore } from './use-search-store.ts';
-import { usePostStore } from '../../post/model';
+import { useQueryStore } from './use-query-store.ts';
+import { usePostStore } from '../../post';
 
 import { getPostsByTag } from '@/entities/post/api';
 import { getUsers } from '@/entities/user/api';
@@ -13,7 +13,7 @@ const useFetchPostsByTag = () => {
   const navigate = useNavigate();
   const { fetchPosts } = useFetchPosts();
   const { setPosts, setLoading } = usePostStore();
-  const { setTotal, skip, limit, sortBy, sortOrder, selectedTag, updateParams } = useSearchStore();
+  const { setTotal, skip, limit, sortBy, sortOrder, selectedTag, updateParams } = useQueryStore();
 
   // 태그별 게시물 가져오기
   const fetchPostsByTag = async (tag: string) => {

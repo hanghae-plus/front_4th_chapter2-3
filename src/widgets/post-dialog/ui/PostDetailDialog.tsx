@@ -1,11 +1,11 @@
-import { usePostStore } from '../model';
-import { useSearchStore } from '../../search/model';
-import CommentList from '@/widgets/comment-list/ui/CommentList.tsx';
+import { CommentList } from '@/widgets/comment-list';
+import { usePostStore } from '@/features/post';
+import { useQueryStore } from '@/features/search/model';
 import { BaseDialog, HighlightText } from '@/shared/ui';
 
 const PostDetailDialog = () => {
   const { showPostDetailDialog, setShowPostDetailDialog, selectedPost } = usePostStore();
-  const { searchQuery } = useSearchStore();
+  const { searchQuery } = useQueryStore();
 
   return (
     <BaseDialog

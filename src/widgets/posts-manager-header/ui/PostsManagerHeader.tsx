@@ -1,8 +1,8 @@
 import { Plus } from 'lucide-react';
-import { usePostStore } from '../model';
+import { usePostStore } from '@/features/post';
 import { Button, CardHeader, CardTitle } from '@/shared/ui';
 
-const PostHeader = () => {
+const PostsManagerHeader = () => {
   const { setShowAddDialog } = usePostStore();
   return (
     <CardHeader>
@@ -17,4 +17,4 @@ const PostHeader = () => {
   );
 };
 
-export default PostHeader;
+export default PostsManagerHeader;

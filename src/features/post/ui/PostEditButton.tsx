@@ -1,5 +1,5 @@
 import { Edit2 } from 'lucide-react';
-import { usePostStore } from '../model';
+import { usePostStore } from '../index.ts';
 import { Post } from '@/entities/post/model';
 import { Button } from '@/shared/ui';
 

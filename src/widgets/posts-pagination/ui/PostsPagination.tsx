@@ -1,8 +1,8 @@
-import { useSearchStore } from '../model';
+import { useQueryStore } from '@/features/search/model';
 import { Button, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui';
 
-const Pagination = () => {
-  const { limit, setLimit, skip, setSkip, total } = useSearchStore();
+export const PostsPagination = () => {
+  const { limit, setLimit, skip, setSkip, total } = useQueryStore();
   return (
     <div className='flex justify-between items-center'>
       <div className='flex items-center gap-2'>
@@ -30,5 +30,3 @@ const Pagination = () => {
     </div>
   );
 };
-
-export default Pagination;

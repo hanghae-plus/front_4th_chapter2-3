@@ -23,9 +23,9 @@ interface Action {
   updateParams: () => string;
 }
 
-type SearchStoreProps = State & Action;
+type QueryStoreProps = State & Action;
 
-const useSearchStoreCreator: StateCreator<SearchStoreProps> = (set, get) => ({
+const useQueryStoreCreator: StateCreator<QueryStoreProps> = (set, get) => ({
   total: 0,
   skip: 0,
   limit: 10,
@@ -64,4 +64,4 @@ const useSearchStoreCreator: StateCreator<SearchStoreProps> = (set, get) => ({
   },
 });
 
-export const useSearchStore = create(useSearchStoreCreator);
+export const useQueryStore = create(useQueryStoreCreator);

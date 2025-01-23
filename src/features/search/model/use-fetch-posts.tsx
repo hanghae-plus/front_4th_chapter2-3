@@ -1,5 +1,5 @@
-import { useSearchStore } from './use-search-store.ts';
-import { usePostStore } from '../../post/model';
+import { useQueryStore } from './use-query-store.ts';
+import { usePostStore } from '../../post';
 
 import { getPosts } from '@/entities/post/api';
 import { getUsers } from '@/entities/user/api';
@@ -7,7 +7,7 @@ import { findUserById } from '@/entities/user/model';
 
 const useFetchPosts = () => {
   const { setLoading, setPosts } = usePostStore();
-  const { limit, skip, setTotal } = useSearchStore();
+  const { limit, skip, setTotal } = useQueryStore();
 
   // 게시물 가져오기
   const fetchPosts = async () => {

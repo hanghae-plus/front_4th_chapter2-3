@@ -1,12 +1,12 @@
 import useFetchPosts from './use-fetch-posts.tsx';
-import { useSearchStore } from './use-search-store.ts';
-import { usePostStore } from '../../post/model';
+import { useQueryStore } from './use-query-store.ts';
+import { usePostStore } from '../../post';
 
 import { getPostsByQuery } from '@/entities/post/api';
 
 const useFetchPostsByQuery = () => {
   const { setLoading, setPosts } = usePostStore();
-  const { searchQuery, setTotal } = useSearchStore();
+  const { searchQuery, setTotal } = useQueryStore();
   const { fetchPosts } = useFetchPosts();
   // 게시물 검색
   const fetchPostsByQuery = async () => {

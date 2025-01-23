@@ -1,5 +1,5 @@
 import { Trash2 } from 'lucide-react';
-import { usePostStore } from '../model';
+import { usePostStore } from '../index.ts';
 import { deletePost } from '@/entities/post/api';
 import { Button } from '@/shared/ui';
 
@@ -7,7 +7,7 @@ interface DeletePostButtonProps {
   postId: number;
 }
 
-const DeletePostButton = ({ postId }: DeletePostButtonProps) => {
+const PostDeleteButton = ({ postId }: DeletePostButtonProps) => {
   const { posts, setPosts } = usePostStore();
 
   // 게시물 삭제
@@ -33,4 +33,4 @@ const DeletePostButton = ({ postId }: DeletePostButtonProps) => {
   );
 };
 
-export default DeletePostButton;
+export default PostDeleteButton;

@@ -1,15 +1,14 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSearchStore } from '../../search/model';
-import { Post } from '@/entities/post/model';
+import { useQueryStore } from '../../search/model';
 
-interface TagListProps {
-  post: Post;
+interface PostTagListProps {
+  tags?: string[];
 }
 
-const TagList = ({ post }: TagListProps) => {
+const PostTagList = ({ tags }: PostTagListProps) => {
   const navigate = useNavigate();
-  const { selectedTag, setSelectedTag, updateParams } = useSearchStore();
+  const { selectedTag, setSelectedTag, updateParams } = useQueryStore();
 
   const getClassName = useMemo(
     () => (tag: string) =>
@@ -26,7 +25,7 @@ const TagList = ({ post }: TagListProps) => {
 
   return (
     <div className='flex flex-wrap gap-1'>
-      {post.tags?.map((tag) => (
+      {tags?.map((tag) => (
         <span
           key={tag}
           className={`px-1 text-[9px] font-semibold rounded-[4px] cursor-pointer ${getClassName(
@@ -41,4 +40,4 @@ const TagList = ({ post }: TagListProps) => {
   );
 };
 
-export default TagList;
+export default PostTagList;

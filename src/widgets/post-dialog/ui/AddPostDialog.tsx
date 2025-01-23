@@ -1,6 +1,6 @@
 import { ChangeEvent } from 'react';
 
-import { usePostStore } from '../model';
+import { usePostStore } from '@/features/post';
 
 import { postPost } from '@/entities/post/api';
 import { NewPost } from '@/entities/post/model';
