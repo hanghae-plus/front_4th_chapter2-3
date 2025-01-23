@@ -1,7 +1,6 @@
-import { TableBody, TableHead, TableHeader, TableRow } from "@shared/ui";
-import { Table } from "lucide-react";
+import { Table, TableBody, TableHead, TableHeader, TableRow } from "@shared/ui";
 import PostTableRow from "./PostTableRow";
-import { usePostStore } from "../model";
+import { usePostStore } from "@features/post";
 
 const PostTable = () => {
   const { posts } = usePostStore();
@@ -19,7 +18,7 @@ const PostTable = () => {
       </TableHeader>
       <TableBody>
         {posts.map((post) => (
-          <PostTableRow {...post} />
+          <PostTableRow key={post.id} {...post} />
         ))}
       </TableBody>
     </Table>

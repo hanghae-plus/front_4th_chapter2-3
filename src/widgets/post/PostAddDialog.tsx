@@ -1,9 +1,9 @@
-import { Dialog, DialogContent, DialogTitle } from "@radix-ui/react-dialog";
-import { Button, DialogHeader, Input, Textarea } from "@shared/ui";
-import { usePostStore } from "../model";
+import { Dialog, DialogContent, DialogTitle, Button, DialogHeader, Input, Textarea } from "@shared/ui";
+
 import { Post, updatePost } from "@entities/post";
-import { getPostWithUser } from "../model/post";
 import { useUserQuery } from "@features/user";
+import { getPostWithUser } from "@features/post/model/post";
+import { usePostStore } from "@features/post";
 
 const PostAddDialog = () => {
   const { posts, selectedPost, showEditDialog, setPosts, setSelectedPost, setShowEditDialog } = usePostStore();

@@ -1,8 +1,7 @@
 import { Button } from "@shared/ui";
 import { Plus } from "lucide-react";
-import { useCommentQuery } from "../model";
+import { useCommentQuery, useCommentStore } from "@features/comment";
 import { usePostStore } from "@features/post";
-import { useCommentStore } from "../model/useCommentStore";
 import CommentRow from "./CommentRow";
 
 const CommentList = () => {

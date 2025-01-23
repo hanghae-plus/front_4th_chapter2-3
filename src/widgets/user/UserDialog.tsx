@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogTitle } from "@radix-ui/react-dialog";
 import { DialogHeader } from "@shared/ui";
-import { useUserStore } from "../model/useUserStore";
+import { useUserStore } from "@features/user";
 
 const UserDialog = () => {
   const { selectedUser, showUserModal, setShowUserModal } = useUserStore();

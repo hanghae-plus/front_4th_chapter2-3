@@ -1,14 +1,14 @@
 import { deletePost, Post, PostWithUser } from "@entities/post";
 import { Button, TableCell, TableRow } from "@shared/ui";
 import { Edit2, MessageSquare, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react";
-import { usePostQuery, usePostStore } from "../model";
+import { usePostQuery, usePostStore } from "@features/post";
 import { getUser, User } from "@entities/user";
 import { highlightText } from "@shared/lib";
-import { useUserStore } from "@features/user/model/useUserStore";
+import { useUserStore } from "@features/user";
 
 const PostTableRow = (post: PostWithUser) => {
   const { posts, setPosts, setSelectedPost, setShowEditDialog, setShowPostDetailDialog } = usePostStore();
-  const { searchQuery, updatePostSearchParams } = usePostQuery();
+  const { searchQuery, selectedTag, updatePostSearchParams } = usePostQuery();
 
   const { setSelectedUser, setShowUserModal } = useUserStore();
 
@@ -25,13 +25,11 @@ const PostTableRow = (post: PostWithUser) => {
     setPosts(posts.filter((post) => post.id !== id));
   };
 
-  // 게시물 상세 보기
   const openPostDetail = (post: Post) => {
     setSelectedPost(post);
     setShowPostDetailDialog(true);
   };
 
-  // 사용자 모달 열기
   const openUserModal = async (user: User) => {
     try {
       const userData = await getUser(user.id);
@@ -69,7 +67,15 @@ const PostTableRow = (post: PostWithUser) => {
         </div>
       </TableCell>
       <TableCell>
-        <div className="flex items-center space-x-2 cursor-pointer" onClick={() => openUserModal(post.author)}>
+        <div
+          className="flex items-center space-x-2 cursor-pointer"
+          onClick={() => {
+            const user = post.author;
+            if (!user) return;
+
+            openUserModal(user);
+          }}
+        >
           <img src={post.author?.image} alt={post.author?.username} className="w-8 h-8 rounded-full" />
           <span>{post.author?.username}</span>
         </div>

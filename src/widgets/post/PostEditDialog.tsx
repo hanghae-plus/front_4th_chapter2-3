@@ -1,6 +1,5 @@
-import { Dialog, DialogContent, DialogTitle } from "@radix-ui/react-dialog";
-import { Button, DialogHeader, Input, Textarea } from "@shared/ui";
-import { usePostStore } from "../model";
+import { Dialog, DialogHeader, DialogContent, DialogTitle, Button, Input, Textarea } from "@shared/ui";
+import { usePostStore } from "@features/post";
 import { addPost } from "@entities/post";
 
 const PostEditDialog = () => {

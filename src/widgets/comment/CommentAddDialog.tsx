@@ -1,10 +1,8 @@
-import { Dialog, DialogContent, DialogTitle } from "@radix-ui/react-dialog";
-import { useCommentStore } from "../model/useCommentStore";
-import { Button, DialogHeader, Textarea } from "@shared/ui";
+import { Dialog, DialogContent, DialogTitle, Button, DialogHeader, Textarea } from "@shared/ui";
 import { addComment, Comment } from "@entities/comment/model";
 import { useQueryClient } from "@tanstack/react-query";
 import { usePostStore } from "@features/post";
-import { commentQueryKey, useCommentQuery } from "../model";
+import { commentQueryKey, useCommentQuery, useCommentStore } from "@features/comment";
 
 const CommentAddDialog = () => {
   const { showAddCommentDialog, setShowAddCommentDialog, newComment, setNewComment } = useCommentStore();

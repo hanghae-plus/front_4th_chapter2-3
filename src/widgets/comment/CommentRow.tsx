@@ -1,8 +1,7 @@
 import { Button } from "@shared/ui";
 import { Edit2, ThumbsUp, Trash2 } from "lucide-react";
-import { commentQueryKey, useCommentQuery } from "../model";
+import { commentQueryKey, useCommentQuery, useCommentStore } from "@features/comment";
 import { usePostQuery, usePostStore } from "@features/post";
-import { useCommentStore } from "../model/useCommentStore";
 import { highlightText } from "@shared/lib";
 import { Comment, deleteComment, likeComment } from "@entities/comment/model";
 import { useQueryClient } from "@tanstack/react-query";
