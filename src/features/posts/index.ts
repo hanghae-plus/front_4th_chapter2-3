@@ -1,2 +1,2 @@
 export * from "./model";
-export { PostFilter, PostTitle } from "./ui";
+export { PostFilter, PostTitle, PostAddModal, PostUpdateModal, PostDetailModal } from "./ui";

@@ -1,1 +1,1 @@
-export { PostAddModal, PostDetailModal, PostUpdateModal, PostTable } from "./ui";
+export { PostTable } from "./ui";

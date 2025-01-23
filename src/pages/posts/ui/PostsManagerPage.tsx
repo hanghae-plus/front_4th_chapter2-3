@@ -1,9 +1,9 @@
 import { Plus } from "lucide-react";
 
-import { PostAddModal, PostTable } from "@/widgets/posts";
+import { PostTable } from "@/widgets/posts";
 
 import { useModalStore } from "@/features/modal";
-import { PostFilter, usePost } from "@/features/posts";
+import { PostAddModal, PostFilter, usePost } from "@/features/posts";
 
 import { Button, Card, CardContent, CardHeader, CardTitle, Pagination } from "@/shared/ui";
 

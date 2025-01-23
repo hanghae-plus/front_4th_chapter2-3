@@ -1,1 +1,1 @@
-export { CommentAddModal, CommentUpdateModal, Comments } from "./ui";
+export { Comments } from "./ui";

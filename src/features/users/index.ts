@@ -1,2 +1,2 @@
-export { UserProfile } from "./ui";
+export { UserProfile, UserProfileModal } from "./ui";
 export * from "./model";

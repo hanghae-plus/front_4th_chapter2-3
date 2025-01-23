@@ -1,9 +1,13 @@
 import { Edit2, Plus, ThumbsUp, Trash2 } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 
-import { CommentAddModal, CommentUpdateModal } from "@/widgets/comments";
-
-import { useMutationDeleteComment, useMutationUpdateComment, useSuspenseQueryGetComments } from "@/features/comments";
+import {
+  CommentAddModal,
+  CommentUpdateModal,
+  useMutationDeleteComment,
+  useMutationUpdateComment,
+  useSuspenseQueryGetComments,
+} from "@/features/comments";
 import { useModalStore } from "@/features/modal";
 
 import { Comment } from "@/entities/comments";

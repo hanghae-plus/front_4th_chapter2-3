@@ -3,15 +3,12 @@ import { Suspense } from "react";
 import { Edit2, MessageSquare, Trash2 } from "lucide-react";
 
 import { useModalStore } from "@/features/modal";
-import { PostTitle, useMutationDeletePost, usePost } from "@/features/posts";
+import { PostDetailModal, PostTitle, PostUpdateModal, useMutationDeletePost, usePost } from "@/features/posts";
 import { UserProfile } from "@/features/users";
 
 import { Post, PostLikes } from "@/entities/posts";
 
 import { Button, Loading, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shared/ui";
-
-import { PostDetailModal } from "./PostDetailModal";
-import { PostUpdateModal } from "./PostUpdateModal";
 
 export const PostTable = () => {
   const { posts } = usePost();
