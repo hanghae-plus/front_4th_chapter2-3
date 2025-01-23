@@ -105,11 +105,11 @@ const PostsManager = () => {
 
   // 게시물 상세 보기
   // Feature
-  const openPostDetail = (post) => {
-    setSelectedPost(post)
-    fetchComments(post.id)
-    setShowPostDetailDialog(true)
-  }
+  // const openPostDetail = (post) => {
+  //   setSelectedPost(post)
+  //   fetchComments(post.id)
+  //   setShowPostDetailDialog(true)
+  // }
 
   // Feature
   useEffect(() => {
@@ -160,12 +160,12 @@ const PostsManager = () => {
             <div className="flex justify-center p-4">로딩 중...</div>
           ) : (
             <PostTable
+              comments={comments}
               posts={posts}
               searchQuery={searchQuery}
               setSelectedTag={setSelectedTag}
               updateURL={updateURL}
               selectedTag={selectedTag}
-              openPostDetail={openPostDetail}
               setSelectedPost={setSelectedPost}
               setShowEditDialog={setShowEditDialog}
             />
@@ -209,7 +209,6 @@ const PostsManager = () => {
       {/* 게시물 상세 보기 대화상자 */}
       <PostDetailDialog
         open={showPostDetailDialog}
-        onOpenChange={setShowPostDetailDialog}
         selectedPost={selectedPost}
         searchQuery={searchQuery}
         comments={comments}

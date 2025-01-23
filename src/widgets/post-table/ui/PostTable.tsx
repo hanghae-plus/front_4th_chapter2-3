@@ -7,6 +7,7 @@ import { PostEditDialogOpenButton } from "../../../features/post/ui/PostEditDial
 import { PostTags } from "../../../features/post/ui/PostTags"
 import { HighlightText, Table } from "../../../shared/ui"
 
+import type { Comment } from "../../../entities/comment/model/types/comments"
 import type { PostWithUser } from "../../../entities/post/model/types/post"
 
 interface PostTableProps {
@@ -15,9 +16,9 @@ interface PostTableProps {
   setSelectedTag: (tag: string) => void
   updateURL: () => void
   selectedTag: string
-  openPostDetail: (post: PostWithUser) => void
   setSelectedPost: (post: PostWithUser) => void
   setShowEditDialog: (open: boolean) => void
+  comments: Record<number, Comment[]>
 }
 
 export const PostTable = ({
@@ -26,9 +27,9 @@ export const PostTable = ({
   selectedTag,
   setSelectedTag,
   updateURL,
-  openPostDetail,
   setSelectedPost,
   setShowEditDialog,
+  comments,
 }: PostTableProps) => {
   return (
     <Table>
@@ -66,7 +67,7 @@ export const PostTable = ({
             </Table.Cell>
             <Table.Cell>
               <div className="flex items-center gap-2">
-                <PostDetailOpenButton post={post} openPostDetail={openPostDetail} />
+                <PostDetailOpenButton post={post} searchQuery={searchQuery} comments={comments} />
                 <PostEditDialogOpenButton
                   post={post}
                   setSelectedPost={setSelectedPost}

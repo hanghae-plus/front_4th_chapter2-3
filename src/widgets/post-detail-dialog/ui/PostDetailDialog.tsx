@@ -1,3 +1,4 @@
+import { useDialog } from "../../../app/model/DialogProvider"
 import {
   CommentItem,
   DeleteCommentButton,
@@ -12,33 +13,35 @@ import type { PostWithUser } from "../../../entities/post/model/types/post"
 
 interface PostDetailDialogProps {
   open: boolean
-  onOpenChange: (open: boolean) => void
   selectedPost: PostWithUser | null
   searchQuery: string
   comments: Record<number, Comment[]>
   postId?: number
-  setShowEditCommentDialog: (open: boolean) => void
-  setShowAddCommentDialog: (open: boolean) => void
-  setNewComment: (post: any) => void
-  setSelectedComment: (comment: Comment) => void
+  // setShowEditCommentDialog: (open: boolean) => void
+  // setShowAddCommentDialog: (open: boolean) => void
+  // setNewComment: (post: any) => void
+  // setSelectedComment: (comment: Comment) => void
+  dialogId: number
 }
 
 export const PostDetailDialog = ({
   open,
-  onOpenChange,
   selectedPost,
   searchQuery,
   comments,
   postId,
-  setShowEditCommentDialog,
-  setShowAddCommentDialog,
-  setNewComment,
-  setSelectedComment,
+  // setShowEditCommentDialog,
+  // setShowAddCommentDialog,
+  // setNewComment,
+  // setSelectedComment,
+  dialogId,
 }: PostDetailDialogProps) => {
+  const { closeDialog } = useDialog()
+
   if (selectedPost === null) return null
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={() => closeDialog(dialogId)}>
       <Dialog.Content className="max-w-3xl">
         <Dialog.Header>
           <Dialog.Title>
@@ -50,19 +53,19 @@ export const PostDetailDialog = ({
             <HighlightText text={selectedPost.body} highlight={searchQuery} />
           </p>
           <div className="mt-2">
-            <PostCommentButton setNewComment={setNewComment} setShowAddCommentDialog={setShowAddCommentDialog} />
+            {/* <PostCommentButton setNewComment={setNewComment} setShowAddCommentDialog={setShowAddCommentDialog} /> */}
             <div className="space-y-1">
-              {postId &&
+              {!!postId &&
                 comments[postId]?.map((comment) => (
                   <div key={comment.id} className="flex items-center justify-between text-sm border-b pb-1">
                     <CommentItem comment={comment} searchQuery={searchQuery} />
                     <div className="flex items-center space-x-1">
                       <LikeCommentButton comment={comment} postId={postId} />
-                      <EditCommentButton
+                      {/* <EditCommentButton
                         comment={comment}
                         setShowEditCommentDialog={setShowEditCommentDialog}
                         setSelectedComment={setSelectedComment}
-                      />
+                      /> */}
                       <DeleteCommentButton comment={comment} postId={postId} />
                     </div>
                   </div>
