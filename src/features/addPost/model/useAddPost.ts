@@ -1,5 +1,5 @@
+import { useCreatePost } from "../../../entities/post/api/hooks/usePostMutations"
 import { CreatePostParams } from "../../../entities/post/api/postApi"
-import { useCreatePost } from "../api/useCreatePost"
 
 export const useAddPost = () => {
   const { mutate } = useCreatePost()
