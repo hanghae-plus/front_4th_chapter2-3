@@ -1,6 +1,6 @@
 import { create } from "zustand"
 import { devtools } from "zustand/middleware"
-import { Post, Comment, User } from "../types/posts"
+import { Post, Comment, User, Tag } from "../types/posts"
 import { PostsState } from "../types/store"
 
 interface PostsState {
@@ -18,7 +18,7 @@ interface PostsState {
   showEditDialog: boolean
   showEditCommentDialog: boolean
   showUserModal: boolean
-  tags: string[]
+  tags: Tag[]
 
   // Actions
   setPosts: (posts: Post[]) => void
@@ -68,7 +68,7 @@ export const usePostsStore = create<PostsState>()(
       showEditDialog: false,
       showEditCommentDialog: false,
       showUserModal: false,
-      tags: [],
+      tags: [] as Tag[],
 
       setPosts: (posts) => set({ posts }),
       setTotal: (total) => set({ total }),
