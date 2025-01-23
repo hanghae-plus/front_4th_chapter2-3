@@ -14,6 +14,6 @@ export const QUERY_KEYS = {
   },
   COMMENT: {
     all: ["comment"],
-    getCommentList: (postId: Post["id"]) => [...QUERY_KEYS.COMMENT.all, postId.toLocaleString()],
+    getCommentList: (postId: Post["id"] | null) => [...QUERY_KEYS.COMMENT.all, postId?.toLocaleString()],
   },
 }

@@ -1,12 +1,14 @@
 import { useState } from "react"
 import { useDialog } from "../../../features/dialog/model/useDialog"
 import { useGetPostDetail } from "../api/useGetPostDetail"
+import { useGetPostCommentList } from "../../comment/api/useGetCommentList"
 
-export const usePostDetailDialog = () => {
+export const usePostDetail = () => {
   const { isOpen, open, close } = useDialog()
   const [selectedPostId, setSelectedPostId] = useState<number | null>(null)
 
-  const { data: post, isLoading } = useGetPostDetail(selectedPostId)
+  const { data: post, isLoading: isPostLoading } = useGetPostDetail(selectedPostId)
+  const { data, isLoading: isCommentsLoading } = useGetPostCommentList(selectedPostId)
 
   const handleDialog = (id: number) => {
     setSelectedPostId(id)
@@ -23,6 +25,8 @@ export const usePostDetailDialog = () => {
     handleDialog,
     handleClose,
     post,
-    isLoading,
+    comments: data?.comments,
+    total: data?.total,
+    isLoading: isPostLoading || isCommentsLoading,
   }
 }

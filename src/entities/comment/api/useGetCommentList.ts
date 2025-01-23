@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query"
 import { CommentResponse } from "../model/types"
 import { QUERY_KEYS } from "../../../shared/config/QueryKeys"
 
-export const useGetPostComments = (postId: number) => {
+export const useGetPostCommentList = (postId: number | null) => {
   return useQuery<Omit<CommentResponse, "skip" | "limit">>({
     queryKey: QUERY_KEYS.COMMENT.getCommentList(postId),
     queryFn: async () => {
