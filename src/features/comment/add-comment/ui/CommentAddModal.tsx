@@ -1,6 +1,4 @@
-import { DialogContent, DialogTitle } from "@radix-ui/react-dialog"
-
-import { Modal, DialogHeader, Textarea, Button } from "../../../../shared/ui"
+import { Modal, DialogHeader, Textarea, Button, DialogContent, DialogTitle } from "../../../../shared/ui"
 import { ToggleKey } from "../../../../pages/main/model"
 import { useToggleState } from "../../../../shared/model/toggle-state.model"
 
