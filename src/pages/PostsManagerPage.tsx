@@ -350,6 +350,7 @@ const PostsManager = () => {
   }, [location.search])
 
   // 하이라이트 함수 추가
+  // shared -> lib -> highlightText.tsx
   const highlightText = (text: string, highlight: string) => {
     if (!text) return null
     if (!highlight.trim()) {
@@ -364,8 +365,8 @@ const PostsManager = () => {
     )
   }
 
-  // entities - post - ui - postTable()
   // 게시물 테이블 렌더링
+  // entities - post - ui - postTable()
   const renderPostTable = () => (
     <Table>
       <TableHeader>
@@ -445,8 +446,8 @@ const PostsManager = () => {
     </Table>
   )
 
-  // entities - comments - ui
   // 댓글 렌더링
+  // entities - comments - ui
   const renderComments = (postId) => (
     <div className="mt-2">
       <div className="flex items-center justify-between mb-2">
