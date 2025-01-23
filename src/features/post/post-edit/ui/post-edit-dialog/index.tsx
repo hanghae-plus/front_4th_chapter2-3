@@ -1,7 +1,7 @@
 import { Post, usePostStore } from "@/entities/posts"
-import { PostEditForm } from "@/features/post-edit-form"
 import { Button, Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/shared"
 import { Edit2 } from "lucide-react"
+import { PostEditForm } from "./fragments/post-edit-form"
 
 interface PostEditDialogProps {
   post: Post

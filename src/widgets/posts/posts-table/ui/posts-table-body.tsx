@@ -1,10 +1,11 @@
 import { Post } from "@/entities/posts"
 import { UserAvatar } from "@/entities/user"
-import { PostReactions } from "@/features/post-reactions/ui/post-reactions"
-import { PostTags } from "@/features/post-tags"
+import { PostDeleteButton } from "@/features/post/post-delete"
+import { PostEditDialog } from "@/features/post/post-edit"
+import { PostReactions } from "@/features/post/post-reactions/ui/post-reactions"
+import { PostTags } from "@/features/post/post-tags"
 import { TableBody, TableCell, TableRow } from "@/shared"
 import { highlightText } from "@/shared/lib/highlight-text"
-import { PostEditDialog } from "../../post-edit-dialog"
 
 interface PostsTableBodyProps {
   posts: Post[]
@@ -35,6 +36,7 @@ function PostsTableBody(props: PostsTableBodyProps) {
           <TableCell>
             <div className="flex items-center gap-2">
               <PostEditDialog post={post} />
+              <PostDeleteButton postId={post.id} />
             </div>
           </TableCell>
         </TableRow>

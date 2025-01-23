@@ -1,13 +1,13 @@
 import { usePostStore } from "@/entities/posts"
+import { updatePost } from "@/features/post/post-edit/api/update-post"
 import { Button, Input, Textarea } from "@/shared"
-import { updatePost } from "../api/update-post"
 
 function PostEditForm() {
   const { selectedPost, setSelectedPost, posts, setPosts } = usePostStore()
 
   const handleSubmit = async () => {
     if (!selectedPost) return
-    const response = await updatePost({ selectedPost })
+    const response = await updatePost(selectedPost)
     setPosts(posts.map((post) => (post.id === response.id ? response : post)))
   }
 

@@ -1,4 +1,4 @@
-import { fetchPostsWithUsers, usePostStore, type Post } from "@/entities/posts"
+import { fetchPostsWithUsers, usePostStore } from "@/entities/posts"
 import {
   Button,
   Card,
@@ -28,10 +28,8 @@ const PostsManager = () => {
   const location = useLocation()
   const queryParams = new URLSearchParams(location.search)
 
-  const { selectedPost, setSelectedPost } = usePostStore()
+  const { posts, setPosts, selectedPost, setSelectedPost } = usePostStore()
 
-  // 상태 관리
-  const [posts, setPosts] = useState<Post[]>([])
   const [total, setTotal] = useState(0)
   const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"))
   const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"))

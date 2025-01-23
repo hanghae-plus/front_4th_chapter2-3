@@ -1,11 +1,6 @@
 import { Post } from "@/entities/posts"
 
-interface UpdatePostProps {
-  selectedPost: Post
-}
-
-const updatePost = async (props: UpdatePostProps) => {
-  const { selectedPost } = props
+const updatePost = async (selectedPost: Post) => {
   try {
     const response = await fetch(`/api/posts/${selectedPost.id}`, {
       method: "PUT",
