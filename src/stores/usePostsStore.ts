@@ -1,7 +1,6 @@
 import { create } from "zustand"
 import { devtools } from "zustand/middleware"
 import { Post, Comment, User, Tag } from "../types/posts"
-import { PostsState } from "../types/store"
 
 interface PostsState {
   posts: Post[]

@@ -41,6 +41,7 @@ export interface PostsState {
     sortBy?: string,
     sortOrder?: string,
   ) => Promise<void>
+  fetchTags: () => Promise<void>
   handlePostDetail: (post: Post) => void
   handlePostEdit: (post: Post) => void
   handlePostDelete: (id: number) => Promise<void>
@@ -51,5 +52,4 @@ export interface PostsState {
   handleCommentEdit: (comment: Comment) => void
   handleCommentDelete: (id: number, postId: number) => Promise<void>
   handleUserDetail: (userId: number) => Promise<void>
-  fetchTags: () => Promise<void>
 }
