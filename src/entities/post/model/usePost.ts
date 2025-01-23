@@ -1,35 +1,31 @@
 import { fetchPosts } from "../api/fetchPosts.ts";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { usePostStore } from "@core/store/usePostStore.ts";
 import { createPost } from "../api/createPost.ts";
 import { NewPost, Post } from "@/types/post.ts";
+import { useQuery } from "@tanstack/react-query";
 
 export const usePost = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const { posts, setPosts } = usePostStore();
 
-  const initializePosts = async () => {
-    setIsLoading(true);
-    try {
-      const fetchedPosts = await fetchPosts();
-      setPosts(fetchedPosts);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
+  const query = useQuery({
+    queryKey: ["posts"],
+    queryFn: fetchPosts,
+  });
+
+  useEffect(() => {
+    if (query.data) {
+      setPosts(query.data);
     }
-  };
+  }, [query.data]);
 
   const addPost = async (newPost: NewPost) => {
-    setIsLoading(true);
     try {
       const createdPost = await createPost(newPost);
       setPosts([createdPost, ...posts]);
       return createdPost;
     } catch (error) {
       console.error(error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -42,8 +38,8 @@ export const usePost = () => {
   );
 
   return {
-    isLoading,
-    initializePosts,
+    posts,
+    isLoading: query.isLoading,
     addPost,
     updatePosts,
   };

@@ -2,13 +2,13 @@ import { Edit2, MessageSquare, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@shared/table/ui";
 import { Button } from "@shared/button/ui";
 import { usePostFilter } from "@features/postFilter/model/usePostFilter.ts";
+import { HighlightMatch } from "@shared/hightlight/ui/HighlightMatch.tsx";
 import { usePostStore } from "@core/store/usePostStore.ts";
-import { useTagStore } from "@core/store/useTagStore.ts";
 
 function PostTable() {
-  const { filteredPosts } = usePostStore();
-  const { selectedTag } = useTagStore();
-  const { handleSelectTag } = usePostFilter();
+  const { posts, filters } = usePostStore();
+  const { handleTagSelect } = usePostFilter();
+
   return (
     <Table>
       <TableHeader>
@@ -21,23 +21,23 @@ function PostTable() {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {filteredPosts.map((post) => (
+        {posts.map((post) => (
           <TableRow key={post.id}>
             <TableCell>{post.id}</TableCell>
             <TableCell>
               <div className="space-y-1">
-                <div>{post.title}</div>
+                <div>{HighlightMatch(post.title, "searchQuery")}</div>
                 <div className="flex flex-wrap gap-1">
                   {post.tags?.map((tag) => {
                     return (
                       <span
                         key={tag}
                         className={`px-1 text-[9px] font-semibold rounded-[4px] cursor-pointer ${
-                          selectedTag?.slug === tag
+                          filters.selectedTag === tag
                             ? "text-white bg-blue-500 hover:bg-blue-600"
                             : "text-blue-800 bg-blue-100 hover:bg-blue-200"
                         }`}
-                        onClick={() => handleSelectTag(tag)}
+                        onClick={() => handleTagSelect(tag)}
                       >
                         {tag}
                       </span>

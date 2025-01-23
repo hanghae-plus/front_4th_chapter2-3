@@ -1,31 +1,23 @@
-import { Search } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@shared/select/ui";
-import { Input } from "@shared/input/ui";
 import { usePostFilter } from "@features/postFilter/model/usePostFilter.ts";
 import { useTagStore } from "@core/store/useTagStore.ts";
+import { usePostStore } from "@core/store/usePostStore.ts";
 
 function PostFilter() {
-  const { sortColumn, handleSortColumn, sortOrder, handleSortOrder, selectedTag, handleSelectTag } = usePostFilter();
-
-  const { tags } = useTagStore();
+  const { filters } = usePostStore();
+  const { handleSortChange, handleTagSelect } = usePostFilter();
+  const { tags, selectedTag } = useTagStore();
 
   return (
     <>
       검색 및 필터 컨트롤
       <div className="flex gap-4">
-        <div className="flex-1">
-          <div className="relative">
-            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="게시물 검색..."
-              className="pl-8"
-              // value={searchQuery}
-              // onChange={(e) => setSearchQuery(e.target.value)}
-              // onKeyPress={(e) => e.key === "Enter" && searchPosts()}
-            />
-          </div>
-        </div>
-        <Select value={selectedTag} onValueChange={(value) => handleSelectTag(value)}>
+        {/*<PostSearch*/}
+        {/*  searchQuery={searchQuery}*/}
+        {/*  handleKeyPress={handleKeyPress}*/}
+        {/*  handleSearchQueryChange={handleSearchQueryChange}*/}
+        {/*/>*/}
+        <Select value={selectedTag?.slug} onValueChange={(tag) => handleTagSelect(tag)}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="태그 선택" />
           </SelectTrigger>
@@ -38,7 +30,7 @@ function PostFilter() {
             ))}
           </SelectContent>
         </Select>
-        <Select value={sortColumn} onValueChange={handleSortColumn}>
+        <Select value={filters.sortBy} onValueChange={(sortBy) => handleSortChange(sortBy, filters.sortOrder)}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="정렬 기준" />
           </SelectTrigger>
@@ -49,7 +41,10 @@ function PostFilter() {
             <SelectItem value="reactions">반응</SelectItem>
           </SelectContent>
         </Select>
-        <Select value={sortOrder} onValueChange={handleSortOrder}>
+        <Select
+          value={filters.sortOrder}
+          onValueChange={(sortOrder: "asc" | "desc") => handleSortChange(filters.sortBy, sortOrder)}
+        >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="정렬 순서" />
           </SelectTrigger>
