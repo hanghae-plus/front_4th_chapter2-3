@@ -1,5 +1,4 @@
-import { Dialog, DialogContent, DialogTitle } from "@radix-ui/react-dialog"
-import { DialogHeader } from "../shared/ui"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../shared/ui"
 import { Comments } from "./Comments"
 import { highlightText } from "../utils/html"
 import { Post } from "../types/post"

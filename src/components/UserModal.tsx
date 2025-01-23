@@ -1,5 +1,4 @@
-import { Dialog, DialogContent, DialogTitle } from "@radix-ui/react-dialog"
-import { DialogHeader } from "../shared/ui"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../shared/ui"
 import { User } from "../types/user"
 import { useDialogStore } from "../store/dialog"
 

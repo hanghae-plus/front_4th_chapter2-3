@@ -1,5 +1,4 @@
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@radix-ui/react-select"
-import { Button } from "../shared/ui"
+import { Button, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../shared/ui"
 import { useParamsStore } from "../store/params"
 import { usePosts } from "../hooks/usePosts"
 

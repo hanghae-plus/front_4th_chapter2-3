@@ -1,5 +1,4 @@
-import { Dialog, DialogContent, DialogTitle } from "@radix-ui/react-dialog"
-import { Button, DialogHeader, Input, Textarea } from "../shared/ui"
+import { Button, Dialog, DialogContent, DialogHeader, DialogTitle, Input, Textarea } from "../shared/ui"
 import { Post } from "../types/post"
 import { useDialogStore } from "../store/dialog"
 import { usePosts } from "../hooks/usePosts"

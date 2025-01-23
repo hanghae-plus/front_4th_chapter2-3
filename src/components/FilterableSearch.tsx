@@ -1,6 +1,5 @@
 import { Search } from "lucide-react"
-import { Input } from "../shared/ui"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@radix-ui/react-select"
+import { Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../shared/ui"
 import { useParamsStore } from "../store/params"
 import { useTags } from "../hooks/useTags"
 import { useState } from "react"
