@@ -1,6 +1,16 @@
+import { useMutation, useQuery } from "@tanstack/react-query"
+import { Plus, Search } from "lucide-react"
 import { useMemo, useState } from "react"
-import { Edit2, Plus, Search, ThumbsUp, Trash2 } from "lucide-react"
-import { useLocation, useNavigate } from "react-router-dom"
+import { useLocation } from "react-router-dom"
+import { Comment } from "../../../entities/comment/model/types"
+import { postMutations } from "../../../entities/post/api/mutations"
+import { postQueries } from "../../../entities/post/api/queries"
+import { SortOrder } from "../../../entities/post/model/types"
+import { userQueries } from "../../../entities/user/api/queries"
+import { PostAddModal } from "../../../features/add-post/ui/PostAddModal"
+import { useAddPostModal, useDetailPostModal, useEditPostModal } from "../../../features/post/model"
+import { useViewUserProfile } from "../../../features/view-user-profile/model/use-view-user-profile"
+import { UserProfileModal } from "../../../features/view-user-profile/ui/UserProfileModal"
 import {
   Button,
   Card,
@@ -14,29 +24,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../../shared/ui"
-import { useMutation, useQuery } from "@tanstack/react-query"
-import { postQueries } from "../../../entities/post/api/queries"
-import { SortOrder } from "../../../entities/post/model/types"
-import { userQueries } from "../../../entities/user/api/queries"
-import { Comment } from "../../../entities/comment/model/types"
-import { postMutations } from "../../../entities/post/api/mutations"
-import { useViewUserProfile } from "../../../features/view-user-profile/model/use-view-user-profile"
-import { UserProfileModal } from "../../../features/view-user-profile/ui/UserProfileModal"
-import { useAddPostModal, useDetailPostModal, useEditPostModal } from "../../../features/post/model"
-import { PostAddModal } from "../../../features/add-post/ui/PostAddModal"
 
 import { PostEditModal } from "../../../features/edit-post/ui/modal/PostEditModal"
-import { highlightText } from "../../../shared/lib/utils/highlight-text"
 
-import { PostDetailModal } from "../../../features/view-post-detail/ui/PostDetailModal"
-import { Pagination } from "../../../widgets/pagination/ui/Pagination"
-import { usePagination } from "../../../widgets/pagination/model/use-pagination"
-import { PostsTable } from "../../../widgets/posts-table/ui/PostsTable"
 import { useAddCommentModal, useEditCommentModal } from "../../../features/comment/model"
 import { CommentAddModal, CommentEditModal } from "../../../features/comment/ui"
+import { PostDetailModal } from "../../../features/view-post-detail/ui/PostDetailModal"
+import { useQueryParams } from "../../../shared/lib/hooks/navigate/use-search-params"
+import { usePagination } from "../../../widgets/pagination/model/use-pagination"
+import { Pagination } from "../../../widgets/pagination/ui/Pagination"
+import { PostsTable } from "../../../widgets/posts-table/ui/PostsTable"
 
 const PostsManager = () => {
-  const navigate = useNavigate()
   const location = useLocation()
   const queryParams = new URLSearchParams(location.search)
 
@@ -51,20 +50,7 @@ const PostsManager = () => {
   const [selectedComment, setSelectedComment] = useState<Comment | null>(null)
   const { page, pageSize, onPageChange, onPageSizeChange } = usePagination()
 
-  // URL 업데이트 함수
-  const updateURLParams = (updates: Record<string, string | null>) => {
-    const newParams = new URLSearchParams(location.search)
-
-    Object.entries(updates).forEach(([key, value]) => {
-      if (value === null) {
-        newParams.delete(key)
-      } else {
-        newParams.set(key, value)
-      }
-    })
-
-    navigate(`?${newParams.toString()}`)
-  }
+  const { updateURLParams } = useQueryParams()
 
   const { data: list, isLoading: isListLoading } = useQuery({
     ...postQueries.listQuery({
@@ -234,53 +220,6 @@ const PostsManager = () => {
     selectComment: selectEditComment,
   } = useEditCommentModal(selectedPost?.id)
 
-  // 댓글 렌더링
-  const renderComments = () => (
-    <div className="mt-2">
-      <div className="flex items-center justify-between mb-2">
-        <h3 className="text-sm font-semibold">댓글</h3>
-        <Button
-          size="sm"
-          onClick={() => {
-            openAddCommentModal()
-          }}
-        >
-          <Plus className="w-3 h-3 mr-1" />
-          댓글 추가
-        </Button>
-      </div>
-      <div className="space-y-1">
-        {comments?.map((comment) => (
-          <div key={comment.id} className="flex items-center justify-between text-sm border-b pb-1">
-            <div className="flex items-center space-x-2 min-w-0 flex-1">
-              <span className="font-medium whitespace-nowrap">{comment.user.username}:</span>
-              <span className="break-all">{highlightText(comment.body, searchQuery)}</span>
-            </div>
-            <div className="flex items-center space-x-1 flex-shrink-0">
-              <Button variant="ghost" size="sm" onClick={() => likeComment(comment.id, selectedPost?.id)}>
-                <ThumbsUp className="w-3 h-3" />
-                <span className="ml-1 text-xs">{comment.likes}</span>
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  selectEditComment(comment.id, comment.body)
-                  openEditCommentModal()
-                }}
-              >
-                <Edit2 className="w-3 h-3" />
-              </Button>
-              <Button variant="ghost" size="sm" onClick={() => deleteComment(comment.id, selectedPost?.id)}>
-                <Trash2 className="w-3 h-3" />
-              </Button>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-
   return (
     <Card className="w-full max-w-6xl mx-auto">
       <CardHeader>
@@ -360,6 +299,8 @@ const PostsManager = () => {
               onClickProfile={handleViewProfile}
               onEdit={handleEdit}
               onDelete={deletePost}
+              searchQuery={searchQuery}
+              selectedTag={selectedTag}
             />
           )}
 
