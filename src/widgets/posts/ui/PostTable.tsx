@@ -1,11 +1,10 @@
 import { Suspense } from "react";
 
 import { Edit2, MessageSquare, Trash2 } from "lucide-react";
-import { useSearchParams } from "react-router-dom";
 
 import { useModalStore } from "@/features/modal";
-import { PostTitle, useMutationDeletePost, useSuspenseQueryGetPosts } from "@/features/posts";
-import { UserProfile } from "@/features/users/ui";
+import { PostTitle, useMutationDeletePost, usePost } from "@/features/posts";
+import { UserProfile } from "@/features/users";
 
 import { Post, PostLikes } from "@/entities/posts";
 
@@ -15,18 +14,7 @@ import { PostDetailModal } from "./PostDetailModal";
 import { PostUpdateModal } from "./PostUpdateModal";
 
 export const PostTable = () => {
-  const [searchParams] = useSearchParams();
-
-  const skip = parseInt(searchParams.get("skip") || "0");
-  const limit = parseInt(searchParams.get("limit") || "10");
-  const searchQuery = searchParams.get("search") || "";
-  const selectedTag = searchParams.get("tag") || "";
-  const sortBy = searchParams.get("sortBy") || "id";
-  const order = searchParams.get("sortOrder") || "asc";
-
-  const {
-    data: { posts },
-  } = useSuspenseQueryGetPosts({ searchQuery, tag: selectedTag, limit, skip, sortBy, order });
+  const { posts } = usePost();
   const { mutate: deletePost } = useMutationDeletePost();
   const { open } = useModalStore();
 

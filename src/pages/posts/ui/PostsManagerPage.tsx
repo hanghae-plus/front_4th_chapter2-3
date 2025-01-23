@@ -1,27 +1,14 @@
 import { Plus } from "lucide-react";
-import { useSearchParams } from "react-router-dom";
 
 import { PostAddModal, PostTable } from "@/widgets/posts";
 
 import { useModalStore } from "@/features/modal";
-import { useSuspenseQueryGetPosts } from "@/features/posts";
-import { PostFilter } from "@/features/posts/ui/PostFilter";
+import { PostFilter, usePost } from "@/features/posts";
 
 import { Button, Card, CardContent, CardHeader, CardTitle, Pagination } from "@/shared/ui";
 
 export const PostsManagerPage = () => {
-  const [searchParams] = useSearchParams();
-
-  const skip = parseInt(searchParams.get("skip") || "0");
-  const limit = parseInt(searchParams.get("limit") || "10");
-  const searchQuery = searchParams.get("search") || "";
-  const tag = searchParams.get("tag") || "";
-  const sortBy = searchParams.get("sortBy") || "id";
-  const order = searchParams.get("sortOrder") || "asc";
-
-  const {
-    data: { total },
-  } = useSuspenseQueryGetPosts({ searchQuery, skip, limit, tag, sortBy, order });
+  const { total } = usePost();
   const { open } = useModalStore();
 
   const handleOpenPostAddModal = () => {
