@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+
 import { Plus } from "lucide-react";
 
 import { PostTableSection } from "@/widgets/posts";
@@ -5,7 +7,7 @@ import { PostTableSection } from "@/widgets/posts";
 import { useModalStore } from "@/features/modal";
 import { PostAddModal } from "@/features/posts";
 
-import { Button, Card, CardContent, CardHeader, CardTitle } from "@/shared/ui";
+import { Button, Card, CardContent, CardHeader, CardTitle, Loading } from "@/shared/ui";
 
 export const PostsManagerPage = () => {
   const { open } = useModalStore();
@@ -26,7 +28,9 @@ export const PostsManagerPage = () => {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <PostTableSection />
+        <Suspense fallback={<Loading />}>
+          <PostTableSection />
+        </Suspense>
       </CardContent>
     </Card>
   );
