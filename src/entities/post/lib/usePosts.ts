@@ -13,6 +13,7 @@ import {
   limitAtom,
   loadingAtom,
   newPostAtom,
+  postDetailDialogAtom,
   postsAtom,
   searchQueryAtom,
   selectedPostAtom,
@@ -22,20 +23,24 @@ import {
 import { getUser } from "../../user/api/userApi";
 import { User } from "../../user/model/types";
 import { Post } from "../model/types";
+import { useComment } from "../../comment/lib/useComment";
 
 export const usePosts = () => {
   const [, setPosts] = useAtom(postsAtom);
   const [, setLoading] = useAtom(loadingAtom);
   const [, setTotal] = useAtom(totalAtom);
   const [skip] = useAtom(skipAtom);
-  // useState(parseInt(useQueryParams("skip") || "0"));
   const [limit] = useAtom(limitAtom);
   const [searchQuery] = useAtom(searchQueryAtom);
   const [, setShowAddDialog] = useAtom(addDialogAtom);
   const [selectedPost] = useAtom(selectedPostAtom);
   const [, setShowEditDialog] = useAtom(editDialogAtom);
 
-  const [newPost2, setNewPost] = useAtom(newPostAtom);
+  const [newPost, setNewPost] = useAtom(newPostAtom);
+  const [, setSelectedPost] = useAtom(selectedPostAtom);
+  const [, setShowPostDetailDialog] = useAtom(postDetailDialogAtom);
+
+  const { handleFetchComments } = useComment();
 
   // 게시물 가져오기
   const handleFetchPost = async () => {
@@ -111,7 +116,7 @@ export const usePosts = () => {
   // 게시물 추가
   const handleAddPost = async () => {
     try {
-      const data = await addNewPost(newPost2);
+      const data = await addNewPost(newPost);
 
       setPosts((prevPost) => [data, ...prevPost]);
     } catch (error) {
@@ -148,6 +153,13 @@ export const usePosts = () => {
     }
   };
 
+  // 게시물 상세 보기
+  const handleOpenPostDetail = (post: Post) => {
+    setSelectedPost(post);
+    handleFetchComments(post.id);
+    setShowPostDetailDialog(true);
+  };
+
   return {
     handleFetchPost,
     handleFetchPostsByTag,
@@ -155,5 +167,6 @@ export const usePosts = () => {
     handleAddPost,
     handleUpdatePost,
     handleDeletePost,
+    handleOpenPostDetail,
   };
 };

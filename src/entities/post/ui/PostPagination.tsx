@@ -1,3 +1,6 @@
+import { useAtom } from "jotai";
+import { skipAtom, totalAtom } from "../../../app/store/atom";
+import { limitAtom } from "../../../app/store/atom";
 import {
   Select,
   SelectContent,
@@ -7,28 +10,18 @@ import {
   Button,
 } from "../../../shared/ui";
 
-interface PostPaginationProps {
-  limit: number;
-  skip: number;
-  total: number;
-  onClickPage: (page: number) => void;
-  onValueChange: (value: number) => void;
-}
+export const PostPagination: React.FC = () => {
+  const [total] = useAtom(totalAtom);
+  const [skip, setSkip] = useAtom(skipAtom);
+  const [limit, setLimit] = useAtom(limitAtom);
 
-export const PostPagination: React.FC<PostPaginationProps> = ({
-  limit,
-  onValueChange,
-  skip,
-  onClickPage,
-  total,
-}) => {
   return (
     <div className="flex justify-between items-center">
       <div className="flex items-center gap-2">
         <span>표시</span>
         <Select
           value={limit.toString()}
-          onValueChange={(value) => onValueChange(Number(value))}
+          onValueChange={(value) => setLimit(Number(value))}
         >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="10" />
@@ -44,13 +37,13 @@ export const PostPagination: React.FC<PostPaginationProps> = ({
       <div className="flex gap-2">
         <Button
           disabled={skip === 0}
-          onClick={() => onClickPage(Math.max(0, skip - limit))}
+          onClick={() => setSkip(Math.max(0, skip - limit))}
         >
           이전
         </Button>
         <Button
           disabled={skip + limit >= total}
-          onClick={() => onClickPage(skip + limit)}
+          onClick={() => setSkip(skip + limit)}
         >
           다음
         </Button>

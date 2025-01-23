@@ -1,32 +1,12 @@
 import { PostHeader } from "./PostHeader";
 import { Table, TableBody, TableHeader } from "../../../shared/ui";
-import { Post } from "../model/types";
 import { PostRow } from "./PostRow";
-import { User } from "../../user/model/types";
+import { postsAtom } from "../../../app/store/atom";
+import { useAtom } from "jotai";
 
-interface PostItemProps {
-  posts: Post[];
-  selectedTag: string;
-  searchQuery: string;
-  setSelectedTag: (tag: string) => void;
-  updateURL: () => void;
-  onViewAuthor: (author: User) => void; // ✅ User 타입을 받는 onClick
-  onView: (post: Post) => void;
-  onEdit: (post: Post) => void;
-  onDelete: (postId: number) => void;
-}
+export const PostItem: React.FC = () => {
+  const [posts] = useAtom(postsAtom);
 
-export const PostItem: React.FC<PostItemProps> = ({
-  posts,
-  selectedTag,
-  searchQuery,
-  setSelectedTag,
-  updateURL,
-  onViewAuthor,
-  onView,
-  onEdit,
-  onDelete,
-}) => {
   return (
     <Table>
       <TableHeader>
@@ -37,14 +17,6 @@ export const PostItem: React.FC<PostItemProps> = ({
           <PostRow
             key={post.id}
             post={post}
-            searchQuery={searchQuery}
-            selectedTag={selectedTag}
-            setSelectedTag={setSelectedTag}
-            updateURL={updateURL}
-            onViewAuthor={onViewAuthor}
-            onView={onView}
-            onEdit={onEdit}
-            onDelete={onDelete}
           />
         ))}
       </TableBody>

@@ -1,4 +1,3 @@
-import { Dispatch, SetStateAction } from "react";
 import {
   Input,
   Select,
@@ -9,29 +8,25 @@ import {
 } from "../../../shared/ui";
 import { Search } from "lucide-react";
 import { useAtom } from "jotai";
-import { searchQueryAtom, tagsAtom } from "../../../app/store/atom";
+import {
+  searchQueryAtom,
+  selectedTagAtom,
+  sortByAtom,
+  sortOrderAtom,
+  tagsAtom,
+} from "../../../app/store/atom";
+import { usePosts } from "../lib/usePosts";
+import { useTags } from "../../tag/lib/useTags";
 
-interface PostFilterProps {
-  onKeyDown: () => void;
-  selectedTag: string;
-  onValueChange: (value: string) => void;
-  sortBy: string;
-  onSelectChange: Dispatch<SetStateAction<string>>;
-  sortOrder: string;
-  onSelectOrderChange: Dispatch<SetStateAction<string>>;
-}
-
-export const PostFilter: React.FC<PostFilterProps> = ({
-  onKeyDown,
-  selectedTag,
-  onValueChange,
-  sortBy,
-  onSelectChange,
-  sortOrder,
-  onSelectOrderChange,
-}) => {
+export const PostFilter: React.FC = () => {
   const [SearchQuery, setSearchQuery] = useAtom<string>(searchQueryAtom);
+  const [selectedTag] = useAtom(selectedTagAtom);
+  const [sortBy, setSortBy] = useAtom(sortByAtom);
+  const [sortOrder, setSortOrder] = useAtom(sortOrderAtom);
   const [tags] = useAtom(tagsAtom);
+
+  const { handleSearchPost } = usePosts();
+  const { handleControlFilter } = useTags();
 
   return (
     <div className="flex gap-4">
@@ -45,13 +40,13 @@ export const PostFilter: React.FC<PostFilterProps> = ({
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setSearchQuery(e.target.value)
             }
-            onKeyDown={(e) => e.key === "Enter" && onKeyDown()}
+            onKeyDown={(e) => e.key === "Enter" && handleSearchPost()}
           />
         </div>
       </div>
       <Select
         value={selectedTag}
-        onValueChange={(value) => onValueChange(value)}
+        onValueChange={(value) => handleControlFilter(value)}
       >
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="태그 선택" />
@@ -70,7 +65,7 @@ export const PostFilter: React.FC<PostFilterProps> = ({
       </Select>
       <Select
         value={sortBy}
-        onValueChange={onSelectChange}
+        onValueChange={setSortBy}
       >
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="정렬 기준" />
@@ -84,7 +79,7 @@ export const PostFilter: React.FC<PostFilterProps> = ({
       </Select>
       <Select
         value={sortOrder}
-        onValueChange={onSelectOrderChange}
+        onValueChange={setSortOrder}
       >
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="정렬 순서" />

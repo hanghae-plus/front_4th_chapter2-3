@@ -4,18 +4,12 @@ import { CommentRow } from "./CommentRow";
 import { Comment } from "../model/types";
 import { commentsAtom } from "../../../app/store/atom";
 import { useAtom } from "jotai";
+import { useComment } from "../lib/useComment";
 
-interface CommentItemProps {
-  postId: number;
-  onAdd: () => void;
-  onEditComment: (comment: Comment) => void;
-}
-
-export const CommentItem: React.FC<CommentItemProps> = ({
-  onAdd,
-  onEditComment,
-}) => {
+export const CommentItem: React.FC = () => {
   const [comments] = useAtom(commentsAtom);
+
+  const { handleShowAddCommentModal } = useComment();
 
   const flattenedComments = Object.values(comments).flat();
 
@@ -25,7 +19,7 @@ export const CommentItem: React.FC<CommentItemProps> = ({
         <h3 className="text-sm font-semibold">댓글</h3>
         <Button
           size="sm"
-          onClick={onAdd}
+          onClick={handleShowAddCommentModal}
         >
           <Plus className="w-3 h-3 mr-1" />
           댓글 추가
@@ -34,9 +28,9 @@ export const CommentItem: React.FC<CommentItemProps> = ({
       <div className="space-y-1">
         {flattenedComments.map((comment: Comment) => (
           <CommentRow
+            key={comment.id}
             comment={comment}
-            onEditComment={() => onEditComment(comment)}
-          />
+           />
         ))}
       </div>
     </div>

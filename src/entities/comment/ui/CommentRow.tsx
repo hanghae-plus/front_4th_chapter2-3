@@ -6,13 +6,9 @@ import { CommentIcons } from "./CommentIcons";
 
 interface CommentRowProps {
   comment: Comment;
-  onEditComment: (comment: Comment) => void;
 }
 
-export const CommentRow: React.FC<CommentRowProps> = ({
-  comment,
-  onEditComment,
-}) => {
+export const CommentRow: React.FC<CommentRowProps> = ({ comment }) => {
   const [searchQuery] = useAtom(searchQueryAtom);
 
   return (
@@ -28,10 +24,7 @@ export const CommentRow: React.FC<CommentRowProps> = ({
           {highlightText(comment.body, searchQuery)}
         </span>
       </div>
-      <CommentIcons
-        comment={comment}
-        onEditComment={() => onEditComment(comment)}
-      />
+      <CommentIcons comment={comment} />
     </div>
   );
 };

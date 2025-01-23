@@ -1,22 +1,20 @@
 import { TableCell } from "../../../shared/ui";
-import { User } from "../../user/model/types";
+import { useUser } from "../../user/lib/useUser";
 import { Post } from "../model/types";
 
 interface PostAuthorProps {
   post: Post;
-  onViewAuthor: (author: User) => void;
 }
 
-export const PostAuthor: React.FC<PostAuthorProps> = ({
-  post,
-  onViewAuthor,
-}) => {
+export const PostAuthor: React.FC<PostAuthorProps> = ({ post }) => {
+  const { openUserModal } = useUser();
+
   return (
     <TableCell>
       <div
         className="flex items-center space-x-2 cursor-pointer"
         onClick={() => {
-          if (post?.author) onViewAuthor(post.author);
+          if (post?.author) openUserModal(post.author);
         }}
       >
         <img

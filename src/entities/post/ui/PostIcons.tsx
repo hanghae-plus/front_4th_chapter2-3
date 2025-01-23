@@ -1,27 +1,28 @@
 import { Edit2, MessageSquare, Trash2 } from "lucide-react";
 import { Button, TableCell } from "../../../shared/ui";
 import { Post } from "../model/types";
+import { usePosts } from "../lib/usePosts";
 
 interface PostIconsProps {
   post: Post;
-  onView: (post: Post) => void;
   onEdit: (post: Post) => void;
   onDelete: (postId: number) => void;
 }
 
 export const PostIcons: React.FC<PostIconsProps> = ({
   post,
-  onView,
   onEdit,
   onDelete,
 }) => {
+  const { handleOpenPostDetail } = usePosts();
+
   return (
     <TableCell>
       <div className="flex items-center gap-2">
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => onView(post)}
+          onClick={() => handleOpenPostDetail(post)}
         >
           <MessageSquare className="w-4 h-4" />
         </Button>

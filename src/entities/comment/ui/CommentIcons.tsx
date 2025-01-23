@@ -5,14 +5,14 @@ import { useComment } from "../lib/useComment";
 
 interface CommentIconsProps {
   comment: Comment;
-  onEditComment: (comment: Comment) => void;
 }
 
-export const CommentIcons: React.FC<CommentIconsProps> = ({
-  comment,
-  onEditComment,
-}) => {
-  const { handleDeleteComments, handleLikeComments } = useComment();
+export const CommentIcons: React.FC<CommentIconsProps> = ({ comment }) => {
+  const {
+    handleDeleteComments,
+    handleLikeComments,
+    handleShowUpdateCommentModal,
+  } = useComment();
 
   return (
     <div className="flex items-center space-x-1">
@@ -30,7 +30,7 @@ export const CommentIcons: React.FC<CommentIconsProps> = ({
       <Button
         variant="ghost"
         size="sm"
-        onClick={() => onEditComment(comment)}
+        onClick={() => handleShowUpdateCommentModal(comment)}
       >
         <Edit2 className="w-3 h-3" />
       </Button>

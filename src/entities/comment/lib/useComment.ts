@@ -12,6 +12,7 @@ import {
   editCommentDialogAtom,
   newCommentAtom,
   selectedCommentAtom,
+  selectedPostAtom,
 } from "../../../app/store/atom";
 import { Comment } from "../model/types";
 
@@ -19,8 +20,9 @@ export const useComment = () => {
   const [comments, setComments] = useAtom(commentsAtom);
   const [newComment, setNewComment] = useAtom(newCommentAtom);
   const [, setShowAddCommentDialog] = useAtom(addCommentDialogAtom);
-  const [selectedComment] = useAtom(selectedCommentAtom);
+  const [selectedComment, setSelectedComment] = useAtom(selectedCommentAtom);
   const [, setShowEditCommentDialog] = useAtom(editCommentDialogAtom);
+  const [selectedPost] = useAtom(selectedPostAtom);
 
   // 댓글 가져오기
   const handleFetchComments = async (postId: number) => {
@@ -33,6 +35,15 @@ export const useComment = () => {
     } catch (error) {
       console.error("댓글 가져오기 오류:", error);
     }
+  };
+
+  // 댓글 추가 버튼 클릭
+  const handleShowAddCommentModal = () => {
+    setNewComment((prev: Comment) => ({
+      ...prev,
+      postId: selectedPost.id,
+    }));
+    setShowAddCommentDialog(true);
   };
 
   // 댓글 추가
@@ -50,6 +61,12 @@ export const useComment = () => {
       setShowAddCommentDialog(false);
       setNewComment({ body: "", postId: null, userId: 1 });
     }
+  };
+
+  // 댓글 추가 버튼 클릭
+  const handleShowUpdateCommentModal = (comment: Comment) => {
+    setSelectedComment(comment);
+    setShowEditCommentDialog(true);
   };
 
   // 댓글 업데이트
@@ -110,7 +127,9 @@ export const useComment = () => {
 
   return {
     handleFetchComments,
+    handleShowAddCommentModal,
     handleAddComments,
+    handleShowUpdateCommentModal,
     handleUpdateComments,
     handleDeleteComments,
     handleLikeComments,

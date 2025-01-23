@@ -69,3 +69,11 @@ export const editCommentDialogAtom = atom<boolean>(false);
 
 // tag
 export const tagsAtom = atom<Tags[]>([]);
+
+//
+export const sortByAtom = atom<string>("");
+export const sortOrderAtom = atom<string>("asc");
+
+// pages/lib
+export const postDetailDialogAtom = atom<boolean>(false);
+export const userModalAtom = atom<boolean>(false);

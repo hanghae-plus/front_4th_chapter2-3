@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Plus } from "lucide-react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import {
   Button,
   Card,
@@ -14,20 +14,15 @@ import {
   Input,
   Textarea,
 } from "../shared/ui";
-import { Post } from "../entities/post/model/types.ts";
-import { User } from "../entities/user/model/types.ts";
 import { PostItem, PostFilter, PostPagination } from "../entities/post/ui";
 
 import { CommentItem } from "../entities/comment/ui/CommentItem.tsx";
-import { Comment } from "./../entities/comment/model/types";
 import { highlightText } from "../shared/lib/handleHighlightText.tsx";
 import { UserModal } from "../entities/user/ui/UserModal.tsx";
 import { DialogAddPost } from "../entities/post/ui/DialogAddPost.tsx";
 
 import { useAtom } from "jotai";
 import {
-  totalAtom,
-  postsAtom,
   selectedPostAtom,
   searchQueryAtom,
   selectedCommentAtom,
@@ -41,23 +36,24 @@ import {
   newCommentAtom,
   addCommentDialogAtom,
   editCommentDialogAtom,
+  sortByAtom,
+  sortOrderAtom,
+  postDetailDialogAtom,
+  userModalAtom,
 } from "../app/store/atom.ts";
-import { useQueryParams } from "../shared/lib/useQueryParams.ts";
 import { usePosts } from "../entities/post/lib/usePosts.ts";
 import { useComment } from "../entities/comment/lib/useComment.ts";
 import { useTags } from "../entities/tag/lib/useTags.ts";
+import { useQuery } from "../shared/hook/useQueryParams.ts";
 
 const PostsManager = () => {
-  const navigate = useNavigate();
   const location = useLocation();
 
   // 전역 변수
-  const [total] = useAtom(totalAtom);
-  const [posts] = useAtom(postsAtom);
   const [selectedPost, setSelectedPost] = useAtom(selectedPostAtom);
   const [searchQuery, setSearchQuery] = useAtom(searchQueryAtom);
   const [selectedComment, setSelectedComment] = useAtom(selectedCommentAtom);
-  const [selectedUser, setSelectedUser] = useAtom(selectedUserAtom);
+  const [selectedUser] = useAtom(selectedUserAtom);
   const [selectedTag, setSelectedTag] = useAtom(selectedTagAtom);
   const [loading] = useAtom(loadingAtom);
   const [skip, setSkip] = useAtom(skipAtom);
@@ -71,67 +67,33 @@ const PostsManager = () => {
   const [showEditCommentDialog, setShowEditCommentDialog] = useAtom(
     editCommentDialogAtom
   );
+  const [sortBy, setSortBy] = useAtom(sortByAtom);
+  // useState(useQueryParams("sortBy") || "");
+  const [sortOrder, setSortOrder] = useAtom(sortOrderAtom);
+  // useState(
+  //   useQueryParams("sortOrder") || "asc"
+  // );
 
-  // 상태 관리
-
-  const [sortBy, setSortBy] = useState(useQueryParams("sortBy") || "");
-  const [sortOrder, setSortOrder] = useState(
-    useQueryParams("sortOrder") || "asc"
-  );
-
-  const [showPostDetailDialog, setShowPostDetailDialog] = useState(false);
-  const [showUserModal, setShowUserModal] = useState(false);
-
-  // URL 업데이트 함수
-  const updateURL = () => {
-    const params = new URLSearchParams();
-    if (skip) params.set("skip", skip.toString());
-    if (limit) params.set("limit", limit.toString());
-    if (searchQuery) params.set("search", searchQuery);
-    if (sortBy) params.set("sortBy", sortBy);
-    if (sortOrder) params.set("sortOrder", sortOrder);
-    if (selectedTag) params.set("tag", selectedTag);
-    navigate(`?${params.toString()}`);
-  };
+  const [showPostDetailDialog, setShowPostDetailDialog] =
+    useAtom(postDetailDialogAtom);
+  const [showUserModal, setShowUserModal] = useAtom(userModalAtom);
 
   const { handleFetchTags } = useTags();
 
   const {
     handleFetchPost,
     handleFetchPostsByTag,
-    handleSearchPost,
     handleAddPost,
     handleUpdatePost,
-    handleDeletePost,
   } = usePosts();
 
-  const { handleFetchComments, handleAddComments, handleUpdateComments } =
-    useComment();
-
-  // 게시물 상세 보기
-  const openPostDetail = (post: Post) => {
-    setSelectedPost(post);
-    handleFetchComments(post.id);
-    setShowPostDetailDialog(true);
-  };
-
-  // 사용자 모달 열기
-  const openUserModal = async (user: User) => {
-    if (!user) return;
-
-    try {
-      const response = await fetch(`/api/users/${user?.id}`);
-      const userData = await response.json();
-      setSelectedUser(userData);
-      setShowUserModal(true);
-    } catch (error) {
-      console.error("사용자 정보 가져오기 오류:", error);
-    }
-  };
+  const { handleAddComments, handleUpdateComments } = useComment();
 
   useEffect(() => {
     handleFetchTags();
   }, []);
+
+  const { updateURL } = useQuery();
 
   useEffect(() => {
     if (selectedTag) {
@@ -166,48 +128,14 @@ const PostsManager = () => {
       <CardContent>
         <div className="flex flex-col gap-4">
           {/* 검색 및 필터 컨트롤 */}
-          <PostFilter
-            onKeyDown={handleSearchPost}
-            selectedTag={selectedTag}
-            onValueChange={(value: string) => {
-              setSelectedTag(value);
-              handleFetchPostsByTag(value);
-              updateURL();
-            }}
-            sortBy={sortBy}
-            onSelectChange={setSortBy}
-            sortOrder={sortOrder}
-            onSelectOrderChange={setSortOrder}
-          />
-
+          <PostFilter />
           {/* 게시물 테이블 */}
           {loading ? (
             <div className="flex justify-center p-4">로딩 중...</div>
           ) : (
-            <PostItem
-              posts={posts}
-              selectedTag={selectedTag}
-              searchQuery={searchQuery}
-              setSelectedTag={setSelectedTag}
-              updateURL={updateURL}
-              onViewAuthor={(author: User) => {
-                if (author) openUserModal(author);
-              }}
-              onView={(post: Post) => openPostDetail(post)}
-              onEdit={(post: Post) => {
-                setSelectedPost(post);
-                setShowEditDialog(true);
-              }}
-              onDelete={(postId: number) => handleDeletePost(postId)}
-            />
+            <PostItem />
           )}
-          <PostPagination
-            limit={limit}
-            skip={skip}
-            total={total}
-            onClickPage={(skip) => setSkip(skip)}
-            onValueChange={(value) => setLimit(Number(value))}
-          />
+          <PostPagination />
         </div>
       </CardContent>
 
@@ -305,20 +233,7 @@ const PostsManager = () => {
           </DialogHeader>
           <div className="space-y-4">
             <p>{highlightText(selectedPost.body, searchQuery)}</p>
-            <CommentItem
-              postId={selectedPost.id}
-              onAdd={() => {
-                setNewComment((prev: Comment) => ({
-                  ...prev,
-                  postId: selectedPost.id,
-                }));
-                setShowAddCommentDialog(true);
-              }}
-              onEditComment={(comment: Comment) => {
-                setSelectedComment(comment);
-                setShowEditCommentDialog(true);
-              }}
-            />
+            <CommentItem />
           </div>
         </DialogContent>
       </Dialog>
