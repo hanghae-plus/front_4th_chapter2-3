@@ -52,5 +52,10 @@
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.0.2",
     "vitest-browser-react": "^0.0.4"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
   }
 }
