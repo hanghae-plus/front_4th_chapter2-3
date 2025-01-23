@@ -14,7 +14,6 @@ interface useCommentStoreProps {
   deleteComment: (id: number, postId: number) => void
   likeComment: (id: number, postId: number) => void
 
-  // 임시
   showAddCommentDialog: boolean
   setShowAddCommentDialog: (open: boolean) => void
   showEditCommentDialog: boolean

@@ -1,23 +1,11 @@
-import { NewComment } from "@/entities/comment/model/types"
+import { useCommentStore } from "@/features/comment/model"
 import { Button, Dialog, DialogContent, DialogHeader, DialogTitle, Textarea } from "@/shared/ui"
 
-interface CommentAddDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  newComment: NewComment
-  setNewComment: (updater: (prev: NewComment) => NewComment) => void
-  addComment: () => void
-}
+export const CommentAddDialog = () => {
+  const { newComment, showEditCommentDialog, setShowEditCommentDialog, setNewComment, addComment } = useCommentStore()
 
-export const CommentAddDialog = ({
-  open,
-  onOpenChange,
-  newComment,
-  setNewComment,
-  addComment,
-}: CommentAddDialogProps) => {
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={showEditCommentDialog} onOpenChange={setShowEditCommentDialog}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>새 댓글 추가</DialogTitle>
