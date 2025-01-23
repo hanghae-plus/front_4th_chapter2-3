@@ -1,4 +1,4 @@
-import { NewPost, Post } from '../model';
+import { NewPost, Post } from '@/entities/post';
 
 export const postPost = async (newPost: NewPost): Promise<Post> => {
   const response = await fetch('/api/posts/add', {

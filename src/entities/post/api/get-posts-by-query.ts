@@ -1,4 +1,4 @@
-import { Posts } from '../model';
+import { Posts } from '@/entities/post';
 
 export const getPostsByQuery = async (searchQuery: string): Promise<Posts> => {
   const response = await fetch(`/api/posts/search?q=${searchQuery}`);

@@ -1,6 +1,6 @@
 import PostTagList from './PostTagList.tsx';
 import { useQueryStore } from '@/features/post';
-import { Post } from '@/entities/post/model';
+import { Post } from '@/entities/post';
 import { HighlightText } from '@/shared/ui';
 
 interface PostTitleProps {

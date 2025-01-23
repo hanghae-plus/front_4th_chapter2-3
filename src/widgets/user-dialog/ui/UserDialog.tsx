@@ -1,5 +1,5 @@
 import { useUserStore } from '@/features/user';
-import { Profile } from '@/entities/user/ui';
+import { Profile } from '@/entities/user';
 import { BaseDialog } from '@/shared/ui';
 
 const UserDialog = () => {

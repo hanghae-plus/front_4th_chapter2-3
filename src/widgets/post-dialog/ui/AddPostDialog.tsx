@@ -2,9 +2,7 @@ import { ChangeEvent } from 'react';
 
 import { usePostStore } from '@/features/post';
 
-import { postPost } from '@/entities/post/api';
-import { NewPost } from '@/entities/post/model';
-import { initNewPost } from '@/entities/post/config/init-data.ts';
+import { postPost, NewPost, initNewPost } from '@/entities/post';
 
 import { FormTypeElement } from '@/shared/model';
 import { transformFormValue } from '@/shared/lib';

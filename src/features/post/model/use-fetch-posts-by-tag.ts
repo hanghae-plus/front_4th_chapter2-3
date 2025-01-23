@@ -4,9 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import useFetchPosts from './use-fetch-posts.ts';
 import { useQueryStore, usePostStore } from '@/features/post';
 
-import { getPostsByTag } from '@/entities/post/api';
+import { getPostsByTag } from '@/entities/post';
 import { getUsers } from '@/entities/user/api';
-import { findUserById } from '@/entities/user/model';
+import { findUserById } from '@/entities/user';
 
 const useFetchPostsByTag = () => {
   const navigate = useNavigate();

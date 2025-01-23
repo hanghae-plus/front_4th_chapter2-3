@@ -1,4 +1,4 @@
-import { Posts } from '../model';
+import { Posts } from '@/entities/post';
 
 export const getPostsByTag = async (tag: string): Promise<Posts> => {
   const response = await fetch(`/api/posts/tag/${tag}`, { method: 'GET' });

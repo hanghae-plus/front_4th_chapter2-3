@@ -1,6 +1,6 @@
-import { ResponseWithData } from '../../../shared/model';
-import { User } from '../../user/model';
+import { User } from '@/entities/user';
 import { Reaction } from '@/entities/reaction';
+import { ResponseWithData } from '@/shared/model';
 
 export interface Post {
   id: number;

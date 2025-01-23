@@ -1,7 +1,7 @@
 import { UserPreview } from '@/features/user';
 import { PostTitle, PostDetailButton, PostEditButton, PostDeleteButton } from '@/features/post';
 import { ReactionStatus } from '@/entities/reaction';
-import { Post } from '@/entities/post/model';
+import { Post } from '@/entities/post';
 import { TableCell, TableRow } from '@/shared/ui';
 
 interface PostTableRowProps {

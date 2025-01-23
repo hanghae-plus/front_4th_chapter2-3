@@ -1,6 +1,6 @@
 import { Edit2 } from 'lucide-react';
 import { usePostStore } from '@/features/post';
-import { Post } from '@/entities/post/model';
+import { Post } from '@/entities/post';
 import { Button } from '@/shared/ui';
 
 interface PostEditButtonProps {

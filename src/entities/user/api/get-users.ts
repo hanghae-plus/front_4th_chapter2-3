@@ -1,4 +1,4 @@
-import { Users } from '../model';
+import { Users } from '../index.tsx';
 
 export const getUsers = async (): Promise<Users> => {
   const response = await fetch('/api/users?limit=0&select=username,image', { method: 'GET' });

@@ -1,5 +1,5 @@
 import { useUserStore } from '@/features/user';
-import { User } from '@/entities/user/model';
+import { User } from '@/entities/user';
 import { getUserDetail } from '@/entities/user/api';
 
 interface UserPreviewProps {

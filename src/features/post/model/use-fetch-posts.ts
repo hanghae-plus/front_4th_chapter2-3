@@ -1,8 +1,8 @@
 import { useQueryStore, usePostStore } from '@/features/post';
 
-import { getPosts } from '@/entities/post/api';
+import { getPosts } from '@/entities/post';
 import { getUsers } from '@/entities/user/api';
-import { findUserById } from '@/entities/user/model';
+import { findUserById } from '@/entities/user';
 
 const useFetchPosts = () => {
   const { setLoading, setPosts } = usePostStore();

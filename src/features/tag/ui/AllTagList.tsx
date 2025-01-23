@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { Tag } from '@/entities/tag/model';
-import { getTags } from '@/entities/tag/api';
+import { Tag, getTags } from '@/entities/tag';
 
 import { SelectContent, SelectItem } from '@/shared/ui';
 

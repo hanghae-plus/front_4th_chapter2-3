@@ -1,4 +1,4 @@
-import { UserDetail } from '../model';
+import { UserDetail } from '../index.tsx';
 
 export const getUserDetail = async (userId: number): Promise<UserDetail> => {
   const response = await fetch(`/api/users/${userId}`);

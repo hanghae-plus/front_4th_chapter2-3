@@ -1,4 +1,4 @@
-import { UserDetail } from '../model';
+import { UserDetail } from '../index.tsx';
 
 interface ProfileProps {
   user: UserDetail | null;

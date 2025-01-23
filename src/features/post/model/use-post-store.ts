@@ -1,7 +1,6 @@
 import { StateCreator } from 'zustand/vanilla';
 import { create } from 'zustand/react';
-import { NewPost, Post } from '@/entities/post/model';
-import { initNewPost } from '@/entities/post/config/init-data.ts';
+import { NewPost, Post, initNewPost } from '@/entities/post';
 
 interface State {
   posts: Post[];

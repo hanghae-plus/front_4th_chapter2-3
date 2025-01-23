@@ -1,4 +1,4 @@
-import { Posts } from '../model';
+import { Posts } from '@/entities/post';
 
 export const getPosts = async (limit: number, skip: number): Promise<Posts> => {
   const response = await fetch(`/api/posts?limit=${limit}&skip=${skip}`, { method: 'GET' });

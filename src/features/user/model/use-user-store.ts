@@ -1,6 +1,6 @@
 import { StateCreator } from 'zustand/vanilla';
 import { create } from 'zustand/react';
-import { UserDetail } from '@/entities/user/model';
+import { UserDetail } from '@/entities/user';
 
 interface State {
   showUserModal: boolean;
