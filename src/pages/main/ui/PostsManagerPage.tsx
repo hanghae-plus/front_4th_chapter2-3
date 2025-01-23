@@ -43,6 +43,8 @@ import { PostEditModal } from "../../../features/edit-post/ui/modal/PostEditModa
 import { highlightText } from "../../../shared/lib/utils/highlight-text"
 import { usePostDetail } from "../../../features/view-post-detail/model/use-post-detail"
 import { PostDetailModal } from "../../../features/view-post-detail/ui/PostDetailModal"
+import { Pagination } from "../../../widgets/pagination/ui/Pagination"
+import { usePagination } from "../../../widgets/pagination/model/use-pagination"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -57,12 +59,12 @@ const PostsManager = () => {
   const sortOrder = (queryParams.get("sortOrder") || "asc") as SortOrder
   const selectedTag = queryParams.get("tag") || ""
   const selectedPostId = queryParams.get("selectedPostId")
-  const mode = queryParams.get("mode")
 
   const [selectedComment, setSelectedComment] = useState<Comment | null>(null)
   const [newComment, setNewComment] = useState({ body: "", postId: null, userId: 1 })
   const [showAddCommentDialog, setShowAddCommentDialog] = useState(false)
   const [showEditCommentDialog, setShowEditCommentDialog] = useState(false)
+  const { page, pageSize, onPageChange, onPageSizeChange } = usePagination()
 
   // URL 업데이트 함수
   const updateURLParams = (updates: Record<string, string | null>) => {
@@ -479,53 +481,13 @@ const PostsManager = () => {
           {/* 게시물 테이블 */}
           {isPostsLoading ? <div className="flex justify-center p-4">로딩 중...</div> : renderPostTable()}
 
-          {/* 페이지네이션 */}
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2">
-              <span>표시</span>
-              <Select
-                value={limit.toString()}
-                onValueChange={(value) =>
-                  updateURLParams({
-                    limit: value,
-                    skip: "0",
-                  })
-                }
-              >
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="10" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="10">10</SelectItem>
-                  <SelectItem value="20">20</SelectItem>
-                  <SelectItem value="30">30</SelectItem>
-                </SelectContent>
-              </Select>
-              <span>항목</span>
-            </div>
-            <div className="flex gap-2">
-              <Button
-                disabled={skip === 0}
-                onClick={() =>
-                  updateURLParams({
-                    skip: Math.max(0, skip - limit).toString(),
-                  })
-                }
-              >
-                이전
-              </Button>
-              <Button
-                disabled={skip + limit >= total}
-                onClick={() =>
-                  updateURLParams({
-                    skip: (skip + limit).toString(),
-                  })
-                }
-              >
-                다음
-              </Button>
-            </div>
-          </div>
+          <Pagination
+            page={page}
+            pageSize={pageSize}
+            total={total}
+            onPageChange={onPageChange}
+            onPageSizeChange={onPageSizeChange}
+          />
         </div>
       </CardContent>
 
