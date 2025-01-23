@@ -1,15 +1,16 @@
-import { Edit2, MessageSquare, Plus, Search, ThumbsDown, ThumbsUp, Trash2 } from 'lucide-react';
+import { Edit2, Plus, Search, ThumbsUp, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import type { PostsResponse } from '@/entities/posts/api/PostsResponse';
-import type { Post } from '@/entities/posts/model';
+import type { Post, PostWithUser } from '@/entities/posts/model';
+import type { Tag } from '@/entities/tags/model';
 import type { UsersResponse } from '@/entities/users/api';
 import type { User } from '@/entities/users/model';
 import { useUserDialog } from '@/features/dialog/model';
 import { usePostAddDialog, usePostEditDialog } from '@/features/dialog/model/usePostDialog';
 import { CustomDialog } from '@/features/dialog/ui/CustomDialog';
-import { useDeletePost, useQueryPosts } from '@/features/posts/api';
+import { useQueryPosts } from '@/features/posts/api';
 import { usePostsStoreSelector } from '@/features/posts/model';
 import { useSelectedPostStore } from '@/features/posts/model/useSelectedPostStore';
 import { useQueryUsers } from '@/features/users/api/useUsersQueries';
@@ -26,20 +27,13 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
   Textarea,
 } from '@/shared/ui';
 import { HighlightedText } from '@/shared/ui/HighlightedText';
-import PostAddDialog from '@/widgets/post/ui/PostAddDialog';
-import PostUpdateDialog from '@/widgets/post/ui/PostEditDialog';
-import UserDialog from '@/widgets/user/ui/UserDialog';
+import { PostAddDialog, PostEditDialog, PostsTable } from '@/widgets/post/ui';
+import { UserDialog } from '@/widgets/user/ui';
 
-import type { Comment, Tag } from '../model/types';
+import type { Comment } from '../model/types';
 
 export const PostsManagerPage = () => {
   const navigate = useNavigate();
@@ -47,11 +41,7 @@ export const PostsManagerPage = () => {
   const queryParams = new URLSearchParams(location.search);
 
   // 상태 관리
-  const { posts, setPosts, deletePost } = usePostsStoreSelector([
-    'posts',
-    'setPosts',
-    'deletePost',
-  ]);
+  const { setPosts } = usePostsStoreSelector(['setPosts']);
   const [searchQuery, setSearchQuery] = useState(queryParams.get('search') || '');
   const [loading, setLoading] = useState(false);
   const [selectedTag, setSelectedTag] = useState(queryParams.get('tag') || '');
@@ -85,7 +75,6 @@ export const PostsManagerPage = () => {
     isLoading: postsLoading,
     error: postsError,
   } = useQueryPosts(limit, skip);
-  const { mutateAsync: mutatePostDelete } = useDeletePost();
 
   const { data: usersData, isLoading: usersLoading, error: usersError } = useQueryUsers();
 
@@ -115,7 +104,7 @@ export const PostsManagerPage = () => {
     const postsWithUsers = postsData.posts.map((post) => ({
       ...post,
       author: usersData.users.find((user) => user.id === post.userId),
-    }));
+    })) as PostWithUser[];
     setPosts(postsWithUsers);
     setTotal(postsData.total);
     setLoading(false);
@@ -174,19 +163,6 @@ export const PostsManagerPage = () => {
       console.error('태그별 게시물 가져오기 오류:', error);
     }
     setLoading(false);
-  };
-
-  // 게시물 삭제
-  const handlePostDelete = async (id: number) => {
-    try {
-      await mutatePostDelete(id, {
-        onSuccess: () => {
-          deletePost(id);
-        },
-      });
-    } catch (error) {
-      console.error('게시물 삭제 오류:', error);
-    }
   };
 
   // 댓글 가져오기
@@ -302,99 +278,11 @@ export const PostsManagerPage = () => {
       const postsWithUsers = postsData.posts.map((post) => ({
         ...post,
         author: usersData?.users?.find((user) => user.id === post.userId),
-      }));
+      })) as PostWithUser[];
       setPosts(postsWithUsers);
       setLoading(false);
     }
   }, [postsData, usersData, setPosts]);
-
-  // 게시물 테이블 렌더링
-  const renderPostTable = () => (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead className='w-[50px]'>ID</TableHead>
-          <TableHead>제목</TableHead>
-          <TableHead className='w-[150px]'>작성자</TableHead>
-          <TableHead className='w-[150px]'>반응</TableHead>
-          <TableHead className='w-[150px]'>작업</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {posts.map((post) => (
-          <TableRow key={post.id}>
-            <TableCell>{post.id}</TableCell>
-            <TableCell>
-              <div className='space-y-1'>
-                <div>
-                  <HighlightedText text={post.title} highlight={searchQuery} />
-                </div>
-                <div className='flex flex-wrap gap-1'>
-                  {post.tags?.map((tag) => (
-                    <span
-                      key={tag}
-                      className={`px-1 text-[9px] font-semibold rounded-[4px] cursor-pointer ${
-                        selectedTag === tag
-                          ? 'text-white bg-blue-500 hover:bg-blue-600'
-                          : 'text-blue-800 bg-blue-100 hover:bg-blue-200'
-                      }`}
-                      onClick={() => {
-                        setSelectedTag(tag);
-                        updateURL();
-                      }}
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </TableCell>
-            <TableCell>
-              <div
-                className='flex items-center space-x-2 cursor-pointer'
-                onClick={() => userDialogState.onOpenUserDialog(post.author)}
-              >
-                <img
-                  src={post.author?.image}
-                  alt={post.author?.username}
-                  className='w-8 h-8 rounded-full'
-                />
-                <span>{post.author?.username}</span>
-              </div>
-            </TableCell>
-            <TableCell>
-              <div className='flex items-center gap-2'>
-                <ThumbsUp className='w-4 h-4' />
-                <span>{post.reactions?.likes || 0}</span>
-                <ThumbsDown className='w-4 h-4' />
-                <span>{post.reactions?.dislikes || 0}</span>
-              </div>
-            </TableCell>
-            <TableCell>
-              <div className='flex items-center gap-2'>
-                <Button variant='ghost' size='sm' onClick={() => openPostDetail(post)}>
-                  <MessageSquare className='w-4 h-4' />
-                </Button>
-                <Button
-                  variant='ghost'
-                  size='sm'
-                  onClick={() => {
-                    setSelectedPost(post);
-                    postAddDialogState.open();
-                  }}
-                >
-                  <Edit2 className='w-4 h-4' />
-                </Button>
-                <Button variant='ghost' size='sm' onClick={() => handlePostDelete(post.id)}>
-                  <Trash2 className='w-4 h-4' />
-                </Button>
-              </div>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  );
 
   // 댓글 렌더링
   const renderComments = (postId: number) => (
@@ -516,7 +404,17 @@ export const PostsManagerPage = () => {
           </div>
 
           {/* 게시물 테이블 */}
-          {loading ? <div className='flex justify-center p-4'>로딩 중...</div> : renderPostTable()}
+          {loading ? (
+            <div className='flex justify-center p-4'>로딩 중...</div>
+          ) : (
+            <PostsTable
+              searchQuery={searchQuery}
+              updateURL={updateURL}
+              onUserClick={userDialogState.onOpenUserDialog}
+              onPostDetail={openPostDetail}
+              onPostAddDialogOpen={postAddDialogState.open}
+            />
+          )}
 
           {/* 페이지네이션 */}
           <div className='flex justify-between items-center'>
@@ -550,7 +448,7 @@ export const PostsManagerPage = () => {
       <PostAddDialog dialogState={postAddDialogState} />
 
       {/* 게시물 수정 대화상자 */}
-      <PostUpdateDialog dialogState={postEditDialogState} />
+      <PostEditDialog dialogState={postEditDialogState} />
 
       {/* 게시물 상세 보기 대화상자 */}
       <CustomDialog
