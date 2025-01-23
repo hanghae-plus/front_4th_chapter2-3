@@ -10,4 +10,5 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextAreaProps>(({ classN
     />
   )
 })
+
 Textarea.displayName = "Textarea"
