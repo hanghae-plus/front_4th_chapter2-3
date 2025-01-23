@@ -9,6 +9,7 @@ export interface Post {
     dislikes: number
   }
   author?: User
+  comments?: Comment[]
 }
 
 export interface User {

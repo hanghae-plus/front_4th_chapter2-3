@@ -1,35 +1,25 @@
-import { Button, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../shared/ui"
+import { Button } from "../../shared/ui"
+import { usePostsStore } from "../../stores/usePostsStore"
+import { useState } from "react"
 
-interface PostsPaginationProps {
-  skip: number
-  limit: number
-  total: number
-  onSkipChange: (skip: number) => void
-  onLimitChange: (limit: number) => void
-}
+export const PostsPagination = () => {
+  const { total, fetchPosts, searchQuery, selectedTag, sortBy, sortOrder } = usePostsStore()
+  const [skip, setSkip] = useState(0)
+  const limit = 10
 
-export const PostsPagination = ({ skip, limit, total, onSkipChange, onLimitChange }: PostsPaginationProps) => {
+  const handlePageChange = (newSkip: number) => {
+    setSkip(newSkip)
+    fetchPosts(newSkip, limit, selectedTag, searchQuery, sortBy, sortOrder)
+  }
+
   return (
-    <div className="flex justify-between items-center">
-      <div className="flex items-center gap-2">
-        <span>표시</span>
-        <Select value={limit.toString()} onValueChange={(value) => onLimitChange(Number(value))}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="10" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="10">10</SelectItem>
-            <SelectItem value="20">20</SelectItem>
-            <SelectItem value="30">30</SelectItem>
-          </SelectContent>
-        </Select>
-        <span>항목</span>
-      </div>
+    <div className="flex items-center justify-between">
+      <div className="text-sm text-gray-500">총 {total}개의 게시물</div>
       <div className="flex gap-2">
-        <Button disabled={skip === 0} onClick={() => onSkipChange(Math.max(0, skip - limit))}>
+        <Button variant="outline" disabled={skip === 0} onClick={() => handlePageChange(skip - limit)}>
           이전
         </Button>
-        <Button disabled={skip + limit >= total} onClick={() => onSkipChange(skip + limit)}>
+        <Button variant="outline" disabled={skip + limit >= total} onClick={() => handlePageChange(skip + limit)}>
           다음
         </Button>
       </div>

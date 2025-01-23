@@ -1,28 +1,22 @@
 import { Edit2, MessageSquare, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react"
 import { Button, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../shared/ui"
 import { Post } from "../../types/posts"
+import { usePostsStore } from "../../stores/usePostsStore"
 
-interface PostsTableProps {
-  posts: Post[]
-  searchQuery: string
-  selectedTag: string
-  onTagSelect: (tag: string) => void
-  onPostDetail: (post: Post) => void
-  onPostEdit: (post: Post) => void
-  onPostDelete: (id: number) => void
-  onUserDetail: (userId: number) => void
-}
+export const PostsTable = () => {
+  const {
+    posts,
+    searchQuery,
+    selectedTag,
+    handlePostDetail,
+    handlePostEdit,
+    handlePostDelete,
+    handlePostLike,
+    handlePostDislike,
+    handleUserDetail,
+    handleTagSelect,
+  } = usePostsStore()
 
-export const PostsTable = ({
-  posts,
-  searchQuery,
-  selectedTag,
-  onTagSelect,
-  onPostDetail,
-  onPostEdit,
-  onPostDelete,
-  onUserDetail,
-}: PostsTableProps) => {
   const highlightText = (text: string, highlight: string) => {
     if (!text) return null
     if (!highlight.trim()) {
@@ -64,7 +58,7 @@ export const PostsTable = ({
                           ? "text-white bg-blue-500 hover:bg-blue-600"
                           : "text-blue-800 bg-blue-100 hover:bg-blue-200"
                       }`}
-                      onClick={() => onTagSelect(tag)}
+                      onClick={() => handleTagSelect(tag)}
                     >
                       {highlightText(tag, searchQuery)}
                     </span>
@@ -75,7 +69,7 @@ export const PostsTable = ({
             <TableCell>
               <div
                 className="flex items-center space-x-2 cursor-pointer"
-                onClick={() => post.author && onUserDetail(post.author.id)}
+                onClick={() => post.author && handleUserDetail(post.author.id)}
               >
                 <img src={post.author?.image} alt={post.author?.username} className="w-8 h-8 rounded-full" />
                 <span>{post.author?.username}</span>
@@ -91,13 +85,13 @@ export const PostsTable = ({
             </TableCell>
             <TableCell>
               <div className="flex items-center gap-2">
-                <Button variant="ghost" size="sm" onClick={() => onPostDetail(post)}>
+                <Button variant="ghost" size="sm" onClick={() => handlePostDetail(post)}>
                   <MessageSquare className="w-4 h-4" />
                 </Button>
-                <Button variant="ghost" size="sm" onClick={() => onPostEdit(post)}>
+                <Button variant="ghost" size="sm" onClick={() => handlePostEdit(post)}>
                   <Edit2 className="w-4 h-4" />
                 </Button>
-                <Button variant="ghost" size="sm" onClick={() => onPostDelete(post.id)}>
+                <Button variant="ghost" size="sm" onClick={() => handlePostDelete(post.id)}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

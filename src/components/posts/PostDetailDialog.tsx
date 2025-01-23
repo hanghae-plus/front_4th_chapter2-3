@@ -1,41 +1,30 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../shared/ui"
-import { Post, Comment } from "../../types/posts"
 import { PostComments } from "./PostComments"
+import { usePostsStore } from "../../stores/usePostsStore"
 
-interface PostDetailDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  post: Post | null
-  comments: Comment[]
-  onCommentLike: (id: number, postId: number) => void
-  onCommentEdit: (comment: Comment) => void
-  onCommentDelete: (id: number, postId: number) => void
-}
-
-export const PostDetailDialog = ({
-  open,
-  onOpenChange,
-  post,
-  comments,
-  onCommentLike,
-  onCommentEdit,
-  onCommentDelete,
-}: PostDetailDialogProps) => {
-  if (!post) return null
+export const PostDetailDialog = () => {
+  const {
+    selectedPost,
+    showPostDetailDialog,
+    setShowPostDetailDialog,
+    handleCommentLike,
+    handleCommentEdit,
+    handleCommentDelete,
+  } = usePostsStore()
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl">
+    <Dialog open={showPostDetailDialog} onOpenChange={setShowPostDetailDialog}>
+      <DialogContent>
         <DialogHeader>
-          <DialogTitle>{post.title}</DialogTitle>
+          <DialogTitle>{selectedPost?.title}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
-          <p>{post.body}</p>
+          <p>{selectedPost?.body}</p>
           <PostComments
-            comments={comments}
-            onCommentLike={onCommentLike}
-            onCommentEdit={onCommentEdit}
-            onCommentDelete={onCommentDelete}
+            comments={selectedPost?.comments || []}
+            onCommentLike={handleCommentLike}
+            onCommentEdit={handleCommentEdit}
+            onCommentDelete={handleCommentDelete}
           />
         </div>
       </DialogContent>
