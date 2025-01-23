@@ -4,6 +4,7 @@ import * as SelectPrimitive from "@radix-ui/react-select"
 import * as DialogPrimitive from "@radix-ui/react-dialog"
 import { Check, ChevronDown, X } from "lucide-react"
 import { cva, VariantProps } from "class-variance-authority"
+import { ModalProps } from "./types.ts"
 
 const buttonVariants = cva(
   "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background",
@@ -212,3 +213,16 @@ export const TableCell = forwardRef(({ className, ...props }, ref) => (
   <td ref={ref} className={`p-2 align-middle [&:has([role=checkbox])]:pr-0 ${className}`} {...props} />
 ))
 TableCell.displayName = "TableCell"
+
+export const Modal = forwardRef(({className, ...props } : ModalProps, ref) => (
+  <Dialog open={props.open} onOpenChange={props.onOpenChange}>
+    <DialogContent>
+      <DialogHeader>
+        <DialogTitle>{props.title}</DialogTitle>
+      </DialogHeader>
+      <div className="space-y-4">
+        {props.children}
+      </div>
+    </DialogContent>
+  </Dialog>
+))

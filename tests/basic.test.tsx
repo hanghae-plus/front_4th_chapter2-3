@@ -83,7 +83,7 @@ describe("PostsManager", () => {
     const NEW_POST = {
       id: TEST_POSTS.posts.length + 1,
       title: "New Post",
-      body: "This is a new post",
+      body: "This is a new posts",
       userId: 1,
       tags: [],
     }
