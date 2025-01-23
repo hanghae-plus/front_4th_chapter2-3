@@ -1,13 +1,20 @@
 import { Edit2, MessageSquare, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react";
-import { Button, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../shared/ui";
-import { JSX } from "react";
+import {
+  useModal,
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+  highlightText,
+} from "../../../shared";
 import { fetchUser, Post, User, UserDetail } from "../../../entities";
-import { useModal } from "../../../shared/model/useModal";
 
 // 게시물 테이블 렌더링
 export const PostTable = ({
   posts,
-  highlightText,
   searchQuery,
   selectedTag,
   setSelectedTag,
@@ -18,7 +25,6 @@ export const PostTable = ({
   openPostEdit,
 }: {
   posts: Post[];
-  highlightText: (text: string, highlight: string) => JSX.Element | null;
   searchQuery: string;
   selectedTag: string;
   setSelectedTag: React.Dispatch<React.SetStateAction<string>>;
@@ -28,7 +34,8 @@ export const PostTable = ({
   removePost: (id: Post["id"]) => Promise<void>;
   openPostEdit: (post: Post) => void;
 }) => {
-  const { handleModalToggle } = useModal();
+  const { handleModalToggle } = useModal("userModal");
+  const { handleModalToggle: handlePostDetailModal } = useModal("postDetailModal");
 
   // 사용자 모달 열기
   const openUserModal = async (user: User) => {
@@ -95,7 +102,13 @@ export const PostTable = ({
             </TableCell>
             <TableCell>
               <div className="flex items-center gap-2">
-                <Button variant="ghost" size="sm" onClick={() => openPostDetail(post)}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    openPostDetail(post);
+                  }}
+                >
                   <MessageSquare className="w-4 h-4" />
                 </Button>
                 <Button
@@ -103,6 +116,7 @@ export const PostTable = ({
                   size="sm"
                   onClick={() => {
                     openPostEdit(post);
+                    handlePostDetailModal();
                   }}
                 >
                   <Edit2 className="w-4 h-4" />
