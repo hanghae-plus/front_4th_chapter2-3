@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react"
-import { Edit2, MessageSquare, Plus, Search, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react"
+import { Edit2, Plus, Search, ThumbsUp, Trash2 } from "lucide-react"
 import { useLocation, useNavigate } from "react-router-dom"
 import {
   Button,
@@ -7,27 +7,19 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
   Input,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-  Textarea,
 } from "../../../shared/ui"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { postQueries } from "../../../entities/post/api/queries"
 import { SortOrder } from "../../../entities/post/model/types"
 import { userQueries } from "../../../entities/user/api/queries"
-import { commentQueries } from "../../../entities/comment/api/queries"
-import { queryClient } from "../../../shared/api/query-client"
 import { Comment } from "../../../entities/comment/model/types"
 import { postMutations } from "../../../entities/post/api/mutations"
-import { commentMutations } from "../../../entities/comment/api/mutations"
 import { useViewUserProfile } from "../../../features/view-user-profile/model/use-view-user-profile"
 import { UserProfileModal } from "../../../features/view-user-profile/ui/UserProfileModal"
 import { useAddPostModal, useDetailPostModal, useEditPostModal } from "../../../features/post/model"
@@ -57,9 +49,6 @@ const PostsManager = () => {
   const selectedTag = queryParams.get("tag") || ""
 
   const [selectedComment, setSelectedComment] = useState<Comment | null>(null)
-  // const [newCommentBody, setNewCommentBody] = useState<string | null>(null)
-  const [showAddCommentDialog, setShowAddCommentDialog] = useState(false)
-  const [showEditCommentDialog, setShowEditCommentDialog] = useState(false)
   const { page, pageSize, onPageChange, onPageSizeChange } = usePagination()
 
   // URL 업데이트 함수
