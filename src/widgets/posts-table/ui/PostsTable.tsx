@@ -10,11 +10,12 @@ interface PostWithUser extends Post {
 interface PostsTableProps {
   posts: PostWithUser[]
   onViewDetail: (id: string) => void
+  onClickProfile: (id: number) => void
   onEdit: (id: number) => void
   onDelete: (id: number) => void
 }
 
-export const PostsTable = ({ posts, onViewDetail, onEdit, onDelete }: PostsTableProps) => (
+export const PostsTable = ({ posts, onViewDetail, onClickProfile, onEdit, onDelete }: PostsTableProps) => (
   <Table>
     <TableHeader>
       <TableRow>
@@ -45,10 +46,15 @@ export const PostsTable = ({ posts, onViewDetail, onEdit, onDelete }: PostsTable
             </div>
           </TableCell>
           <TableCell>
-            <div className="flex items-center space-x-2">
-              {post.author?.image && (
-                <img src={post.author.image} alt={post.author.username} className="w-8 h-8 rounded-full" />
-              )}
+            <div
+              className="flex items-center space-x-2 cursor-pointer"
+              onClick={() => {
+                if (post.author) {
+                  onClickProfile(post.author.id)
+                }
+              }}
+            >
+              <img src={post.author?.image} alt={post.author?.username} className="w-8 h-8 rounded-full" />
               <span>{post.author?.username}</span>
             </div>
           </TableCell>

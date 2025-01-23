@@ -403,6 +403,7 @@ const PostsManager = () => {
             <PostsTable
               posts={postsWithUsers}
               onViewDetail={(id) => handleViewDetail(id)}
+              onClickProfile={handleViewProfile}
               onEdit={handleEdit}
               onDelete={deletePost}
             />
