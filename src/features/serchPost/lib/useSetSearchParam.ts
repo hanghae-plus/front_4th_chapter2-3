@@ -15,6 +15,17 @@ export const useSetSearchParam = () => {
   const [sortOrder, setSortOrder] = useAtom(sortOrderAtom)
   const [selectedTag, setSelectedTag] = useAtom(selectedTagAtom)
 
+  useEffect(() => {
+    const params = new URLSearchParams(location.search)
+
+    setSkip(parseInt(params.get("skip") || "0"))
+    setLimit(parseInt(params.get("limit") || "10"))
+    setSearchQuery(params.get("search") || "")
+    setSortBy(params.get("sortBy") || "")
+    setSortOrder(params.get("sortOrder") || "asc")
+    setSelectedTag(params.get("tag") || "")
+  }, [location.search])
+
   const updateURL = () => {
     const params = new URLSearchParams()
     if (skip) params.set("skip", skip.toString())
@@ -27,19 +38,6 @@ export const useSetSearchParam = () => {
   }
 
   useEffect(() => {
-    const params = new URLSearchParams(location.search)
-
-    setSkip(parseInt(params.get("skip") || "0"))
-    setLimit(parseInt(params.get("limit") || "10"))
-    setSearchQuery(params.get("search") || "")
-    setSortBy(params.get("sortBy") || "")
-    setSortOrder(params.get("sortOrder") || "asc")
-    setSelectedTag(params.get("tag") || "")
-  }, [location.search])
-
-  useEffect(() => {
     updateURL()
   }, [skip, limit, sortBy, sortOrder, selectedTag])
-
-  return { updateURL }
 }

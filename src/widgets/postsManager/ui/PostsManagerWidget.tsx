@@ -1,4 +1,3 @@
-import { useSetSearchParam } from "../../../features/serchPost/lib"
 import { AddPostButton } from "../../../features/addComment/ui"
 import { SearchPostBar } from "../../../features/serchPost/ui"
 import { PostsWithUsersTable } from "../../../features/postsWithUsers/ui"
@@ -12,8 +11,6 @@ import { UserDialog } from "../../../entities/user/ui"
 import { CardContainer, CardContent, CardHeader, CardTitle } from "../../../shared/ui/card"
 
 export const PostsManagerWidget = () => {
-  const { updateURL } = useSetSearchParam()
-
   return (
     <>
       <CardContainer className="w-full max-w-6xl mx-auto">
@@ -26,11 +23,7 @@ export const PostsManagerWidget = () => {
         <CardContent>
           <div className="flex flex-col gap-4">
             <SearchPostBar />
-            <PostsWithUsersTable
-              {...{
-                updateURL,
-              }}
-            />
+            <PostsWithUsersTable />
             <Pagination />
           </div>
         </CardContent>

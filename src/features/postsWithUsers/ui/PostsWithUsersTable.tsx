@@ -15,7 +15,7 @@ import { Button } from "../../../shared/ui/common"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../shared/ui/table"
 import type { PostType } from "../../../entities/post/model"
 
-export const PostsWithUsersTable = ({ updateURL }: { updateURL: () => void }) => {
+export const PostsWithUsersTable = () => {
   const searchQuery = useAtomValue(searchQueryAtom)
 
   // Post Detail Dialog
@@ -100,7 +100,6 @@ export const PostsWithUsersTable = ({ updateURL }: { updateURL: () => void }) =>
                       }`}
                       onClick={() => {
                         setSelectedTag(tag)
-                        updateURL()
                       }}
                     >
                       {tag}
