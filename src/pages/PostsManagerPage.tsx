@@ -42,23 +42,13 @@ const PostsManager = () => {
 
   const {
     comments,
-    newComment,
-    selectedComment,
-    showAddCommentDialog,
-    showEditCommentDialog,
-    addComment,
-    updateComment,
     deleteComment,
     likeComment,
     handleAddComment,
     handleEditComment,
-    setShowAddCommentDialog,
-    setShowEditCommentDialog,
-    setSelectedComment,
-    setNewCommentBody,
   } = useCommentManager()
 
-  const { selectedUser, showUserModal, handleUserClick, setShowUserModal } = useUserManager()
+  const {  handleUserClick } = useUserManager()
 
   const [showAddDialog, setShowAddDialog] = useState(false)
   const [showEditDialog, setShowEditDialog] = useState(false)
@@ -125,23 +115,8 @@ const PostsManager = () => {
         onSubmit={() => selectedPost && updatePost(selectedPost)}
       />
 
-      <CommentFormDialog
-        mode="add"
-        open={showAddCommentDialog}
-        onOpenChange={setShowAddCommentDialog}
-        comment={{ id: 0, body: newComment.body, postId: newComment.postId ?? 0, userId: newComment.userId }}
-        onBodyChange={setNewCommentBody}
-        onSubmit={addComment}
-      />
-
-      <CommentFormDialog
-        mode="edit"
-        open={showEditCommentDialog}
-        onOpenChange={setShowEditCommentDialog}
-        comment={selectedComment}
-        onBodyChange={(body) => setSelectedComment(selectedComment ? { ...selectedComment, body } : null)}
-        onSubmit={() => selectedComment && updateComment()}
-      />
+      <CommentFormDialog mode="add" />
+      <CommentFormDialog mode="edit" />
 
       <UserInfoDialog />
     </>
