@@ -10,6 +10,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../widgets/ui/
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../shared/ui/select"
 import UserProfile from "../entities/user/ui/UserProfile"
 import PostForm from "../entities/post/ui/PostForm"
+import { TComment } from "../entities/comment/model/types"
+import CommnetForm from "../entities/comment/ui/CommentForm"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -32,7 +34,7 @@ const PostsManager = () => {
   const [tags, setTags] = useState([])
   const [selectedTag, setSelectedTag] = useState(queryParams.get("tag") || "")
   const [comments, setComments] = useState({})
-  const [selectedComment, setSelectedComment] = useState(null)
+  const [selectedComment, setSelectedComment] = useState<TComment | null>(null)
   const [newComment, setNewComment] = useState({ body: "", postId: null, userId: 1 })
   const [showAddCommentDialog, setShowAddCommentDialog] = useState(false)
   const [showEditCommentDialog, setShowEditCommentDialog] = useState(false)
@@ -615,14 +617,15 @@ const PostsManager = () => {
           <DialogHeader>
             <DialogTitle>새 댓글 추가</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
+          <CommnetForm comment={undefined} type="POST" />
+          {/* <div className="space-y-4">
             <Textarea
               placeholder="댓글 내용"
               value={newComment.body}
               onChange={(e) => setNewComment({ ...newComment, body: e.target.value })}
             />
             <Button onClick={addComment}>댓글 추가</Button>
-          </div>
+          </div> */}
         </DialogContent>
       </Dialog>
 
@@ -632,14 +635,16 @@ const PostsManager = () => {
           <DialogHeader>
             <DialogTitle>댓글 수정</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
+          <CommnetForm comment={selectedComment} type="PATCH" />
+
+          {/* <div className="space-y-4">
             <Textarea
               placeholder="댓글 내용"
               value={selectedComment?.body || ""}
               onChange={(e) => setSelectedComment({ ...selectedComment, body: e.target.value })}
             />
             <Button onClick={updateComment}>댓글 업데이트</Button>
-          </div>
+          </div> */}
         </DialogContent>
       </Dialog>
 
