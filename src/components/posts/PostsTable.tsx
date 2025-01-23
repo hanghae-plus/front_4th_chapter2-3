@@ -66,9 +66,12 @@ export const PostsTable = () => {
               </div>
             </TableCell>
             <TableCell>
-              <span className="cursor-pointer hover:underline" onClick={() => handleUserDetail(post.userId)}>
-                {post.author?.username}
-              </span>
+              <div className="flex items-center space-x-2 cursor-pointer" onClick={() => handleUserDetail(post.userId)}>
+                {post.author?.image && (
+                  <img src={post.author.image} alt={post.author.username} className="w-8 h-8 rounded-full" />
+                )}
+                <span>{post.author?.username}</span>
+              </div>
             </TableCell>
             <TableCell>
               <div className="flex items-center gap-2">
