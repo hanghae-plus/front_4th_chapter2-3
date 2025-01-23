@@ -1,9 +1,22 @@
 {
-  "semi": false,
-  "printWidth": 120,
+  "semi": true,
+  "printWidth": 100,
   "tabWidth": 2,
   "singleQuote": false,
   "quoteProps": "consistent",
   "trailingComma": "all",
-  "singleAttributePerLine": false
+
+  "plugins": ["@trivago/prettier-plugin-sort-imports", "prettier-plugin-tailwindcss"],
+  "importOrder": ["<THIRD_PARTY_MODULES>", "^[./]"],
+  "importOrderSortSpecifiers": true,
+  "tailwindFunctions": ["cva"],
+
+  "overrides": [
+    {
+      "files": "*.styles.ts",
+      "options": {
+        "printWidth": 1000
+      }
+    }
+  ]
 }
