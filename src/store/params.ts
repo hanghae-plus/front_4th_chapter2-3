@@ -3,7 +3,7 @@ import { NavigateFunction, useLocation, useNavigate } from "react-router-dom"
 import { useEffect } from "react"
 
 interface ParamsState {
-  skip: number
+  skip: 0 | 1
   limit: number
   searchQuery: string
   sortBy: string
@@ -63,10 +63,10 @@ export const useSyncParamsWithURL = () => {
 }
 
 export const useInitUpdateURL = () => {
-  const updateURL = useParamsStore((state) => state.updateURL)
+  const { updateURL, skip, limit, searchQuery, sortBy, sortOrder, selectedTag } = useParamsStore()
   const navigate = useNavigate()
 
   useEffect(() => {
     updateURL(navigate)
-  }, [updateURL, navigate])
+  }, [skip, limit, searchQuery, sortBy, sortOrder, selectedTag, updateURL, navigate])
 }

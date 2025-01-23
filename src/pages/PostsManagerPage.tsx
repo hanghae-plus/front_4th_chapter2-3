@@ -73,5 +73,6 @@ export default PostsManager
 // todo: hooks로 분리할 수 있는 거 다 분리
 // todo: 위에서 분리한 거 전역 상태로 끌어올리기
 // todo: tanstack + typescript 제대로 적용
+// todo: 에러 제거(테스트 + 컴파일)
 // todo: fsd식 파일 분리
 // ! 전역 상태 훅은 최상위에서만? 필요한 곳에 전부? (컴포넌트는 필요한 곳에서 전부. 그렇다면 훅은?)

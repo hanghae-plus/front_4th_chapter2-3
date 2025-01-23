@@ -2,13 +2,13 @@ import { Search } from "lucide-react"
 import { Input } from "../shared/ui"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@radix-ui/react-select"
 import { useParamsStore } from "../store/params"
-import { useNavigate } from "react-router-dom"
 import { useTags } from "../hooks/useTags"
+import { useState } from "react"
 
 export const FilterableSearch = () => {
-  const navigate = useNavigate()
   const { tags } = useTags()
-  const { searchQuery, sortBy, sortOrder, selectedTag, setParams, updateURL } = useParamsStore()
+  const { searchQuery, sortBy, sortOrder, selectedTag, setParams } = useParamsStore()
+  const [searchQueryState, setSearchQueryState] = useState(searchQuery)
 
   return (
     <div className="flex gap-4">
@@ -18,9 +18,9 @@ export const FilterableSearch = () => {
           <Input
             placeholder="게시물 검색..."
             className="pl-8"
-            value={searchQuery}
-            onChange={(e) => setParams("searchQuery", e.target.value)}
-            onKeyPress={(e) => e.key === "Enter" && searchPosts()}
+            value={searchQueryState}
+            onChange={(e) => setSearchQueryState(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && setParams("searchQuery", searchQueryState)}
           />
         </div>
       </div>
@@ -28,8 +28,6 @@ export const FilterableSearch = () => {
         value={selectedTag}
         onValueChange={(value) => {
           setParams("selectedTag", value)
-          fetchPostsByTag(value)
-          updateURL(navigate)
         }}
       >
         <SelectTrigger className="w-[180px]">
@@ -45,7 +43,12 @@ export const FilterableSearch = () => {
             ))}
         </SelectContent>
       </Select>
-      <Select value={sortBy} onValueChange={(value) => setParams("sortBy", value)}>
+      <Select
+        value={sortBy}
+        onValueChange={(value) => {
+          setParams("sortBy", value)
+        }}
+      >
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="정렬 기준" />
         </SelectTrigger>
@@ -56,7 +59,12 @@ export const FilterableSearch = () => {
           <SelectItem value="reactions">반응</SelectItem>
         </SelectContent>
       </Select>
-      <Select value={sortOrder} onValueChange={(value) => setParams("sortOrder", value)}>
+      <Select
+        value={sortOrder}
+        onValueChange={(value) => {
+          setParams("sortOrder", value)
+        }}
+      >
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="정렬 순서" />
         </SelectTrigger>

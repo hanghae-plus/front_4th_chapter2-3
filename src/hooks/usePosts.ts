@@ -1,6 +1,7 @@
 import { addPost, deletePost, getPosts, getPostsBySearchQuery, getPostsByTag, updatePost } from "../api/post"
 import { useParamsStore } from "../store/params"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { Posts } from "../types/post"
 
 export const usePosts = () => {
   const { selectedTag, skip, limit, sortBy, sortOrder, searchQuery } = useParamsStore()
@@ -30,23 +31,60 @@ export const usePosts = () => {
 
   // ! query와 mutation을 따로 관리하나?
   const deletePostMutation = useMutation({
-    mutationFn: deletePost,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey })
+    mutationFn: deletePost, // 서버에서 데이터를 삭제하는 함수
+    onMutate: async (postId) => {
+      // 현재 쿼리의 캐시 업데이트 중단
+      await queryClient.cancelQueries({ queryKey })
+
+      // 이전 데이터를 스냅샷으로 저장
+      const previousPosts = queryClient.getQueryData<Posts>(queryKey)
+
+      // Optimistic Update
+      if (previousPosts) {
+        const newPosts = {
+          ...previousPosts,
+          posts: previousPosts.posts.filter((post) => post.id !== postId),
+          total: previousPosts.total - 1,
+        }
+        queryClient.setQueryData(queryKey, newPosts)
+      }
+
+      // 스냅샷 반환 (rollback에 사용)
+      return { previousPosts }
     },
   })
 
   const addPostMutation = useMutation({
     mutationFn: addPost,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey })
+    onMutate: async (newPost) => {
+      console.log(newPost)
+      await queryClient.cancelQueries({ queryKey })
+      const previousPosts = queryClient.getQueryData<Posts>(queryKey)
+      const newPosts = {
+        posts: [newPost, ...(previousPosts ? previousPosts.posts : [])],
+        total: previousPosts ? previousPosts.total : 0 + 1,
+      }
+      queryClient.setQueryData(queryKey, newPosts)
+      return { previousPosts }
     },
   })
 
   const updatePostMutation = useMutation({
     mutationFn: updatePost,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey })
+    onMutate: async (selectedPost) => {
+      await queryClient.cancelQueries({ queryKey })
+
+      const previousPosts = queryClient.getQueryData<Posts>(queryKey)
+
+      if (previousPosts) {
+        const newPosts = {
+          ...previousPosts,
+          posts: previousPosts.posts.map((post) => (post.id === selectedPost.id ? { ...post, ...selectedPost } : post)),
+        }
+        queryClient.setQueryData(queryKey, newPosts)
+      }
+
+      return { previousPosts }
     },
   })
 

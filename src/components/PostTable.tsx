@@ -1,5 +1,5 @@
-import { Edit2, MessageSquare, Table, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react"
-import { Button, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../shared/ui"
+import { Edit2, MessageSquare, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react"
+import { Button, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../shared/ui"
 import { highlightText } from "../utils/html"
 import { getUser } from "../api/user"
 import { PostWithUser } from "../types/post"
@@ -16,6 +16,7 @@ interface Props {
 
 export const PostTable = ({ onSelectPost, onSelectUser }: Props) => {
   const { posts, deletePost } = usePosts()
+
   const { onOpenChange } = useDialogStore()
   const { searchQuery, selectedTag, updateURL, setParams } = useParamsStore()
   const navigate = useNavigate()
