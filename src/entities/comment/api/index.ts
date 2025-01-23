@@ -1,5 +1,5 @@
 import { httpClient } from "../../../shared/api/http-client"
-import { AddCommentRequest, Comment, CommentsResponse } from "../model/types"
+import { AddCommentRequest, AddCommentResponse, Comment, CommentsResponse } from "../model/types"
 
 export const commentsApi = {
   fetchComments: async (postId: number) => {
@@ -8,7 +8,7 @@ export const commentsApi = {
   },
 
   addComment: async (comment: AddCommentRequest) => {
-    const response = await httpClient.post<Comment>("/comments/add", comment)
+    const response = await httpClient.post<AddCommentResponse>("/comments/add", comment)
     return response.data
   },
 

@@ -45,6 +45,7 @@ import { usePostDetail } from "../../../features/view-post-detail/model/use-post
 import { PostDetailModal } from "../../../features/view-post-detail/ui/PostDetailModal"
 import { Pagination } from "../../../widgets/pagination/ui/Pagination"
 import { usePagination } from "../../../widgets/pagination/model/use-pagination"
+import { PostsTable } from "../../../widgets/posts-table/ui/PostsTable"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -58,10 +59,9 @@ const PostsManager = () => {
   const sortBy = queryParams.get("sortBy") || ""
   const sortOrder = (queryParams.get("sortOrder") || "asc") as SortOrder
   const selectedTag = queryParams.get("tag") || ""
-  const selectedPostId = queryParams.get("selectedPostId")
 
   const [selectedComment, setSelectedComment] = useState<Comment | null>(null)
-  const [newComment, setNewComment] = useState({ body: "", postId: null, userId: 1 })
+  const [newCommentBody, setNewCommentBody] = useState<string | null>(null)
   const [showAddCommentDialog, setShowAddCommentDialog] = useState(false)
   const [showEditCommentDialog, setShowEditCommentDialog] = useState(false)
   const { page, pageSize, onPageChange, onPageSizeChange } = usePagination()
@@ -143,30 +143,20 @@ const PostsManager = () => {
 
   const addCommentMutation = useMutation({
     ...commentMutations.addMutation(),
-    onSuccess: () => {
-      queryClient.setQueryData<{ comments: Comment[] }>(
-        commentQueries.byPost(Number(selectedPostId)),
-        (old = { comments: [] }) => ({
+    onSuccess: (data) => {
+      if (!newCommentBody || !selectedPost) return
+      queryClient.setQueryData<{ comments: Comment[] }>(commentQueries.byPost(selectedPost?.id), (prev) => {
+        if (!prev) return { comments: [] }
+        return {
           comments: [
-            ...old.comments,
-            {
-              id: Date.now(),
-              body: newComment.body,
-              postId: Number(selectedPostId),
-              userId: 1,
-              likes: 0,
-              user: {
-                id: 1,
-                username: "현재 사용자",
-                fullName: "Current User",
-              },
-            },
+            ...prev.comments,
+            { id: Date.now(), likes: 0, user: { id: 1, username: "현재 사용자", fullName: "Current User" }, ...data },
           ],
-        }),
-      )
+        }
+      })
     },
     onError: (error) => {
-      console.error("게시물 추가 오류:", error)
+      console.error("댓글 추가 오류:", error)
     },
   })
 
@@ -179,11 +169,15 @@ const PostsManager = () => {
   const postsWithUsers = useMemo(() => {
     if (!posts || !users) return []
 
-    return posts.map((post) => ({
-      ...post,
-      author: users.find((user) => user.id === post.userId),
-    }))
+    return posts.map((post) => {
+      return {
+        ...post,
+        author: users.find((user) => user.id === post.userId),
+      }
+    })
   }, [posts, users])
+
+  const resetNewCommentBody = () => setNewCommentBody(null)
 
   // 게시물 검색
   const searchPosts = (value: string) => {
@@ -200,15 +194,16 @@ const PostsManager = () => {
 
   // 댓글 추가
   const addComment = async () => {
-    if (!newComment.body || !selectedPostId) return
+    console.log("addComment", newCommentBody, selectedPost)
+    if (!newCommentBody || !selectedPost?.id) return
 
     await addCommentMutation.mutateAsync({
-      body: newComment.body,
-      postId: Number(selectedPostId),
+      body: newCommentBody,
+      postId: selectedPost.id,
       userId: 1,
     })
     setShowAddCommentDialog(false)
-    setNewComment({ body: "", postId: null, userId: 1 })
+    resetNewCommentBody()
   }
 
   // 댓글 업데이트
@@ -369,7 +364,7 @@ const PostsManager = () => {
         <Button
           size="sm"
           onClick={() => {
-            setNewComment((prev) => ({ ...prev, postId: selectedPostId }))
+            // setNewComment((prev) => ({ ...prev, postId: selectedPostId }))
             setShowAddCommentDialog(true)
           }}
         >
@@ -385,7 +380,7 @@ const PostsManager = () => {
               <span className="break-all">{highlightText(comment.body, searchQuery)}</span>
             </div>
             <div className="flex items-center space-x-1 flex-shrink-0">
-              <Button variant="ghost" size="sm" onClick={() => likeComment(comment.id, selectedPostId)}>
+              <Button variant="ghost" size="sm" onClick={() => likeComment(comment.id, selectedPost?.id)}>
                 <ThumbsUp className="w-3 h-3" />
                 <span className="ml-1 text-xs">{comment.likes}</span>
               </Button>
@@ -399,7 +394,7 @@ const PostsManager = () => {
               >
                 <Edit2 className="w-3 h-3" />
               </Button>
-              <Button variant="ghost" size="sm" onClick={() => deleteComment(comment.id, selectedPostId)}>
+              <Button variant="ghost" size="sm" onClick={() => deleteComment(comment.id, selectedPost?.id)}>
                 <Trash2 className="w-3 h-3" />
               </Button>
             </div>
@@ -479,7 +474,16 @@ const PostsManager = () => {
           </div>
 
           {/* 게시물 테이블 */}
-          {isPostsLoading ? <div className="flex justify-center p-4">로딩 중...</div> : renderPostTable()}
+          {isPostsLoading ? (
+            <div className="flex justify-center p-4">로딩 중...</div>
+          ) : (
+            <PostsTable
+              posts={postsWithUsers}
+              onViewDetail={(id) => handleViewDetail(id)}
+              onEdit={handleEdit}
+              onDelete={deletePost}
+            />
+          )}
 
           <Pagination
             page={page}
@@ -499,8 +503,8 @@ const PostsManager = () => {
           <div className="space-y-4">
             <Textarea
               placeholder="댓글 내용"
-              value={newComment.body}
-              onChange={(e) => setNewComment({ ...newComment, body: e.target.value })}
+              value={newCommentBody ?? ""}
+              onChange={(e) => setNewCommentBody(e.target.value)}
             />
             <Button onClick={addComment} disabled={addCommentMutation.isPending}>
               {addCommentMutation.isPending ? "추가 중..." : "댓글 추가"}

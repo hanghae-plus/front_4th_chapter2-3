@@ -20,3 +20,9 @@ export interface AddCommentRequest {
   postId: number
   userId: number
 }
+
+export interface AddCommentResponse {
+  body: string
+  postId: number
+  userId: number
+}
