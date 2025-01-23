@@ -5,7 +5,7 @@ interface CommentAddDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   newComment: NewComment
-  setNewComment: (comment: NewComment) => void
+  setNewComment: (updater: (prev: NewComment) => NewComment) => void
   addComment: () => void
 }
 
@@ -18,7 +18,7 @@ export const CommentAddDialog = ({
 }: CommentAddDialogProps) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>0
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>새 댓글 추가</DialogTitle>
         </DialogHeader>
@@ -26,7 +26,7 @@ export const CommentAddDialog = ({
           <Textarea
             placeholder="댓글 내용"
             value={newComment.body}
-            onChange={(e) => setNewComment({ ...newComment, body: e.target.value })}
+            onChange={(e) => setNewComment((prev) => ({ ...prev, body: e.target.value }))}
           />
           <Button onClick={addComment}>댓글 추가</Button>
         </div>
