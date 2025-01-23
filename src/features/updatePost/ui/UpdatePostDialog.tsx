@@ -1,7 +1,30 @@
-import { DialogContainer, DialogContent, DialogHeader, DialogTitle } from "../../../shared/ui/dialog"
-import { Button, Input, Textarea } from "../../../shared/ui/common"
+import { useAtom, useSetAtom } from "jotai"
 
-export const UpdatePostDialog = ({ showEditDialog, setShowEditDialog, selectedPost, setSelectedPost, updatePost }) => {
+import { selectedPostAtom } from "../../postDetail/model"
+import { dialogAtomFamily } from "../../../shared/model"
+import { Button, Input, Textarea } from "../../../shared/ui/common"
+import { DialogContainer, DialogContent, DialogHeader, DialogTitle } from "../../../shared/ui/dialog"
+import { useUpdatePostMutation } from "../api"
+import { postsWithUsersAtom } from "../../postsWithUsers/model"
+
+export const UpdatePostDialog = () => {
+  const [showEditDialog, setShowEditDialog] = useAtom(dialogAtomFamily("edit-post"))
+  const setPosts = useSetAtom(postsWithUsersAtom)
+  const [selectedPost, setSelectedPost] = useAtom(selectedPostAtom)
+
+  const updatePostMutation = useUpdatePostMutation({
+    onSuccess: () => {
+      setShowEditDialog(false)
+      setPosts((prev) => {
+        return prev?.map((post) => (post.id === selectedPost.id ? selectedPost : post))
+      })
+    },
+  })
+
+  const updatePost = () => {
+    updatePostMutation.mutate(selectedPost)
+  }
+
   return (
     <DialogContainer open={showEditDialog} onOpenChange={setShowEditDialog}>
       <DialogContent>

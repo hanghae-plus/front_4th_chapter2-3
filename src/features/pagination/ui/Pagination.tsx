@@ -1,7 +1,15 @@
-import { SelectContainer, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../shared/ui/select"
-import { Button } from "../../../shared/ui/common"
+import { useAtom, useAtomValue } from "jotai"
 
-export const Pagination = ({ limit, setLimit, skip, setSkip, total }) => {
+import { limitAtom, skipAtom } from "../../serchPost/model"
+import { postsTotalAtom } from "../../postsWithUsers/model"
+import { Button } from "../../../shared/ui/common"
+import { SelectContainer, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../shared/ui/select"
+
+export const Pagination = () => {
+  const [skip, setSkip] = useAtom(skipAtom)
+  const [limit, setLimit] = useAtom(limitAtom)
+  const total = useAtomValue(postsTotalAtom)
+
   return (
     <div className="flex justify-between items-center">
       <div className="flex items-center gap-2">

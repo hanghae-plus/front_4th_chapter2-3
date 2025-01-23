@@ -1,1 +1,1 @@
-export { useUserQuery } from "./api.ts"
+export { useUserQuery, useUsersQuery } from "./user.api.ts"

@@ -1,19 +1,23 @@
 import { useEffect } from "react"
-import { useAtom, useSetAtom } from "jotai"
+import { useAtom, useAtomValue, useSetAtom } from "jotai"
 import { Edit2, Plus, ThumbsUp, Trash2 } from "lucide-react"
 
 import { useCommentsQuery } from "../../../entities/comment/api"
+import { commentsAtom } from "../../../entities/comment/model"
 import { newCommentAtom } from "../../addComment/model"
 import { updateCommentAtom } from "../../updateComment/model"
 import { useDeleteCommentMutation } from "../../deleteComment/api"
 import { useLikeCommentMutation } from "../../likeComment/api"
-import { commentsAtom } from "../../../entities/comment/model"
+import { searchQueryAtom } from "../../serchPost/model"
+import { selectedPostAtom } from "../../postDetail/model"
 import { highlightText } from "../../../shared/lib"
 import { dialogAtomFamily } from "../../../shared/model"
 import { Button } from "../../../shared/ui/common"
 
-export const CommentsList = ({ postId, searchQuery }) => {
+export const CommentsList = () => {
+  const selectedPost = useAtomValue(selectedPostAtom)
   const [comments, setComments] = useAtom(commentsAtom)
+  const searchQuery = useAtomValue(searchQueryAtom)
   // addComment
   const setNewComment = useSetAtom(newCommentAtom)
   const setShowAddCommentDialog = useSetAtom(dialogAtomFamily("add-comment"))
@@ -47,7 +51,8 @@ export const CommentsList = ({ postId, searchQuery }) => {
   })
 
   // getComments
-  const { data, isLoading } = useCommentsQuery(postId)
+  const { data, isLoading } = useCommentsQuery(selectedPost?.id)
+
   useEffect(() => {
     if (!isLoading && data) {
       setComments(data.comments)
@@ -63,7 +68,7 @@ export const CommentsList = ({ postId, searchQuery }) => {
         <Button
           size="sm"
           onClick={() => {
-            setNewComment((prev) => ({ ...prev, postId }))
+            setNewComment((prev) => ({ ...prev, postId: selectedPost?.id }))
             setShowAddCommentDialog(true)
           }}
         >

@@ -20,3 +20,10 @@ export interface UserResponse extends UserType {
     title: string
   }
 }
+
+export interface UsersResponse {
+  users: UserType[]
+  skip: number
+  limit: number
+  total: number
+}

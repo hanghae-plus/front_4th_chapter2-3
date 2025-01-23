@@ -1,21 +1,41 @@
+import { useEffect } from "react"
+import { useAtom, useSetAtom } from "jotai"
 import { Search } from "lucide-react"
+
+import { usePostsBySearchQuery } from "../api"
+import { searchQueryAtom, selectedTagAtom, sortByAtom, sortOrderAtom } from "../model"
+import { postsWithUsersAtom } from "../../postsWithUsers/model"
+import { tagsAtom } from "../../../entities/tag/model"
+import { useTagsQuery } from "../../../entities/tag/api"
 import { Input } from "../../../shared/ui/common"
 import { SelectContainer, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../shared/ui/select"
 
-export const SearchPost = ({
-  searchQuery,
-  setSearchQuery,
-  searchPosts,
-  selectedTag,
-  setSelectedTag,
-  fetchPostsByTag,
-  updateURL,
-  tags,
-  sortBy,
-  setSortBy,
-  sortOrder,
-  setSortOrder,
-}) => {
+export const SearchPost = ({ updateURL }: { updateURL: () => void }) => {
+  const setPosts = useSetAtom(postsWithUsersAtom)
+
+  const [searchQuery, setSearchQuery] = useAtom(searchQueryAtom)
+  const [sortBy, setSortBy] = useAtom(sortByAtom)
+  const [sortOrder, setSortOrder] = useAtom(sortOrderAtom)
+
+  // Tags
+  const [tags, setTags] = useAtom(tagsAtom)
+  const [selectedTag, setSelectedTag] = useAtom(selectedTagAtom)
+
+  const { data, isLoading } = useTagsQuery()
+  useEffect(() => {
+    if (!isLoading && data) {
+      setTags(data)
+    }
+  }, [data, isLoading])
+
+  const { data: postsBySearchQuery, isLoading: isPostsBySearchQueryLoading } = usePostsBySearchQuery(searchQuery)
+
+  useEffect(() => {
+    if (!isPostsBySearchQueryLoading && postsBySearchQuery) {
+      setPosts(postsBySearchQuery.posts || [])
+    }
+  }, [isPostsBySearchQueryLoading])
+
   return (
     <div className="flex gap-4">
       <div className="flex-1">
@@ -26,7 +46,7 @@ export const SearchPost = ({
             className="pl-8"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyPress={(e) => e.key === "Enter" && searchPosts()}
+            onKeyPress={(e) => e.key === "Enter"}
           />
         </div>
       </div>
@@ -34,7 +54,6 @@ export const SearchPost = ({
         value={selectedTag}
         onValueChange={(value) => {
           setSelectedTag(value)
-          fetchPostsByTag(value)
           updateURL()
         }}
       >
