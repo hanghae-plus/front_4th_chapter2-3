@@ -1,6 +1,8 @@
 import { createQueryKeys } from "@lukemorales/query-key-factory";
 
+import { GetPostsByQueryProps, GetPostsByTagProps, GetPostsProps } from "@/entities/posts";
+
 export const postsKeys = createQueryKeys("posts", {
-  getPosts: ({ limit, skip, searchQuery, tag }) => ["all", limit, skip, searchQuery, tag],
+  getPosts: (props: GetPostsProps & GetPostsByQueryProps & GetPostsByTagProps) => [props],
   getTags: () => ["tags"],
 });
