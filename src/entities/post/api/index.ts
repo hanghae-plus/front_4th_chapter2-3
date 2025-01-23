@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { Post, PostResponse } from "@/types/post.ts";
+import { Tag } from "@/types/tag.ts";
 
 // 게시글에서 사용중인 태그 목록 가져오기
 export const useFetchPostsQuery = (limit: number, skip: number) => {
@@ -12,7 +13,7 @@ export const useFetchPostsQuery = (limit: number, skip: number) => {
 
 // 게시글에서 사용중인 태그 목록 가져오기
 export const useFetchTagsQuery = () => {
-  return useQuery({
+  return useQuery<Tag[]>({
     queryKey: ["tags"],
     queryFn: () => axios.get("/api/posts/tags").then((res) => res.data),
   });
@@ -28,10 +29,10 @@ export const useSearchPostsQuery = (searchQuery: string) => {
 };
 
 // 태그와 일치하는 게시글 목록 가져오기
-export const useFetchPostsByTagQuery = (tag: string) => {
-  return useQuery({
-    queryKey: ["posts", "tag", tag],
-    queryFn: () => axios.get(`/api/posts/tag/${tag}`).then((res) => res.data),
+export const useFetchPostsByTagQuery = (tag: string, limit: number, skip: number) => {
+  return useQuery<PostResponse>({
+    queryKey: ["posts", "tag", tag, limit, skip],
+    queryFn: () => axios.get(`/api/posts/tag/${tag}?limit=${limit}&skip=${skip}`).then((res) => res.data),
     enabled: !!tag,
   });
 };
