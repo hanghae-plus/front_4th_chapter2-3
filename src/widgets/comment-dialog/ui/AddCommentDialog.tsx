@@ -1,6 +1,6 @@
+import { useCommentStore } from '@/features/comment';
+import { AddCommentForm } from '@/features/comment';
 import { BaseDialog } from '@/shared/ui';
-import { useCommentStore } from '../model';
-import AddCommentForm from './AddCommentForm.tsx';
 
 const AddCommentDialog = () => {
   const { showAddCommentDialog, setShowAddCommentDialog } = useCommentStore();

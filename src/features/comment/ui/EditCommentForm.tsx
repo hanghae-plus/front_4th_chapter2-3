@@ -1,8 +1,8 @@
-import { useCommentStore } from '../model';
+import { useCommentStore } from '@/features/comment';
 
-import { putComment } from '@/entities/comments/api';
+import { putComment } from '@/entities/comments';
 
-import { Button, Textarea } from '../../../shared/ui';
+import { Button, Textarea } from '@/shared/ui';
 
 const EditCommentForm = () => {
   const { setShowEditCommentDialog, setSelectedComment, selectedComment, setComments } =

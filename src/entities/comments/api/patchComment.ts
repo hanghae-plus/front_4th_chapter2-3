@@ -1,4 +1,4 @@
-import { Comment } from '../model';
+import { Comment } from '@/entities/comments';
 
 export const patchComment = async (
   commentId: number,

@@ -1,9 +1,8 @@
 import { Edit2, Plus, ThumbsUp, Trash2 } from 'lucide-react';
-import { useCommentStore } from '../../../features/comment/model';
-import { useSearchStore } from '../../../features/search/model';
-import { Comment } from '../../../entities/comments/model';
-import { deleteComment, patchComment } from '../../../entities/comments/api';
-import { Button, HighlightText } from '../../../shared/ui';
+import { useCommentStore } from '@/features/comment';
+import { useQueryStore } from '@/features/search/model';
+import { Comment, deleteComment, patchComment } from '@/entities/comments';
+import { Button, HighlightText } from '@/shared/ui';
 
 const CommentList = ({ postId }: { postId: number }) => {
   const {
@@ -15,7 +14,7 @@ const CommentList = ({ postId }: { postId: number }) => {
     setShowEditCommentDialog,
   } = useCommentStore();
 
-  const searchQuery = useSearchStore((state) => state.searchQuery);
+  const searchQuery = useQueryStore((state) => state.searchQuery);
 
   // 댓글 추가
   const handleAddComment = (postId: number) => {

@@ -1,4 +1,4 @@
-import { Comments } from '../model';
+import { Comments } from '@/entities/comments';
 
 export const getComments = async (postId: number): Promise<Comments> => {
   const response = await fetch(`/api/comments/post/${postId}`, { method: 'GET' });

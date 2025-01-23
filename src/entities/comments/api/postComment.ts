@@ -1,4 +1,4 @@
-import { Comment, NewComment } from '../model';
+import { Comment, NewComment } from '@/entities/comments';
 
 export const postComment = async (newComment: NewComment): Promise<Comment> => {
   const response = await fetch('/api/comments/add', {

@@ -1,5 +1,5 @@
-import EditCommentForm from './EditCommentForm.tsx';
-import { useCommentStore } from '../model';
+import { EditCommentForm } from '@/features/comment';
+import { useCommentStore } from '@/features/comment';
 import { BaseDialog } from '@/shared/ui';
 
 const EditCommentDialog = () => {
