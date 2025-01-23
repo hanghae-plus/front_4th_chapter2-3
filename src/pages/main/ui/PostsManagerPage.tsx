@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { Plus } from "lucide-react"
 import { useMemo } from "react"
-import { useLocation } from "react-router-dom"
+import { useSearchParams } from "react-router-dom"
 
 import { useQueryParams } from "../../../shared/lib"
 import {
@@ -39,16 +39,15 @@ import { CommentList } from "../../../entities/comment/ui"
 import { useSearchPost, SearchPostForm } from "../../../features/post/search-post"
 
 export const PostsManagerPage = () => {
-  const location = useLocation()
-  const queryParams = new URLSearchParams(location.search)
+  const [searchParams] = useSearchParams()
 
   // 상태 관리
-  const skip = useMemo(() => parseInt(queryParams.get("skip") || "0"), [location.search])
-  const limit = useMemo(() => parseInt(queryParams.get("limit") || "10"), [location.search])
-  const searchQuery = queryParams.get("search") || ""
-  const sortBy = queryParams.get("sortBy") || ""
-  const sortOrder = (queryParams.get("sortOrder") || "asc") as SortOrder
-  const selectedTag = queryParams.get("tag") || ""
+  const skip = parseInt(searchParams.get("skip") || "0")
+  const limit = parseInt(searchParams.get("limit") || "10")
+  const searchQuery = searchParams.get("search") || ""
+  const sortBy = searchParams.get("sortBy") || ""
+  const sortOrder = (searchParams.get("sortOrder") || "asc") as SortOrder
+  const selectedTag = searchParams.get("tag") || ""
 
   const { page, pageSize, onPageChange, onPageSizeChange } = usePagination()
 
