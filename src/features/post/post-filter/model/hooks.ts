@@ -1,8 +1,8 @@
 import { useEffect } from "react"
-import { usePostFilter } from "./store"
+import { usePostFilterStore } from "./store"
 
 export const usePostFilterTags = () => {
-  const { tags, selectedTag, fetchTags, onChangeTag } = usePostFilter()
+  const { tags, selectedTag, fetchTags, onChangeTag } = usePostFilterStore()
 
   useEffect(() => {
     fetchTags()
@@ -11,6 +11,6 @@ export const usePostFilterTags = () => {
   return {
     tags,
     selectedTag,
-    onChangeTag
+    onChangeTag,
   }
 }

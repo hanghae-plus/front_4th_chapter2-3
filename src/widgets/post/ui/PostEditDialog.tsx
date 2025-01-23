@@ -4,7 +4,7 @@ import { Button, Dialog, DialogContent, DialogHeader, DialogTitle, Input, Textar
 interface PostEditDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  selectedPost: Post | undefined
+  selectedPost: Post | null
   setSelectedPost: (post: Post) => void
   updatePost: () => void
 }

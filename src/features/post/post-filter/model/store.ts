@@ -4,18 +4,21 @@ import { create } from "zustand"
 import { usePost } from "../../model/store"
 import { usePostUrlStore } from "../../post-url/model"
 
-interface usePostFilterProps {
+interface usePostFilterStoreProps {
   tags: Tag[]
+  selectedTag: string,
   fetchTags: () => void
   onChangeTag: (value: string) => void
 }
 
-export const usePostFilter = create<usePostFilterProps>((set) => {
+export const usePostFilterStore = create<usePostFilterStoreProps>((set) => {
   const fetchPostsByTag = usePost.getState().fetchPostsByTag
   const setSelectedTag = usePostUrlStore.getState().setSelectedTag
+  const selectedTag = usePostUrlStore.getState().selectedTag
 
   return {
     tags: [],
+    selectedTag,
 
     fetchTags: async () => {
       try {

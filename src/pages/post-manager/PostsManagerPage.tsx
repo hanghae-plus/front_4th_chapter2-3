@@ -3,7 +3,6 @@ import { Plus } from "lucide-react"
 import { Button, Card, CardContent, CardHeader, CardTitle } from "../../shared/ui"
 import { Post } from "../../entities/post/model/types"
 import { User } from "../../entities/user/model/types"
-import { postApi } from "../../entities/post/api/postApi"
 import { userApi } from "@/entities/user/api/userApi"
 import { usePost } from "@/features/post/model/store"
 import { PostTable } from "@/widgets/post/ui/PostTable"
@@ -20,25 +19,27 @@ import { useCommentStore } from "@/features/comment/model/store"
 
 const PostsManager = () => {
   // 상태 관리
-  const [selectedPost, setSelectedPost] = useState<Post>()
-  const [showEditDialog, setShowEditDialog] = useState(false)
   const [showPostDetailDialog, setShowPostDetailDialog] = useState(false)
   const [showUserModal, setShowUserModal] = useState(false)
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
 
   // 전역 상태 관리
   const {
-    posts,
     total,
     loading,
     newPost,
+    selectedPost,
     setNewPost,
     showAddDialog,
-    setPosts,
     fetchPostsByTag,
     searchPosts,
     addPost,
     setShowAddDialog,
+    updatePost,
+    deletePost,
+    showEditDialog,
+    setSelectedPost,
+    setShowEditDialog,
   } = usePost()
 
   const {
@@ -73,34 +74,6 @@ const PostsManager = () => {
     setNewComment,
     setSelectedComment,
   } = useCommentStore()
-
-  // 게시물 업데이트
-  const updatePost = async () => {
-    if (!selectedPost) {
-      console.error("선택된 게시물이 없습니다.")
-      return
-    }
-
-    try {
-      const data = await postApi.putUpdatePost(selectedPost.id, selectedPost)
-
-      setPosts(posts.map((post) => (post.id === data.id ? data : post)))
-      setShowEditDialog(false)
-    } catch (error) {
-      console.error("게시물 업데이트 오류:", error)
-    }
-  }
-
-  // 게시물 삭제
-  const deletePost = async (id: Post["id"]) => {
-    try {
-      await postApi.deletePost(id)
-
-      setPosts(posts.filter((post) => post.id !== id))
-    } catch (error) {
-      console.error("게시물 삭제 오류:", error)
-    }
-  }
 
   // 게시물 상세 보기
   const openPostDetail = (post: Post) => {

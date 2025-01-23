@@ -2,7 +2,7 @@ import { create } from "zustand"
 import { CreatePost, Post } from "@/entities/post/model/types"
 import { postApi } from "@/entities/post/api/postApi"
 import { userApi } from "@/entities/user/api/userApi"
-import { postsWithUsers } from "@/entities/post/lib"
+import { filterPostById, mapPostsWithUsers, replacePost } from "@/entities/post/lib"
 import { usePostUrlStore } from "../post-url/model"
 import { INITIAL_NEW_POST_STATE } from "@/entities/post/model/constants"
 
@@ -13,7 +13,7 @@ interface PostStore {
   limit: number
   loading: boolean
   newPost: CreatePost
-  showAddDialog: boolean
+  selectedPost: Post | null
 
   setPosts: (posts: Post[]) => void
   setTotal: (total: number) => void
@@ -21,14 +21,20 @@ interface PostStore {
   setLimit: (limit: number) => void
   setLoading: (loading: boolean) => void
   setNewPost: (post: CreatePost) => void
+  setSelectedPost: (post: Post) => void
 
   // 다이얼로그 상태 임시로
+  showAddDialog: boolean
   setShowAddDialog: (open: boolean) => void
+  showEditDialog: boolean
+  setShowEditDialog: (open: boolean) => void
 
   fetchPosts: () => void
   fetchPostsByTag: (tag: string) => void
   searchPosts: () => void
   addPost: () => void
+  updatePost: () => void
+  deletePost: (id: Post["id"]) => void
 }
 
 export const usePost = create<PostStore>((set, get) => ({
@@ -38,8 +44,13 @@ export const usePost = create<PostStore>((set, get) => ({
   skip: 0,
   limit: 10,
   newPost: INITIAL_NEW_POST_STATE,
+  selectedPost: null,
 
+  // 임시
   showAddDialog: false,
+  setShowAddDialog: (open: boolean) => set({ showAddDialog: open }),
+  showEditDialog: false,
+  setShowEditDialog: (open: boolean) => set({ showEditDialog: open }),
 
   setPosts: (posts: Post[]) => set({ posts: posts }),
   setTotal: (total: number) => set({ total: total }),
@@ -47,8 +58,7 @@ export const usePost = create<PostStore>((set, get) => ({
   setLimit: (limit: number) => set({ limit: limit }),
   setLoading: (loading: boolean) => set({ loading: loading }),
   setNewPost: (post: CreatePost) => set({ newPost: post }),
-
-  setShowAddDialog: (open: boolean) => set({ showAddDialog: open }),
+  setSelectedPost: (post) => set({ selectedPost: post }),
 
   // 게시물 가져오기
   fetchPosts: async () => {
@@ -61,7 +71,7 @@ export const usePost = create<PostStore>((set, get) => ({
         await userApi.getUsers({ limit: 0, select: "username,image" }),
       ])
 
-      const posts = postsWithUsers(postsData, usersData)
+      const posts = mapPostsWithUsers(postsData, usersData)
 
       set({ posts: posts, total: postsData.total })
     } catch (error) {
@@ -87,7 +97,7 @@ export const usePost = create<PostStore>((set, get) => ({
         userApi.getUsers({ limit: 0, select: "username,image" }),
       ])
 
-      const posts = postsWithUsers(postsData, usersData)
+      const posts = mapPostsWithUsers(postsData, usersData)
 
       set({ posts: posts, total: postsData.total })
     } catch (error) {
@@ -128,6 +138,34 @@ export const usePost = create<PostStore>((set, get) => ({
       set({ posts: [data, ...posts], showAddDialog: false, newPost: INITIAL_NEW_POST_STATE })
     } catch (error) {
       console.error("게시물 추가 오류:", error)
+    }
+  },
+
+  // 게시물 업데이트
+  updatePost: async () => {
+    try {
+      const { selectedPost, posts } = get()
+      if (!selectedPost) {
+        throw new Error("선택된 게시물이 없습니다.")
+      }
+
+      const data = await postApi.putUpdatePost(selectedPost.id, selectedPost)
+
+      set({ posts: replacePost(posts, data) })
+      set({ showEditDialog: false })
+    } catch (error) {
+      console.error("게시물 업데이트 오류:", error)
+    }
+  },
+
+  // 게시물 삭제
+  deletePost: async (id) => {
+    try {
+      const { posts } = get()
+      await postApi.deletePost(id)
+      set({ posts: filterPostById(posts, id) })
+    } catch (error) {
+      console.error("게시물 삭제 오류:", error)
     }
   },
 }))
