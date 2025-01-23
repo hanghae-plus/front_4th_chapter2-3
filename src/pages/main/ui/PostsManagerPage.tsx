@@ -3,20 +3,7 @@ import { Plus } from "lucide-react"
 import { useMemo } from "react"
 import { useSearchParams } from "react-router-dom"
 
-import { useQueryParams } from "../../../shared/lib"
-import {
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  LoadingIndicator,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../../shared/ui"
+import { Button, Card, CardContent, CardHeader, CardTitle, LoadingIndicator } from "../../../shared/ui"
 
 import { Comment, useSelectedComment } from "../../../entities/comment/model"
 import { postMutations, postQueries } from "../../../entities/post/api"
@@ -38,6 +25,7 @@ import { PostsTable } from "../../../widgets/posts-table/ui"
 import { CommentList } from "../../../entities/comment/ui"
 import { useSearchPost, SearchPostForm } from "../../../features/post/search-post"
 import { TagFilter, useTagFilter } from "../../../features/post/filter-by-tag"
+import { SortControls, useSortPost } from "../../../features/post/sort-post"
 
 export const PostsManagerPage = () => {
   const [searchParams] = useSearchParams()
@@ -52,7 +40,6 @@ export const PostsManagerPage = () => {
 
   const { page, pageSize, onPageChange, onPageSizeChange } = usePagination()
 
-  const { updateURLParams } = useQueryParams()
   const { resetSelectedComment } = useSelectedComment()
   const {
     searchResults,
@@ -77,6 +64,8 @@ export const PostsManagerPage = () => {
     sortOrder,
     selectedTag,
   })
+
+  const { handleSortByChange, handleSortOrderChange } = useSortPost()
 
   const { data: list, isLoading: isListLoading } = useQuery({
     ...postQueries.listQuery({
@@ -238,26 +227,12 @@ export const PostsManagerPage = () => {
               <SearchPostForm searchQuery={searchQuery} onSearch={searchPosts} />
             </div>
             <TagFilter selectedTag={selectedTag} tags={tags} onTagChange={handleTagChange} />
-            <Select value={sortBy} onValueChange={(value) => updateURLParams({ sortBy: value || null })}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="정렬 기준" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="none">없음</SelectItem>
-                <SelectItem value="id">ID</SelectItem>
-                <SelectItem value="title">제목</SelectItem>
-                <SelectItem value="reactions">반응</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select value={sortOrder} onValueChange={(value) => updateURLParams({ sortOrder: value })}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="정렬 순서" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="asc">오름차순</SelectItem>
-                <SelectItem value="desc">내림차순</SelectItem>
-              </SelectContent>
-            </Select>
+            <SortControls
+              sortBy={sortBy}
+              sortOrder={sortOrder}
+              onSortByChange={handleSortByChange}
+              onSortOrderChange={handleSortOrderChange}
+            />
           </div>
 
           {/* 게시물 테이블 */}
