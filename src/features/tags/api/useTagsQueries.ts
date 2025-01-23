@@ -1,11 +1,12 @@
-import { get } from '@/shared/api/fetch';
 import { useQuery } from '@tanstack/react-query';
 
+import type { Tag } from '@/entities/tags/model';
+import { get } from '@/shared/api/fetch';
+
 import { tagsQueryKeys } from '../config/tagsQueryKeys';
-import type { Tags } from '../model/Tags';
 
 export const useTagsQuery = () =>
-  useQuery<Tags>({
+  useQuery<Tag[]>({
     queryKey: tagsQueryKeys.list.queryKey,
     queryFn: () => get('/api/posts/tags'),
   });

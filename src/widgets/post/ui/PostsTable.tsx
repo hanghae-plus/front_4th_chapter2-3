@@ -40,6 +40,12 @@ export const PostsTable = ({
     }
   };
 
+  // 태그 선택
+  const handleTagSelect = (tag: string) => {
+    setSelectedTag(tag);
+    updateURL();
+  };
+
   return (
     <Table>
       <TableHeader>
@@ -70,13 +76,11 @@ export const PostsTable = ({
                           : 'text-blue-800 bg-blue-100 hover:bg-blue-200'
                       }`}
                       onClick={() => {
-                        setSelectedTag(tag);
-                        updateURL();
+                        handleTagSelect(tag);
                       }}
                       onKeyUp={(e) => {
                         if (e.key === 'Enter') {
-                          setSelectedTag(tag);
-                          updateURL();
+                          handleTagSelect(tag);
                         }
                       }}
                     >

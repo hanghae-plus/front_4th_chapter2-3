@@ -4,7 +4,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import type { PostsResponse } from '@/entities/posts/api/PostsResponse';
 import type { Post, PostWithUser } from '@/entities/posts/model';
-import type { Tag } from '@/entities/tags/model';
 import type { UsersResponse } from '@/entities/users/api';
 import type { User } from '@/entities/users/model';
 import { useUserDialog } from '@/features/dialog/model';
@@ -33,6 +32,7 @@ import { HighlightedText } from '@/shared/ui/HighlightedText';
 import { PostAddDialog, PostEditDialog, PostsTable } from '@/widgets/post/ui';
 import { UserDialog } from '@/widgets/user/ui';
 
+import { useTagsQuery } from '@/features/tags/api';
 import type { Comment } from '../model/types';
 
 export const PostsManagerPage = () => {
@@ -51,7 +51,6 @@ export const PostsManagerPage = () => {
   const { selectedPost, setSelectedPost } = useSelectedPostStore();
   const [sortBy, setSortBy] = useState(queryParams.get('sortBy') || '');
   const [sortOrder, setSortOrder] = useState(queryParams.get('sortOrder') || 'asc');
-  const [tags, setTags] = useState<Tag[]>([]);
   const [comments, setComments] = useState<{
     [key: number]: Comment[];
   }>({});
@@ -69,14 +68,18 @@ export const PostsManagerPage = () => {
   const { dialog: postEditDialogState } = usePostEditDialog();
   const userDialogState = useUserDialog();
 
-  // 게시물 관련 훅
+  // 게시물 데이터 가져오기
   const {
     data: postsData,
     isLoading: postsLoading,
     error: postsError,
   } = useQueryPosts(limit, skip);
 
+  // 사용자 데이터 가져오기
   const { data: usersData, isLoading: usersLoading, error: usersError } = useQueryUsers();
+
+  // 태그 데이터 가져오기
+  const { data: tags } = useTagsQuery();
 
   // URL 업데이트 함수
   const updateURL = () => {
@@ -108,16 +111,6 @@ export const PostsManagerPage = () => {
     setPosts(postsWithUsers);
     setTotal(postsData.total);
     setLoading(false);
-  };
-
-  // 태그 가져오기
-  const fetchTags = async () => {
-    try {
-      const data = await get('/api/posts/tags');
-      setTags(data);
-    } catch (error) {
-      console.error('태그 가져오기 오류:', error);
-    }
   };
 
   // 게시물 검색
@@ -248,10 +241,6 @@ export const PostsManagerPage = () => {
     fetchComments(post.id);
     setShowPostDetailDialog(true);
   };
-
-  useEffect(() => {
-    fetchTags();
-  }, []);
 
   useEffect(() => {
     if (selectedTag) {
