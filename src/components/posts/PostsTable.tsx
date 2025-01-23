@@ -15,6 +15,7 @@ interface PostsTableProps {
 
 export const PostsTable = ({
   posts,
+  searchQuery,
   selectedTag,
   onTagSelect,
   onPostDetail,
@@ -22,6 +23,20 @@ export const PostsTable = ({
   onPostDelete,
   onUserDetail,
 }: PostsTableProps) => {
+  const highlightText = (text: string, highlight: string) => {
+    if (!text) return null
+    if (!highlight.trim()) {
+      return <span>{text}</span>
+    }
+    const regex = new RegExp(`(${highlight})`, "gi")
+    const parts = text.split(regex)
+    return (
+      <span>
+        {parts.map((part, i) => (regex.test(part) ? <mark key={i}>{part}</mark> : <span key={i}>{part}</span>))}
+      </span>
+    )
+  }
+
   return (
     <Table>
       <TableHeader>
@@ -39,7 +54,7 @@ export const PostsTable = ({
             <TableCell>{post.id}</TableCell>
             <TableCell>
               <div className="space-y-1">
-                <div>{post.title}</div>
+                <div>{highlightText(post.title, searchQuery)}</div>
                 <div className="flex flex-wrap gap-1">
                   {post.tags?.map((tag) => (
                     <span
@@ -51,7 +66,7 @@ export const PostsTable = ({
                       }`}
                       onClick={() => onTagSelect(tag)}
                     >
-                      {tag}
+                      {highlightText(tag, searchQuery)}
                     </span>
                   ))}
                 </div>
