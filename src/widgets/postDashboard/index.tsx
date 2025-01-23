@@ -2,17 +2,24 @@ import { DashboardHeader } from "./ui/dashboardHeader";
 import { DashboardContent } from "./ui/dashboardContent";
 import { Card, CardContent } from "../../shared/ui";
 import { useLocation, useNavigate } from "react-router-dom";
-import { PostFilters } from "../../pages/postsManager/ui/PostFilters";
+import { PostFilters } from "../../features/postManagement/ui/postFilters";
 import { useState, useEffect } from "react";
-import { useSearch } from "./hooks/useSearch";
+import { useSearch } from "../../shared/hooks/useSearch";
 import { Post, User, PostApiResponse, SortBy, SortOrder } from "../../entities/types";
 import { PostPagination } from "../../features/postManagement/ui/postPagination";
 import { usePostStore } from "../../entities/post/model/store";
+import { postApi } from "../../entities/post/api/postApi";
+import { usePostContext } from "../../features/postManagement/model/PostContext";
+interface PostDashboardProps {
+  onPostDetail?: (postId: number) => Promise<void>;
+  onUserClick?: (user: User) => Promise<void>;
+}
 
-export const PostDashboard = () => {
+export const PostDashboard: React.FC<PostDashboardProps> = ()  => {
   const navigate = useNavigate()
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
+  const { dispatch } = usePostContext();
 
   const { 
     posts,
@@ -195,7 +202,15 @@ export const PostDashboard = () => {
         <DashboardContent 
           posts={filteredPosts} 
           loading={loading} 
-          total={total} 
+          total={total}
+          onPostDetail={async (postId) => {
+            try {
+              const postDetails = await postApi.getPostById(postId);
+              dispatch({ type: "SET_SELECTED_POST", payload: postDetails });
+            } catch (error) {
+              console.error("게시물 상세 정보 가져오기 실패:", error);
+            }
+          }}
         />
         <PostPagination 
           total={total}
@@ -205,7 +220,7 @@ export const PostDashboard = () => {
           onPrevPage={handlePrevPage}
           onNextPage={handleNextPage}
         />
-          </CardContent>
+        </CardContent>
     </Card>
   );
   

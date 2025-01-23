@@ -1,3 +1,2 @@
-export * from "./apiClient"
-export * from "./baseApi"
-export * from "./types"
+export { apiClient } from "./apiClient";
+export type { ApiResponse, PaginatedResponse } from "./types";

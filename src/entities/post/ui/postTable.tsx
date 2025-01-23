@@ -1,6 +1,7 @@
 import { ThumbsUp, ThumbsDown, MessageSquare, Edit2, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { PostTableProps } from "../../types";
+import { postApi } from "../api/postApi";
 import {
   Table,
   TableBody,
@@ -35,10 +36,19 @@ export const PostTable = ({
   onDetailView,
   onUserClick,
 }: PostTableProps) => {
-
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
+
   const handleTagClick = (tag: string) => {
     setSelectedTag((prevTag) => (prevTag === tag ? null : tag)); // 같은 태그 클릭 시 토글
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      await postApi.deletePost(id);
+      onDelete(id);
+    } catch (error) {
+      console.error("Failed to delete post:", error);
+    }
   };
 
   return (
@@ -124,7 +134,7 @@ export const PostTable = ({
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => onDelete(post.id)}
+                  onClick={() => handleDelete(post.id)}
                   className="p-1"
                 >
                   <Trash2 className="w-4 h-4" />

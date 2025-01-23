@@ -3,7 +3,7 @@ import { TextareaProps } from "./Textarea.types";
 import { textareaStyles } from "./Textarea.styles";
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ className, base, ...props }, ref) => {
+  ({ className, base = "base", ...props }, ref) => {
   return (
     <textarea
       className={`${textareaStyles[base]} ${className}`}

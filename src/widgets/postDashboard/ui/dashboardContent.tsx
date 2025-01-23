@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { usePostStore } from "../../../entities/post/model/store";
-import { PostTable } from "../../../entities/post/ui/postCard";
+import { PostTable } from "../../../entities/post/ui/postTable";
 import { postApi } from "../../../entities/post/api/postApi";
-import { usePostManagement } from "../../../features/postManagement/model/context";
+import { usePostContext } from "../../../features/postManagement/model/PostContext";
 import { Post, User, DashboardContentProps  } from "../../../entities/types";
 
 export const DashboardContent = ({ posts }: DashboardContentProps) => {
@@ -14,7 +14,7 @@ export const DashboardContent = ({ posts }: DashboardContentProps) => {
     setTotal
   } = usePostStore();
 
-  const { dispatch } = usePostManagement();
+  const { dispatch } = usePostContext();
 
   useEffect(() => {
     const fetchPosts = async () => {

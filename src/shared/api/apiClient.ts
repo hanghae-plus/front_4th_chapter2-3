@@ -1,20 +1,21 @@
 import { AppError, handleError } from "../lib/utils/errorHelper";
-import { createQueryString } from "../lib/utils/urlHelper";
-import { ApiResponse } from "./types";
-import { API_BASE_URL } from "../config/constants";
+import { CONFIG } from "../config";
 
 
 interface RequestOptions extends RequestInit {
   query?: Record<string, string | number | boolean | undefined>;
 }
 
-async function request<T>(endpoint: string, options?: RequestOptions): Promise<ApiResponse<T>> {
-  const url = new URL(`${API_BASE_URL}${endpoint}`);
-  
-  if (options?.query) {
-    url.search = createQueryString(options.query);
+async function request<T>(endpoint: string, options?: RequestOptions): Promise<T> {
+  if (!endpoint) {
+    throw new Error("Invalid endpoint: endpoint is required.");
   }
 
+  const baseURL = CONFIG.API.BASE_URL.startsWith("http")
+    ? CONFIG.API.BASE_URL
+    : `${window.location.origin}${CONFIG.API.BASE_URL}`;
+  
+  const url = new URL(`${baseURL}${endpoint}`);
   try {
     const response = await fetch(url.toString(), {
       ...options,
@@ -32,12 +33,7 @@ async function request<T>(endpoint: string, options?: RequestOptions): Promise<A
       );
     }
 
-    const data = await response.json();
-
-    return {
-      data,
-      status: response.status,
-    };
+    return response.json();
   } catch (error) {
     throw handleError(error);
   }

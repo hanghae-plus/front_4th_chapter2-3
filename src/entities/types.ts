@@ -19,9 +19,9 @@ export interface PostApiResponse {
 
 export interface PostFilters {
   search: string;
-  tag: string;
-  sortBy: string;
-  sortOrder: "asc" | "desc";
+  tag?: string;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
 }
 
 export interface PaginationParams {
@@ -120,6 +120,7 @@ export interface DashboardContentProps {
   posts: Post[];
   loading: boolean;
   total: number;
+  onPostDetail: (postId: number) => void;
 }
 
 export interface PostPaginationProps {
@@ -133,12 +134,60 @@ export interface PostPaginationProps {
 
 export interface PostTableProps {
   posts: Post[];
-  searchQuery: string;
-  selectedTag: string;
+  searchQuery?: string;
+  selectedTag?: string;
   highlight: string;
   onEdit: (post: Post) => void;
-  onDelete: (id: number) => void;
+  onDelete: (id: number) => Promise<void>;
   onDetailView: (post: Post) => void;
   onTagClick: (tag: string) => void;
-  onUserClick?: (author: User | undefined) => void;
+  onUserClick: (author: User | undefined) => Promise<void>;
+}
+
+export interface PostsResponse {
+  posts: Post[];
+  total: number;
+}
+
+export interface TagsResponse {
+  tags: Array<{
+    slug: string;
+    url: string;
+  }>;
+}
+
+export interface CommentResponse {
+  comments: Comment[];
+  total: number;
+}
+
+export interface CommentFormProps {
+  comment?: Comment;
+  postId: number;
+  isOpen: boolean;
+  onClose: () => void;
+  onSuccess: () => void;
+}
+
+export interface CommentListProps {
+  postId: number;
+  onCommentUpdate: () => void;
+}
+
+export interface UsersResponse {
+  users: User[];
+  total: number;
+}
+
+export interface CommentEditFormProps {
+  comment: Comment;
+  isOpen: boolean;
+  onClose: () => void;
+  onSuccess: (updatedComment: Comment) => void;
+}
+
+export interface PostDetailDialogProps {
+  post: Post;
+  isOpen: boolean;
+  onClose: () => void;
 }
