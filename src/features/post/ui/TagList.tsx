@@ -1,13 +1,12 @@
-import { Post } from '../../../entities/post/model';
 import useSearchStore from '../../search/model/use-search-store.ts';
 import { useNavigate } from 'react-router-dom';
 import { useMemo } from 'react';
 
 interface TagListProps {
-  post: Post;
+  tags?: string[];
 }
 
-const TagList = ({ post }: TagListProps) => {
+const TagList = ({ tags }: TagListProps) => {
   const navigate = useNavigate();
   const { selectedTag, setSelectedTag, updateParams } = useSearchStore([
     'selectedTag',
@@ -30,7 +29,7 @@ const TagList = ({ post }: TagListProps) => {
 
   return (
     <div className='flex flex-wrap gap-1'>
-      {post.tags?.map((tag) => (
+      {tags?.map((tag) => (
         <span
           key={tag}
           className={`px-1 text-[9px] font-semibold rounded-[4px] cursor-pointer ${getClassName(

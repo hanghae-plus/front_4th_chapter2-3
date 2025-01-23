@@ -1,5 +1,5 @@
 import { SelectContent, SelectItem } from '../../../shared/ui';
-import { useTagStore } from '../../tag/model/use-tag-store.ts';
+import { useTagStore } from '../model';
 import { getTags } from '../../../entities/tag/api';
 import { useEffect } from 'react';
 

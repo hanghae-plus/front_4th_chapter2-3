@@ -1,7 +1,7 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../../shared/ui';
 import usePostStore from '../model/use-post-store.ts';
-import UserCell from './UserCell.tsx';
-import TitleCell from './TitleCell.tsx';
+import UserPreview from '../../user/ui/UserPreview.tsx';
+import PostTitle from './PostTitle.tsx';
 import LikeCell from './LikeCell.tsx';
 import PostDetailButton from './PostDetailButton.tsx';
 import PostEditButton from './PostEditButton.tsx';
@@ -25,9 +25,15 @@ const PostTable = () => {
         {posts.map((post) => (
           <TableRow key={post.id}>
             <TableCell>{post.id}</TableCell>
-            <TitleCell post={post} />
-            <UserCell post={post} />
-            <LikeCell post={post} />
+            <TableCell>
+              <PostTitle post={post} />
+            </TableCell>
+            <TableCell>
+              <UserPreview user={post.author} />
+            </TableCell>
+            <TableCell>
+              <LikeCell post={post} />
+            </TableCell>
             <TableCell>
               <div className='flex items-center gap-2'>
                 <PostDetailButton post={post} />

@@ -1,14 +1,12 @@
-import { TableCell } from '../../../shared/ui';
-import { Post } from '../../../entities/post/model';
 import { User } from '../../../entities/user/model';
-import { useUserStore } from '../../user/model/use-user-store.ts';
+import { useUserStore } from '../model';
 import { getUserDetail } from '../../../entities/user/api';
 
 interface UserCellProps {
-  post: Post;
+  user?: User;
 }
 
-const UserCell = ({ post }: UserCellProps) => {
+const UserPreview = ({ user }: UserCellProps) => {
   const { setSelectedUser, setShowUserModal } = useUserStore([
     'setSelectedUser',
     'setShowUserModal',
@@ -31,20 +29,11 @@ const UserCell = ({ post }: UserCellProps) => {
   };
 
   return (
-    <TableCell>
-      <div
-        className='flex items-center space-x-2 cursor-pointer'
-        onClick={() => openUserModal(post?.author)}
-      >
-        <img
-          src={post.author?.image}
-          alt={post.author?.username}
-          className='w-8 h-8 rounded-full'
-        />
-        <span>{post.author?.username}</span>
-      </div>
-    </TableCell>
+    <div className='flex items-center space-x-2 cursor-pointer' onClick={() => openUserModal(user)}>
+      <img src={user?.image} alt={user?.username} className='w-8 h-8 rounded-full' />
+      <span>{user?.username}</span>
+    </div>
   );
 };
 
-export default UserCell;
+export default UserPreview;
