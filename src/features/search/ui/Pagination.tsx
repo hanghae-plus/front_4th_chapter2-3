@@ -1,12 +1,5 @@
-import {
-  Button,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../../../shared/ui';
 import { useSearchStore } from '../model';
+import { Button, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui';
 
 const Pagination = () => {
   const { limit, setLimit, skip, setSkip, total } = useSearchStore();

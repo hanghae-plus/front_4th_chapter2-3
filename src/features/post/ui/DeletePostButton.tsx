@@ -1,7 +1,7 @@
 import { Trash2 } from 'lucide-react';
 import { usePostStore } from '../model';
-import { deletePost } from '../../../entities/post/api';
-import { Button } from '../../../shared/ui';
+import { deletePost } from '@/entities/post/api';
+import { Button } from '@/shared/ui';
 
 interface DeletePostButtonProps {
   postId: number;

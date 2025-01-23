@@ -5,9 +5,9 @@ import useFetchPosts from './use-fetch-posts.tsx';
 import { useSearchStore } from './use-search-store.ts';
 import { usePostStore } from '../../post/model';
 
-import { getPostsByTag } from '../../../entities/post/api';
-import { getUsers } from '../../../entities/user/api';
-import { findUserById } from '../../../entities/user/model';
+import { getPostsByTag } from '@/entities/post/api';
+import { getUsers } from '@/entities/user/api';
+import { findUserById } from '@/entities/user/model';
 
 const useFetchPostsByTag = () => {
   const navigate = useNavigate();

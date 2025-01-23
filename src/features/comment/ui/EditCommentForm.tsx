@@ -1,6 +1,6 @@
 import { useCommentStore } from '../model';
 
-import { putComment } from '../../../entities/comments/api';
+import { putComment } from '@/entities/comments/api';
 
 import { Button, Textarea } from '../../../shared/ui';
 

@@ -1,6 +1,6 @@
 import { StateCreator } from 'zustand/vanilla';
 import { create } from 'zustand/react';
-import { Tag } from '../../../entities/tag/model';
+import { Tag } from '@/entities/tag/model';
 
 interface State {
   tags: Tag[];

@@ -2,7 +2,7 @@ import useFetchPosts from './use-fetch-posts.tsx';
 import { useSearchStore } from './use-search-store.ts';
 import { usePostStore } from '../../post/model';
 
-import { getPostsByQuery } from '../../../entities/post/api';
+import { getPostsByQuery } from '@/entities/post/api';
 
 const useFetchPostsByQuery = () => {
   const { setLoading, setPosts } = usePostStore();

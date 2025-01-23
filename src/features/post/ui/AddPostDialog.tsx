@@ -2,13 +2,13 @@ import { ChangeEvent } from 'react';
 
 import { usePostStore } from '../model';
 
-import { postPost } from '../../../entities/post/api';
-import { NewPost } from '../../../entities/post/model';
-import { initNewPost } from '../../../entities/post/config/init-data.ts';
+import { postPost } from '@/entities/post/api';
+import { NewPost } from '@/entities/post/model';
+import { initNewPost } from '@/entities/post/config/init-data.ts';
 
-import { FormTypeElement } from '../../../shared/model';
-import { transformFormValue } from '../../../shared/lib';
-import { BaseDialog, Button, Input, Textarea } from '../../../shared/ui';
+import { FormTypeElement } from '@/shared/model';
+import { transformFormValue } from '@/shared/lib';
+import { BaseDialog, Button, Input, Textarea } from '@/shared/ui';
 
 const AddPostDialog = () => {
   const { showAddDialog, setShowAddDialog, newPost, setNewPost, setPosts } = usePostStore();

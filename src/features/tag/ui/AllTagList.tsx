@@ -2,9 +2,9 @@ import { useEffect } from 'react';
 
 import { useTagStore } from '../model';
 
-import { getTags } from '../../../entities/tag/api';
+import { getTags } from '@/entities/tag/api';
 
-import { SelectContent, SelectItem } from '../../../shared/ui';
+import { SelectContent, SelectItem } from '@/shared/ui';
 
 const AllTagList = () => {
   const { tags, setTags } = useTagStore();

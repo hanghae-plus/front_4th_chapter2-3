@@ -1,6 +1,6 @@
 import { ThumbsDown, ThumbsUp } from 'lucide-react';
-import { Post } from '../../../entities/post/model';
-import { TableCell } from '../../../shared/ui';
+import { Post } from '@/entities/post/model';
+import { TableCell } from '@/shared/ui';
 
 interface LikeCellProps {
   post: Post;

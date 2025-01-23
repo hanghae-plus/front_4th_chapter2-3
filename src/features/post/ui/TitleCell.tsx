@@ -1,7 +1,7 @@
 import TagList from './TagList.tsx';
 import { useSearchStore } from '../../search/model';
-import { Post } from '../../../entities/post/model';
-import { HighlightText, TableCell } from '../../../shared/ui';
+import { Post } from '@/entities/post/model';
+import { HighlightText, TableCell } from '@/shared/ui';
 
 interface TitleCellProps {
   post: Post;

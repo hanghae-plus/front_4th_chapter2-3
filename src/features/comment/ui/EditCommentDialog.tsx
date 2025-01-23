@@ -1,6 +1,6 @@
 import EditCommentForm from './EditCommentForm.tsx';
 import { useCommentStore } from '../model';
-import { BaseDialog } from '../../../shared/ui';
+import { BaseDialog } from '@/shared/ui';
 
 const EditCommentDialog = () => {
   const { showEditCommentDialog, setShowEditCommentDialog } = useCommentStore();

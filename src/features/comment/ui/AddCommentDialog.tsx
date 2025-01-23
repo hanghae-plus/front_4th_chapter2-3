@@ -1,4 +1,4 @@
-import { BaseDialog } from '../../../shared/ui';
+import { BaseDialog } from '@/shared/ui';
 import { useCommentStore } from '../model';
 import AddCommentForm from './AddCommentForm.tsx';
 

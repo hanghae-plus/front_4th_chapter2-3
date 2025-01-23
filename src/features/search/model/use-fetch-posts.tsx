@@ -1,9 +1,9 @@
 import { useSearchStore } from './use-search-store.ts';
 import { usePostStore } from '../../post/model';
 
-import { getPosts } from '../../../entities/post/api';
-import { getUsers } from '../../../entities/user/api';
-import { findUserById } from '../../../entities/user/model';
+import { getPosts } from '@/entities/post/api';
+import { getUsers } from '@/entities/user/api';
+import { findUserById } from '@/entities/user/model';
 
 const useFetchPosts = () => {
   const { setLoading, setPosts } = usePostStore();

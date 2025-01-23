@@ -1,7 +1,7 @@
 import { StateCreator } from 'zustand/vanilla';
 import { create } from 'zustand/react';
-import { Comment, NewComment } from '../../../entities/comments/model';
-import { initNewComment } from '../../../entities/comments/config/initData.ts';
+import { Comment, NewComment } from '@/entities/comments/model';
+import { initNewComment } from '@/entities/comments/config/initData.ts';
 
 interface State {
   comments: { [postId: number]: Comment[] };

@@ -1,7 +1,7 @@
 import { usePostStore } from '../model';
 import { useSearchStore } from '../../search/model';
-import CommentList from '../../../widgets/comment-list/ui/CommentList.tsx';
-import { BaseDialog, HighlightText } from '../../../shared/ui';
+import CommentList from '@/widgets/comment-list/ui/CommentList.tsx';
+import { BaseDialog, HighlightText } from '@/shared/ui';
 
 const PostDetailDialog = () => {
   const { showPostDetailDialog, setShowPostDetailDialog, selectedPost } = usePostStore();

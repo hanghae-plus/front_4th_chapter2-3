@@ -1,8 +1,8 @@
 import { useUserStore } from '../../user/model';
-import { Post } from '../../../entities/post/model';
-import { User } from '../../../entities/user/model';
-import { getUserDetail } from '../../../entities/user/api';
-import { TableCell } from '../../../shared/ui';
+import { Post } from '@/entities/post/model';
+import { User } from '@/entities/user/model';
+import { getUserDetail } from '@/entities/user/api';
+import { TableCell } from '@/shared/ui';
 
 interface UserCellProps {
   post: Post;

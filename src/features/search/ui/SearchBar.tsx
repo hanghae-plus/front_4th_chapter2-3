@@ -9,7 +9,7 @@ import { useSearchStore, useFetchPostsByTag, useFetchPostsByQuery } from '../mod
 
 import { AllTagList } from '../../tag/ui';
 
-import { Input, Select, SelectTrigger, SelectValue } from '../../../shared/ui';
+import { Input, Select, SelectTrigger, SelectValue } from '@/shared/ui';
 
 const SearchBar = () => {
   const navigate = useNavigate();

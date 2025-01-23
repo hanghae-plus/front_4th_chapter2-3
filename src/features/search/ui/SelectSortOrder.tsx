@@ -1,5 +1,5 @@
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../shared/ui';
 import { useSearchStore } from '../model';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui';
 
 const SelectSortOrder = () => {
   const { sortOrder, setSortOrder } = useSearchStore();

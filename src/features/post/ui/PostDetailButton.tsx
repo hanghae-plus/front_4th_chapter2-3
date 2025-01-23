@@ -2,8 +2,8 @@ import { MessageSquare } from 'lucide-react';
 import { usePostStore } from '../model';
 import { useCommentStore } from '../../comment/model';
 
-import { Post } from '../../../entities/post/model';
-import { getComments } from '../../../entities/comments/api';
+import { Post } from '@/entities/post/model';
+import { getComments } from '@/entities/comments/api';
 
 import { Button } from '../../../shared/ui';
 

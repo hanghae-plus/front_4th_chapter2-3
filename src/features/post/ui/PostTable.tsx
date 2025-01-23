@@ -5,7 +5,7 @@ import PostDetailButton from './PostDetailButton.tsx';
 import PostEditButton from './PostEditButton.tsx';
 import DeletePostButton from './DeletePostButton.tsx';
 import { usePostStore } from '../model';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../../shared/ui';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/ui';
 
 const PostTable = () => {
   const { posts } = usePostStore();

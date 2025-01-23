@@ -1,14 +1,14 @@
-import UserDialog from '../features/user/ui/UserDialog.tsx';
-import PostDetailDialog from '../features/post/ui/PostDetailDialog.tsx';
-import { AddCommentDialog, EditCommentDialog } from '../features/comment/ui';
-import EditPostDialog from '../features/post/ui/EditPostDialog.tsx';
-import AddPostDialog from '../features/post/ui/AddPostDialog.tsx';
-import PostTable from '../features/post/ui/PostTable.tsx';
-import Pagination from '../features/search/ui/Pagination.tsx';
-import SearchBar from '../features/search/ui/SearchBar.tsx';
-import PostHeader from '../features/post/ui/PostHeader.tsx';
-import { usePostStore } from '../features/post/model';
-import { Card, CardContent } from '../shared/ui';
+import UserDialog from '@/features/user/ui/UserDialog.tsx';
+import PostDetailDialog from '@/features/post/ui/PostDetailDialog.tsx';
+import { AddCommentDialog, EditCommentDialog } from '@/features/comment/ui';
+import EditPostDialog from '@/features/post/ui/EditPostDialog.tsx';
+import AddPostDialog from '@/features/post/ui/AddPostDialog.tsx';
+import PostTable from '@/features/post/ui/PostTable.tsx';
+import Pagination from '@/features/search/ui/Pagination.tsx';
+import SearchBar from '@/features/search/ui/SearchBar.tsx';
+import PostHeader from '@/features/post/ui/PostHeader.tsx';
+import { usePostStore } from '@/features/post/model';
+import { Card, CardContent } from '@/shared/ui';
 
 const PostsManager = () => {
   const loading = usePostStore((state) => state.loading);
