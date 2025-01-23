@@ -56,13 +56,10 @@ const PostsManager = () => {
 
   const {
     comments,
-    selectedComment,
     fetchComments,
-    updateComment,
     deleteComment,
     likeComment,
     setShowAddCommentDialog,
-    showEditCommentDialog,
     setShowEditCommentDialog,
     setNewComment,
     setSelectedComment,
@@ -144,13 +141,7 @@ const PostsManager = () => {
       <CommentAddDialog />
 
       {/* 댓글 수정 대화상자 */}
-      <CommentEditDialog
-        selectedComment={selectedComment}
-        open={showEditCommentDialog}
-        onOpenChange={setShowEditCommentDialog}
-        setSelectedComment={setSelectedComment}
-        updateComment={updateComment}
-      />
+      <CommentEditDialog />
 
       {/* 게시물 상세 보기 대화상자 */}
       <PostDetailDialog
