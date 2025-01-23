@@ -1,4 +1,5 @@
 import { commentApi } from "@/entities/comment/api/commentApi"
+import { filterCommentById, likeCommentById, matchCommentById, replaceComment } from "@/entities/comment/lib"
 import { INITIAL_NEW_COMMENT_STATE } from "@/entities/comment/model/constants"
 import { Comment, NewComment } from "@/entities/comment/model/types"
 import { create } from "zustand"
@@ -78,10 +79,10 @@ export const useCommentStore = create<useCommentStoreProps>((set, get) => ({
       set({
         comments: {
           ...comments,
-          [data.postId]: comments[data.postId].map((comment) => (comment.id === data.id ? data : comment)),
+          [data.postId]: replaceComment(comments, data),
         },
+        showEditCommentDialog: false,
       })
-      set({ showEditCommentDialog: false })
     } catch (error) {
       console.error("댓글 업데이트 오류:", error)
     }
@@ -93,7 +94,7 @@ export const useCommentStore = create<useCommentStoreProps>((set, get) => ({
       const { comments } = get()
       await commentApi.removeComment(id)
 
-      set({ comments: { ...comments, [postId]: comments[postId].filter((comment) => comment.id !== id) } })
+      set({ comments: { ...comments, [postId]: filterCommentById(comments, id, postId) } })
     } catch (error) {
       console.error("댓글 삭제 오류:", error)
     }
@@ -104,7 +105,7 @@ export const useCommentStore = create<useCommentStoreProps>((set, get) => ({
     try {
       const { comments } = get()
 
-      const matchComment = comments[postId].find((c) => c.id === id)
+      const matchComment = matchCommentById(comments, id, postId)
 
       if (!matchComment) {
         throw new Error("댓글이 없습니다.")
@@ -115,9 +116,7 @@ export const useCommentStore = create<useCommentStoreProps>((set, get) => ({
       set({
         comments: {
           ...comments,
-          [postId]: comments[postId].map((comment) =>
-            comment.id === data.id ? { ...data, likes: comment.likes + 1 } : comment,
-          ),
+          [postId]: likeCommentById(comments, data, postId),
         },
       })
     } catch (error) {
