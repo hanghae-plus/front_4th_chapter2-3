@@ -2,20 +2,20 @@ import { useEffect, useState } from "react"
 import { Edit2, MessageSquare, Plus, Search, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react"
 import { useLocation, useNavigate } from "react-router-dom"
 
-import { SelectTrigger, SelectContent, SelectItem, Select, SelectValue } from "../shared/Select/ui/Select"
-import { Table,  TableBody, TableCell, TableHead, TableHeader, TableRow } from "../shared/Table/ui/Table"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../shared/Dialog/ui/Dialog"
-import { Card, CardHeader, CardTitle, CardContent } from "../shared/Card/ui/Card"
-import { Textarea } from "../shared/textarea/ui/Textarea"
-import { Button } from "../shared/Button/ui/Button"
-import { Input } from "../shared/Input/ui/Input"
+import { SelectTrigger, SelectContent, SelectItem, Select, SelectValue } from "../../../shared/Select/ui/Select"
+import { Table,  TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../shared/Table/ui/Table"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../../shared/Dialog/ui/Dialog"
+import { Card, CardHeader, CardTitle, CardContent } from "../../../shared/Card/ui/Card"
+import { Textarea } from "../../../shared/Textarea/ui/Textarea"
+import { Button } from "../../../shared/Button/ui/Button"
+import { Input } from "../../../shared/Input/ui/Input"
 
-import { UserResponse, Post } from "../features/posts/model/types"
-import { User } from "./user/model/types"
+import { UserResponse, Post } from "../../../features/posts/model/types"
+import { User } from "../model/types"
 
-import { useComment } from "../features/comments/lib/useComment"
-import { usePost } from "../features/posts/lib/usePost"
-import { useTag } from "../features/tags/lib/useTag"
+import { useComment } from "../../../features/comments/lib/useComment"
+import { usePost } from "../../../features/posts/lib/usePost"
+import { useTag } from "../../../features/tags/lib/useTag"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -67,7 +67,6 @@ const PostsManager = () => {
     setShowAddCommentDialog,
     showEditCommentDialog,
     setShowEditCommentDialog,
-
     fetchComments,
     addComment,
     updateComment,
@@ -90,9 +89,9 @@ const PostsManager = () => {
 
   // 게시물 상세 보기
   const openPostDetail = (post: Post) => {
-    setSelectedPost(post)
-    fetchComments(post.id)
-    setShowPostDetailDialog(true)
+      setSelectedPost(post)
+      fetchComments(post.id)
+      setShowPostDetailDialog(true)
   }
 
   // 사용자 모달 열기

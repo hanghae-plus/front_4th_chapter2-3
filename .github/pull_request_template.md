@@ -140,49 +140,45 @@ src/
 # 적용 후
 src/
 |- app/
+    |- assets
+        |- react.svg
+    |- App.tsx
 |- entities/
 |- features/
+    |- comments
+        |- lib 
+            |- useComment.ts
+        |- model
+            |- types.ts
+    |- posts
+        |- lib 
+            |- useComment.ts
+        |- model
+            |- types.ts
 |- pages/
-    |- models/
-        |- comment.ts
-        |- tag.ts
-        |- user.ts
+    |- PostManager/
+        |- lib
+        |- model
+            |- types.ts
+        |- ui
+            |- PostManager.tsx
 |- widgets/
+    |- ui
+        |- Footer.tsx
+        |- Header.tsx
 └─ shared/
+    |- Button
+        |- model
+            |- types.ts
+        |- ui
+            |- Button.tsx
+    |- Card
+        |- model
+            |- types.ts
+        |- ui
+            |- Button.tsx
+    ...
+
 ```
 
-<!-- 
-    response Type 은 API 에
-    props Type 은 ui 에
-    entity Type 은 model 에
-    constans, Config Type 은 config / lib 에 넣자
-
-    또한 핸들러는 무조건 컴포넌트가 들고 있는것이 이상적인 포지션이다
--->
-
-### 과제에서 좋았던 부분
-
-### 과제를 하면서 새롭게 알게된 점
-
-### 과제를 진행하면서 아직 애매하게 잘 모르겠다 하는 점, 혹은 뭔가 잘 안되서 아쉬운 것들
-
-## 리뷰 받고 싶은 내용이나 궁금한 것에 대한 질문
-
-<!--
-피드백 받고 싶은 내용을 구체적으로 남겨주세요
-모호한 요청은 피드백을 남기기 어렵습니다.
-
-참고링크: https://chatgpt.com/share/675b6129-515c-8001-ba72-39d0fa4c7b62
-
-모호한 요청의 예시)
-- 코드 스타일에 대한 피드백 부탁드립니다.
-- 코드 구조에 대한 피드백 부탁드립니다.
-- 개념적인 오류에 대한 피드백 부탁드립니다.
-- 추가 구현이 필요한 부분에 대한 피드백 부탁드립니다.
-
-구체적인 요청의 예시)
-- 현재 함수와 변수명을 보면 직관성이 떨어지는 것 같습니다. 함수와 변수를 더 명확하게 이름 지을 수 있는 방법에 대해 조언해주실 수 있나요?
-- 현재 파일 단위로 코드가 분리되어 있지만, 모듈화나 계층화가 부족한 것 같습니다. 어떤 기준으로 클래스를 분리하거나 모듈화를 진행하면 유지보수에 도움이 될까요?
-- MVC 패턴을 따르려고 했는데, 제가 구현한 구조가 MVC 원칙에 맞게 잘 구성되었는지 검토해주시고, 보완할 부분을 제안해주실 수 있을까요?
-- 컴포넌트 간의 의존성이 높아져서 테스트하기 어려운 상황입니다. 의존성을 낮추고 테스트 가능성을 높이는 구조 개선 방안이 있을까요?
--->
+구조에 적용했을 때, 세그먼트를 어떤식으로 나눌지를 중점으로 전개하였다
