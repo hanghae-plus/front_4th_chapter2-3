@@ -3,15 +3,19 @@ import { Button } from "../shared/ui/Button/ui"
 import { Edit2, MessageSquare, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react"
 import UserProfile from "../features/user/ui/UserProfile"
 import { highlightText } from "../util/highlightText"
-import { Post } from "../entities/post/model/type"
+import { Post, postPostsRequest } from "../entities/post/model/type"
 import { useSearchStore } from "../shared/model/useSearchStore"
+import usePostModalStore from "../entities/modal/model/usePostModalStore"
+import PostForm from "./PostForm"
 
 interface PostTableProps {
   posts: Post[]
+  editPost: (form: postPostsRequest) => void
 }
 function PostTable(props: PostTableProps) {
-  const { posts } = props
+  const { posts, editPost } = props
   const { search, tag: tagItem, updateTag } = useSearchStore()
+  const { openPostModal } = usePostModalStore()
 
   return (
     <Table>
@@ -71,8 +75,10 @@ function PostTable(props: PostTableProps) {
                   variant="ghost"
                   size="sm"
                   onClick={() => {
-                    // setSelectedPost(post)
-                    // setShowEditDialog(true)
+                    openPostModal({
+                      title: "게시물 수정",
+                      children: <PostForm posts={post} onSubmit={editPost} />,
+                    })
                   }}
                 >
                   <Edit2 className="w-4 h-4" />

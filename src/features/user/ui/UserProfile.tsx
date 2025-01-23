@@ -1,4 +1,4 @@
-import { useModalStore } from "../../../shared/model/useModalStore"
+import { useModalStore } from "../../../entities/modal/model/useModalStore"
 import { useGetUsers } from "../api"
 
 interface UserProfileProps {

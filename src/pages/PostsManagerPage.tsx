@@ -14,6 +14,9 @@ import PostTable from "../components/PostTable"
 import Pagination from "../components/Pagination"
 import { useSearchStore } from "../shared/model/useSearchStore"
 import SearchForm from "../components/SearchForm"
+import usePostModalStore from "../entities/modal/model/usePostModalStore"
+import PostForm from "../components/PostForm"
+import { postPostsRequest } from "../entities/post/model/type"
 
 interface Reactions {
   likes: number
@@ -61,14 +64,13 @@ const PostsManager = () => {
   const { search, tag, sortBy, sortOrder, limit, skip, resetSearchParams } = useSearchStore()
 
   const navigate = useNavigate()
+  const { openPostModal, closePostModal } = usePostModalStore()
 
   // 상태 관리
   const [posts, setPosts] = useState<Post[]>([])
   const [total, setTotal] = useState<number>(0)
   const [selectedPost, setSelectedPost] = useState<Post | null>(null)
-  const [showAddDialog, setShowAddDialog] = useState<boolean>(false)
-  const [showEditDialog, setShowEditDialog] = useState<boolean>(false)
-  const [newPost, setNewPost] = useState<NewPost>({ title: "", body: "", userId: 1 })
+
   const [comments, setComments] = useState<{ [postId: number]: Comment[] }>({})
   const [selectedComment, setSelectedComment] = useState<Comment | null>(null)
   const [newComment, setNewComment] = useState<NewComment>({ body: "", postId: null, userId: 1 })
@@ -156,32 +158,8 @@ const PostsManager = () => {
     )
   }
 
-  // 게시물 추가
-  const addPost = () => {
-    addPostMutation(newPost, {
-      onSuccess: (data) => {
-        setPosts([data, ...posts])
-        setShowAddDialog(false)
-        setNewPost({ title: "", body: "", userId: 1 })
-      },
-      onError: (error) => {
-        console.error("게시물 추가 오류:", error)
-      },
-    })
-  }
-
   // 게시물 업데이트
-  const updatePost = async () => {
-    putPostMutation(selectedPost!, {
-      onSuccess: (data) => {
-        setPosts(posts.map((post) => (post.id === data.id ? data : post)))
-        setShowEditDialog(false)
-      },
-      onError: (error) => {
-        console.error("게시물 업데이트 오류:", error)
-      },
-    })
-  }
+  const updatePost = async () => {}
 
   // 게시물 삭제
   const deletePost = async (id: number) => {
@@ -288,6 +266,35 @@ const PostsManager = () => {
     setShowPostDetailDialog(true)
   }
 
+  //게시물 추가 핸들러
+  const addPostSubmit = (form: postPostsRequest) => {
+    addPostMutation(form, {
+      onSuccess: (data) => {
+        setPosts([data, ...posts])
+        closePostModal()
+      },
+      onError: (error) => {
+        console.error("게시물 추가 오류:", error)
+      },
+    })
+  }
+
+  //게시물 수정 핸들러
+  const editPostSubmit = (form: postPostsRequest) => {
+    const post = posts.find((p) => p.userId === form.userId)
+    const newForm = { ...post!, ...form }
+
+    putPostMutation(newForm, {
+      onSuccess: (data) => {
+        setPosts([data, ...posts])
+        closePostModal()
+      },
+      onError: (error) => {
+        console.error("게시물 업데이트 오류:", error)
+      },
+    })
+  }
+
   // 댓글 렌더링
   const renderComments = (postId: number) => (
     <div className="mt-2">
@@ -350,7 +357,14 @@ const PostsManager = () => {
               >
                 검색 초기화
               </Button>
-              <Button onClick={() => setShowAddDialog(true)}>
+              <Button
+                onClick={() => {
+                  openPostModal({
+                    title: "새 게시물 추가",
+                    children: <PostForm onSubmit={addPostSubmit} />,
+                  })
+                }}
+              >
                 <Plus className="w-4 h-4 mr-2" />
                 게시물 추가
               </Button>
@@ -366,7 +380,7 @@ const PostsManager = () => {
             {postsLoading || tagsLoading ? (
               <div className="flex justify-center p-4">로딩 중...</div>
             ) : (
-              <PostTable posts={posts} />
+              <PostTable posts={posts} editPost={editPostSubmit} />
             )}
 
             {/* 페이지네이션 */}
@@ -376,7 +390,7 @@ const PostsManager = () => {
       </Card>
 
       {/* 게시물 추가 대화상자 */}
-      <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
+      {/* <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>새 게시물 추가</DialogTitle>
@@ -402,10 +416,10 @@ const PostsManager = () => {
             <Button onClick={addPost}>게시물 추가</Button>
           </div>
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
 
       {/* 게시물 수정 대화상자 */}
-      <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+      {/* <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>게시물 수정</DialogTitle>
@@ -425,7 +439,7 @@ const PostsManager = () => {
             <Button onClick={updatePost}>게시물 업데이트</Button>
           </div>
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
 
       {/* 게시물 상세 보기 대화상자 */}
       <Dialog open={showPostDetailDialog} onOpenChange={setShowPostDetailDialog}>
