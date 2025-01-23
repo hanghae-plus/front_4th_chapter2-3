@@ -3,10 +3,10 @@ import { useSearchParams } from "react-router-dom"
 import { usePostsQuery } from "@features/post/model"
 
 export function Pagination() {
-  const { total } = usePostsQuery().data
   const [searchParams, setSearchParams] = useSearchParams()
-  const skip = Number(searchParams.get("skip") || "0")
-  const limit = Number(searchParams.get("limit") || "10")
+  const skip = Number(searchParams.get("skip") ?? "0")
+  const limit = Number(searchParams.get("limit") ?? "10")
+  const { total } = usePostsQuery().data
 
   const handleLimitChange = (value: string) => {
     setSearchParams((prev) => {

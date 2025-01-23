@@ -2,15 +2,18 @@ import { Button, DialogContent, DialogHeader, DialogTitle, Input, Textarea } fro
 import { useState } from "react"
 import { useAddPostMutation } from "@features/post/model"
 import { RequestPost } from "@entities/post/types"
+import { useModalStore } from "@shared/model"
 
 export function PostAdd() {
   const [newPost, setNewPost] = useState<RequestPost>({ title: "", body: "", userId: 1 })
 
   const { mutate: addPost } = useAddPostMutation()
+  const { closeModal } = useModalStore()
 
   const handleAddPost = () => {
     if (!newPost) return
     addPost(newPost)
+    closeModal()
   }
 
   return (

@@ -1,7 +1,8 @@
 import { Button, DialogContent, DialogHeader, DialogTitle, Textarea } from "@shared/ui"
 import { Comment } from "@entities/post/types"
 import { useState } from "react"
-import { useUpdateCommentMutation } from "@features/post/model"
+import { useUpdateCommentMutation } from "@features/comment/model"
+import { useModalStore } from "@shared/model"
 
 interface CommentUpdateProps {
   comment: Comment
@@ -11,12 +12,14 @@ export function CommentUpdate(props: CommentUpdateProps) {
   const { comment } = props
   const [commentBody, setCommentBody] = useState(comment.body)
   const { mutate: updateCommentMutation } = useUpdateCommentMutation()
+  const { closeModal } = useModalStore()
 
   const handleCommentBodyChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setCommentBody(e.target.value)
   }
   const handleUpdateComment = (comment: Comment) => {
     updateCommentMutation(comment)
+    closeModal()
   }
 
   return (

@@ -8,8 +8,6 @@ export interface Reactions {
 export interface SearchParams {
   limit: string
   skip: string
-  tag: string
-  searchQuery: string
   sortBy: string
   sortOrder: string
 }

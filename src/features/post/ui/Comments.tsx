@@ -1,6 +1,6 @@
 import { Button } from "@shared/ui"
 import { Edit2, Plus, ThumbsUp, Trash2 } from "lucide-react"
-import { useCommentsQuery, useDeleteCommentMutation, useLikeCommentsMutation } from "@features/post/model"
+import { useCommentsQuery, useDeleteCommentMutation, useLikeCommentsMutation } from "@features/comment/model"
 import { Comment } from "@entities/post/types"
 import { useModalStore } from "@shared/model"
 import { CommentUpdate } from "@features/post/ui/CommentUpdate.tsx"
