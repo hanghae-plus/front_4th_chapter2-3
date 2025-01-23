@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Edit2, Plus, ThumbsUp, Trash2 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button, Card, Dialog, DialogContent, DialogHeader, DialogTitle, Input, Textarea } from "../shared/ui";
 import {
@@ -10,16 +9,16 @@ import {
   createPost,
   updatePost,
   deletePost,
-  deleteComment,
   createComment,
   updateComment,
   UserDetail,
 } from "../entities";
 
-import { fetchCommentsByPostId, likeComment } from "../features";
+import { fetchCommentsByPostId } from "../features";
 import { PostsManager } from "../widgets/PostsManager/ui/PostsManager";
-import { UserInformationDialog } from "../widgets/userDialog/ui/UserInformationDialog";
-import { ModalProvider } from "../shared/model/useModal";
+import { UserInformationDialog } from "../widgets/ui/UserInformationDialog";
+import { ModalProvider } from "../shared";
+import { PostDetailDialog } from "../widgets/ui/PostDetailDialog";
 
 const PostsManagerPage = () => {
   const navigate = useNavigate();
@@ -51,7 +50,6 @@ const PostsManagerPage = () => {
   });
   const [showAddCommentDialog, setShowAddCommentDialog] = useState(false);
   const [showEditCommentDialog, setShowEditCommentDialog] = useState(false);
-  const [showPostDetailDialog, setShowPostDetailDialog] = useState(false);
   const [selectedUser, setSelectedUser] = useState<UserDetail | null>(null);
 
   // URL 업데이트 함수
@@ -155,43 +153,10 @@ const PostsManagerPage = () => {
     }
   };
 
-  // 댓글 삭제
-  const removeComment = async (id: Comment["id"], postId: Post["id"]) => {
-    try {
-      await deleteComment({ commentId: id });
-      setComments((prev) => ({
-        ...prev,
-        [postId]: prev[postId].filter((comment) => comment.id !== id),
-      }));
-    } catch (error) {
-      console.error("댓글 삭제 오류:", error);
-    }
-  };
-
-  // 댓글 좋아요
-  const increaseLikeComment = async (id: Comment["id"], postId: Post["id"]) => {
-    try {
-      const data = await likeComment({
-        commentId: id,
-        likes: (comments?.[postId]?.find?.((c) => c.id === id)?.likes ?? 0) + 1,
-      });
-
-      setComments((prev) => ({
-        ...prev,
-        [postId]: prev[postId].map((comment) =>
-          comment.id === data.id ? { ...data, likes: comment.likes + 1 } : comment,
-        ),
-      }));
-    } catch (error) {
-      console.error("댓글 좋아요 오류:", error);
-    }
-  };
-
   // 게시물 상세 보기
   const openPostDetail = (post: Post) => {
     setSelectedPost(post);
     fetchComments(post.id);
-    setShowPostDetailDialog(true);
   };
 
   const openPostEdit = (post: Post) => {
@@ -213,71 +178,17 @@ const PostsManagerPage = () => {
     setSelectedTag(params.get("tag") || "");
   }, [location.search]);
 
-  // 하이라이트 함수 추가
-  const highlightText = (text: string, highlight: string) => {
-    if (!text) return null;
-    if (!highlight.trim()) {
-      return <span>{text}</span>;
-    }
-    const regex = new RegExp(`(${highlight})`, "gi");
-    const parts = text.split(regex);
-    return (
-      <span>
-        {parts.map((part, i) => (regex.test(part) ? <mark key={i}>{part}</mark> : <span key={i}>{part}</span>))}
-      </span>
-    );
-  };
-
-  // 댓글 렌더링
-  const renderComments = (postId: Post["id"]) => (
-    <div className="mt-2">
-      <div className="flex items-center justify-between mb-2">
-        <h3 className="text-sm font-semibold">댓글</h3>
-        <Button
-          size="sm"
-          onClick={() => {
-            setNewComment((prev) => ({ ...prev, postId }) as Comment);
-            setShowAddCommentDialog(true);
-          }}
-        >
-          <Plus className="w-3 h-3 mr-1" />
-          댓글 추가
-        </Button>
-      </div>
-      <div className="space-y-1">
-        {comments[postId]?.map((comment) => (
-          <div key={comment.id} className="flex items-center justify-between text-sm border-b pb-1">
-            <div className="flex items-center space-x-2 overflow-hidden">
-              <span className="font-medium truncate">{comment.user?.username}:</span>
-              <span className="truncate">{highlightText(comment.body, searchQuery)}</span>
-            </div>
-            <div className="flex items-center space-x-1">
-              <Button variant="ghost" size="sm" onClick={() => increaseLikeComment(comment.id, postId)}>
-                <ThumbsUp className="w-3 h-3" />
-                <span className="ml-1 text-xs">{comment.likes}</span>
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  setSelectedComment(comment);
-                  setShowEditCommentDialog(true);
-                }}
-              >
-                <Edit2 className="w-3 h-3" />
-              </Button>
-              <Button variant="ghost" size="sm" onClick={() => removeComment(comment.id, postId)}>
-                <Trash2 className="w-3 h-3" />
-              </Button>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-
   return (
-    <ModalProvider>
+    <ModalProvider
+      modalKeys={[
+        "userModal",
+        "addPostModal",
+        "modifyPostModal",
+        "addCommentModal",
+        "modifyCommentModal",
+        "postDetailModal",
+      ]}
+    >
       <Card className="w-full max-w-6xl mx-auto">
         <PostsManager
           posts={posts}
@@ -299,7 +210,6 @@ const PostsManagerPage = () => {
           skip={skip}
           setSkip={setSkip}
           total={total}
-          highlightText={highlightText}
           setSelectedUser={setSelectedUser}
           openPostDetail={openPostDetail}
           removePost={removePost}
@@ -391,20 +301,17 @@ const PostsManagerPage = () => {
           </DialogContent>
         </Dialog>
 
-        {/* 게시물 상세 보기 대화상자 */}
-        <Dialog open={showPostDetailDialog} onOpenChange={setShowPostDetailDialog}>
-          <DialogContent className="max-w-3xl">
-            <DialogHeader>
-              <DialogTitle>{highlightText(selectedPost?.title ?? "", searchQuery)}</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
-              <p>{highlightText(selectedPost?.body ?? "", searchQuery)}</p>
-              {renderComments(selectedPost?.id ?? 0)}
-            </div>
-          </DialogContent>
-        </Dialog>
+        {selectedPost && (
+          <PostDetailDialog
+            post={selectedPost}
+            searchQuery={searchQuery}
+            comments={comments}
+            setComments={setComments}
+            setNewComment={setNewComment}
+            setSelectedComment={setSelectedComment}
+          />
+        )}
 
-        {/* 사용자 모달 */}
         {selectedUser && <UserInformationDialog user={selectedUser} />}
       </Card>
     </ModalProvider>

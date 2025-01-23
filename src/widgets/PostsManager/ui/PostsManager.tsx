@@ -11,10 +11,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../../shared/ui";
-import { JSX, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { fetchPosts, fetchPostsByTag, fetchUsers, mergePostAndUsers, Post, Tag, UserDetail } from "../../../entities";
 import { searchPosts } from "../../../features";
-import { PostTable } from "./PostTable";
+import { PostTable } from "../../../features/post/ui/PostTable";
 
 interface PostsTableProps {
   posts: Post[];
@@ -36,7 +36,6 @@ interface PostsTableProps {
   skip: number;
   setSkip: React.Dispatch<React.SetStateAction<number>>;
   total: number;
-  highlightText: (text: string, highlight: string) => JSX.Element | null;
   setSelectedUser: React.Dispatch<React.SetStateAction<UserDetail | null>>;
   openPostDetail: (post: Post) => void;
   removePost: (id: Post["id"]) => Promise<void>;
@@ -63,7 +62,6 @@ export const PostsManager = ({
   skip,
   setSkip,
   total,
-  highlightText,
   setSelectedUser,
   openPostDetail,
   removePost,
@@ -214,7 +212,6 @@ export const PostsManager = ({
           ) : (
             <PostTable
               posts={posts}
-              highlightText={highlightText}
               searchQuery={searchQuery}
               selectedTag={selectedTag}
               setSelectedTag={setSelectedTag}

@@ -1,9 +1,8 @@
-import { UserDetail } from "../../../entities";
-import { useModal } from "../../../shared/model/useModal";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../../shared/ui";
+import { UserDetail } from "../../entities";
+import { useModal, Dialog, DialogContent, DialogHeader, DialogTitle } from "../../shared";
 
 export const UserInformationDialog = ({ user }: { user: UserDetail }) => {
-  const { handleModalToggle, isOpenModal } = useModal();
+  const { handleModalToggle, isOpenModal } = useModal("userModal");
   return (
     <Dialog open={isOpenModal} onOpenChange={handleModalToggle}>
       <DialogContent>
