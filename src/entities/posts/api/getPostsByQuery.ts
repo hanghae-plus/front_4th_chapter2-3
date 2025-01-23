@@ -1,15 +1,22 @@
 import { ListResponse } from "@/shared/model";
 
 import { Post } from "../model";
+import { GetPostsProps } from "./getPosts";
 
-export interface GetPostsByQueryProps {
+export interface GetPostsByQueryProps extends GetPostsProps {
   searchQuery: string;
-  limit: number;
-  skip: number;
 }
 
-export const getPostsByQuery = async ({ searchQuery, limit = 10, skip = 10 }: GetPostsByQueryProps) => {
-  const response = await fetch(`/api/posts/search?q=${searchQuery}&limit=${limit}&skip=${skip}`);
+export const getPostsByQuery = async ({
+  searchQuery,
+  limit = 10,
+  skip = 0,
+  sortBy = "id",
+  order = "asc",
+}: GetPostsByQueryProps) => {
+  const response = await fetch(
+    `/api/posts/search?q=${searchQuery}&limit=${limit}&skip=${skip}&sortBy=${sortBy}&order=${order}`,
+  );
 
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
