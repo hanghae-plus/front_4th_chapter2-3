@@ -9,6 +9,8 @@ import * as React from "react"
 import "@testing-library/jest-dom"
 import { TEST_POSTS, TEST_SEARCH_POST, TEST_USERS } from "./mockData"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { PostModal } from "../src/entities/modal/ui/postModal.tsx"
+import UserModal from "../src/features/user/ui/UserModal.tsx"
 
 // MSW 서버 설정
 const server = setupServer(
@@ -52,6 +54,8 @@ const renderPostsManager = () => {
     <QueryClientProvider client={queryClient}>
       <MemoryRouter>
         <PostsManager />
+        <UserModal />
+        <PostModal />
       </MemoryRouter>
     </QueryClientProvider>,
   )

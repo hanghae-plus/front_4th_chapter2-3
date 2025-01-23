@@ -7,7 +7,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../shared/ui/D
 import { Textarea } from "../shared/ui/Textarea/ui"
 import { useDeletePosts, useGetPosts, useGetSearchPosts, usePostPosts, usePutPosts } from "../features/post/api"
 import { useGetPostsByTag, useGetTags } from "../features/tag/api"
-import UserModal from "../features/user/ui/UserModal"
 import { highlightText } from "../util/highlightText"
 import PostTable from "../components/PostTable"
 import Pagination from "../components/Pagination"
@@ -404,9 +403,6 @@ const PostsManager = () => {
           </div>
         </DialogContent>
       </Dialog>
-
-      {/* 사용자 모달 */}
-      <UserModal />
     </Fragment>
   )
 }
