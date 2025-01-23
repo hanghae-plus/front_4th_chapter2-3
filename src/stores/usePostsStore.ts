@@ -6,6 +6,18 @@ import { fetchTags } from "../features/posts/api/fetchTags"
 import { updatePost, deletePost, likePost, dislikePost } from "../features/posts/api/postActions"
 import { updateComment, deleteComment, likeComment } from "../features/comments/api/commentActions"
 import { fetchUser } from "../features/users/api/fetchUser"
+import {
+  filterPostsBySearch,
+  filterPostsByTag,
+  sortPosts,
+  attachUsersToPost,
+} from "../features/posts/lib/postTransformers"
+import {
+  updatePostComments,
+  removePostComment,
+  updatePostCommentLikes,
+} from "../features/comments/lib/commentTransformers"
+import { validatePost, normalizeTags } from "../features/posts/lib/postValidators"
 
 interface PostsState {
   posts: Post[]
@@ -81,13 +93,32 @@ export const usePostsStore = create<PostsState>()(
       setSelectedPost: (post) => set({ selectedPost: post }),
       setShowPostDetailDialog: (show) => set({ showPostDetailDialog: show }),
       setShowEditDialog: (show) => set({ showEditDialog: show }),
+      setSearchQuery: (query) => set({ searchQuery: query }),
+      setSelectedTag: (tag) => set({ selectedTag: tag }),
+      setSortBy: (sortBy) => set({ sortBy }),
+      setSortOrder: (sortOrder) => set({ sortOrder }),
+      setShowEditCommentDialog: (show) => set({ showEditCommentDialog: show }),
+      setShowUserModal: (show) => set({ showUserModal: show }),
 
       fetchPosts: async (skip, limit, tag, search, sortBy, sortOrder) => {
         const { setPosts, setTotal, setLoading } = get()
         setLoading(true)
         try {
           const { posts, total } = await fetchPosts(skip, limit, tag, search, sortBy, sortOrder)
-          setPosts(posts)
+
+          // Apply transformations
+          let transformedPosts = posts
+          if (search) {
+            transformedPosts = filterPostsBySearch(transformedPosts, search)
+          }
+          if (tag && tag !== "all") {
+            transformedPosts = filterPostsByTag(transformedPosts, tag)
+          }
+          if (sortBy !== "none") {
+            transformedPosts = sortPosts(transformedPosts, sortBy, sortOrder)
+          }
+
+          setPosts(transformedPosts)
           setTotal(total)
         } catch (error) {
           console.error(error)
@@ -96,27 +127,46 @@ export const usePostsStore = create<PostsState>()(
       },
 
       handlePostDetail: (post) => {
+        if (!validatePost(post)) {
+          console.error("Invalid post data")
+          return
+        }
         set({ selectedPost: post, showPostDetailDialog: true })
       },
 
       handlePostEdit: (post) => {
+        if (!validatePost(post)) {
+          console.error("Invalid post data")
+          return
+        }
         set({ selectedPost: post, showEditDialog: true })
       },
 
       handlePostDelete: async (id) => {
         if (!window.confirm("정말 삭제하시겠습니까?")) return
+
         const { posts, setPosts } = get()
         try {
           await deletePost(id)
-          setPosts(posts.filter((post) => post.id !== id))
+          const updatedPosts = posts.filter((post) => post.id !== id)
+          setPosts(updatedPosts)
         } catch (error) {
           console.error("게시물 삭제 오류:", error)
         }
       },
 
       handlePostUpdate: async (post) => {
+        if (!validatePost(post)) {
+          console.error("Invalid post data")
+          return
+        }
+
         try {
-          const updatedPost = await updatePost(post)
+          const normalizedPost = {
+            ...post,
+            tags: normalizeTags(post.tags || []),
+          }
+          const updatedPost = await updatePost(normalizedPost)
           const { posts, setPosts } = get()
           setPosts(posts.map((p) => (p.id === updatedPost.id ? updatedPost : p)))
           set({ showEditDialog: false })
@@ -149,19 +199,8 @@ export const usePostsStore = create<PostsState>()(
         try {
           const updatedComment = await likeComment(id)
           const { posts, setPosts } = get()
-          setPosts(
-            posts.map((post) => {
-              if (post.id === postId) {
-                return {
-                  ...post,
-                  comments: post.comments?.map((comment) =>
-                    comment.id === id ? { ...comment, likes: updatedComment.likes } : comment,
-                  ),
-                }
-              }
-              return post
-            }),
-          )
+          const updatedPosts = updatePostCommentLikes(posts, postId, id, updatedComment.likes)
+          setPosts(updatedPosts)
         } catch (error) {
           console.error("댓글 좋아요 오류:", error)
         }
@@ -179,17 +218,8 @@ export const usePostsStore = create<PostsState>()(
         try {
           await deleteComment(id)
           const { posts, setPosts } = get()
-          setPosts(
-            posts.map((post) => {
-              if (post.id === postId) {
-                return {
-                  ...post,
-                  comments: post.comments?.filter((comment) => comment.id !== id),
-                }
-              }
-              return post
-            }),
-          )
+          const updatedPosts = removePostComment(posts, postId, id)
+          setPosts(updatedPosts)
         } catch (error) {
           console.error("댓글 삭제 오류:", error)
         }
@@ -211,35 +241,18 @@ export const usePostsStore = create<PostsState>()(
         try {
           const updatedComment = await updateComment(comment)
           const { posts, setPosts } = get()
-          setPosts(
-            posts.map((post) => {
-              if (post.comments) {
-                return {
-                  ...post,
-                  comments: post.comments.map((c) => (c.id === updatedComment.id ? updatedComment : c)),
-                }
-              }
-              return post
-            }),
-          )
+          const updatedPosts = updatePostComments(posts, comment.postId, updatedComment)
+          setPosts(updatedPosts)
           set({ showEditCommentDialog: false })
         } catch (error) {
           console.error("댓글 업데이트 오류:", error)
         }
       },
 
-      // 필터 관련 액션들
-      setSearchQuery: (query) => set({ searchQuery: query }),
-      setSelectedTag: (tag) => set({ selectedTag: tag }),
-      setSortBy: (sortBy) => set({ sortBy }),
-      setSortOrder: (sortOrder) => set({ sortOrder }),
-      setShowEditCommentDialog: (show) => set({ showEditCommentDialog: show }),
-      setShowUserModal: (show) => set({ showUserModal: show }),
-
       fetchTags: async () => {
         try {
           const tags = await fetchTags()
-          set({ tags })
+          set({ tags: normalizeTags(tags.map((tag) => tag.slug)) })
         } catch (error) {
           console.error(error)
         }
