@@ -3,7 +3,17 @@ export type {
   PostsResponse,
   CommentsState,
   PostFilters,
-  PaginationState,
   NewPost,
   NewComment,
+  FilterState,
+  FilterActions,
+  FilterStore,
+  PaginationState,
+  PaginationActions,
+  PaginationStore,
+  UIState,
+  UIActions,
+  UIStore,
 } from './model';
+
+export { usePaginationStore, useFilterStore, useUIStore } from './model';

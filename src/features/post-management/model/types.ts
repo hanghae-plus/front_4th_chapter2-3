@@ -26,11 +26,6 @@ export interface PostFilters {
   sortOrder: 'asc' | 'desc';
 }
 
-export interface PaginationState {
-  skip: number;
-  limit: number;
-}
-
 export interface NewPost {
   title: string;
   body: string;
@@ -43,24 +38,45 @@ export interface NewComment {
   userId: number;
 }
 
+// 필터 관련 타입
 type SortBy = 'none' | 'id' | 'title' | 'reactions';
 type SortOrder = 'asc' | 'desc';
 
-export interface PostManagementState {
-  // 필터 관련
-  filters: {
-    search: string;
-    tag: string;
-    sortBy: SortBy;
-    sortOrder: SortOrder;
-  };
+export interface FilterState {
+  search: string;
+  tag: string;
+  sortBy: SortBy;
+  sortOrder: SortOrder;
+}
 
-  // 페이지네이션 관련
-  pagination: {
-    skip: number;
-    limit: number;
-  };
+export interface FilterActions {
+  setFilter: <K extends keyof FilterState>(key: K, value: FilterState[K]) => void;
+  resetFilters: () => void;
+}
 
-  // UI 상태
+export interface FilterStore extends FilterState, FilterActions {}
+
+// 페이지네이션 관련 타입
+export interface PaginationState {
+  skip: number;
+  limit: number;
+}
+
+export interface PaginationActions {
+  setPage: (skip: number) => void;
+  setLimit: (limit: number) => void;
+  resetPagination: () => void;
+}
+
+export interface PaginationStore extends PaginationState, PaginationActions {}
+
+// UI 관련 타입
+export interface UIState {
   loading: boolean;
 }
+
+export interface UIActions {
+  setLoading: (loading: boolean) => void;
+}
+
+export interface UIStore extends UIState, UIActions {}
