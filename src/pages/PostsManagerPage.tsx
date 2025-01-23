@@ -25,6 +25,8 @@ import {
   TableRow,
   Textarea,
 } from "../shared/ui"
+import { CommentSection } from "../entities/comment/ui/CommentSection"
+import { PostTable } from "../entities/post/ui/PostTable"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -33,25 +35,32 @@ const PostsManager = () => {
 
   // 상태 관리
   const [posts, setPosts] = useState([])
+  const [selectedPost, setSelectedPost] = useState(null)
+  const [newPost, setNewPost] = useState({ title: "", body: "", userId: 1 })
+
   const [total, setTotal] = useState(0)
   const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"))
   const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"))
   const [searchQuery, setSearchQuery] = useState(queryParams.get("search") || "")
-  const [selectedPost, setSelectedPost] = useState(null)
   const [sortBy, setSortBy] = useState(queryParams.get("sortBy") || "")
   const [sortOrder, setSortOrder] = useState(queryParams.get("sortOrder") || "asc")
+
   const [showAddDialog, setShowAddDialog] = useState(false)
   const [showEditDialog, setShowEditDialog] = useState(false)
-  const [newPost, setNewPost] = useState({ title: "", body: "", userId: 1 })
+
   const [loading, setLoading] = useState(false)
+
   const [tags, setTags] = useState([])
   const [selectedTag, setSelectedTag] = useState(queryParams.get("tag") || "")
+
   const [comments, setComments] = useState({})
   const [selectedComment, setSelectedComment] = useState(null)
   const [newComment, setNewComment] = useState({ body: "", postId: null, userId: 1 })
+
   const [showAddCommentDialog, setShowAddCommentDialog] = useState(false)
   const [showEditCommentDialog, setShowEditCommentDialog] = useState(false)
   const [showPostDetailDialog, setShowPostDetailDialog] = useState(false)
+
   const [showUserModal, setShowUserModal] = useState(false)
   const [selectedUser, setSelectedUser] = useState(null)
 
@@ -68,6 +77,8 @@ const PostsManager = () => {
   }
 
   // 게시물 가져오기
+  // entities -> post -> api -> getPosts()
+  // entities -> user -> api -> getUsers()
   const fetchPosts = () => {
     setLoading(true)
     let postsData
@@ -98,6 +109,7 @@ const PostsManager = () => {
   }
 
   // 태그 가져오기
+  // entities -> tag -> api -> getTags()
   const fetchTags = async () => {
     try {
       const response = await fetch("/api/posts/tags")
@@ -109,6 +121,7 @@ const PostsManager = () => {
   }
 
   // 게시물 검색
+  // entities -> post -> api -> getPostsByQuery()
   const searchPosts = async () => {
     if (!searchQuery) {
       fetchPosts()
@@ -127,6 +140,8 @@ const PostsManager = () => {
   }
 
   // 태그별 게시물 가져오기
+  // entities -> post -> api -> getPostsByTag()
+  // entities -> user -> api -> getUsers()
   const fetchPostsByTag = async (tag) => {
     if (!tag || tag === "all") {
       fetchPosts()
@@ -155,6 +170,7 @@ const PostsManager = () => {
   }
 
   // 게시물 추가
+  // entities -> post -> model/api -> addPost()
   const addPost = async () => {
     try {
       const response = await fetch("/api/posts/add", {
@@ -172,6 +188,7 @@ const PostsManager = () => {
   }
 
   // 게시물 업데이트
+  // entities -> post -> model/api -> updatePost()
   const updatePost = async () => {
     try {
       const response = await fetch(`/api/posts/${selectedPost.id}`, {
@@ -188,6 +205,7 @@ const PostsManager = () => {
   }
 
   // 게시물 삭제
+  // entities -> post -> model/api -> deletePost()
   const deletePost = async (id) => {
     try {
       await fetch(`/api/posts/${id}`, {
@@ -200,6 +218,7 @@ const PostsManager = () => {
   }
 
   // 댓글 가져오기
+  // entities -> comment -> api -> getComments()
   const fetchComments = async (postId) => {
     if (comments[postId]) return // 이미 불러온 댓글이 있으면 다시 불러오지 않음
     try {
@@ -212,6 +231,7 @@ const PostsManager = () => {
   }
 
   // 댓글 추가
+  // entities -> comment -> model/api -> addComment()
   const addComment = async () => {
     try {
       const response = await fetch("/api/comments/add", {
@@ -232,6 +252,7 @@ const PostsManager = () => {
   }
 
   // 댓글 업데이트
+  // entities -> comment -> model/api -> updateComment()
   const updateComment = async () => {
     try {
       const response = await fetch(`/api/comments/${selectedComment.id}`, {
@@ -251,6 +272,7 @@ const PostsManager = () => {
   }
 
   // 댓글 삭제
+  // entities -> comment -> model/api -> deleteComment()
   const deleteComment = async (id, postId) => {
     try {
       await fetch(`/api/comments/${id}`, {
@@ -266,9 +288,9 @@ const PostsManager = () => {
   }
 
   // 댓글 좋아요
+  // entities -> comment -> model/api -> likeComment()
   const likeComment = async (id, postId) => {
     try {
-
       const response = await fetch(`/api/comments/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -277,7 +299,9 @@ const PostsManager = () => {
       const data = await response.json()
       setComments((prev) => ({
         ...prev,
-        [postId]: prev[postId].map((comment) => (comment.id === data.id ? {...data, likes: comment.likes + 1} : comment)),
+        [postId]: prev[postId].map((comment) =>
+          comment.id === data.id ? { ...data, likes: comment.likes + 1 } : comment,
+        ),
       }))
     } catch (error) {
       console.error("댓글 좋아요 오류:", error)
@@ -292,6 +316,7 @@ const PostsManager = () => {
   }
 
   // 사용자 모달 열기
+  // entities -> user -> api -> getUser()
   const openUserModal = async (user) => {
     try {
       const response = await fetch(`/api/users/${user.id}`)
@@ -327,6 +352,7 @@ const PostsManager = () => {
   }, [location.search])
 
   // 하이라이트 함수 추가
+  // shared -> lib -> highlightText()
   const highlightText = (text: string, highlight: string) => {
     if (!text) return null
     if (!highlight.trim()) {
@@ -342,6 +368,7 @@ const PostsManager = () => {
   }
 
   // 게시물 테이블 렌더링
+  // entities - post - ui - postTable()
   const renderPostTable = () => (
     <Table>
       <TableHeader>
@@ -422,6 +449,7 @@ const PostsManager = () => {
   )
 
   // 댓글 렌더링
+  // entities - comments - ui - Comment()
   const renderComments = (postId) => (
     <div className="mt-2">
       <div className="flex items-center justify-between mb-2">
@@ -540,6 +568,7 @@ const PostsManager = () => {
 
           {/* 게시물 테이블 */}
           {loading ? <div className="flex justify-center p-4">로딩 중...</div> : renderPostTable()}
+          {/* {loading ? <div className="flex justify-center p-4">로딩 중...</div> : <PostTable />} */}
 
           {/* 페이지네이션 */}
           <div className="flex justify-between items-center">
@@ -570,6 +599,7 @@ const PostsManager = () => {
       </CardContent>
 
       {/* 게시물 추가 대화상자 */}
+      {/* feature -> addToPost -> model/ui */}
       <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
         <DialogContent>
           <DialogHeader>
@@ -599,6 +629,7 @@ const PostsManager = () => {
       </Dialog>
 
       {/* 게시물 수정 대화상자 */}
+      {/* feature -> editToPost -> model/ui */}
       <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
         <DialogContent>
           <DialogHeader>
@@ -622,6 +653,7 @@ const PostsManager = () => {
       </Dialog>
 
       {/* 댓글 추가 대화상자 */}
+      {/* feature -> addToComment -> model/ui */}
       <Dialog open={showAddCommentDialog} onOpenChange={setShowAddCommentDialog}>
         <DialogContent>
           <DialogHeader>
@@ -639,6 +671,7 @@ const PostsManager = () => {
       </Dialog>
 
       {/* 댓글 수정 대화상자 */}
+      {/* feature -> EditToComment -> model/ui */}
       <Dialog open={showEditCommentDialog} onOpenChange={setShowEditCommentDialog}>
         <DialogContent>
           <DialogHeader>
@@ -663,11 +696,13 @@ const PostsManager = () => {
           </DialogHeader>
           <div className="space-y-4">
             <p>{highlightText(selectedPost?.body, searchQuery)}</p>
-            {renderComments(selectedPost?.id)}
+            {/* {renderComments(selectedPost?.id)} */}
+            <CommentSection postId={selectedPost?.id} />
           </div>
         </DialogContent>
       </Dialog>
 
+      {/* entities - user - ui - UserProfile() */}
       {/* 사용자 모달 */}
       <Dialog open={showUserModal} onOpenChange={setShowUserModal}>
         <DialogContent>
