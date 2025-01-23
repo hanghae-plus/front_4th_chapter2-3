@@ -1,12 +1,4 @@
-import { Post, User } from "../../../types/posts"
-
-// 게시물에 작성자 정보를 결합
-export const attachUsersToPost = (posts: Post[], users: User[]): Post[] => {
-  return posts.map((post) => ({
-    ...post,
-    author: users.find((user) => user.id === post.userId),
-  }))
-}
+import { Post } from "../../../types/posts"
 
 // 검색어로 게시물 필터링
 export const filterPostsBySearch = (posts: Post[], searchQuery: string): Post[] => {
@@ -28,8 +20,8 @@ export const filterPostsByTag = (posts: Post[], tag: string): Post[] => {
 }
 
 // 게시물 정렬
-export const sortPosts = (posts: Post[], sortBy: string, sortOrder: string): Post[] => {
-  if (sortBy === "none") return posts
+export const sortPosts = (posts: Post[], sortBy?: string, sortOrder?: string): Post[] => {
+  if (!sortBy || sortBy === "none") return posts
 
   return [...posts].sort((a, b) => {
     let comparison = 0

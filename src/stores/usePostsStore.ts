@@ -6,12 +6,7 @@ import { fetchTags } from "../features/posts/api/fetchTags"
 import { updatePost, deletePost, likePost, dislikePost } from "../features/posts/api/postActions"
 import { updateComment, deleteComment, likeComment } from "../features/comments/api/commentActions"
 import { fetchUser } from "../features/users/api/fetchUser"
-import {
-  filterPostsBySearch,
-  filterPostsByTag,
-  sortPosts,
-  attachUsersToPost,
-} from "../features/posts/lib/postTransformers"
+import { filterPostsBySearch, filterPostsByTag, sortPosts } from "../features/posts/lib/postTransformers"
 import {
   updatePostComments,
   removePostComment,
@@ -252,7 +247,7 @@ export const usePostsStore = create<PostsState>()(
       fetchTags: async () => {
         try {
           const tags = await fetchTags()
-          set({ tags: normalizeTags(tags.map((tag) => tag.slug)) })
+          set({ tags })
         } catch (error) {
           console.error(error)
         }
