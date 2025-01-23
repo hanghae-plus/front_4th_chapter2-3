@@ -8,10 +8,11 @@ export const PostsTable = () => {
     searchQuery,
     selectedTag,
     setSelectedTag,
-    fetchPosts,
     handlePostDetail,
     handlePostEdit,
     handlePostDelete,
+    handlePostLike,
+    handlePostDislike,
     handleUserDetail,
   } = usePostsStore()
 
@@ -27,11 +28,6 @@ export const PostsTable = () => {
         {parts.map((part, i) => (regex.test(part) ? <mark key={i}>{part}</mark> : <span key={i}>{part}</span>))}
       </span>
     )
-  }
-
-  const handleTagSelect = (tag: string) => {
-    setSelectedTag(tag)
-    fetchPosts(0, 10, tag, searchQuery)
   }
 
   return (
@@ -61,7 +57,7 @@ export const PostsTable = () => {
                           ? "text-white bg-blue-500 hover:bg-blue-600"
                           : "text-blue-800 bg-blue-100 hover:bg-blue-200"
                       }`}
-                      onClick={() => handleTagSelect(tag)}
+                      onClick={() => setSelectedTag(tag)}
                     >
                       {highlightText(tag, searchQuery)}
                     </span>
@@ -70,31 +66,35 @@ export const PostsTable = () => {
               </div>
             </TableCell>
             <TableCell>
-              <div
-                className="flex items-center space-x-2 cursor-pointer"
-                onClick={() => post.author && handleUserDetail(post.author.id)}
-              >
-                <img src={post.author?.image} alt={post.author?.username} className="w-8 h-8 rounded-full" />
-                <span>{post.author?.username}</span>
-              </div>
+              <span className="cursor-pointer hover:underline" onClick={() => handleUserDetail(post.userId)}>
+                {post.author?.username}
+              </span>
             </TableCell>
             <TableCell>
               <div className="flex items-center gap-2">
-                <ThumbsUp className="w-4 h-4" />
-                <span>{post.reactions?.likes || 0}</span>
-                <ThumbsDown className="w-4 h-4" />
-                <span>{post.reactions?.dislikes || 0}</span>
-              </div>
-            </TableCell>
-            <TableCell>
-              <div className="flex items-center gap-2">
-                <Button variant="ghost" size="sm" onClick={() => handlePostDetail(post)}>
-                  <MessageSquare className="w-4 h-4" />
+                <Button variant="ghost" size="sm" className="h-8 px-2" onClick={() => handlePostLike(post.id)}>
+                  <ThumbsUp className="w-4 h-4 mr-1" />
+                  {post.reactions?.likes || 0}
                 </Button>
-                <Button variant="ghost" size="sm" onClick={() => handlePostEdit(post)}>
+                <Button variant="ghost" size="sm" className="h-8 px-2" onClick={() => handlePostDislike(post.id)}>
+                  <ThumbsDown className="w-4 h-4 mr-1" />
+                  {post.reactions?.dislikes || 0}
+                </Button>
+                <Button variant="ghost" size="sm" className="h-8 px-2">
+                  <MessageSquare className="w-4 h-4 mr-1" />
+                  {post.comments?.length || 0}
+                </Button>
+              </div>
+            </TableCell>
+            <TableCell>
+              <div className="flex items-center gap-2">
+                <Button variant="ghost" size="sm" className="h-8 px-2" onClick={() => handlePostDetail(post)}>
+                  상세
+                </Button>
+                <Button variant="ghost" size="sm" className="h-8 px-2" onClick={() => handlePostEdit(post)}>
                   <Edit2 className="w-4 h-4" />
                 </Button>
-                <Button variant="ghost" size="sm" onClick={() => handlePostDelete(post.id)}>
+                <Button variant="ghost" size="sm" className="h-8 px-2" onClick={() => handlePostDelete(post.id)}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

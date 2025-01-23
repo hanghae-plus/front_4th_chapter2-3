@@ -1,31 +1,64 @@
-import { Button, Dialog, DialogContent, DialogHeader, DialogTitle, Input, Textarea } from "../../shared/ui"
-import { Post } from "../../types/posts"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, Input, Button, Textarea } from "../../shared/ui"
+import { usePostsStore } from "../../stores/usePostsStore"
+import { useState, useEffect } from "react"
 
-interface PostEditDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  post: Post | null
-  onUpdate: (post: Post) => void
-}
+export const PostEditDialog = () => {
+  const { selectedPost, showEditDialog, setShowEditDialog, handlePostUpdate } = usePostsStore()
 
-export const PostEditDialog = ({ open, onOpenChange, post, onUpdate }: PostEditDialogProps) => {
-  if (!post) return null
+  const [title, setTitle] = useState("")
+  const [body, setBody] = useState("")
+  const [tags, setTags] = useState<string[]>([])
+
+  useEffect(() => {
+    if (selectedPost) {
+      setTitle(selectedPost.title)
+      setBody(selectedPost.body)
+      setTags(selectedPost.tags || [])
+    }
+  }, [selectedPost])
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!selectedPost) return
+
+    handlePostUpdate({
+      ...selectedPost,
+      title,
+      body,
+      tags,
+    })
+  }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>게시물 수정</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4">
-          <Input placeholder="제목" value={post.title} onChange={(e) => onUpdate({ ...post, title: e.target.value })} />
-          <Textarea
-            placeholder="내용"
-            value={post.body}
-            onChange={(e) => onUpdate({ ...post, body: e.target.value })}
-          />
-          <Button onClick={() => onUpdate(post)}>게시물 업데이트</Button>
-        </div>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <label>제목</label>
+            <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="제목을 입력하세요" />
+          </div>
+          <div className="space-y-2">
+            <label>내용</label>
+            <Textarea value={body} onChange={(e) => setBody(e.target.value)} placeholder="내용을 입력하세요" />
+          </div>
+          <div className="space-y-2">
+            <label>태그</label>
+            <Input
+              value={tags.join(", ")}
+              onChange={(e) => setTags(e.target.value.split(",").map((tag) => tag.trim()))}
+              placeholder="태그를 입력하세요 (쉼표로 구분)"
+            />
+          </div>
+          <div className="flex justify-end gap-2">
+            <Button type="button" variant="outline" onClick={() => setShowEditDialog(false)}>
+              취소
+            </Button>
+            <Button type="submit">저장</Button>
+          </div>
+        </form>
       </DialogContent>
     </Dialog>
   )

@@ -3,7 +3,6 @@ import { Search } from "lucide-react"
 import { Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../shared/ui"
 import { usePostsStore } from "../../stores/usePostsStore"
 import { Button } from "../../shared/ui"
-import { Tag } from "../../types/posts"
 
 export const PostsFilter = () => {
   const {
@@ -53,7 +52,7 @@ export const PostsFilter = () => {
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">전체</SelectItem>
-          {(tags as Tag[]).map((tag) => (
+          {tags.map((tag) => (
             <SelectItem key={tag.id} value={tag.slug}>
               {tag.slug}
             </SelectItem>
@@ -61,7 +60,13 @@ export const PostsFilter = () => {
         </SelectContent>
       </Select>
 
-      <Select value={sortBy} onValueChange={setSortBy}>
+      <Select
+        value={sortBy}
+        onValueChange={(value) => {
+          setSortBy(value)
+          fetchPosts(0, 10, selectedTag, searchQuery, value, sortOrder)
+        }}
+      >
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="정렬 기준" />
         </SelectTrigger>
@@ -72,7 +77,13 @@ export const PostsFilter = () => {
         </SelectContent>
       </Select>
 
-      <Select value={sortOrder} onValueChange={setSortOrder}>
+      <Select
+        value={sortOrder}
+        onValueChange={(value) => {
+          setSortOrder(value)
+          fetchPosts(0, 10, selectedTag, searchQuery, sortBy, value)
+        }}
+      >
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="정렬 순서" />
         </SelectTrigger>
