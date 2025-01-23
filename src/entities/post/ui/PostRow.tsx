@@ -12,7 +12,7 @@ import { PostAuthor } from "./PostAuthor";
 import { PostIcons } from "./PostIcons";
 import { PostReactions } from "./PostReactions";
 import { usePosts } from "../lib/usePosts";
-import { useQuery } from "../../../shared/hook/useQueryParams";
+import { useQuery } from "../../../shared/hook/useQuery";
 
 interface PostRowProps {
   post: Post;

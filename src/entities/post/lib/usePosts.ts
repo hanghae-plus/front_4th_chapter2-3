@@ -24,6 +24,7 @@ import { getUser } from "../../user/api/userApi";
 import { User } from "../../user/model/types";
 import { Post } from "../model/types";
 import { useComment } from "../../comment/lib/useComment";
+import { useCallback } from "react";
 
 export const usePosts = () => {
   const [, setPosts] = useAtom(postsAtom);
@@ -43,7 +44,7 @@ export const usePosts = () => {
   const { handleFetchComments } = useComment();
 
   // 게시물 가져오기
-  const handleFetchPost = async () => {
+  const handleFetchPost = useCallback(async () => {
     try {
       setLoading(true);
 
@@ -66,34 +67,37 @@ export const usePosts = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, ["setLoading", "setPosts", "setTotal", "skip"]);
 
   // 태그별 게시물 가져오기
-  const handleFetchPostsByTag = async (tag: string) => {
-    if (!tag || tag === "all") return handleFetchPost();
+  const handleFetchPostsByTag = useCallback(
+    async (tag: string) => {
+      if (!tag || tag === "all") return handleFetchPost();
 
-    setLoading(true);
-    try {
-      const [postsResponse, usersResponse] = await Promise.all([
-        getPostsByTag(tag),
-        getUser(),
-      ]);
+      setLoading(true);
+      try {
+        const [postsResponse, usersResponse] = await Promise.all([
+          getPostsByTag(tag),
+          getUser(),
+        ]);
 
-      const postsWithUsers = postsResponse.posts.map((post: Post) => ({
-        ...post,
-        author: usersResponse.users.find(
-          (user: User) => user.id === post.userId
-        ),
-      }));
+        const postsWithUsers = postsResponse.posts.map((post: Post) => ({
+          ...post,
+          author: usersResponse.users.find(
+            (user: User) => user.id === post.userId
+          ),
+        }));
 
-      setPosts(postsWithUsers);
-      setTotal(postsResponse.total);
-    } catch (error) {
-      console.error("태그별 게시물 가져오기 오류:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+        setPosts(postsWithUsers);
+        setTotal(postsResponse.total);
+      } catch (error) {
+        console.error("태그별 게시물 가져오기 오류:", error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    ["handleFetchPost", "setLoading", "setPosts", "setTotal"]
+  );
 
   // 게시물 검색
   const handleSearchPost = async () => {

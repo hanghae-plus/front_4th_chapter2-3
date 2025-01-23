@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { Plus } from "lucide-react";
-import { useLocation } from "react-router-dom";
 import {
   Button,
   Card,
@@ -44,36 +43,31 @@ import {
 import { usePosts } from "../entities/post/lib/usePosts.ts";
 import { useComment } from "../entities/comment/lib/useComment.ts";
 import { useTags } from "../entities/tag/lib/useTags.ts";
-import { useQuery } from "../shared/hook/useQueryParams.ts";
+import { useQuery } from "../shared/hook/useQuery.ts";
+import { useInitializePosts } from "../shared/hook/useInitializePosts.ts";
 
 const PostsManager = () => {
-  const location = useLocation();
-
   // 전역 변수
-  const [selectedPost, setSelectedPost] = useAtom(selectedPostAtom);
-  const [searchQuery, setSearchQuery] = useAtom(searchQueryAtom);
-  const [selectedComment, setSelectedComment] = useAtom(selectedCommentAtom);
+  const [searchQuery] = useAtom(searchQueryAtom);
   const [selectedUser] = useAtom(selectedUserAtom);
-  const [selectedTag, setSelectedTag] = useAtom(selectedTagAtom);
+  const [selectedTag] = useAtom(selectedTagAtom);
   const [loading] = useAtom(loadingAtom);
-  const [skip, setSkip] = useAtom(skipAtom);
-  const [limit, setLimit] = useAtom(limitAtom);
-  const [showEditDialog, setShowEditDialog] = useAtom(editDialogAtom);
+  const [skip] = useAtom(skipAtom);
+  const [limit] = useAtom(limitAtom);
+  const [sortBy] = useAtom(sortByAtom);
+  const [sortOrder] = useAtom(sortOrderAtom);
 
-  const [showAddDialog, setShowAddDialog] = useAtom(addDialogAtom);
+  const [selectedPost, setSelectedPost] = useAtom(selectedPostAtom);
+  const [selectedComment, setSelectedComment] = useAtom(selectedCommentAtom);
   const [newComment, setNewComment] = useAtom(newCommentAtom);
+
+  const [showEditDialog, setShowEditDialog] = useAtom(editDialogAtom);
+  const [showAddDialog, setShowAddDialog] = useAtom(addDialogAtom);
   const [showAddCommentDialog, setShowAddCommentDialog] =
     useAtom(addCommentDialogAtom);
   const [showEditCommentDialog, setShowEditCommentDialog] = useAtom(
     editCommentDialogAtom
   );
-  const [sortBy, setSortBy] = useAtom(sortByAtom);
-  // useState(useQueryParams("sortBy") || "");
-  const [sortOrder, setSortOrder] = useAtom(sortOrderAtom);
-  // useState(
-  //   useQueryParams("sortOrder") || "asc"
-  // );
-
   const [showPostDetailDialog, setShowPostDetailDialog] =
     useAtom(postDetailDialogAtom);
   const [showUserModal, setShowUserModal] = useAtom(userModalAtom);
@@ -91,10 +85,11 @@ const PostsManager = () => {
 
   useEffect(() => {
     handleFetchTags();
-  }, []);
+  }, [handleFetchTags]);
 
   const { updateURL } = useQuery();
 
+  // usePost
   useEffect(() => {
     if (selectedTag) {
       handleFetchPostsByTag(selectedTag);
@@ -102,17 +97,18 @@ const PostsManager = () => {
       handleFetchPost();
     }
     updateURL();
-  }, [skip, limit, sortBy, sortOrder, selectedTag]);
+  }, [
+    skip,
+    limit,
+    sortBy,
+    sortOrder,
+    selectedTag,
+    handleFetchPost,
+    handleFetchPostsByTag,
+    updateURL,
+  ]);
 
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    setSkip(parseInt(params.get("skip") || "0"));
-    setLimit(parseInt(params.get("limit") || "10"));
-    setSearchQuery(params.get("search") || "");
-    setSortBy(params.get("sortBy") || "");
-    setSortOrder(params.get("sortOrder") || "asc");
-    setSelectedTag(params.get("tag") || "");
-  }, [location.search]);
+  useInitializePosts();
 
   return (
     <Card className="w-full max-w-6xl mx-auto">

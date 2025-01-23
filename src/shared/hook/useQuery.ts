@@ -8,6 +8,7 @@ import {
 } from "../../app/store/atom";
 
 import { useAtom } from "jotai";
+import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
 export const useQuery = () => {
@@ -21,7 +22,7 @@ export const useQuery = () => {
   const [sortOrder] = useAtom(sortOrderAtom);
 
   // URL 업데이트 함수
-  const updateURL = () => {
+  const updateURL = useCallback(() => {
     const params = new URLSearchParams();
     if (skip) params.set("skip", skip.toString());
     if (limit) params.set("limit", limit.toString());
@@ -30,7 +31,7 @@ export const useQuery = () => {
     if (sortOrder) params.set("sortOrder", sortOrder);
     if (selectedTag) params.set("tag", selectedTag);
     navigate(`?${params.toString()}`);
-  };
+  }, []);
 
   return {
     updateURL,
