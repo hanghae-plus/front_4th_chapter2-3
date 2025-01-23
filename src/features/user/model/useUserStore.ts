@@ -1,16 +1,16 @@
 import { StateCreator } from 'zustand/vanilla';
 import { create } from 'zustand/react';
-import { createStoreSelector } from '../../../shared/model';
-import { User } from '../../../entities/user/model';
+import { createStoreSelector } from '../../../shared/lib';
+import { UserDetail } from '../../../entities/user/model';
 
 interface State {
   showUserModal: boolean;
-  selectedUser: User | null;
+  selectedUser: UserDetail | null;
 }
 
 interface Action {
   setShowUserModal: (show: boolean) => void;
-  setSelectedUser: (user: User | null) => void;
+  setSelectedUser: (user: UserDetail | null) => void;
 }
 
 type UserStoreProps = State & Action;

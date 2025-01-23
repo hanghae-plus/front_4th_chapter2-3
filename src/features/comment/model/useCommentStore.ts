@@ -1,6 +1,6 @@
 import { StateCreator } from 'zustand/vanilla';
 import { create } from 'zustand/react';
-import { createStoreSelector } from '../../../shared/model';
+import { createStoreSelector } from '../../../shared/lib';
 import { Comment, NewComment } from '../../../entities/comments/model';
 import { initNewComment } from '../../../entities/comments/config/initData.ts';
 
