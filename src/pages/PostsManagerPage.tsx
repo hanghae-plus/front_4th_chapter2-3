@@ -28,7 +28,7 @@ import {
 
 import {
   Post,
-  PostWithAuther,
+  PostWithUser,
   Tag,
   User,
   Comment,
@@ -45,6 +45,8 @@ import {
 import { getParams } from "@shared/lib";
 import { addComment, getComments, likeComment, updateComment } from "@entities/comment/model";
 import { getTags } from "@entities/tag/model";
+import { usePostQuery } from "@features/post";
+import { useUserQuery } from "@features/user";
 
 const PostsManager = () => {
   const navigate = useNavigate();
@@ -52,7 +54,7 @@ const PostsManager = () => {
   const queryParams = new URLSearchParams(location.search);
 
   // 상태 관리
-  const [posts, setPosts] = useState<PostWithAuther[]>([]);
+  const [posts, setPosts] = useState<PostWithUser[]>([]);
   const [total, setTotal] = useState(0);
   const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"));
   const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"));
@@ -81,22 +83,40 @@ const PostsManager = () => {
     navigate(`?${params.toString()}`);
   };
 
-  // 게시물 가져오기
-  const fetchPosts = async () => {
-    setLoading(true);
+  const {
+    data: postsData,
+    isSuccess: isPostsSuccess,
+    isLoading: isPostsLoading,
+  } = usePostQuery({ type: "DEFAULT", params: { limit, skip } });
+  const { data: usersData, isSuccess: isUsersSucess, isLoading: isUsersLoading } = useUserQuery();
 
-    const postsData = await getPosts({ limit, skip });
-    const usersData = await getUsers();
+  useEffect(() => {
+    if (isPostsSuccess && isUsersSucess) {
+      const postsWithUsers = postsData.posts.map((post) => ({
+        ...post,
+        author: usersData.users.find((user) => user.id === post.userId) ?? null,
+      }));
+      setPosts(postsWithUsers);
+      setTotal(postsData.total);
+    }
+  }, [isPostsSuccess, isUsersSucess, postsData, usersData]);
 
-    const postsWithUsers = postsData.posts.map((post) => ({
-      ...post,
-      author: usersData.users.find((user) => user.id === post.userId) ?? null,
-    }));
-    setPosts(postsWithUsers);
-    setTotal(postsData.total);
+  // // 게시물 가져오기
+  // const fetchPosts = async () => {
+  //   setLoading(true);
 
-    setLoading(false);
-  };
+  //   const postsData = await getPosts({ limit, skip });
+  //   const usersData = await getUsers();
+
+  //   const postsWithUsers = postsData.posts.map((post) => ({
+  //     ...post,
+  //     author: usersData.users.find((user) => user.id === post.userId) ?? null,
+  //   }));
+  //   setPosts(postsWithUsers);
+  //   setTotal(postsData.total);
+
+  //   setLoading(false);
+  // };
 
   // 태그 가져오기
   const fetchTags = async () => {
@@ -107,7 +127,7 @@ const PostsManager = () => {
   // 게시물 검색
   const searchPostsAndUpdate = async () => {
     if (!searchQuery) {
-      fetchPosts();
+      // fetchPosts();
       return;
     }
     setLoading(true);
@@ -122,7 +142,7 @@ const PostsManager = () => {
   // 태그별 게시물 가져오기
   const fetchPostsByTag = async (tag: string) => {
     if (!tag || tag === "all") {
-      fetchPosts();
+      // fetchPosts();
       return;
     }
     setLoading(true);
@@ -251,14 +271,14 @@ const PostsManager = () => {
     fetchTags();
   }, []);
 
-  useEffect(() => {
-    if (selectedTag) {
-      fetchPostsByTag(selectedTag);
-    } else {
-      fetchPosts();
-    }
-    updateURL();
-  }, [skip, limit, sortBy, sortOrder, selectedTag]);
+  // useEffect(() => {
+  //   if (selectedTag) {
+  //     fetchPostsByTag(selectedTag);
+  //   } else {
+  //     fetchPosts();
+  //   }
+  //   updateURL();
+  // }, [skip, limit, sortBy, sortOrder, selectedTag]);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);

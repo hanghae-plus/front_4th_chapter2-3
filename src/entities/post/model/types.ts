@@ -4,12 +4,8 @@ export type SortBy = "id" | "title" | "reactions";
 export type SortOrder = "asc" | "dsc";
 
 export interface PostsRequestDto {
-  skip: number;
-  limit: number;
-  searchQuery?: string;
-  sortBy?: SortBy;
-  sortOrder?: SortOrder;
-  selectedTag?: string;
+  limit?: number;
+  skip?: number;
 }
 
 export interface PostsResponseDto {
@@ -31,7 +27,7 @@ export interface Post {
 
 export type NewPost = Pick<Post, "userId" | "title" | "body">;
 
-export interface PostWithAuther extends Post {
+export interface PostWithUser extends Post {
   author?: User | null;
 }
 

@@ -1,6 +1,6 @@
 import { NewPost, Post, PostsRequestDto, PostsResponseDto } from "./types";
 
-export const getPosts = async ({ limit, skip }: PostsRequestDto): Promise<PostsResponseDto> =>
+export const getPosts = async ({ limit = 0, skip = 0 }: PostsRequestDto): Promise<PostsResponseDto> =>
   fetch(`/api/posts?limit=${limit}&skip=${skip}`)
     .then((response) => response.json())
     .catch((error) => {
