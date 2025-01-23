@@ -9,6 +9,7 @@ interface useCommentStoreProps {
   newComment: NewComment
   selectedComment: Comment | undefined
 
+  setComments: (postId: number, comments: Comment[]) => void
   fetchComments: (postId: number) => void
   addComment: () => void
   updateComment: () => void
@@ -28,7 +29,6 @@ export const useCommentStore = create<useCommentStoreProps>((set, get) => ({
   newComment: INITIAL_NEW_COMMENT_STATE,
   selectedComment: undefined,
 
-  // 임시
   showAddCommentDialog: false,
   setShowAddCommentDialog: (open) => set({ showAddCommentDialog: open }),
   showEditCommentDialog: false,
@@ -39,6 +39,15 @@ export const useCommentStore = create<useCommentStoreProps>((set, get) => ({
     })),
   setSelectedComment: (comment) => set({ selectedComment: comment }),
 
+  setComments: (postId, newComments) => {
+    set((state) => ({
+      ...state,
+      comments: {
+        ...state.comments,
+        [postId]: newComments,
+      },
+    }))
+  },
   // 댓글 가져오기
   fetchComments: async (postId) => {
     const { comments } = get()

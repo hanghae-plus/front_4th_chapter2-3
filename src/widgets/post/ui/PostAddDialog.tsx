@@ -1,8 +1,20 @@
+// import { INITIAL_NEW_POST_STATE } from "@/entities/post/model/constants"
+// import { usePostAddMutation } from "@/entities/post/model/queries"
 import { usePostStore } from "@/features/post/model"
 import { Button, Dialog, DialogContent, DialogHeader, DialogTitle, Input, Textarea } from "@/shared/ui"
 
 export const PostAddDialog = () => {
-  const { newPost, showAddDialog, setNewPost, setShowAddDialog, addPost } = usePostStore()
+  const { newPost, showAddDialog, setNewPost, addPost, setShowAddDialog } = usePostStore()
+  // const addMutation = usePostAddMutation()
+
+  // const addPost = () => {
+  //   addMutation.mutate(newPost, {
+  //     onSuccess: () => {
+  //       setShowAddDialog(false)
+  //       setNewPost(INITIAL_NEW_POST_STATE)
+  //     },
+  //   })
+  // }
 
   return (
     <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>

@@ -15,8 +15,6 @@ interface PostStore {
   newPost: CreatePost
   selectedPost: Post | null
 
-  setPosts: (posts: Post[]) => void
-  setTotal: (total: number) => void
   setSkip: (skip: number) => void
   setLimit: (limit: number) => void
   setLoading: (loading: boolean) => void
@@ -47,16 +45,13 @@ export const usePostStore = create<PostStore>((set, get) => ({
   limit: 10,
   newPost: INITIAL_NEW_POST_STATE,
   selectedPost: null,
-
-  setPosts: (posts: Post[]) => set({ posts: posts }),
-  setTotal: (total: number) => set({ total: total }),
+  
   setSkip: (skip: number) => set({ skip: skip }),
   setLimit: (limit: number) => set({ limit: limit }),
   setLoading: (loading: boolean) => set({ loading: loading }),
   setNewPost: (post: CreatePost) => set({ newPost: post }),
   setSelectedPost: (post) => set({ selectedPost: post }),
 
-  // 임시
   showAddDialog: false,
   setShowAddDialog: (open: boolean) => set({ showAddDialog: open }),
   showEditDialog: false,

@@ -3,6 +3,8 @@ import { TableCell, Button } from "@/shared/ui"
 import { MessageSquare, Edit2, Trash2 } from "lucide-react"
 import { usePostStore } from "../../model"
 import { useCommentStore } from "@/features/comment/model"
+import { useCommentQuery } from "@/entities/comment/model/queries"
+import { useEffect } from "react"
 
 interface PostTableWorkProps {
   post: Post
@@ -10,18 +12,26 @@ interface PostTableWorkProps {
 
 export const PostTableWork = ({ post }: PostTableWorkProps) => {
   const { setSelectedPost, setShowEditDialog, deletePost, setShowPostDetailDialog } = usePostStore()
-  const { fetchComments } = useCommentStore()
 
-  const handlePostDetail = (post: Post) => {
+  const { data, refetch } = useCommentQuery(post.id)
+  const { setComments } = useCommentStore()
+
+  const handlePostDetail = async (post: Post) => {
     setSelectedPost(post)
-    fetchComments(post.id)
     setShowPostDetailDialog(true)
+    await refetch()
   }
 
   const handleEditPost = () => {
     setSelectedPost(post)
     setShowEditDialog(true)
   }
+
+  useEffect(() => {
+    if (data?.[post.id]) {
+      setComments(post.id, data[post.id])
+    }
+  }, [data, post.id, setComments])
 
   return (
     <TableCell>
