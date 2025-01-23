@@ -1,4 +1,4 @@
-import { ResponseWithData } from '../../search/model';
+import { ResponseWithData } from '../../../shared/model';
 import { User } from '../../user/model';
 import { Reaction } from '@/entities/reaction';
 

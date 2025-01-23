@@ -1,13 +1,12 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-import { useTagStore } from '../model';
-
+import { Tag } from '@/entities/tag/model';
 import { getTags } from '@/entities/tag/api';
 
 import { SelectContent, SelectItem } from '@/shared/ui';
 
 const AllTagList = () => {
-  const { tags, setTags } = useTagStore();
+  const [tags, setTags] = useState<Tag[]>([]);
   // 태그 가져오기
   const fetchTags = async () => {
     try {

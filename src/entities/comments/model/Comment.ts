@@ -1,4 +1,4 @@
-import { ResponseWithData } from '../../search/model';
+import { ResponseWithData } from '../../../shared/model';
 
 export interface Comment {
   id: number;

@@ -1,6 +1,6 @@
-import useFetchPosts from './use-fetch-posts.tsx';
+import useFetchPosts from './use-fetch-posts.ts';
 import { useQueryStore } from './use-query-store.ts';
-import { usePostStore } from '../index.ts';
+import { usePostStore } from '../index.tsx';
 
 import { getPostsByQuery } from '@/entities/post/api';
 

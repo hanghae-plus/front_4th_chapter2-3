@@ -1,5 +1,5 @@
 import { MessageSquare } from 'lucide-react';
-import { usePostStore } from '../index.ts';
+import { usePostStore } from '../index.tsx';
 import { useCommentStore } from '@/features/comment';
 
 import { Post } from '@/entities/post/model';
