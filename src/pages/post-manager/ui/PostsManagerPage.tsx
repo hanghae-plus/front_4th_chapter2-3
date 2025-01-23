@@ -1,7 +1,6 @@
 import { useState } from "react"
-import { Plus } from "lucide-react"
-import { Button, Card, CardContent, CardHeader, CardTitle } from "../../shared/ui"
-import { Post } from "../../entities/post/model/types"
+import { Card, CardContent } from "../../../shared/ui"
+import { Post } from "../../../entities/post/model/types"
 import { usePostStore } from "@/features/post/model/store"
 import { PostTable } from "@/widgets/post/ui/PostTable"
 import { PostPagination } from "@/widgets/post/ui/PostPagination"
@@ -14,23 +13,15 @@ import { PostDetailDialog } from "@/widgets/post/ui/PostDetailDialog"
 import { UserDialog } from "@/widgets/user/ui/UserDialog"
 import { usePostUrl } from "@/features/post/post-url/model"
 import { useCommentStore } from "@/features/comment/model/store"
+import { PostsManagerHeader } from "./PostsManagerHeader"
 
 const PostsManager = () => {
   // 상태 관리
   const [showPostDetailDialog, setShowPostDetailDialog] = useState(false)
 
   // 전역 상태 관리
-  const {
-    total,
-    loading,
-    selectedPost,
-    fetchPostsByTag,
-    searchPosts,
-    setShowAddDialog,
-    deletePost,
-    setSelectedPost,
-    setShowEditDialog,
-  } = usePostStore()
+  const { total, loading, selectedPost, fetchPostsByTag, searchPosts, deletePost, setSelectedPost, setShowEditDialog } =
+    usePostStore()
 
   const {
     skip,
@@ -68,15 +59,7 @@ const PostsManager = () => {
 
   return (
     <Card className="w-full max-w-6xl mx-auto">
-      <CardHeader>
-        <CardTitle className="flex items-center justify-between">
-          <span>게시물 관리자</span>
-          <Button onClick={() => setShowAddDialog(true)}>
-            <Plus className="w-4 h-4 mr-2" />
-            게시물 추가
-          </Button>
-        </CardTitle>
-      </CardHeader>
+      <PostsManagerHeader />
       <CardContent>
         <div className="flex flex-col gap-4">
           <PostTableFilter
