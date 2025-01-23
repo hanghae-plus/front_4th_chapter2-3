@@ -1,5 +1,14 @@
 import { useState } from "react"
-import { Post } from "../../types/posts"
+import { Post, User } from "../../types/posts"
+
+interface PostsData {
+  posts: Post[]
+  total: number
+}
+
+interface UsersData {
+  users: User[]
+}
 
 export const usePostsData = () => {
   const [posts, setPosts] = useState<Post[]>([])
@@ -9,7 +18,7 @@ export const usePostsData = () => {
   const [showPostDetailDialog, setShowPostDetailDialog] = useState(false)
   const [showEditDialog, setShowEditDialog] = useState(false)
 
-  const fetchPosts = async (
+  const fetchPosts = (
     skip: number,
     limit: number,
     tag?: string,
@@ -17,35 +26,66 @@ export const usePostsData = () => {
     sortBy?: string,
     sortOrder?: string,
   ) => {
+    if (tag && tag !== "all") {
+      fetchPostsByTag(tag)
+      return
+    }
+
+    setLoading(true)
+    let postsData: PostsData
+    let usersData: UsersData["users"]
+
+    const params = new URLSearchParams({
+      limit: limit.toString(),
+      skip: skip.toString(),
+      ...(search && { search }),
+      ...(sortBy && sortBy !== "none" && { sortBy }),
+      ...(sortOrder && { sortOrder }),
+    })
+
+    fetch(`/api/posts?${params}`)
+      .then((response) => response.json())
+      .then((data: PostsData) => {
+        postsData = data
+        return fetch("/api/users?limit=0&select=username,image")
+      })
+      .then((response) => response.json())
+      .then((data: UsersData) => {
+        usersData = data.users
+        const postsWithUsers = postsData.posts.map((post) => ({
+          ...post,
+          author: usersData.find((user) => user.id === post.userId),
+        }))
+        setPosts(postsWithUsers)
+        setTotal(postsData.total)
+      })
+      .catch((error) => {
+        console.error("게시물 가져오기 오류:", error)
+      })
+      .finally(() => {
+        setLoading(false)
+      })
+  }
+
+  const fetchPostsByTag = async (tag: string) => {
     setLoading(true)
     try {
-      const params = new URLSearchParams({
-        limit: limit.toString(),
-        skip: skip.toString(),
-        ...(tag && tag !== "all" && { tag }),
-        ...(search && { search }),
-        ...(sortBy && sortBy !== "none" && { sortBy }),
-        ...(sortOrder && { sortOrder }),
-      })
+      const [postsResponse, usersResponse] = await Promise.all([
+        fetch(`/api/posts/tag/${tag}`),
+        fetch("/api/users?limit=0&select=username,image"),
+      ])
+      const postsData: PostsData = await postsResponse.json()
+      const usersData: UsersData = await usersResponse.json()
 
-      const response = await fetch(`/api/posts?${params}`)
-      const data = await response.json()
-
-      const postsWithUsers = await Promise.all(
-        data.posts.map(async (post: Post) => {
-          const userResponse = await fetch(`/api/users/${post.userId}`)
-          const userData = await userResponse.json()
-          return {
-            ...post,
-            author: userData,
-          }
-        }),
-      )
+      const postsWithUsers = postsData.posts.map((post) => ({
+        ...post,
+        author: usersData.users.find((user) => user.id === post.userId),
+      }))
 
       setPosts(postsWithUsers)
-      setTotal(data.total)
+      setTotal(postsData.total)
     } catch (error) {
-      console.error("게시물 가져오기 오류:", error)
+      console.error("태그별 게시물 가져오기 오류:", error)
     }
     setLoading(false)
   }
