@@ -10,7 +10,6 @@ import {
   updatePost,
   deletePost,
   createComment,
-  updateComment,
   UserDetail,
 } from "../entities";
 
@@ -19,6 +18,7 @@ import { PostsManager } from "../widgets/PostsManager/ui/PostsManager";
 import { UserInformationDialog } from "../widgets/ui/UserInformationDialog";
 import { ModalProvider } from "../shared";
 import { PostDetailDialog } from "../widgets/ui/PostDetailDialog";
+import { CommentModifyDialog } from "../widgets/ui/CommentModifyDialog";
 
 const PostsManagerPage = () => {
   const navigate = useNavigate();
@@ -49,7 +49,6 @@ const PostsManagerPage = () => {
     user: null,
   });
   const [showAddCommentDialog, setShowAddCommentDialog] = useState(false);
-  const [showEditCommentDialog, setShowEditCommentDialog] = useState(false);
   const [selectedUser, setSelectedUser] = useState<UserDetail | null>(null);
 
   // URL 업데이트 함수
@@ -136,20 +135,6 @@ const PostsManagerPage = () => {
       });
     } catch (error) {
       console.error("댓글 추가 오류:", error);
-    }
-  };
-
-  // 댓글 업데이트
-  const modifyComment = async () => {
-    try {
-      const data = await updateComment({ comment: selectedComment! });
-      setComments((prev) => ({
-        ...prev,
-        [data.postId!]: prev[data.postId!].map((comment) => (comment.id === data.id ? data : comment)),
-      }));
-      setShowEditCommentDialog(false);
-    } catch (error) {
-      console.error("댓글 업데이트 오류:", error);
     }
   };
 
@@ -284,22 +269,13 @@ const PostsManagerPage = () => {
           </DialogContent>
         </Dialog>
 
-        {/* 댓글 수정 대화상자 */}
-        <Dialog open={showEditCommentDialog} onOpenChange={setShowEditCommentDialog}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>댓글 수정</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
-              <Textarea
-                placeholder="댓글 내용"
-                value={selectedComment?.body || ""}
-                onChange={(e) => setSelectedComment({ ...selectedComment!, body: e.target.value })}
-              />
-              <Button onClick={modifyComment}>댓글 업데이트</Button>
-            </div>
-          </DialogContent>
-        </Dialog>
+        {selectedComment && (
+          <CommentModifyDialog
+            comment={selectedComment}
+            setSelectedComment={setSelectedComment}
+            setComments={setComments}
+          />
+        )}
 
         {selectedPost && (
           <PostDetailDialog
