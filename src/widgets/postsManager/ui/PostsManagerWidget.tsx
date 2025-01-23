@@ -1,5 +1,5 @@
 import { AddPostButton } from "../../../features/addComment/ui"
-import { SearchPostBar } from "../../../features/serchPost/ui"
+import { SearchPostBar } from "../../../features/searchPost/ui"
 import { PostsWithUsersTable } from "../../../features/postsWithUsers/ui"
 import { Pagination } from "../../../features/pagination/ui"
 import { AddPostDialog } from "../../../features/addPost/ui"

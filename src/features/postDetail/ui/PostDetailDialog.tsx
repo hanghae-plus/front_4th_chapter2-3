@@ -1,7 +1,7 @@
 import { useAtom, useAtomValue } from "jotai"
 
 import { selectedPostAtom } from "../model"
-import { searchQueryAtom } from "../../serchPost/model"
+import { searchQueryAtom } from "../../searchPost/model"
 import { CommentsList } from "../../comments/ui"
 import { DialogContainer, DialogContent, DialogHeader, DialogTitle } from "../../../shared/ui/dialog"
 import { highlightText } from "../../../shared/lib"
