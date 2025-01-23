@@ -17,7 +17,7 @@ interface UserResponse {
   limit: number
 }
 
-export const useGetPosts = (limit: number, skip: number) => {
+export const useGetPostList = (limit: number, skip: number) => {
   return useQuery<Omit<PostResponse, "skip" | "limit">>({
     queryKey: QUERY_KEYS.POST.getPostList(limit.toString(), skip.toString()),
     queryFn: async () => {

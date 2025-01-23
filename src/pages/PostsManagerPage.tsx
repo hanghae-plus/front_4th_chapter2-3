@@ -28,6 +28,7 @@ import {
 import UserDialog from "../entities/user/ui/UserDialog"
 import { useGetTags } from "../entities/tag/api/useGetTag"
 import { useUserDialog } from "../entities/user/model/useUserDialog"
+import { useDeletePost } from "../entities/post/api/useDeletePost"
 
 interface Post {
   id: number
@@ -173,6 +174,7 @@ const PostsManager = () => {
   const [showEditDialog, setShowEditDialog] = useState<boolean>(false)
   const [newPost, setNewPost] = useState<Partial<Post>>({ title: "", body: "", userId: 1 })
   const [loading, setLoading] = useState<boolean>(false)
+  const { mutate: deletePost } = useDeletePost()
 
   // Tags state
   //const [tags, setTags] = useState<Tag[]>([])
@@ -316,15 +318,18 @@ const PostsManager = () => {
   }
 
   // 게시물 삭제
-  const deletePost = async (id: Post["id"]) => {
-    try {
-      await fetch(`/api/posts/${id}`, {
-        method: "DELETE",
-      })
-      setPosts(posts.filter((post) => post.id !== id))
-    } catch (error) {
-      console.error("게시물 삭제 오류:", error)
-    }
+  // const deletePost = async (id: Post["id"]) => {
+  //   try {
+  //     await fetch(`/api/posts/${id}`, {
+  //       method: "DELETE",
+  //     })
+  //     setPosts(posts.filter((post) => post.id !== id))
+  //   } catch (error) {
+  //     console.error("게시물 삭제 오류:", error)
+  //   }
+  // }
+  const handleDeletePost = (postId: number) => {
+    deletePost(postId)
   }
 
   // 댓글 가져오기
@@ -543,7 +548,7 @@ const PostsManager = () => {
                 >
                   <Edit2 className="w-4 h-4" />
                 </Button>
-                <Button variant="ghost" size="sm" onClick={() => deletePost(post.id)}>
+                <Button variant="ghost" size="sm" onClick={() => handleDeletePost(post.id)}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>
@@ -801,7 +806,7 @@ const PostsManager = () => {
         </DialogContent>
       </Dialog>
 
-      {/* 사용자 모달 */}
+      {/* 사용자 다이얼로그 */}
       {user && <UserDialog open={isOpen} onClose={handleClose} user={user} />}
     </Card>
   )

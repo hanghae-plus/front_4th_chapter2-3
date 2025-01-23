@@ -1,3 +1,5 @@
+import { Post } from "../../entities/post/model/types"
+
 export const QUERY_KEYS = {
   USER: {
     all: ["users"],
@@ -7,5 +9,6 @@ export const QUERY_KEYS = {
   POST: {
     all: ["posts"],
     getPostList: (limit: string, skip: string) => ["posts", { limit, skip }],
+    postPost: (newPost: Partial<Post>) => ["post", JSON.stringify(newPost)],
   },
 }
