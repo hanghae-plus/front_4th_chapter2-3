@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { RequestPost } from "@entities/post/types"
 import { addPost } from "@entities/post/api"
+import { postKeys } from "@entities/post/lib"
 
 export const useAddPostMutation = () => {
   const queryClient = useQueryClient()
@@ -8,7 +9,7 @@ export const useAddPostMutation = () => {
     mutationFn: (newPost: RequestPost) => addPost(newPost),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["/api/posts"],
+        queryKey: postKeys.fetch._def,
         exact: true,
       })
     },

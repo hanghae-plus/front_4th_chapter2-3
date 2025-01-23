@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { RequestComment } from "@entities/comment/types"
 import { addComment } from "@entities/comment/api"
+import { commentKeys } from "@features/comment/lib"
 
 export const useAddCommentMutation = () => {
   const queryClient = useQueryClient()
@@ -8,7 +9,7 @@ export const useAddCommentMutation = () => {
     mutationFn: (comment: RequestComment) => addComment(comment),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["/api/comments/posts"],
+        queryKey: commentKeys.fetch._def,
         exact: true,
       })
     },
