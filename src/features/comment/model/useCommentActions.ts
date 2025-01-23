@@ -1,98 +1,97 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useCommentStore } from "./store"
+import { apiClient } from "../../../app/api/apiClient"
+
+export const commentKeys = {
+  all: ["comments"] as const,
+  post: (postId: number) => [...commentKeys.all, "post", postId] as const,
+  detail: (commentId: number) => [...commentKeys.all, "detail", commentId] as const,
+}
 
 export const useCommentActions = () => {
   const { comments, setComments, selectedComment, setSelectedComment, newComment, setNewComment } = useCommentStore()
 
-  const fetchComments = async (postId: number) => {
-    if (comments[postId]) return
-    try {
-      const response = await fetch(`/api/comments/post/${postId}`)
-      const data = await response.json()
-      setComments((prev) => ({ ...prev, [postId]: data.comments }))
-    } catch (error) {
-      console.error("Error fetching comments:", error)
-    }
-  }
+  const queryClient = useQueryClient()
 
-  const addComment = async () => {
-    try {
-      const response = await fetch("/api/comments/add", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newComment),
-      })
-      const data = await response.json()
+  const { isLoading: isCommentsLoading, data: commentsData } = useQuery({
+    queryKey: commentKeys.post(selectedComment?.postId || 0),
+    queryFn: () => apiClient.get(`/api/comments/post/${selectedComment?.postId || 0}`),
+    enabled: !!selectedComment?.postId,
+    onSuccess: (data: { postId: number }) => {
+      setComments((prev) => ({ ...prev, [selectedComment?.postId || 0]: data.comments }))
+    },
+    onError: (error) => {
+      console.error("Error fetching comments:", error)
+    },
+  })
+
+  // Add comment mutation
+  const { mutate: addCommentMutation } = useMutation({
+    mutationFn: (comment: typeof newComment) => apiClient.post<{ postId: number }>("/api/comments/add", comment),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: commentKeys.post(data.postId) })
       setComments((prev) => ({
         ...prev,
         [data.postId]: [...(prev[data.postId] || []), data],
       }))
       setNewComment({ body: "", postId: null, userId: 1 })
-      return true
-    } catch (error) {
-      console.error("댓글 추가 오류:", error)
-      return false
-    }
-  }
+    },
+    onError: (error) => {
+      console.error("Error adding comment:", error)
+    },
+  })
 
-  const updateComment = async () => {
-    if (!selectedComment?.id) return false
-    try {
-      const response = await fetch(`/api/comments/${selectedComment.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ body: selectedComment.body }),
-      })
-      const data = await response.json()
+  // Update comment mutation
+  const { mutate: updateCommentMutation } = useMutation({
+    mutationFn: (comment: typeof selectedComment) =>
+      apiClient.put(`/api/comments/${comment?.id}`, { body: comment?.body }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: commentKeys.post(data.postId) })
       setComments((prev) => ({
         ...prev,
-        [data.postId]: prev[data.postId].map((comment) => (comment.id === data.id ? data : comment)),
+        [data.postId]: prev[data.postId].map((c) => (c.id === data.id ? data : c)),
       }))
-      return true
-    } catch (error) {
-      console.error("댓글 업데이트 오류:", error)
-      return false
-    }
-  }
+    },
+    onError: (error) => {
+      console.error("Error updating comment:", error)
+    },
+  })
 
-  const deleteComment = async (id: number, postId: number) => {
-    try {
-      await fetch(`/api/comments/${id}`, {
-        method: "DELETE",
-      })
+  // Delete comment mutation
+  const { mutate: deleteCommentMutation } = useMutation({
+    mutationFn: (id: number) => apiClient.delete(`/api/comments/${id}`),
+    onSuccess: (_, id) => {
+      const postId = selectedComment?.postId
+      if (postId) {
+        queryClient.invalidateQueries({ queryKey: commentKeys.post(data.postId) })
+        setComments((prev) => ({
+          ...prev,
+          [postId]: prev[postId].filter((comment) => comment.id !== id),
+        }))
+      }
+    },
+    onError: (error) => {
+      console.error("Error deleting comment:", error)
+    },
+  })
+
+  // Like comment mutation
+  const { mutate: likeCommentMutation } = useMutation({
+    mutationFn: (comment: { id: number; postId: number }) =>
+      apiClient.patch(`/api/comments/${comment.id}`, {
+        likes: (comments[comment.postId]?.find((c) => c.id === comment.id)?.likes || 0) + 1,
+      }),
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries({ queryKey: commentKeys.post(variables.postId) })
       setComments((prev) => ({
         ...prev,
-        [postId]: prev[postId].filter((comment) => comment.id !== id),
+        [variables.postId]: prev[variables.postId].map((c) => (c.id === data.id ? { ...c, likes: data.likes } : c)),
       }))
-      return true
-    } catch (error) {
-      console.error("댓글 삭제 오류:", error)
-      return false
-    }
-  }
-
-  const likeComment = async (id: number, postId: number) => {
-    try {
-      const currentComment = comments[postId].find((c) => c.id === id)
-      if (!currentComment) return false
-
-      const response = await fetch(`/api/comments/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ likes: (currentComment.likes || 0) + 1 }),
-      })
-      const data = await response.json()
-      setComments((prev) => ({
-        ...prev,
-        [postId]: prev[postId].map((comment) =>
-          comment.id === data.id ? { ...data, likes: comment.likes + 1 } : comment,
-        ),
-      }))
-      return true
-    } catch (error) {
-      console.error("댓글 좋아요 오류:", error)
-      return false
-    }
-  }
+    },
+    onError: (error) => {
+      console.error("Error liking comment:", error)
+    },
+  })
 
   return {
     comments,
@@ -100,10 +99,10 @@ export const useCommentActions = () => {
     newComment,
     setSelectedComment,
     setNewComment,
-    fetchComments,
-    addComment,
-    updateComment,
-    deleteComment,
-    likeComment,
+    isLoading: { comments: isCommentsLoading },
+    addComment: addCommentMutation,
+    updateComment: updateCommentMutation,
+    deleteComment: deleteCommentMutation,
+    likeComment: likeCommentMutation,
   }
 }
