@@ -10,11 +10,8 @@ interface PostDetailButtonProps {
 }
 
 const PostDetailButton = ({ post }: PostDetailButtonProps) => {
-  const { setComments, comments } = useCommentStore(['comments', 'setComments']);
-  const { setSelectedPost, setShowPostDetailDialog } = usePostStore([
-    'setSelectedPost',
-    'setShowPostDetailDialog',
-  ]);
+  const { setComments, comments } = useCommentStore();
+  const { setSelectedPost, setShowPostDetailDialog } = usePostStore();
 
   // 게시물 상세 보기
   const openPostDetail = (post: Post) => {

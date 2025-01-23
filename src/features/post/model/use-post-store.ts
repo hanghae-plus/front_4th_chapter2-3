@@ -1,6 +1,5 @@
 import { StateCreator } from 'zustand/vanilla';
 import { create } from 'zustand/react';
-import { createStoreSelector } from '../../../shared/lib';
 import { NewPost, Post } from '../../../entities/post/model';
 import { initNewPost } from '../../../entities/post/config/init-data.ts';
 
@@ -47,7 +46,6 @@ const usePostStoreCreator: StateCreator<PostStoreProps> = (set) => ({
   setLoading: (loading) => set({ loading }),
 });
 
-const postStore = create(usePostStoreCreator);
+const usePostStore = create(usePostStoreCreator);
 
-const usePostStore = createStoreSelector(postStore);
 export default usePostStore;

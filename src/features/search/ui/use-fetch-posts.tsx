@@ -5,8 +5,8 @@ import { getUsers } from '../../../entities/user/api';
 import { findUserById } from '../../../entities/user/model';
 
 const useFetchPosts = () => {
-  const { setLoading, setPosts } = usePostStore(['setLoading', 'setPosts']);
-  const { limit, skip, setTotal } = useSearchStore(['limit', 'skip', 'setTotal']);
+  const { setLoading, setPosts } = usePostStore();
+  const { limit, skip, setTotal } = useSearchStore();
 
   // 게시물 가져오기
   const fetchPosts = async () => {

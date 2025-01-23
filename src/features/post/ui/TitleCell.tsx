@@ -8,7 +8,7 @@ interface TitleCellProps {
 }
 
 const TitleCell = ({ post }: TitleCellProps) => {
-  const { searchQuery } = useSearchStore(['searchQuery']);
+  const { searchQuery } = useSearchStore();
 
   return (
     <TableCell>

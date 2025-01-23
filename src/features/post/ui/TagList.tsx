@@ -9,11 +9,7 @@ interface TagListProps {
 
 const TagList = ({ post }: TagListProps) => {
   const navigate = useNavigate();
-  const { selectedTag, setSelectedTag, updateParams } = useSearchStore([
-    'selectedTag',
-    'setSelectedTag',
-    'updateParams',
-  ]);
+  const { selectedTag, setSelectedTag, updateParams } = useSearchStore();
 
   const getClassName = useMemo(
     () => (tag: string) =>

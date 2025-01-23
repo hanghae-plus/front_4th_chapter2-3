@@ -13,16 +13,9 @@ const CommentsInPostDetail = ({ postId }: { postId: number }) => {
     setSelectedComment,
     setShowAddCommentDialog,
     setShowEditCommentDialog,
-  } = useCommentStore([
-    'comments',
-    'setComments',
-    'setNewComment',
-    'setSelectedComment',
-    'setShowAddCommentDialog',
-    'setShowEditCommentDialog',
-  ]);
+  } = useCommentStore();
 
-  const { searchQuery } = useSearchStore(['searchQuery']);
+  const searchQuery = useSearchStore((state) => state.searchQuery);
 
   // 댓글 추가
   const handleAddComment = (postId: number) => {

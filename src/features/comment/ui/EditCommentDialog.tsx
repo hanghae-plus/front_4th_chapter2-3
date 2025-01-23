@@ -9,13 +9,7 @@ const EditCommentDialog = () => {
     setSelectedComment,
     selectedComment,
     setComments,
-  } = useCommentStore([
-    'showEditCommentDialog',
-    'setShowEditCommentDialog',
-    'selectedComment',
-    'setSelectedComment',
-    'setComments',
-  ]);
+  } = useCommentStore();
 
   // 댓글 업데이트
   const updateComment = async () => {

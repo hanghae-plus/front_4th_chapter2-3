@@ -2,7 +2,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import useSearchStore from '../model/use-search-store.ts';
 
 const SelectSortBy = () => {
-  const { sortBy, setSortBy } = useSearchStore(['sortBy', 'setSortBy']);
+  const { sortBy, setSortBy } = useSearchStore();
   return (
     <Select value={sortBy} onValueChange={setSortBy}>
       <SelectTrigger className='w-[180px]'>

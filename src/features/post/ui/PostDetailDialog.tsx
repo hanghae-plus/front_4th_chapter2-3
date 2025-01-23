@@ -4,12 +4,8 @@ import CommentsInPostDetail from '../../comment/ui/CommentsInPostDetail.tsx';
 import useSearchStore from '../../search/model/use-search-store.ts';
 
 const PostDetailDialog = () => {
-  const { showPostDetailDialog, setShowPostDetailDialog, selectedPost } = usePostStore([
-    'showPostDetailDialog',
-    'setShowPostDetailDialog',
-    'selectedPost',
-  ]);
-  const { searchQuery } = useSearchStore(['searchQuery']);
+  const { showPostDetailDialog, setShowPostDetailDialog, selectedPost } = usePostStore();
+  const { searchQuery } = useSearchStore();
 
   return (
     <BaseDialog

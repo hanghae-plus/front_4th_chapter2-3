@@ -1,6 +1,5 @@
 import { StateCreator } from 'zustand/vanilla';
 import { create } from 'zustand/react';
-import { createStoreSelector } from '../../../shared/lib';
 import { Comment, NewComment } from '../../../entities/comments/model';
 import { initNewComment } from '../../../entities/comments/config/initData.ts';
 
@@ -40,7 +39,6 @@ const useCommentStoreCreator: StateCreator<CommentStoreProps> = (set) => ({
   setShowEditCommentDialog: (show) => set({ showEditCommentDialog: show }),
 });
 
-const commentStore = create(useCommentStoreCreator);
+const useCommentStore = create(useCommentStoreCreator);
 
-const useCommentStore = createStoreSelector(commentStore);
 export default useCommentStore;

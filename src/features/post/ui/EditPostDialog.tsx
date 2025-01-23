@@ -4,13 +4,7 @@ import { putPost } from '../../../entities/post/api';
 
 const EditPostDialog = () => {
   const { showEditDialog, setShowEditDialog, selectedPost, setSelectedPost, setPosts } =
-    usePostStore([
-      'showEditDialog',
-      'setShowEditDialog',
-      'selectedPost',
-      'setSelectedPost',
-      'setPosts',
-    ]);
+    usePostStore();
 
   // 게시물 업데이트
   const updatePost = async () => {

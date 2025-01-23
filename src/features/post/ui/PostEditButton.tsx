@@ -8,10 +8,7 @@ interface PostEditButtonProps {
 }
 
 const PostEditButton = ({ post }: PostEditButtonProps) => {
-  const { setSelectedPost, setShowEditDialog } = usePostStore([
-    'setSelectedPost',
-    'setShowEditDialog',
-  ]);
+  const { setSelectedPost, setShowEditDialog } = usePostStore();
 
   return (
     <Button

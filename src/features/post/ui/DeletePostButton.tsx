@@ -8,7 +8,7 @@ interface DeletePostButtonProps {
 }
 
 const DeletePostButton = ({ postId }: DeletePostButtonProps) => {
-  const { posts, setPosts } = usePostStore(['posts', 'setPosts']);
+  const { posts, setPosts } = usePostStore();
 
   // 게시물 삭제
   const removePost = async (id: number) => {

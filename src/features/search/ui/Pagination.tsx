@@ -9,13 +9,7 @@ import {
 import useSearchStore from '../model/use-search-store.ts';
 
 const Pagination = () => {
-  const { limit, setLimit, skip, setSkip, total } = useSearchStore([
-    'limit',
-    'setLimit',
-    'skip',
-    'setSkip',
-    'total',
-  ]);
+  const { limit, setLimit, skip, setSkip, total } = useSearchStore();
   return (
     <div className='flex justify-between items-center'>
       <div className='flex items-center gap-2'>

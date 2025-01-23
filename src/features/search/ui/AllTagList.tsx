@@ -4,7 +4,7 @@ import { getTags } from '../../../entities/tag/api';
 import { useEffect } from 'react';
 
 const AllTagList = () => {
-  const { tags, setTags } = useTagStore(['tags', 'setTags']);
+  const { tags, setTags } = useTagStore();
   // 태그 가져오기
   const fetchTags = async () => {
     try {

@@ -1,6 +1,5 @@
 import { StateCreator } from 'zustand/vanilla';
 import { create } from 'zustand/react';
-import { createStoreSelector } from '../../../shared/lib';
 import { UserDetail } from '../../../entities/user/model';
 
 interface State {
@@ -22,6 +21,4 @@ const useUserStoreCreator: StateCreator<UserStoreProps> = (set) => ({
   setSelectedUser: (user) => set({ selectedUser: user }),
 });
 
-const userStore = create(useUserStoreCreator);
-
-export const useUserStore = createStoreSelector(userStore);
+export const useUserStore = create(useUserStoreCreator);

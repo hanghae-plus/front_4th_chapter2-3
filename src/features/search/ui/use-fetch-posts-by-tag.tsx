@@ -10,16 +10,8 @@ import { findUserById } from '../../../entities/user/model';
 const useFetchPostsByTag = () => {
   const navigate = useNavigate();
   const { fetchPosts } = useFetchPosts();
-  const { setPosts, setLoading } = usePostStore(['setPosts', 'setLoading']);
-  const { setTotal, skip, limit, sortBy, sortOrder, selectedTag, updateParams } = useSearchStore([
-    'setTotal',
-    'skip',
-    'limit',
-    'sortBy',
-    'sortOrder',
-    'selectedTag',
-    'updateParams',
-  ]);
+  const { setPosts, setLoading } = usePostStore();
+  const { setTotal, skip, limit, sortBy, sortOrder, selectedTag, updateParams } = useSearchStore();
 
   // 태그별 게시물 가져오기
   const fetchPostsByTag = async (tag: string) => {

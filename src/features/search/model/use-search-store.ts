@@ -1,6 +1,5 @@
 import { StateCreator } from 'zustand/vanilla';
 import { create } from 'zustand/react';
-import { createStoreSelector } from '../../../shared/lib';
 
 interface State {
   total: number;
@@ -40,16 +39,17 @@ const useSearchStoreCreator: StateCreator<SearchStoreProps> = (set, get) => ({
   setSearchQuery: (searchQuery) => set({ searchQuery }),
   setSortBy: (sortBy) => set({ sortBy }),
   setSortOrder: (sortOrder) => set({ sortOrder }),
-  setSelectedTag: (selectedTag) => set({ selectedTag }),
+  setSelectedTag: (selectedTag) => set({ selectedTag, skip: 0 }),
   initParams: (query) => {
     const params = new URLSearchParams(query);
-    const skip = Number(params.get('skip') || '0');
-    const limit = Number(params.get('limit') || '10');
-    const searchQuery = params.get('searchQuery') || '';
-    const sortBy = params.get('sortBy') || '';
-    const sortOrder = params.get('sortOrder') || 'asc';
-    const selectedTag = params.get('selectedTag') || '';
-    set({ skip, limit, searchQuery, sortBy, sortOrder, selectedTag });
+    set({
+      skip: Number(params.get('skip')) || 0,
+      limit: Number(params.get('limit')) || 10,
+      searchQuery: params.get('searchQuery') || '',
+      sortBy: params.get('sortBy') || '',
+      sortOrder: params.get('sortOrder') || 'asc',
+      selectedTag: params.get('selectedTag') || '',
+    });
   },
   updateParams: () => {
     const { skip, limit, searchQuery, sortBy, sortOrder, selectedTag } = get();
@@ -64,8 +64,6 @@ const useSearchStoreCreator: StateCreator<SearchStoreProps> = (set, get) => ({
   },
 });
 
-const searchStore = create(useSearchStoreCreator);
-
-const useSearchStore = createStoreSelector(searchStore);
+const useSearchStore = create(useSearchStoreCreator);
 
 export default useSearchStore;

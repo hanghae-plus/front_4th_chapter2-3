@@ -4,8 +4,8 @@ import usePostStore from '../../post/model/use-post-store.ts';
 import { getPostsByQuery } from '../../../entities/post/api';
 
 const useFetchPostsByQuery = () => {
-  const { setLoading, setPosts } = usePostStore(['setLoading', 'setPosts']);
-  const { searchQuery, setTotal } = useSearchStore(['searchQuery', 'setTotal']);
+  const { setLoading, setPosts } = usePostStore();
+  const { searchQuery, setTotal } = useSearchStore();
   const { fetchPosts } = useFetchPosts();
   // 게시물 검색
   const fetchPostsByQuery = async () => {

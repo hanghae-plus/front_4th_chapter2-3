@@ -4,13 +4,7 @@ import { postComment } from '../../../entities/comments/api';
 
 const AddCommentDialog = () => {
   const { showAddCommentDialog, setShowAddCommentDialog, newComment, setNewComment, setComments } =
-    useCommentStore([
-      'showAddCommentDialog',
-      'setShowAddCommentDialog',
-      'newComment',
-      'setNewComment',
-      'setComments',
-    ]);
+    useCommentStore();
 
   // 댓글 추가
   const addComment = async () => {

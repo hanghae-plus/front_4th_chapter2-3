@@ -1,6 +1,5 @@
 import { StateCreator } from 'zustand/vanilla';
 import { create } from 'zustand/react';
-import { createStoreSelector } from '../../../shared/lib';
 import { Tag } from '../../../entities/tag/model';
 
 interface State {
@@ -19,6 +18,4 @@ const useTagStoreCreator: StateCreator<TagStoreProps> = (set) => ({
     set((state) => ({ tags: typeof update === 'function' ? update(state.tags) : update })),
 });
 
-const tagStore = create(useTagStoreCreator);
-
-export const useTagStore = createStoreSelector(tagStore);
+export const useTagStore = create(useTagStoreCreator);

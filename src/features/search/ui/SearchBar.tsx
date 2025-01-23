@@ -13,14 +13,7 @@ const SearchBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { searchQuery, setSearchQuery, selectedTag, setSelectedTag, initParams, updateParams } =
-    useSearchStore([
-      'searchQuery',
-      'setSearchQuery',
-      'selectedTag',
-      'setSelectedTag',
-      'initParams',
-      'updateParams',
-    ]);
+    useSearchStore();
   const { fetchPostsByTag } = useFetchPostsByTag();
   const { fetchPostsByQuery } = useFetchPostsByQuery();
 

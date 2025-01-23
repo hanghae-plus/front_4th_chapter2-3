@@ -3,7 +3,7 @@ import { Plus } from 'lucide-react';
 import usePostStore from '../model/use-post-store.ts';
 
 const PostHeader = () => {
-  const { setShowAddDialog } = usePostStore(['setShowAddDialog']);
+  const { setShowAddDialog } = usePostStore();
   return (
     <CardHeader>
       <CardTitle className='flex items-center justify-between'>

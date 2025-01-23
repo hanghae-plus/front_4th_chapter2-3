@@ -9,10 +9,7 @@ interface UserCellProps {
 }
 
 const UserCell = ({ post }: UserCellProps) => {
-  const { setSelectedUser, setShowUserModal } = useUserStore([
-    'setSelectedUser',
-    'setShowUserModal',
-  ]);
+  const { setSelectedUser, setShowUserModal } = useUserStore();
 
   // 사용자 모달 열기
   const openUserModal = async (user: User | undefined) => {

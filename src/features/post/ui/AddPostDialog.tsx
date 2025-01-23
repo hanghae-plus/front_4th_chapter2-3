@@ -8,13 +8,7 @@ import { transformFormValue } from '../../../shared/lib';
 import { FormTypeElement } from '../../../shared/model';
 
 const AddPostDialog = () => {
-  const { showAddDialog, setShowAddDialog, newPost, setNewPost, setPosts } = usePostStore([
-    'showAddDialog',
-    'setShowAddDialog',
-    'newPost',
-    'setNewPost',
-    'setPosts',
-  ]);
+  const { showAddDialog, setShowAddDialog, newPost, setNewPost, setPosts } = usePostStore();
 
   const handleChangePost =
     <T extends keyof NewPost>(key: T) =>

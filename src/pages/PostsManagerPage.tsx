@@ -12,7 +12,7 @@ import PostHeader from '../features/post/ui/PostHeader.tsx';
 import usePostStore from '../features/post/model/use-post-store.ts';
 
 const PostsManager = () => {
-  const { loading } = usePostStore(['loading']);
+  const loading = usePostStore((state) => state.loading);
   return (
     <Card className='w-full max-w-6xl mx-auto'>
       <PostHeader />

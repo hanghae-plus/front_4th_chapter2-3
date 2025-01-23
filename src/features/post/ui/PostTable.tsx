@@ -8,7 +8,7 @@ import PostEditButton from './PostEditButton.tsx';
 import DeletePostButton from './DeletePostButton.tsx';
 
 const PostTable = () => {
-  const { posts } = usePostStore(['posts']);
+  const { posts } = usePostStore();
 
   return (
     <Table>
