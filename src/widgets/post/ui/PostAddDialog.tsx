@@ -1,17 +1,11 @@
-import { CreatePost } from "@/entities/post/model/types"
+import { usePostStore } from "@/features/post/model"
 import { Button, Dialog, DialogContent, DialogHeader, DialogTitle, Input, Textarea } from "@/shared/ui"
 
-interface PostAddDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  newPost: CreatePost
-  setNewPost: (post: CreatePost) => void
-  addPost: () => void
-}
+export const PostAddDialog = () => {
+  const { newPost, showAddDialog, setNewPost, setShowAddDialog, addPost } = usePostStore()
 
-export const PostAddDialog = ({ open, onOpenChange, newPost, setNewPost, addPost }: PostAddDialogProps) => {
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>새 게시물 추가</DialogTitle>

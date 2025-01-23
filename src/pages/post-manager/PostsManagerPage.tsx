@@ -23,13 +23,9 @@ const PostsManager = () => {
   const {
     total,
     loading,
-    newPost,
     selectedPost,
-    setNewPost,
-    showAddDialog,
     fetchPostsByTag,
     searchPosts,
-    addPost,
     setShowAddDialog,
     updatePost,
     deletePost,
@@ -120,13 +116,7 @@ const PostsManager = () => {
       </CardContent>
 
       {/* 게시물 추가 대화상자 */}
-      <PostAddDialog
-        open={showAddDialog}
-        onOpenChange={setShowAddDialog}
-        newPost={newPost}
-        setNewPost={setNewPost}
-        addPost={addPost}
-      />
+      <PostAddDialog />
 
       {/* 게시물 수정 대화상자 */}
       <PostEditDialog
