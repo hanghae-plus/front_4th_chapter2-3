@@ -4,29 +4,28 @@ import { Edit2, MessageSquare, ThumbsDown, ThumbsUp, Trash2 } from 'lucide-react
 import type { Post } from '@/entities/posts/model';
 import type { User } from '@/entities/users/model';
 import { useDeletePost } from '@/features/posts/api';
+import { useQueryPostsWithUsers } from '@/features/posts/api/usePostsQueries';
 import { useUrlParams } from '@/features/posts/lib';
-import { usePostsStoreSelector, useSelectedPostStore } from '@/features/posts/model';
+import { useSelectedPostStore } from '@/features/posts/model';
 import { HighlightedText } from '@/shared/ui/HighlightedText';
 
 interface Props {
   onUserClick: (user: User) => void;
   onPostDetail: (post: Post) => void;
-  onPostAddDialogOpen: () => void;
+  onPostEditDialogOpen: () => void;
 }
-export const PostsTable = ({ onUserClick, onPostDetail, onPostAddDialogOpen }: Props) => {
-  const { posts, deletePost } = usePostsStoreSelector(['posts', 'deletePost']);
+export const PostsTable = ({ onUserClick, onPostDetail, onPostEditDialogOpen }: Props) => {
+  const { updateParams, ...params } = useUrlParams();
+  const { data: posts } = useQueryPostsWithUsers({
+    ...params,
+  });
   const setSelectedPost = useSelectedPostStore((state) => state.setSelectedPost);
   const { mutateAsync: mutatePostDelete } = useDeletePost();
-  const { tag: selectedTag, search: searchQuery, updateParams } = useUrlParams();
 
   // 게시물 삭제
   const handlePostDelete = async (id: number) => {
     try {
-      await mutatePostDelete(id, {
-        onSuccess: () => {
-          deletePost(id);
-        },
-      });
+      await mutatePostDelete(id);
     } catch (error) {
       console.error('게시물 삭제 오류:', error);
     }
@@ -49,20 +48,20 @@ export const PostsTable = ({ onUserClick, onPostDetail, onPostAddDialogOpen }: P
         </TableRow>
       </TableHeader>
       <TableBody>
-        {posts.map((post) => (
+        {posts?.map((post) => (
           <TableRow key={post.id}>
             <TableCell>{post.id}</TableCell>
             <TableCell>
               <div className='space-y-1'>
                 <div>
-                  <HighlightedText text={post.title} highlight={searchQuery} />
+                  <HighlightedText text={post.title} highlight={params.search} />
                 </div>
                 <div className='flex flex-wrap gap-1'>
                   {post.tags?.map((tag) => (
                     <span
                       key={tag}
                       className={`px-1 text-[9px] font-semibold rounded-[4px] cursor-pointer ${
-                        selectedTag === tag
+                        params.tag === tag
                           ? 'text-white bg-blue-500 hover:bg-blue-600'
                           : 'text-blue-800 bg-blue-100 hover:bg-blue-200'
                       }`}
@@ -113,7 +112,7 @@ export const PostsTable = ({ onUserClick, onPostDetail, onPostAddDialogOpen }: P
                   size='sm'
                   onClick={() => {
                     setSelectedPost(post);
-                    onPostAddDialogOpen();
+                    onPostEditDialogOpen();
                   }}
                 >
                   <Edit2 className='w-4 h-4' />

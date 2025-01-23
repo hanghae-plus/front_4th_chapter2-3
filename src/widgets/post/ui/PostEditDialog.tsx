@@ -1,8 +1,7 @@
 import type { usePostEditDialog } from '@/features/dialog/model';
 import { CustomDialog } from '@/features/dialog/ui';
 import { useUpdatePost } from '@/features/posts/api';
-import { usePostsStoreSelector } from '@/features/posts/model';
-import { useSelectedPostStore } from '@/features/posts/model/useSelectedPostStore';
+import { useSelectedPostStore } from '@/features/posts/model';
 import { Button, Input, Textarea } from '@/shared/ui';
 
 interface Props {
@@ -14,15 +13,13 @@ interface Props {
 export const PostEditDialog = ({ dialogState }: Props) => {
   const { selectedPost, setSelectedPost } = useSelectedPostStore();
   const { mutateAsync: mutatePostUpdate } = useUpdatePost();
-  const { updatePost } = usePostsStoreSelector(['updatePost']);
 
   // 게시물 업데이트
   const handlePostUpdate = async () => {
     if (!selectedPost) return;
     try {
       await mutatePostUpdate(selectedPost, {
-        onSuccess: (updatedPost) => {
-          updatePost(updatedPost);
+        onSuccess: () => {
           dialogState.close();
         },
       });
