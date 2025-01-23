@@ -1,15 +1,18 @@
 import { Dialog, DialogContent, DialogTitle } from "@radix-ui/react-dialog";
 import { useCommentStore } from "../model/useCommentStore";
 import { Button, DialogHeader, Textarea } from "@shared/ui";
-import { addComment } from "@entities/comment/model";
+import { addComment, Comment } from "@entities/comment/model";
 import { useQueryClient } from "@tanstack/react-query";
 import { usePostStore } from "@features/post";
-import { commentQueryKey } from "../model";
+import { commentQueryKey, useCommentQuery } from "../model";
 
-const AddCommentDialog = () => {
+const CommentAddDialog = () => {
   const { showAddCommentDialog, setShowAddCommentDialog, newComment, setNewComment } = useCommentStore();
 
   const { selectedPost } = usePostStore();
+  const postId = selectedPost?.id ?? -1;
+
+  const { data: comments } = useCommentQuery(postId);
 
   const queryClient = useQueryClient();
 
@@ -18,7 +21,7 @@ const AddCommentDialog = () => {
 
     if (!selectedPost) return;
 
-    queryClient.setQueryData<Comment[]>(commentQueryKey.list(selectedPost.id), (prev) => [...(prev || []), data]);
+    queryClient.setQueryData<Comment[]>(commentQueryKey.list(selectedPost.id), [...(comments || []), data]);
 
     setShowAddCommentDialog(false);
     setNewComment({ body: "", postId: null, userId: 1 });
@@ -43,4 +46,4 @@ const AddCommentDialog = () => {
   );
 };
 
-export default AddCommentDialog;
+export default CommentAddDialog;

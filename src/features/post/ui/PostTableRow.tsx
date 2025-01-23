@@ -4,10 +4,13 @@ import { Edit2, MessageSquare, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react
 import { usePostQuery, usePostStore } from "../model";
 import { getUser, User } from "@entities/user";
 import { highlightText } from "@shared/lib";
+import { useUserStore } from "@features/user/model/useUserStore";
 
 const PostTableRow = (post: PostWithUser) => {
   const { posts, setPosts, setSelectedPost, setShowEditDialog, setShowPostDetailDialog } = usePostStore();
   const { searchQuery, updatePostSearchParams } = usePostQuery();
+
+  const { setSelectedUser, setShowUserModal } = useUserStore();
 
   const fetchPostsByTag = async (tag: string) => {
     if (tag === "all") {

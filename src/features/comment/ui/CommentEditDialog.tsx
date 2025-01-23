@@ -6,7 +6,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { usePostStore } from "@features/post";
 import { commentQueryKey } from "../model";
 
-const EditCommentDialog = () => {
+const CommentEditDialog = () => {
   const { showEditCommentDialog, setShowEditCommentDialog, selectedComment, setSelectedComment } = useCommentStore();
 
   const { selectedPost } = usePostStore();
@@ -42,4 +42,4 @@ const EditCommentDialog = () => {
   );
 };
 
-export default EditCommentDialog;
+export default CommentEditDialog;
