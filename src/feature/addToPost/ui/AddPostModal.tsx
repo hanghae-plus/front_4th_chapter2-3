@@ -9,7 +9,7 @@ interface AddPostModalProps {
 export const AddPostModal = ({ isOpen, onClose }: AddPostModalProps) => {
   return (
     <Modal open={isOpen} onClose={onClose} title="새 게시물 추가">
-      <AddToPostForm />
+      <AddToPostForm onClose={onClose} />
     </Modal>
   )
 }

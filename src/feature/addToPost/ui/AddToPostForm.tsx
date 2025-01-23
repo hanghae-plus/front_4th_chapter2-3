@@ -3,7 +3,11 @@ import { Button, Input, Textarea } from "../../../shared/ui"
 import { newPost } from "../../../entities/post/model/type"
 import { useAddToPost } from "../model/useAddToPost"
 
-export const AddToPostForm: React.FC = () => {
+interface AddToPostFormProps {
+  onClose: () => void
+}
+
+export const AddToPostForm: React.FC<AddToPostFormProps> = ({ onClose }) => {
   const [newPost, setNewPost] = useState<newPost>({
     title: "",
     body: "",
@@ -14,6 +18,7 @@ export const AddToPostForm: React.FC = () => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     useAddToPost({ ...newPost, id: Date.now() })
     setNewPost({ title: "", body: "", userId: 1 })
+    onClose()
   }
   return (
     <div className="space-y-4">
