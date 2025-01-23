@@ -22,7 +22,6 @@ export const getPostsQueryKeys = {
 
 export const useQueryGetPosts = ({ limit, skip }: UseQueryGetPostsParams) => {
   return useQuery({
-    ...{ enabled: !!limit && !!skip },
     queryKey: getPostsQueryKeys.detail(limit, skip),
     queryFn: async () => fetcher(limit, skip),
   })

@@ -8,7 +8,6 @@ import { PostTags } from "../../../features/post/ui/PostTags"
 import { HighlightText, Table } from "../../../shared/ui"
 
 import type { PostWithUser } from "../../../entities/post/model/types/post"
-import type { User } from "../../../entities/user/model/types/user"
 
 interface PostTableProps {
   posts: PostWithUser[]
@@ -16,7 +15,6 @@ interface PostTableProps {
   setSelectedTag: (tag: string) => void
   updateURL: () => void
   selectedTag: string
-  openUserModal: (user: User) => void
   openPostDetail: (post: PostWithUser) => void
   setSelectedPost: (post: PostWithUser) => void
   setShowEditDialog: (open: boolean) => void
@@ -28,7 +26,6 @@ export const PostTable = ({
   selectedTag,
   setSelectedTag,
   updateURL,
-  openUserModal,
   openPostDetail,
   setSelectedPost,
   setShowEditDialog,
@@ -55,7 +52,7 @@ export const PostTable = ({
               </div>
             </Table.Cell>
             <Table.Cell>
-              <PostAuthProfile post={post} openUserModal={openUserModal} />
+              <PostAuthProfile post={post} />
             </Table.Cell>
             <Table.Cell>
               {/* 엔티티 */}

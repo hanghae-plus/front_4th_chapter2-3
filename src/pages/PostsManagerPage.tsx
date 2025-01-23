@@ -54,8 +54,6 @@ const PostsManager = () => {
   const [showAddCommentDialog, setShowAddCommentDialog] = useState(false)
   const [showEditCommentDialog, setShowEditCommentDialog] = useState(false)
   const [showPostDetailDialog, setShowPostDetailDialog] = useState(false)
-  const [showUserModal, setShowUserModal] = useState(false)
-  const [selectedUser, setSelectedUser] = useState<User | null>(null)
 
   // URL 업데이트 함수
   const updateURL = () => {
@@ -113,21 +111,6 @@ const PostsManager = () => {
     setShowPostDetailDialog(true)
   }
 
-  // 사용자 모달 열기
-  // Feature
-  const openUserModal = async (user: User) => {
-    try {
-      const userData = await fetchUser(user.id)
-
-      if (!userData) return
-
-      setSelectedUser(userData)
-      setShowUserModal(true)
-    } catch (error) {
-      console.error("사용자 정보 가져오기 오류:", error)
-    }
-  }
-
   // Feature
   useEffect(() => {
     fetchTags()
@@ -182,7 +165,6 @@ const PostsManager = () => {
               setSelectedTag={setSelectedTag}
               updateURL={updateURL}
               selectedTag={selectedTag}
-              openUserModal={openUserModal}
               openPostDetail={openPostDetail}
               setSelectedPost={setSelectedPost}
               setShowEditDialog={setShowEditDialog}
@@ -237,9 +219,6 @@ const PostsManager = () => {
         setNewComment={setNewComment}
         setSelectedComment={setSelectedComment}
       />
-
-      {/* 사용자 모달 */}
-      <UserDialog open={showUserModal} onOpenChange={setShowUserModal} selectedUser={selectedUser} />
     </Card>
   )
 }
