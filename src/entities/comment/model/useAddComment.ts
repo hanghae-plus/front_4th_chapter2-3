@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { useDialog } from "../../../features/dialog/model/useDialog"
+import { useDialog } from "../../../widgets/dialog/model/useDialog"
 import { usePostComment } from "../api/usePostComment"
 import { Comment } from "../model/types"
 

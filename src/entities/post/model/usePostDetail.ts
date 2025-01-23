@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { useDialog } from "../../../features/dialog/model/useDialog"
+import { useDialog } from "../../../widgets/dialog/model/useDialog"
 import { useGetPostDetail } from "../api/useGetPostDetail"
 import { useGetPostCommentList } from "../../comment/api/useGetCommentList"
 
