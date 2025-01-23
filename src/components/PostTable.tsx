@@ -54,7 +54,7 @@ export const PostTable = ({ onSelectPost, onSelectUser }: Props) => {
               <TableCell>{post.id}</TableCell>
               <TableCell>
                 <div className="space-y-1">
-                  <div>{highlightText(post.title, searchQuery)}</div>
+                  <div>{highlightText(searchQuery, post.title)}</div>
 
                   <div className="flex flex-wrap gap-1">
                     {post.tags?.map((tag) => (

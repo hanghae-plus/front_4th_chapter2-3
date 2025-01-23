@@ -21,7 +21,7 @@ export const PostDetailDialog = ({ selectedPost, onSelectComment }: Props) => {
           <DialogTitle>{highlightText(selectedPost?.title, searchQuery)}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
-          <p>{highlightText(selectedPost?.body, searchQuery)}</p>
+          <p>{highlightText(searchQuery, selectedPost?.body)}</p>
           <Comments postId={selectedPost?.id} onSelectComment={onSelectComment} />
         </div>
       </DialogContent>
