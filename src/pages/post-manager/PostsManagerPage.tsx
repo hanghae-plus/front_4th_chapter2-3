@@ -1,13 +1,12 @@
 import { useState } from "react"
 import { Plus } from "lucide-react"
 import { Button, Card, CardContent, CardHeader, CardTitle } from "../../shared/ui"
-import { CreatePost, Post } from "../../entities/post/model/types"
+import { Post } from "../../entities/post/model/types"
 import { Comment, NewComment } from "../../entities/comment/model/types"
 import { User } from "../../entities/user/model/types"
 import { postApi } from "../../entities/post/api/postApi"
 import { userApi } from "@/entities/user/api/userApi"
 import { commentApi } from "@/entities/comment/api/commentApi"
-import { INITIAL_NEW_POST_STATE } from "@/entities/post/model/constants"
 import { INITIAL_NEW_COMMENT_STATE } from "@/entities/comment/model/constants"
 import { usePost } from "@/features/post/model/store"
 import { PostTable } from "@/widgets/post/ui/PostTable"
@@ -24,9 +23,7 @@ import { usePostUrl } from "@/features/post/post-url/model"
 const PostsManager = () => {
   // 상태 관리
   const [selectedPost, setSelectedPost] = useState<Post>()
-  const [showAddDialog, setShowAddDialog] = useState(false)
   const [showEditDialog, setShowEditDialog] = useState(false)
-  const [newPost, setNewPost] = useState<CreatePost>(INITIAL_NEW_POST_STATE)
   const [comments, setComments] = useState<Record<number, Comment[] | []>>({})
   const [selectedComment, setSelectedComment] = useState<Comment>()
   const [newComment, setNewComment] = useState<NewComment>(INITIAL_NEW_COMMENT_STATE)
@@ -37,7 +34,19 @@ const PostsManager = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
 
   // 전역 상태 관리
-  const { posts, total, loading, setPosts, setTotal, setLoading, fetchPosts, fetchPostsByTag } = usePost()
+  const {
+    posts,
+    total,
+    loading,
+    newPost,
+    setNewPost,
+    showAddDialog,
+    setPosts,
+    fetchPostsByTag,
+    searchPosts,
+    addPost,
+    setShowAddDialog,
+  } = usePost()
 
   const {
     skip,
@@ -54,36 +63,6 @@ const PostsManager = () => {
     setSelectedTag,
     updateURL,
   } = usePostUrl()
-
-  // 게시물 검색
-  const searchPosts = async () => {
-    if (!searchQuery) {
-      fetchPosts()
-      return
-    }
-    setLoading(true)
-    try {
-      const data = await postApi.getSearchPosts({ q: searchQuery })
-      setPosts(data.posts)
-      setTotal(data.total)
-    } catch (error) {
-      console.error("게시물 검색 오류:", error)
-    }
-    setLoading(false)
-  }
-
-  // 게시물 추가
-  const addPost = async () => {
-    try {
-      const data = await postApi.postAddPost(newPost)
-
-      setPosts([data, ...posts])
-      setShowAddDialog(false)
-      setNewPost(INITIAL_NEW_POST_STATE)
-    } catch (error) {
-      console.error("게시물 추가 오류:", error)
-    }
-  }
 
   // 게시물 업데이트
   const updatePost = async () => {
@@ -214,25 +193,6 @@ const PostsManager = () => {
       console.error("사용자 정보 가져오기 오류:", error)
     }
   }
-
-  // useEffect(() => {
-  //   if (selectedTag) {
-  //     fetchPostsByTag(selectedTag)
-  //   } else {
-  //     fetchPosts()
-  //   }
-  //   updateURL()
-  // }, [skip, limit, sortBy, sortOrder, selectedTag])
-
-  // useEffect(() => {
-  //   const params = new URLSearchParams(location.search)
-  //   setSkip(parseInt(params.get("skip") || "0"))
-  //   setLimit(parseInt(params.get("limit") || "10"))
-  //   setSearchQuery(params.get("search") || "")
-  //   setSortBy(params.get("sortBy") || "")
-  //   setSortOrder(params.get("sortOrder") || "asc")
-  //   setSelectedTag(params.get("tag") || "")
-  // }, [location.search])
 
   return (
     <Card className="w-full max-w-6xl mx-auto">
