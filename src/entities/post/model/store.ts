@@ -5,7 +5,7 @@ interface PostState {
   posts: Post[]
   addPost: (post: Post) => void
   updatePost: (updatedPost: Post) => void
-  deletePost: (id: string) => void
+  deletePost: (id: number) => void
 }
 
 export const usePostStore = create<PostState>((set) => ({
@@ -18,7 +18,7 @@ export const usePostStore = create<PostState>((set) => ({
     set((state) => ({
       posts: state.posts.map((post) => (post.id === updatedPost.id ? updatedPost : post)),
     })),
-  deletePost: (id: string) =>
+  deletePost: (id: number) =>
     set((state) => ({
       posts: state.posts.filter((post) => post.id !== id),
     })),

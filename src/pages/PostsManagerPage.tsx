@@ -76,6 +76,7 @@ const PostsManager = () => {
 
   // 게시물 가져오기
   // entities -> post -> api -> getPosts()
+  // entities -> user -> api -> getUsers()
   const fetchPosts = () => {
     setLoading(true)
     let postsData
@@ -138,6 +139,7 @@ const PostsManager = () => {
 
   // 태그별 게시물 가져오기
   // entities -> post -> api -> getPostsByTag()
+  // entities -> user -> api -> getUsers()
   const fetchPostsByTag = async (tag) => {
     if (!tag || tag === "all") {
       fetchPosts()
@@ -165,7 +167,7 @@ const PostsManager = () => {
     setLoading(false)
   }
 
-  // 게시물 추가
+  // 게시물 추가ap
   // entities -> post -> model/api -> addPost()
   const addPost = async () => {
     try {
@@ -312,6 +314,7 @@ const PostsManager = () => {
   }
 
   // 사용자 모달 열기
+  // entities -> user -> api -> getUser()
   const openUserModal = async (user) => {
     try {
       const response = await fetch(`/api/users/${user.id}`)
@@ -690,7 +693,7 @@ const PostsManager = () => {
         </DialogContent>
       </Dialog>
 
-      {/* entities - user */}
+      {/* entities - user - ui - UserProfile() */}
       {/* 사용자 모달 */}
       <Dialog open={showUserModal} onOpenChange={setShowUserModal}>
         <DialogContent>

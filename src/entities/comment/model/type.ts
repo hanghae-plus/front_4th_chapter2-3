@@ -1,6 +1,6 @@
 export interface Comment {
-  postId: string
-  id: string
+  postId: number
+  id: number
   body: string
   user: {
     username: string
