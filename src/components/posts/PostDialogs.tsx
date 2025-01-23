@@ -1,5 +1,5 @@
 import React from 'react';
-import { Post } from '../models/type';
+import { Post } from '../../models/type';
 import {
   Button,
   Dialog,
@@ -8,7 +8,7 @@ import {
   DialogTitle,
   Input,
   Textarea,
-} from '../shared/ui';
+} from '../../shared/ui';
 
 interface PostDialogsProps {
   showAddDialog: boolean;

@@ -11,9 +11,9 @@ import {
   sortByAtom,
   sortOrderAtom,
   selectedTagAtom,
-} from '../atoms/postManagerAtoms';
+} from '../../entities/postManagerAtoms';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Post, Posts, UserThumbnail } from '../models/type';
+import { Post, Posts, UserThumbnail } from '../../models/type';
 
 const usePostsManagerState = () => {
   const [posts, setPosts] = useAtom(postsAtom);

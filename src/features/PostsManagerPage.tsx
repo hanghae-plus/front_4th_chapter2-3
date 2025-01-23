@@ -11,11 +11,10 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  Textarea,
 } from '../shared/ui';
-import usePostsManagerState from '../hooks/usePostsManagerState';
-import PostsTable from '../components/PostsTable';
-import PostDialogs from '../components/PostDialogs';
+import usePostsManagerState from './PostsManager/usePostsManagerState';
+import PostsTable from '../components/posts/PostsTable';
+import PostDialogs from '../components/posts/PostDialogs';
 import { Plus } from 'lucide-react';
 
 const PostsManager = () => {

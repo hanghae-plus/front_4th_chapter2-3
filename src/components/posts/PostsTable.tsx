@@ -1,5 +1,5 @@
 import React, { JSX } from 'react';
-import { Post } from '../models/type';
+import { Post } from '../../models/type';
 import {
   Button,
   Table,
@@ -8,7 +8,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '../shared/ui';
+} from '../../shared/ui';
 import { Edit2, MessageSquare, ThumbsDown, ThumbsUp, Trash2 } from 'lucide-react';
 
 interface PostsTableProps {
