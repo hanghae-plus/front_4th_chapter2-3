@@ -1,24 +1,23 @@
 import { StateCreator } from 'zustand/vanilla';
 import { create } from 'zustand/react';
-import { UserDetail } from '@/entities/user';
 
 interface State {
   showUserModal: boolean;
-  selectedUser: UserDetail | null;
+  selectedUserId?: number;
 }
 
 interface Action {
   setShowUserModal: (show: boolean) => void;
-  setSelectedUser: (user: UserDetail | null) => void;
+  setSelectedUserId: (user?: number) => void;
 }
 
 type UserStoreProps = State & Action;
 
 const useUserStoreCreator: StateCreator<UserStoreProps> = (set) => ({
   showUserModal: false,
-  selectedUser: null,
+  selectedUserId: undefined,
   setShowUserModal: (show) => set({ showUserModal: show }),
-  setSelectedUser: (user) => set({ selectedUser: user }),
+  setSelectedUserId: (userId) => set({ selectedUserId: userId }),
 });
 
 export const useUserStore = create(useUserStoreCreator);

@@ -1,32 +1,15 @@
-import { useUserStore } from '@/features/user';
 import { User } from '@/entities/user';
-import { getUserDetail } from '@/entities/user/api';
+import useUserDetailQuery from '@/features/user/ui/use-user-detail-query.ts';
 
 interface UserPreviewProps {
   user?: User;
 }
 
 const UserPreview = ({ user }: UserPreviewProps) => {
-  const { setSelectedUser, setShowUserModal } = useUserStore();
-
-  // 사용자 모달 열기
-  const openUserModal = async (user: User | undefined) => {
-    if (!user) return;
-    try {
-      const userData = await getUserDetail(user.id);
-      setSelectedUser(userData);
-      setShowUserModal(true);
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error(error.message);
-      } else {
-        console.error(error);
-      }
-    }
-  };
+  const { openUserModal } = useUserDetailQuery(user);
 
   return (
-    <div className='flex items-center space-x-2 cursor-pointer' onClick={() => openUserModal(user)}>
+    <div className='flex items-center space-x-2 cursor-pointer' onClick={openUserModal}>
       <img src={user?.image} alt={user?.username} className='w-8 h-8 rounded-full' />
       <span>{user?.username}</span>
     </div>
