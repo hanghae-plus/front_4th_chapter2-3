@@ -1,4 +1,4 @@
-import { useUserStore } from '../model';
+import { useUserStore } from '../model/use-user-store';
 import { User } from '@/entities/user/model';
 import { getUserDetail } from '@/entities/user/api';
 

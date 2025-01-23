@@ -1,4 +1,4 @@
-import { useUserStore } from '@/features/user/model';
+import { useUserStore } from '@/features/user';
 import { Profile } from '@/entities/user/ui';
 import { BaseDialog } from '@/shared/ui';
 

@@ -1,4 +1,4 @@
-import UserPreview from '../../user/ui/UserPreview.tsx';
+import { UserPreview } from '@/features/user';
 import { PostTitle, PostDetailButton, PostEditButton, PostDeleteButton } from '@/features/post';
 import { ReactionStatus } from '@/entities/reaction';
 import { Post } from '@/entities/post/model';
