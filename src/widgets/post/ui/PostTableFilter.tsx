@@ -1,31 +1,13 @@
+import { usePostStore } from "@/features/post/model"
 import { SelectTags } from "@/features/post/post-filter/ui/selectTags"
+import { usePostUrlStore } from "@/features/post/post-url/model"
 import { Input, Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/shared/ui"
 import { Search } from "lucide-react"
 
-interface PostTableFilterProps {
-  searchQuery: string
-  selectedTag: string
-  sortBy: string
-  sortOrder: string
-  setSearchQuery: (query: string) => void
-  searchPosts: () => void
-  setSelectedTag: (tag: string) => void
-  fetchPostsByTag: (tag: string) => void
-  setSortBy: (sort: string) => void
-  setSortOrder: (order: string) => void
-  updateURL: () => void
-}
+export const PostTableFilter = () => {
+  const { searchPosts } = usePostStore()
+  const { searchQuery, sortBy, sortOrder, setSearchQuery, setSortBy, setSortOrder } = usePostUrlStore()
 
-export const PostTableFilter = ({
-  searchQuery,
-  sortBy,
-  sortOrder,
-  setSearchQuery,
-  searchPosts,
-  setSortBy,
-  setSortOrder,
-  updateURL,
-}: PostTableFilterProps) => {
   return (
     <div className="flex gap-4">
       <div className="flex-1">
@@ -40,7 +22,7 @@ export const PostTableFilter = ({
           />
         </div>
       </div>
-      <SelectTags updateURL={updateURL} />
+      <SelectTags />
       <Select value={sortBy} onValueChange={setSortBy}>
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="정렬 기준" />

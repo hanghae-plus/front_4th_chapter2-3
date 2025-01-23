@@ -1,9 +1,9 @@
 import { useLocation } from "react-router-dom"
-import { usePostUrlStore } from "./store"
+import { usePostUrlStore } from "../../../features/post/post-url/model/store"
 import { useEffect } from "react"
-import { usePostStore } from "../../model"
+import { usePostStore } from "../../../features/post/model"
 
-export const usePostUrl = () => {
+export const usePostManager = () => {
   const location = useLocation()
 
   const {

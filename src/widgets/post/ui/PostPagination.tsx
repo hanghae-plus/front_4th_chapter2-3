@@ -1,14 +1,11 @@
+import { usePostStore } from "@/features/post/model"
+import { usePostUrlStore } from "@/features/post/post-url/model"
 import { Button, Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/shared/ui"
 
-interface PostPaginationProps {
-  limit: number
-  skip: number
-  total: number
-  setLimit: (limit: number) => void
-  setSkip: (skip: number) => void
-}
+export const PostPagination = () => {
+  const { limit, skip, setLimit, setSkip } = usePostUrlStore()
+  const { total } = usePostStore()
 
-export const PostPagination = ({ limit, skip, total, setLimit, setSkip }: PostPaginationProps) => {
   return (
     <div className="flex justify-between items-center">
       <div className="flex items-center gap-2">
