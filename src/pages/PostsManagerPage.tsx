@@ -29,6 +29,7 @@ import ModifyPost from "../features/post/ui/ModifyPost"
 import { Comment } from "../features/comment/types"
 import ModifyComment from "../features/comment/ui/ModifyComment"
 import AddPost from "../features/post/ui/AddPost"
+import DetailPost from "../features/post/ui/DetailPost"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -461,31 +462,19 @@ const PostsManager = () => {
       />
 
       {/* 게시물 상세 보기 대화상자 */}
-      <Dialog open={showPostDetailDialog} onOpenChange={setShowPostDetailDialog}>
-        <DialogContent className="max-w-3xl">
-          <DialogHeader>
-            <DialogTitle>
-              <HighlightText text={selectedPost?.title} highlight={searchQuery} />
-            </DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <p>
-              <HighlightText text={selectedPost?.body} highlight={searchQuery} />
-            </p>
-            <RenderComments
-              postId={selectedPost?.id}
-              comments={comments}
-              searchQuery={searchQuery}
-              setNewComment={setNewComment}
-              setShowAddCommentDialog={setShowAddCommentDialog}
-              likeComment={likeComment}
-              setSelectedComment={setSelectedComment}
-              setShowEditCommentDialog={setShowEditCommentDialog}
-              deleteComment={deleteComment}
-            />
-          </div>
-        </DialogContent>
-      </Dialog>
+      <DetailPost
+        showPostDetailDialog={showPostDetailDialog}
+        setShowPostDetailDialog={setShowPostDetailDialog}
+        searchQuery={searchQuery}
+        selectedPost={selectedPost}
+        setNewComment={setNewComment}
+        comments={comments}
+        setShowAddCommentDialog={setShowAddCommentDialog}
+        likeComment={likeComment}
+        setSelectedComment={setSelectedComment}
+        setShowEditCommentDialog={setShowEditCommentDialog}
+        deleteComment={deleteComment}
+      />
 
       {/* 사용자 모달 */}
       <Dialog open={showUserModal} onOpenChange={setShowUserModal}>
