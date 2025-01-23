@@ -1,3 +1,4 @@
+// 사용자 상세 데이터 타입
 export interface UserDetailType {
   id: number;
   firstName: string;
@@ -60,6 +61,13 @@ export interface UserDetailType {
   };
 }
 
+// 사용자 핵심 데이터 타입
 type UserCoreData = 'id' | 'username' | 'image';
 
+// 사용자 타입
 export type UserType = Pick<UserDetailType, UserCoreData>;
+
+// 사용자 스토어 상태 타입
+export interface UserStoreState {
+  user: UserType;
+}
