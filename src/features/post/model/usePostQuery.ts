@@ -32,6 +32,5 @@ export const usePostQuery = ({ limit, skip, sortBy, sortOrder, searchQuery, sele
   return useQuery<PostsResponseDto>({
     queryKey: POST_QUERY_TYPE_MAP[type].key(paramByType[type]),
     queryFn: async () => POST_QUERY_TYPE_MAP[type].fn(paramByType[type]),
-    staleTime: 1000 * 60,
   });
 };
