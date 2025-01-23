@@ -4,7 +4,6 @@ import { AddToPostForm } from "./AddToPostForm"
 interface AddPostModalProps {
   isOpen: boolean
   onClose: () => void
-  title: string
 }
 
 export const AddPostModal = ({ isOpen, onClose }: AddPostModalProps) => {

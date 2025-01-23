@@ -625,6 +625,7 @@ const PostsManager = () => {
       </Dialog>
 
       {/* 게시물 수정 대화상자 */}
+      {/* feature -> editToPost -> model/ui */}
       <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
         <DialogContent>
           <DialogHeader>
