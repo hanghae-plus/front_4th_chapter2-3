@@ -8,7 +8,7 @@ export const useGetUser = (userId: number | null) => {
     queryFn: async () => {
       const response = await fetch(`/api/users/${userId}`)
       if (!response.ok) {
-        throw new Error("사용자 정보를 불러오는 데 실패했습니다.")
+        throw new Error("사용자 정보 가져오기 오류")
       }
       const userData = await response.json()
       return userData
