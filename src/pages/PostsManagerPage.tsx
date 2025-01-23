@@ -32,8 +32,10 @@ import { useDeletePost } from "../entities/post/api/useDeletePost"
 import { highlightText } from "../shared/lib/highlightText"
 import { usePostDetailDialog } from "../entities/post/model/usePostDetailDialog"
 import { PostDetailDialog } from "../entities/post/ui/PostDetailDialog"
-import { PostAddDialog } from "../entities/post/ui/AddPostDialog"
+import { PostAddDialog } from "../entities/post/ui/PostAddDialog"
 import { useAddPost } from "../entities/post/model/useAddPost"
+import { useEditPost } from "../entities/post/model/useEditPost"
+import { PostEditDialog } from "../entities/post/ui/PostEditDialog"
 
 interface Post {
   id: number
@@ -172,17 +174,25 @@ const PostsManager = () => {
   const [skip, setSkip] = useState<number>(parseInt(queryParams.get("skip") || "0"))
   const [limit, setLimit] = useState<number>(parseInt(queryParams.get("limit") || "10"))
   const [searchQuery, setSearchQuery] = useState<string>(queryParams.get("search") || "")
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null)
+  //const [selectedPost, setSelectedPost] = useState<Post | null>(null)
   const [sortBy, setSortBy] = useState<string>(queryParams.get("sortBy") || "")
   const [sortOrder, setSortOrder] = useState<string>(queryParams.get("sortOrder") || "asc")
   //const [showAddDialog, setShowAddDialog] = useState<boolean>(false)
-  const [showEditDialog, setShowEditDialog] = useState<boolean>(false)
+  //const [showEditDialog, setShowEditDialog] = useState<boolean>(false)
   //const [newPost, setNewPost] = useState<Partial<Post>>({ title: "", body: "", userId: 1 })
   const [loading, setLoading] = useState<boolean>(false)
 
   const {
+    isOpen: isOpenEditPost,
+    post: editPost,
+    handleOpen: handleEditPost,
+    handleClose: handleCloseEditPost,
+    handleChange: handleChangeEditPost,
+    handleSubmit: handleSubmitEditPost,
+  } = useEditPost()
+  const {
     isOpen: isOpenAddPost,
-    open: handleAddPost,
+    handleOpen: handleAddPost,
     handleClose: handleCloseAddPost,
     newPost,
     handleChange: handleChangeAddPost,
@@ -321,21 +331,21 @@ const PostsManager = () => {
   // }
 
   // 게시물 업데이트
-  const updatePost = async () => {
-    if (!selectedPost) return
-    try {
-      const response = await fetch(`/api/posts/${selectedPost.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(selectedPost),
-      })
-      const data = await response.json()
-      setPosts(posts.map((post) => (post.id === data.id ? data : post)))
-      setShowEditDialog(false)
-    } catch (error) {
-      console.error("게시물 업데이트 오류:", error)
-    }
-  }
+  // const updatePost = async () => {
+  //   if (!selectedPost) return
+  //   try {
+  //     const response = await fetch(`/api/posts/${selectedPost.id}`, {
+  //       method: "PUT",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify(selectedPost),
+  //     })
+  //     const data = await response.json()
+  //     setPosts(posts.map((post) => (post.id === data.id ? data : post)))
+  //     setShowEditDialog(false)
+  //   } catch (error) {
+  //     console.error("게시물 업데이트 오류:", error)
+  //   }
+  // }
 
   // 게시물 삭제
   // const deletePost = async (id: Post["id"]) => {
@@ -543,14 +553,7 @@ const PostsManager = () => {
                 <Button variant="ghost" size="sm" onClick={() => handlePostDetail(post.id)}>
                   <MessageSquare className="w-4 h-4" />
                 </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    setSelectedPost(post)
-                    setShowEditDialog(true)
-                  }}
-                >
+                <Button variant="ghost" size="sm" onClick={() => handleEditPost(post)}>
                   <Edit2 className="w-4 h-4" />
                 </Button>
                 <Button variant="ghost" size="sm" onClick={() => handleDeletePost(post.id)}>
@@ -722,27 +725,13 @@ const PostsManager = () => {
       />
 
       {/* 게시물 수정 대화상자 */}
-      <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>게시물 수정</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <Input
-              placeholder="제목"
-              value={selectedPost?.title || ""}
-              onChange={(e) => setSelectedPost({ ...selectedPost!, title: e.target.value })}
-            />
-            <Textarea
-              rows={15}
-              placeholder="내용"
-              value={selectedPost?.body || ""}
-              onChange={(e) => setSelectedPost({ ...selectedPost!, body: e.target.value })}
-            />
-            <Button onClick={updatePost}>게시물 업데이트</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <PostEditDialog
+        open={isOpenEditPost}
+        onClose={handleCloseEditPost}
+        post={editPost}
+        handleChange={handleChangeEditPost}
+        handleSubmit={handleSubmitEditPost}
+      />
 
       {/* 댓글 추가 대화상자 */}
       <Dialog open={showAddCommentDialog} onOpenChange={setShowAddCommentDialog}>

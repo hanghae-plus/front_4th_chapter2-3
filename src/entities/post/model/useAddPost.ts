@@ -29,7 +29,7 @@ export const useAddPost = () => {
 
   return {
     isOpen,
-    open,
+    handleOpen: open,
     handleClose: close,
     newPost,
     handleSubmit,
