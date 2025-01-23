@@ -34,6 +34,19 @@ interface ButtonProps
   className?: string;
 }
 
+/**
+ * 다양한 스타일과 크기를 지원하는 버튼 컴포넌트
+ *
+ * @example
+ * // 기본 사용
+ * <Button>클릭</Button>
+ *
+ * // 변형 사용
+ * <Button variant="destructive">삭제</Button>
+ *
+ * // 크기 조절
+ * <Button size="sm">작은 버튼</Button>
+ */
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, ...props }, ref) => (
     <button className={buttonVariants({ variant, size, className })} ref={ref} {...props} />

@@ -31,3 +31,8 @@ export { TableRow } from './table/TableRow';
 export { TableHead } from './table/TableHead';
 export { TableCell } from './table/TableCell';
 export { TableWrapper } from './table/TableWrapper';
+
+// pagination
+export { Pagination } from './pagination/Pagination';
+export { LimitSelect } from './pagination/LimitSelect';
+export { PaginationButtons } from './pagination/PaginationButtons';
