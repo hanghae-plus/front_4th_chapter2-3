@@ -5,8 +5,6 @@ import {
   Button,
   Card,
   CardContent,
-  CardHeader,
-  CardTitle,
   Dialog,
   DialogContent,
   DialogHeader,
@@ -25,9 +23,11 @@ import {
   TableRow,
   Textarea,
 } from "../shared/ui"
-import { Post, PostsTypes, Tag } from "../entities/post/api/postApi"
+import { Post, PostsTypes } from "../entities/post/api/postApi"
 import { User, UsersTypes } from "../entities/user/api/userApi"
 import { Comment } from "../entities/comments/api/commentsApi"
+import { Tag } from "../entities/tag/api/tagApi"
+import { Header } from "./ui/Header"
 
 interface PostWithUser extends Post {
   author: User
@@ -490,15 +490,8 @@ const PostsManager = () => {
 
   return (
     <Card className="w-full max-w-6xl mx-auto">
-      <CardHeader>
-        <CardTitle className="flex items-center justify-between">
-          <span>게시물 관리자</span>
-          <Button onClick={() => setShowAddDialog(true)}>
-            <Plus className="w-4 h-4 mr-2" />
-            게시물 추가
-          </Button>
-        </CardTitle>
-      </CardHeader>
+      <Header />
+
       <CardContent>
         <div className="flex flex-col gap-4">
           {/* 검색 및 필터 컨트롤 */}
