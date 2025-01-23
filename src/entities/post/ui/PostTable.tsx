@@ -1,12 +1,14 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../shared/ui"
-import { Post } from "../model/type"
+import { usePostStore } from "../model/store"
 
-interface PostTableProps {
-  posts: Post[]
-}
+export const PostTable: React.FC = () => {
+  const { posts, fetchPosts } = usePostStore()
 
-export const PostTable: React.FC<PostTableProps> = ({ posts }) => {
+  useEffect(() => {
+    fetchPosts(10, 0)
+  }, [fetchPosts])
+
   return (
     <Table>
       <TableHeader>
@@ -20,11 +22,13 @@ export const PostTable: React.FC<PostTableProps> = ({ posts }) => {
       </TableHeader>
 
       <TableBody>
-        {posts.map((post) => (
-          <TableRow key={post.id}>
-            <TableCell>{post.id}</TableCell>
-          </TableRow>
-        ))}
+        {posts.map((post) => {
+          return (
+            <TableRow key={post.id}>
+              <TableCell>{post.id}</TableCell>
+            </TableRow>
+          )
+        })}
       </TableBody>
     </Table>
   )

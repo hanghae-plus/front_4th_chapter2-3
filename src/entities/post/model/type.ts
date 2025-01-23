@@ -2,7 +2,7 @@ export interface Post {
   id: number
   title: string
   body: string
-  tag?: string[]
+  tags?: string[]
   author?: {
     image: string
     username: string

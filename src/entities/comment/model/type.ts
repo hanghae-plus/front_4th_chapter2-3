@@ -1,12 +1,12 @@
 export interface Comment {
   postId: number | null
   id: number
-  body?: string
-  user?: {
+  body: string
+  user: {
     username: string
   }
-  likes?: number
-  userId?: number
+  likes: number
+  userId: number
 }
 
 export interface newComment {

@@ -25,6 +25,8 @@ import {
   TableRow,
   Textarea,
 } from "../shared/ui"
+import { CommentSection } from "../entities/comment/ui/CommentSection"
+import { PostTable } from "../entities/post/ui/PostTable"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -350,7 +352,7 @@ const PostsManager = () => {
   }, [location.search])
 
   // 하이라이트 함수 추가
-  // shared -> lib -> highlightText.tsx
+  // shared -> lib -> highlightText()
   const highlightText = (text: string, highlight: string) => {
     if (!text) return null
     if (!highlight.trim()) {
@@ -447,7 +449,7 @@ const PostsManager = () => {
   )
 
   // 댓글 렌더링
-  // entities - comments - ui
+  // entities - comments - ui - Comment()
   const renderComments = (postId) => (
     <div className="mt-2">
       <div className="flex items-center justify-between mb-2">
@@ -566,6 +568,7 @@ const PostsManager = () => {
 
           {/* 게시물 테이블 */}
           {loading ? <div className="flex justify-center p-4">로딩 중...</div> : renderPostTable()}
+          {/* {loading ? <div className="flex justify-center p-4">로딩 중...</div> : <PostTable />} */}
 
           {/* 페이지네이션 */}
           <div className="flex justify-between items-center">
@@ -693,7 +696,8 @@ const PostsManager = () => {
           </DialogHeader>
           <div className="space-y-4">
             <p>{highlightText(selectedPost?.body, searchQuery)}</p>
-            {renderComments(selectedPost?.id)}
+            {/* {renderComments(selectedPost?.id)} */}
+            <CommentSection postId={selectedPost?.id} />
           </div>
         </DialogContent>
       </Dialog>

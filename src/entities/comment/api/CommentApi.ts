@@ -3,7 +3,7 @@ import { Comment, newComment } from "../model/type"
 
 export const getComments = async (postId: number): Promise<AxiosResponse> => {
   const response = await axios.get(`/api/comments/post/${postId}`)
-  return response.data.json()
+  return response.data
 }
 
 export const addComment = async (newComment: newComment): Promise<AxiosResponse> => {
@@ -11,20 +11,20 @@ export const addComment = async (newComment: newComment): Promise<AxiosResponse>
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(newComment),
   })
-  return response.data.json()
+  return response.data
 }
 
-export const updateComment = async (selectedComment: Comment): Promise<AxiosResponse> => {
-  const response = await axios.put(`/api/comments/${selectedComment.id}`, {
+export const updateComment = async (updatedComment: Comment): Promise<AxiosResponse> => {
+  const response = await axios.put(`/api/comments/${updatedComment.id}`, {
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ body: selectedComment.body }),
+    body: JSON.stringify({ body: updatedComment.body }),
   })
-  return response.data.json()
+  return response.data
 }
 
 export const deleteComment = async (id: number): Promise<AxiosResponse> => {
   const response = await axios.delete(`/api/comments/${id}`)
-  return response.data.json()
+  return response.data
 }
 
 export const likeComment = async (id: number, likesComment: { likes: number }): Promise<AxiosResponse> => {
@@ -32,5 +32,5 @@ export const likeComment = async (id: number, likesComment: { likes: number }): 
     headers: { "Content-Type": "application/json" },
     body: likesComment,
   })
-  return response.data.json()
+  return response.data
 }
