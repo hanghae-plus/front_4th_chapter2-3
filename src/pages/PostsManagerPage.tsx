@@ -1,31 +1,16 @@
 import { useEffect, useState } from "react"
 import { Edit2, MessageSquare, Plus, Search, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react"
 import { useLocation, useNavigate } from "react-router-dom"
-import {
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  Input,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-  Textarea,
-} from "../shared/ui"
+
 import { Comment, Post, PostResponse, Tag, TagResponse, User, UserDetail, UserResponse } from "./postManagerPage.types"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../shared/ui/table"
+import { Button } from "../shared/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "../shared/ui/card"
+import { Input } from "../shared/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../shared/ui/select"
+import { Dialog, DialogContent, DialogHeader } from "../shared/ui/dialog"
+import { DialogTitle } from "@radix-ui/react-dialog"
+import { Textarea } from "../shared/ui/textarea"
 
 const PostsManager = () => {
   const navigate = useNavigate()
