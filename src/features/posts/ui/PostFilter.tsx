@@ -1,26 +1,16 @@
 import { useState } from "react";
 
 import { Search } from "lucide-react";
-import { useSearchParams } from "react-router-dom";
 
 import { Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui";
 
-import { useSuspenseQueryGetTags } from "../model";
+import { POST_FILTER_PARAM } from "../config";
+import { usePostFilter, useSuspenseQueryGetTags } from "../model";
 
 export const PostFilter = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
   const { data: tags } = useSuspenseQueryGetTags();
-
-  const [searchQuery, setSearchQuery] = useState(searchParams.get("search") || "");
-
-  const sortBy = searchParams.get("sortBy") || "";
-  const sortOrder = searchParams.get("sortOrder") || "asc";
-  const selectedTag = searchParams.get("tag") || "";
-
-  const handleChangeSearchParams = (key: string, value: string) => {
-    searchParams.set(key, value);
-    setSearchParams(searchParams);
-  };
+  const { params, changePostFilterParams } = usePostFilter();
+  const [searchQuery, setSearchQuery] = useState(params.searchQuery);
 
   return (
     <div className="flex gap-4">
@@ -32,14 +22,14 @@ export const PostFilter = () => {
             className="pl-8"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyPress={(e) => e.key === "Enter" && handleChangeSearchParams("search", searchQuery)}
+            onKeyDown={(e) => e.key === "Enter" && changePostFilterParams(POST_FILTER_PARAM.SEARCH, searchQuery)}
           />
         </div>
       </div>
       <Select
-        value={selectedTag}
+        value={params.tag}
         onValueChange={(value) => {
-          handleChangeSearchParams("tag", value);
+          changePostFilterParams(POST_FILTER_PARAM.TAG, value);
         }}
       >
         <SelectTrigger className="w-[180px]">
@@ -54,7 +44,7 @@ export const PostFilter = () => {
           ))}
         </SelectContent>
       </Select>
-      <Select value={sortBy} onValueChange={(value) => handleChangeSearchParams("sortBy", value)}>
+      <Select value={params.sortBy} onValueChange={(value) => changePostFilterParams(POST_FILTER_PARAM.SORT_BY, value)}>
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="정렬 기준" />
         </SelectTrigger>
@@ -65,7 +55,7 @@ export const PostFilter = () => {
           <SelectItem value="reactions">반응</SelectItem>
         </SelectContent>
       </Select>
-      <Select value={sortOrder} onValueChange={(value) => handleChangeSearchParams("sortOrder", value)}>
+      <Select value={params.order} onValueChange={(value) => changePostFilterParams(POST_FILTER_PARAM.ORDER, value)}>
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="정렬 순서" />
         </SelectTrigger>

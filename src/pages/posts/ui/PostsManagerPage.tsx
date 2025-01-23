@@ -1,14 +1,13 @@
 import { Plus } from "lucide-react";
 
-import { PostTable } from "@/widgets/posts";
+import { PostTableSection } from "@/widgets/posts";
 
 import { useModalStore } from "@/features/modal";
-import { PostAddModal, PostFilter, usePost } from "@/features/posts";
+import { PostAddModal } from "@/features/posts";
 
-import { Button, Card, CardContent, CardHeader, CardTitle, Pagination } from "@/shared/ui";
+import { Button, Card, CardContent, CardHeader, CardTitle } from "@/shared/ui";
 
 export const PostsManagerPage = () => {
-  const { total } = usePost();
   const { open } = useModalStore();
 
   const handleOpenPostAddModal = () => {
@@ -27,11 +26,7 @@ export const PostsManagerPage = () => {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="flex flex-col gap-4">
-          <PostFilter />
-          <PostTable />
-          <Pagination total={total} />
-        </div>
+        <PostTableSection />
       </CardContent>
     </Card>
   );

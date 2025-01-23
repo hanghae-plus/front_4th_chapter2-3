@@ -1,1 +1,1 @@
-export { PostTable } from "./PostTable";
+export { PostTableSection } from "./PostTableSection";
