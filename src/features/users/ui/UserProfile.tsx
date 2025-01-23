@@ -1,10 +1,9 @@
-import { UserProfileModal } from "@/widgets/users";
-
 import { useModalStore } from "@/features/modal";
 
 import { User } from "@/entities/users";
 
 import { useSuspenseQueryGetUserbyId } from "../model";
+import { UserProfileModal } from "./UserProfileModal";
 
 interface UserProfileProps {
   userId: User["id"];
