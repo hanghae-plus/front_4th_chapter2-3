@@ -396,7 +396,13 @@ const PostsManager = () => {
         post={selectedPost}
         comments={comments ?? []}
         searchQuery={searchQuery}
-        renderComments={renderComments}
+        onClickAddButton={() => openAddCommentModal()}
+        onClickEditButton={(id, body) => {
+          selectEditComment(id, body)
+          openEditCommentModal()
+        }}
+        onClickDeleteButton={(id, postId) => deleteComment(id, postId)}
+        onClickLikeButton={(id, postId) => likeComment(id, postId)}
       />
 
       <CommentAddModal
