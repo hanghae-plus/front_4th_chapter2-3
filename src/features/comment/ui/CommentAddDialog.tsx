@@ -1,8 +1,12 @@
+import { useDialogStore } from "../../../shared/model/useDialogStore"
 import { Button, Dialog, DialogContent, DialogHeader, DialogTitle, Textarea } from "../../../shared/ui"
 import { useCommentStore } from "../model/store"
+import { useCommentActions } from "../model/useCommentActions"
 
-export const CommentAddDialog = ({ showAddCommentDialog, setShowAddCommentDialog, addComment }) => {
+export const CommentAddDialog = () => {
   const { newComment, setNewComment } = useCommentStore()
+  const { addComment } = useCommentActions()
+  const { showAddCommentDialog, setShowAddCommentDialog } = useDialogStore()
   return (
     <Dialog open={showAddCommentDialog} onOpenChange={setShowAddCommentDialog}>
       <DialogContent>

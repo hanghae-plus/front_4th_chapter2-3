@@ -2,17 +2,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../../share
 import { highlightText } from "../../../shared/lib/highlightText"
 import { usePostStore } from "../model/store"
 import { CommentList } from "../../comment/ui/CommentList"
+import { useDialogStore } from "../../../shared/model/useDialogStore"
+import { usePostsFilter } from "../model/usePostFilter"
 
-export const PostDetailDialog = ({
-  setShowAddCommentDialog,
-  setShowEditCommentDialog,
-  deleteComment,
-  searchQuery,
-  likeComment,
-  showPostDetailDialog,
-  setShowPostDetailDialog,
-}) => {
+export const PostDetailDialog = () => {
   const { selectedPost } = usePostStore()
+  const { searchQuery } = usePostsFilter()
+  const { showPostDetailDialog, setShowPostDetailDialog } = useDialogStore()
   return (
     <Dialog open={showPostDetailDialog} onOpenChange={setShowPostDetailDialog}>
       <DialogContent className="max-w-3xl">
@@ -21,13 +17,7 @@ export const PostDetailDialog = ({
         </DialogHeader>
         <div className="space-y-4">
           <p>{highlightText(selectedPost?.body, searchQuery)}</p>
-          <CommentList
-            setShowAddCommentDialog={setShowAddCommentDialog}
-            likeComment={likeComment}
-            setShowEditCommentDialog={setShowEditCommentDialog}
-            deleteComment={deleteComment}
-            searchQuery={searchQuery}
-          />
+          <CommentList />
         </div>
       </DialogContent>
     </Dialog>

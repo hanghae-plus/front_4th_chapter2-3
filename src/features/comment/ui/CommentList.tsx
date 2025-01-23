@@ -3,16 +3,16 @@ import { Button } from "../../../shared/ui"
 import { highlightText } from "../../../shared/lib/highlightText"
 import { useCommentStore } from "../model/store"
 import { usePostStore } from "../../post/model/store"
+import { useCommentActions } from "../model/useCommentActions"
+import { useDialogStore } from "../../../shared/model/useDialogStore"
+import { usePostsFilter } from "../../post/model/usePostFilter"
 
-export const CommentList = ({
-  setShowAddCommentDialog,
-  likeComment,
-  setShowEditCommentDialog,
-  deleteComment,
-  searchQuery,
-}) => {
+export const CommentList = () => {
   const { comments, newComment, setNewComment, setSelectedComment } = useCommentStore()
   const { selectedPost } = usePostStore()
+  const { likeComment, deleteComment } = useCommentActions()
+  const { setShowAddCommentDialog, setShowEditCommentDialog } = useDialogStore()
+  const { searchQuery } = usePostsFilter()
   const postId = selectedPost?.id
   if (!postId) return null
   return (

@@ -1,7 +1,11 @@
+import { usePostActions } from "../../features/post/model/usePostActions"
+import { usePostsFilter } from "../../features/post/model/usePostFilter"
 import { Button } from "./Button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./Select"
 
-export const Pagination = ({ limit, skip, setLimit, setSkip, total }) => {
+export const Pagination = () => {
+  const { total } = usePostActions()
+  const { skip, limit, setLimit, setSkip } = usePostsFilter()
   return (
     <div className="flex justify-between items-center">
       <div className="flex items-center gap-2">

@@ -1,20 +1,25 @@
 import { Search } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Input } from "../../shared/ui"
+import { usePostsFilter } from "../../features/post/model/usePostFilter"
+import { usePostActions } from "../../features/post/model/usePostActions"
 
-export const SearchAndFilter = ({
-  tags,
-  selectedTag,
-  setSelectedTag,
-  fetchPostsByTag,
-  searchQuery,
-  setSearchQuery,
-  searchPosts,
-  updateURL,
-  sortBy,
-  setSortBy,
-  sortOrder,
-  setSortOrder,
-}) => {
+export const SearchAndFilter = ({ tags }) => {
+  const { searchPosts, fetchPostsByTag } = usePostActions()
+  const {
+    updateURL,
+    searchQuery,
+    sortBy,
+    sortOrder,
+    selectedTag,
+    setSearchQuery,
+    setSortBy,
+    setSortOrder,
+    setSelectedTag,
+  } = usePostsFilter()
+
+  console.log("tags", tags)
+  console.log("searchQuery", searchQuery)
+  console.log("setSortOrder", sortOrder)
   return (
     <div className="flex gap-4">
       <div className="flex-1">
@@ -25,7 +30,11 @@ export const SearchAndFilter = ({
             className="pl-8"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyPress={(e) => e.key === "Enter" && searchPosts()}
+            onKeyPress={(e) => {
+              if (e.key === "Enter") {
+                searchPosts(e.target.value)
+              }
+            }}
           />
         </div>
       </div>

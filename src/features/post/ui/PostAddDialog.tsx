@@ -1,8 +1,13 @@
+import { useDialogStore } from "../../../shared/model/useDialogStore"
 import { Button, Dialog, DialogContent, DialogHeader, DialogTitle, Input, Textarea } from "../../../shared/ui"
 import { usePostStore } from "../model/store"
+import { usePostActions } from "../model/usePostActions"
 
-export const PostAddDialog = ({ showAddDialog, setShowAddDialog, addPost }) => {
+export const PostAddDialog = () => {
   const { newPost, setNewPost } = usePostStore()
+  const { addPost } = usePostActions()
+  const { showAddDialog, setShowAddDialog } = useDialogStore()
+
   return (
     <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
       <DialogContent>

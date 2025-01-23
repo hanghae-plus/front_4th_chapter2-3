@@ -1,15 +1,12 @@
+import { usePostDetailActions } from "../../../features/post/model/usePostDetailActions"
+import { useDialogStore } from "../../../shared/model/useDialogStore"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../../shared/ui"
-import { User } from "../model/types"
 
-interface UserInfoDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  selectedUser: User | null
-}
-
-export const UserInfoDialog: React.FC<UserInfoDialogProps> = ({ selectedUser, open, onOpenChange }) => {
+export const UserInfoDialog: React.FC = () => {
+  const { selectedUser } = usePostDetailActions()
+  const { showUserModal, setShowUserModal } = useDialogStore()
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={showUserModal} onOpenChange={setShowUserModal}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>사용자 정보</DialogTitle>
