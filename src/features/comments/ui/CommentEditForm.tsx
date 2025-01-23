@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-import { useQueryMutationUpdateComment } from "../../../entities/comment/model/hooks/useMutationUpdateComment"
+import { useMutationUpdateComment } from "../../../entities/comment/model/hooks/useMutationUpdateComment"
 import { Button, Textarea } from "../../../shared/ui"
 
 import type { Comment } from "../../../entities/comment/model/types/comments"
@@ -13,7 +13,7 @@ interface CommentEditFormProps {
 export const CommentEditForm = ({ comment, handleClose }: CommentEditFormProps) => {
   const [currentComment, setCurrentComment] = useState(comment)
 
-  const { mutateAsync: commentUpdateMutation } = useQueryMutationUpdateComment()
+  const { mutateAsync: commentUpdateMutation } = useMutationUpdateComment()
 
   const handleUpdateButtonClick = async () => {
     await commentUpdateMutation(currentComment)

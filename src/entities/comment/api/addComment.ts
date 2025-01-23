@@ -1,6 +1,6 @@
-import type { Comment, NewComment } from "../model/types/comments"
+import type { NewComment } from "../model/types/comments"
 
-export const addComment = async (newComment: NewComment): Promise<Comment[] | undefined> => {
+export const addComment = async (newComment: NewComment) => {
   try {
     const response = await fetch("/api/comments/add", {
       method: "POST",

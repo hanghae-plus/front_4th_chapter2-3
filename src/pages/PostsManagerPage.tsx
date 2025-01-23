@@ -48,12 +48,8 @@ const PostsManager = () => {
   const [loading, setLoading] = useState(false)
   const [tags, setTags] = useState([])
   const [selectedTag, setSelectedTag] = useState(queryParams.get("tag") || "")
-  const [comments, setComments] = useState<Record<number, Comment[]>>({})
-  const [selectedComment, setSelectedComment] = useState(null)
   const [newComment, setNewComment] = useState({ body: "", postId: null, userId: 1 })
   const [showAddCommentDialog, setShowAddCommentDialog] = useState(false)
-  const [showEditCommentDialog, setShowEditCommentDialog] = useState(false)
-  const [showPostDetailDialog, setShowPostDetailDialog] = useState(false)
 
   // URL 업데이트 함수
   const updateURL = () => {
@@ -195,14 +191,6 @@ const PostsManager = () => {
         setShowAddCommentDialog={setShowAddCommentDialog}
         newComment={newComment}
         setNewComment={setNewComment}
-      />
-
-      {/* 댓글 수정 대화상자 */}
-      <CommentEditDialog
-        open={showEditCommentDialog}
-        setShowEditCommentDialog={setShowEditCommentDialog}
-        selectedComment={selectedComment}
-        setSelectedComment={setSelectedComment}
       />
     </Card>
   )

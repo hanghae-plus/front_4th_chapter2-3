@@ -7,7 +7,6 @@ import { PostEditDialogOpenButton } from "../../../features/post/ui/PostEditDial
 import { PostTags } from "../../../features/post/ui/PostTags"
 import { HighlightText, Table } from "../../../shared/ui"
 
-import type { Comment } from "../../../entities/comment/model/types/comments"
 import type { PostWithUser } from "../../../entities/post/model/types/post"
 
 interface PostTableProps {

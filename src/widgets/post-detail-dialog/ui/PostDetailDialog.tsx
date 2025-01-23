@@ -9,7 +9,6 @@ import {
 } from "../../../features/comments/ui"
 import { Dialog, HighlightText } from "../../../shared/ui"
 
-import type { Comment } from "../../../entities/comment/model/types/comments"
 import type { PostWithUser } from "../../../entities/post/model/types/post"
 
 interface PostDetailDialogProps {
@@ -17,23 +16,10 @@ interface PostDetailDialogProps {
   selectedPost: PostWithUser | null
   searchQuery: string
   postId: number
-  // setShowEditCommentDialog: (open: boolean) => void
-  // setShowAddCommentDialog: (open: boolean) => void
-  // setNewComment: (post: any) => void
-  // setSelectedComment: (comment: Comment) => void
   dialogId: number
 }
 
-export const PostDetailDialog = ({
-  open,
-  selectedPost,
-  searchQuery,
-  postId,
-  // setShowEditCommentDialog,
-  // setShowAddCommentDialog,
-  // setNewComment,
-  dialogId,
-}: PostDetailDialogProps) => {
+export const PostDetailDialog = ({ open, selectedPost, searchQuery, postId, dialogId }: PostDetailDialogProps) => {
   const { closeDialog } = useDialog()
   const { data } = useQueryGetComments({ postId })
 
@@ -53,7 +39,7 @@ export const PostDetailDialog = ({
             <HighlightText text={selectedPost.body} highlight={searchQuery} />
           </p>
           <div className="mt-2">
-            {/* <PostCommentButton setNewComment={setNewComment} setShowAddCommentDialog={setShowAddCommentDialog} /> */}
+            <PostCommentButton postId={postId} />
             <div className="space-y-1">
               {comments?.map((comment) => (
                 <div key={comment.id} className="flex items-center justify-between text-sm border-b pb-1">

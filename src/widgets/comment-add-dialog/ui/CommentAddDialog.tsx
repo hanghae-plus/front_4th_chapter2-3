@@ -1,23 +1,27 @@
+import { useDialog } from "../../../app/model/DialogProvider"
 import { CommentAddForm } from "../../../features/comments/ui/CommentAddForm"
 import { Dialog } from "../../../shared/ui"
 
-import type { NewComment } from "../../../entities/comment/model/types/comments"
-
 interface CommentAddDialogProps {
   open: boolean
-  setShowAddCommentDialog: (open: boolean) => void
-  newComment: NewComment
-  setNewComment: (comment: NewComment) => void
+  postId: number
+  dialogId: number
 }
 
-export const CommentAddDialog = ({ open, setShowAddCommentDialog, ...rest }: CommentAddDialogProps) => {
+export const CommentAddDialog = ({ open, postId, dialogId }: CommentAddDialogProps) => {
+  const { closeDialog } = useDialog()
+
+  const handleCloseButtonClick = () => {
+    closeDialog(dialogId)
+  }
+
   return (
-    <Dialog open={open} onOpenChange={setShowAddCommentDialog}>
+    <Dialog open={open} onOpenChange={handleCloseButtonClick}>
       <Dialog.Content>
         <Dialog.Header>
           <Dialog.Title>새 댓글 추가</Dialog.Title>
         </Dialog.Header>
-        <CommentAddForm {...rest} />
+        <CommentAddForm oneCloseButtonClick={handleCloseButtonClick} postId={postId} />
       </Dialog.Content>
     </Dialog>
   )
