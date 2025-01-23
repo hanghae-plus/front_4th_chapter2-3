@@ -30,7 +30,19 @@ export const usePostsData = () => {
 
       const response = await fetch(`/api/posts?${params}`)
       const data = await response.json()
-      setPosts(data.posts)
+
+      const postsWithUsers = await Promise.all(
+        data.posts.map(async (post: Post) => {
+          const userResponse = await fetch(`/api/users/${post.userId}`)
+          const userData = await userResponse.json()
+          return {
+            ...post,
+            author: userData,
+          }
+        }),
+      )
+
+      setPosts(postsWithUsers)
       setTotal(data.total)
     } catch (error) {
       console.error("게시물 가져오기 오류:", error)
@@ -73,14 +85,6 @@ export const usePostsData = () => {
     }
   }
 
-  const handlePostLike = (post: Post) => {
-    // Implementation of handlePostLike
-  }
-
-  const handlePostDislike = (post: Post) => {
-    // Implementation of handlePostDislike
-  }
-
   return {
     posts,
     total,
@@ -95,7 +99,5 @@ export const usePostsData = () => {
     handlePostEdit,
     handlePostDelete,
     handlePostUpdate,
-    handlePostLike,
-    handlePostDislike,
   }
 }

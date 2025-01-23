@@ -28,8 +28,6 @@ const PostsManagerPage = () => {
     handlePostEdit,
     handlePostDelete,
     handlePostUpdate,
-    handlePostLike,
-    handlePostDislike,
   } = usePostsData()
 
   const [currentFilters, setCurrentFilters] = useState({
@@ -108,8 +106,6 @@ const PostsManagerPage = () => {
               onPostEdit={handlePostEdit}
               onPostDelete={handlePostDelete}
               onUserDetail={handleUserDetail}
-              onPostLike={handlePostLike}
-              onPostDislike={handlePostDislike}
             />
           )}
 
