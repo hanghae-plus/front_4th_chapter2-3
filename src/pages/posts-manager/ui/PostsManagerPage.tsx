@@ -1,21 +1,21 @@
 import { useState } from "react"
 import { Plus } from "lucide-react"
-import { Button, Card, CardContent, CardHeader, CardTitle } from "../../shared/ui/index"
-import { PostTable } from "../../widgets/post/ui/PostTable"
-import { Pagination } from "../../widgets/pagination/ui/Pagination"
-import { PostAddDialog } from "../../widgets/dialog/ui/PostAddDialog"
-import { PostUpdateDialog } from "../../widgets/dialog/ui/PostUpdateDialog"
-import { CommentAddDialog } from "../../widgets/dialog/ui/CommentAddDialog"
-import { CommentUpdateDialog } from "../../widgets/dialog/ui/CommentUpdateDialog"
-import { PostDetailDialog } from "../../widgets/dialog/ui/PostDetailDialog"
-import { UserModal } from "../../widgets/dialog/ui/UserModal"
-import { FilterableSearch } from "../../widgets/search/ui/FilterableSearch"
-import { usePosts } from "../../features/posts/api/usePosts"
-import { Post } from "../../entities/post/model/type"
-import { User } from "../../entities/user/model/type"
-import { Comment } from "../../entities/comment/model/type"
-import { useDialogStore } from "../../app/model/dialog-store"
-import { useInitUpdateURL, useSyncParamsWithURL } from "../../app/model/params-store"
+import { Button, Card, CardContent, CardHeader, CardTitle } from "../../../shared/ui/index"
+import { PostTable } from "../../../widgets/post/ui/PostTable"
+import { Pagination } from "../../../widgets/pagination/ui/Pagination"
+import { PostAddDialog } from "../../../widgets/dialog/ui/PostAddDialog"
+import { PostUpdateDialog } from "../../../widgets/dialog/ui/PostUpdateDialog"
+import { CommentAddDialog } from "../../../widgets/dialog/ui/CommentAddDialog"
+import { CommentUpdateDialog } from "../../../widgets/dialog/ui/CommentUpdateDialog"
+import { PostDetailDialog } from "../../../widgets/dialog/ui/PostDetailDialog"
+import { UserModal } from "../../../widgets/dialog/ui/UserModal"
+import { FilterableSearch } from "../../../widgets/search/ui/FilterableSearch"
+import { usePosts } from "../../../features/posts/api/usePosts"
+import { Post } from "../../../entities/post/model/type"
+import { User } from "../../../entities/user/model/type"
+import { Comment } from "../../../entities/comment/model/type"
+import { useDialogStore } from "../../../app/model/dialog-store"
+import { useInitUpdateURL, useSyncParamsWithURL } from "../../../app/model/params-store"
 
 const PostsManager = () => {
   useSyncParamsWithURL()
@@ -76,3 +76,4 @@ export default PostsManager
 // todo: 에러 제거(테스트 + 컴파일, ui)
 // todo: fsd식 파일 분리
 // ! 전역 상태 훅은 최상위에서만? 필요한 곳에 전부? (컴포넌트는 필요한 곳에서 전부. 그렇다면 훅은?)
+// ! fsd 기준: 내가 생각했을 때 이건 여기있을 것 같다!
