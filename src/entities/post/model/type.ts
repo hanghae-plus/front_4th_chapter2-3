@@ -38,7 +38,7 @@ export interface getSearchPostsResponse {
   posts: Post[]
 }
 
-// 게시물 등록
+// 게시물 등록 및 업데이트
 export interface postPostsRequest {
   body: string
   title: string
