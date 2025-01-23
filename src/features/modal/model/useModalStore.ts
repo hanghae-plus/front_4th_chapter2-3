@@ -1,5 +1,7 @@
 import { create } from "zustand";
 
+import { pop, push } from "@/shared/lib";
+
 interface ModalState {
   contents: React.ReactNode[];
   isOpen: boolean;
@@ -10,17 +12,21 @@ interface ModalAction {
   open: (content: React.ReactNode) => void;
 }
 
-export const useModalStore = create<ModalState & ModalAction>((set) => ({
+export const useModalStore = create<ModalState & ModalAction>((set, get) => ({
   contents: [],
   isOpen: false,
   open: (content: React.ReactNode) => {
-    set((prev) => ({ ...prev, isOpen: true, contents: [...prev.contents, content] }));
+    set((prev) => ({ ...prev, isOpen: true, contents: push(prev.contents, content) }));
   },
   close: () => {
+    const { isOpen } = get();
+
+    if (!isOpen) return;
+
     set((prev) => ({
       ...prev,
-      isOpen: prev.contents.length === 1 ? false : true,
-      contents: prev.contents.slice(0, prev.contents.length - 1),
+      isOpen: prev.contents.length !== 1,
+      contents: pop(prev.contents),
     }));
   },
 }));
