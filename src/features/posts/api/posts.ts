@@ -1,8 +1,5 @@
 import { Post, Response, User } from '../../../shared/types';
-
-interface PostWithAuthor extends Post {
-  author: User | undefined;
-}
+import type { PostWithAuthor } from '../hooks/usePostsQuery';
 
 export const fetchPosts = async (limit: number, skip: number) => {
   const postsResponse = await fetch(`/api/posts?limit=${limit}&skip=${skip}`);
@@ -42,6 +39,24 @@ export const searchPosts = async (query: string) => {
 export const deletePost = async (id: number) => {
   const response = await fetch(`/api/posts/${id}`, {
     method: 'DELETE',
+  });
+  return response.json();
+};
+
+export const addPost = async (post: { title: string; body: string; userId: number }) => {
+  const response = await fetch('/api/posts/add', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(post),
+  });
+  return response.json();
+};
+
+export const updatePost = async (post: Post) => {
+  const response = await fetch(`/api/posts/${post.id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(post),
   });
   return response.json();
 };
