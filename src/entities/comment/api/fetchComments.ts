@@ -1,6 +1,13 @@
 import type { Comment } from "../model/types/comments"
 
-export const fetchComments = async (postId: number): Promise<Comment[] | undefined> => {
+interface CommentResponse {
+  comments: Comment[]
+  limit: number
+  skip: number
+  total: number
+}
+
+export const fetchComments = async (postId: number): Promise<CommentResponse | undefined> => {
   // TODO: 사용하는 곳에서 처리
   //   if (comments[postId]) return // 이미 불러온 댓글이 있으면 다시 불러오지 않음
 

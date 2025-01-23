@@ -1,4 +1,5 @@
 import { useDialog } from "../../../app/model/DialogProvider"
+import { useQueryGetComments } from "../../../entities/comment/model/hooks/useQueryGetComments"
 import {
   CommentItem,
   DeleteCommentButton,
@@ -15,8 +16,7 @@ interface PostDetailDialogProps {
   open: boolean
   selectedPost: PostWithUser | null
   searchQuery: string
-  comments: Record<number, Comment[]>
-  postId?: number
+  postId: number
   // setShowEditCommentDialog: (open: boolean) => void
   // setShowAddCommentDialog: (open: boolean) => void
   // setNewComment: (post: any) => void
@@ -28,16 +28,16 @@ export const PostDetailDialog = ({
   open,
   selectedPost,
   searchQuery,
-  comments,
   postId,
   // setShowEditCommentDialog,
   // setShowAddCommentDialog,
   // setNewComment,
-  // setSelectedComment,
   dialogId,
 }: PostDetailDialogProps) => {
   const { closeDialog } = useDialog()
+  const { data } = useQueryGetComments({ postId })
 
+  const comments = data
   if (selectedPost === null) return null
 
   return (
@@ -55,21 +55,16 @@ export const PostDetailDialog = ({
           <div className="mt-2">
             {/* <PostCommentButton setNewComment={setNewComment} setShowAddCommentDialog={setShowAddCommentDialog} /> */}
             <div className="space-y-1">
-              {!!postId &&
-                comments[postId]?.map((comment) => (
-                  <div key={comment.id} className="flex items-center justify-between text-sm border-b pb-1">
-                    <CommentItem comment={comment} searchQuery={searchQuery} />
-                    <div className="flex items-center space-x-1">
-                      <LikeCommentButton comment={comment} postId={postId} />
-                      {/* <EditCommentButton
-                        comment={comment}
-                        setShowEditCommentDialog={setShowEditCommentDialog}
-                        setSelectedComment={setSelectedComment}
-                      /> */}
-                      <DeleteCommentButton comment={comment} postId={postId} />
-                    </div>
+              {comments?.map((comment) => (
+                <div key={comment.id} className="flex items-center justify-between text-sm border-b pb-1">
+                  <CommentItem comment={comment} searchQuery={searchQuery} />
+                  <div className="flex items-center space-x-1">
+                    <LikeCommentButton comment={comment} postId={postId} />
+                    <EditCommentButton postId={postId} />
+                    <DeleteCommentButton comment={comment} postId={postId} />
                   </div>
-                ))}
+                </div>
+              ))}
             </div>
           </div>
         </div>

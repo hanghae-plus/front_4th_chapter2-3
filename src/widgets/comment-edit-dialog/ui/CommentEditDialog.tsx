@@ -1,3 +1,4 @@
+import { useDialog } from "../../../app/model/DialogProvider"
 import { CommentEditForm } from "../../../features/comments/ui/CommentEditForm"
 import { Dialog } from "../../../shared/ui"
 
@@ -5,26 +6,20 @@ import type { Comment } from "../../../entities/comment/model/types/comments"
 
 interface CommentEditDialogProps {
   open: boolean
-  setShowEditCommentDialog: (open: boolean) => void
-  selectedComment: Comment | null
-  setSelectedComment: (comment: Comment) => void
+  comment: Comment
+  dialogId: number
 }
 
-export const CommentEditDialog = ({
-  open,
-  setShowEditCommentDialog,
-  selectedComment,
-  setSelectedComment,
-}: CommentEditDialogProps) => {
+export const CommentEditDialog = ({ open, comment, dialogId }: CommentEditDialogProps) => {
+  const { closeDialog } = useDialog()
+
   return (
-    <Dialog open={open} onOpenChange={setShowEditCommentDialog}>
+    <Dialog open={open} onOpenChange={() => closeDialog(dialogId)}>
       <Dialog.Content>
         <Dialog.Header>
           <Dialog.Title>댓글 수정</Dialog.Title>
         </Dialog.Header>
-        {selectedComment && (
-          <CommentEditForm selectedComment={selectedComment} setSelectedComment={setSelectedComment} />
-        )}
+        <CommentEditForm comment={comment} />
       </Dialog.Content>
     </Dialog>
   )

@@ -4,16 +4,14 @@ import { useDialog } from "../../../app/model/DialogProvider"
 import { Button } from "../../../shared/ui"
 import { PostDetailDialog } from "../../../widgets/post-detail-dialog/ui/PostDetailDialog"
 
-import type { Comment } from "../../../entities/comment/model/types/comments"
 import type { PostWithUser } from "../../../entities/post/model/types/post"
 
 interface PostDetailOpenButtonProps {
   post: PostWithUser
   searchQuery: string
-  comments: Comment[]
 }
 
-export const PostDetailOpenButton = ({ post, searchQuery, comments }: PostDetailOpenButtonProps) => {
+export const PostDetailOpenButton = ({ post, searchQuery }: PostDetailOpenButtonProps) => {
   const { openDialog } = useDialog()
 
   const handleOpenModal = (post: PostWithUser) => {
@@ -21,7 +19,6 @@ export const PostDetailOpenButton = ({ post, searchQuery, comments }: PostDetail
       open: true,
       selectedPost: post,
       searchQuery,
-      comments,
       postId: post.id,
       // setShowEditCommentDialog,
       // setShowAddCommentDialog,

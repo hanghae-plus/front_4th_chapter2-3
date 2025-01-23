@@ -18,7 +18,6 @@ interface PostTableProps {
   selectedTag: string
   setSelectedPost: (post: PostWithUser) => void
   setShowEditDialog: (open: boolean) => void
-  comments: Record<number, Comment[]>
 }
 
 export const PostTable = ({
@@ -29,7 +28,6 @@ export const PostTable = ({
   updateURL,
   setSelectedPost,
   setShowEditDialog,
-  comments,
 }: PostTableProps) => {
   return (
     <Table>
@@ -67,7 +65,7 @@ export const PostTable = ({
             </Table.Cell>
             <Table.Cell>
               <div className="flex items-center gap-2">
-                <PostDetailOpenButton post={post} searchQuery={searchQuery} comments={comments} />
+                <PostDetailOpenButton post={post} searchQuery={searchQuery} />
                 <PostEditDialogOpenButton
                   post={post}
                   setSelectedPost={setSelectedPost}

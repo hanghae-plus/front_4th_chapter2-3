@@ -160,7 +160,6 @@ const PostsManager = () => {
             <div className="flex justify-center p-4">로딩 중...</div>
           ) : (
             <PostTable
-              comments={comments}
               posts={posts}
               searchQuery={searchQuery}
               setSelectedTag={setSelectedTag}
@@ -203,19 +202,6 @@ const PostsManager = () => {
         open={showEditCommentDialog}
         setShowEditCommentDialog={setShowEditCommentDialog}
         selectedComment={selectedComment}
-        setSelectedComment={setSelectedComment}
-      />
-
-      {/* 게시물 상세 보기 대화상자 */}
-      <PostDetailDialog
-        open={showPostDetailDialog}
-        selectedPost={selectedPost}
-        searchQuery={searchQuery}
-        comments={comments}
-        postId={selectedPost?.id}
-        setShowEditCommentDialog={setShowEditCommentDialog}
-        setShowAddCommentDialog={setShowAddCommentDialog}
-        setNewComment={setNewComment}
         setSelectedComment={setSelectedComment}
       />
     </Card>
