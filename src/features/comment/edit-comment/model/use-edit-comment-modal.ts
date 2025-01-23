@@ -1,14 +1,15 @@
 import { useMutation } from "@tanstack/react-query"
 import { useState } from "react"
 
-import { queryClient } from "../../../../shared/api"
-import { useModal } from "../../../../shared/lib"
-import { commentQueries, commentMutations } from "../../../../entities/comment/api"
+import { commentMutations, commentQueries } from "../../../../entities/comment/api"
 import { Comment, useSelectedComment } from "../../../../entities/comment/model"
+import { ToggleKey } from "../../../../pages/main/model"
+import { queryClient } from "../../../../shared/api"
+import { useToggleState } from "../../../../shared/model/toggle-state.model"
 
 export const useEditCommentModal = (postId: number | undefined) => {
   const { selectedComment, setSelectedComment } = useSelectedComment()
-  const { isOpen, open, close } = useModal()
+  const { onClose } = useToggleState<ToggleKey>()
   const [body, setBody] = useState<string | null>(null)
 
   const updateCommentMutation = useMutation({
@@ -30,7 +31,7 @@ export const useEditCommentModal = (postId: number | undefined) => {
           ],
         }
       })
-      onClose()
+      handleClose()
     },
     onError: (error) => {
       console.error("댓글 업데이트 오류:", error)
@@ -55,17 +56,14 @@ export const useEditCommentModal = (postId: number | undefined) => {
     })
   }
 
-  const onClose = () => {
-    close()
+  const handleClose = () => {
+    onClose("editComment")
     setBody(null)
   }
 
   return {
-    isOpen,
     body,
     handleChange,
-    handleOpen: open,
-    handleClose: onClose,
     handleSubmit,
     selectComment,
     isSubmitting: updateCommentMutation.isPending,

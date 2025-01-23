@@ -1,20 +1,22 @@
-import { useState } from "react"
 import { useMutation } from "@tanstack/react-query"
+import { useState } from "react"
 
 import { postMutations } from "../../../../entities/post/api"
+import { ToggleKey } from "../../../../pages/main/model"
 import { queryClient } from "../../../../shared/api"
-import { useModal } from "../../../../shared/lib"
+import { useToggleState } from "../../../../shared/model/toggle-state.model"
 
 export const useAddPostModal = () => {
-  const { isOpen, open, close } = useModal()
+  const { onClose } = useToggleState<ToggleKey>()
   const [formData, setFormData] = useState({ title: "", body: "", userId: 1 })
 
   const addPostMutation = useMutation({
     ...postMutations.addMutation(),
     onSuccess: () => {
-      close()
       setFormData({ title: "", body: "", userId: 1 })
       queryClient.invalidateQueries({ queryKey: ["posts"] })
+
+      handleClose()
     },
     onError: (error) => {
       console.error("게시물 추가 오류:", error)
@@ -29,17 +31,14 @@ export const useAddPostModal = () => {
     addPostMutation.mutateAsync(formData)
   }
 
-  const onClose = () => {
-    close()
+  const handleClose = () => {
     setFormData({ title: "", body: "", userId: 1 })
+    onClose("addPost")
   }
 
   return {
-    isOpen,
     formData,
     handleChange,
-    handleOpen: open,
-    handleClose: onClose,
     handleSubmit,
     isSubmitting: addPostMutation.isPending,
   }

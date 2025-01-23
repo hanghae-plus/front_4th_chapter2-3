@@ -1,26 +1,20 @@
 import { Button, DialogContent, DialogHeader, DialogTitle, Modal, Textarea } from "../../../../shared/ui"
 import { Comment } from "../../../../entities/comment/model"
+import { ToggleKey } from "../../../../pages/main/model"
+import { useToggleState } from "../../../../shared/model/toggle-state.model"
 
 interface CommentEditModalProps {
   post?: Comment
-  isOpen: boolean
   body: string | null
-  onClose: () => void
   onChange: (value: string) => void
   onSubmit: () => void
   isSubmitting: boolean
 }
 
-export const CommentEditModal = ({
-  isOpen,
-  onClose,
-  body,
-  onChange,
-  onSubmit,
-  isSubmitting,
-}: CommentEditModalProps) => {
+export const CommentEditModal = ({ body, onChange, onSubmit, isSubmitting }: CommentEditModalProps) => {
+  const { isOpen, onClose } = useToggleState<ToggleKey>()
   return (
-    <Modal open={isOpen} onClose={onClose}>
+    <Modal open={isOpen("editComment")} onClose={() => onClose("editComment")}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>댓글 수정</DialogTitle>

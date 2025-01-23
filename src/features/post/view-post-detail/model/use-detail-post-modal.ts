@@ -3,10 +3,11 @@ import { useState } from "react"
 
 import { commentQueries } from "../../../../entities/comment/api"
 import { postQueries } from "../../../../entities/post/api"
-import { useModal } from "../../../../shared/lib"
+import { ToggleKey } from "../../../../pages/main/model"
+import { useToggleState } from "../../../../shared/model/toggle-state.model"
 
 export const useDetailPostModal = () => {
-  const { isOpen, open, close } = useModal()
+  const { isOpen, onOpen, onClose } = useToggleState<ToggleKey>()
   const [selectedPostId, setSelectedPostId] = useState<string>()
 
   const { data: post } = useQuery({
@@ -22,11 +23,11 @@ export const useDetailPostModal = () => {
 
   const handleView = (id: string) => {
     setSelectedPostId(id)
-    open()
+    onOpen("detailPost")
   }
 
   const handleClose = () => {
-    close()
+    onClose("detailPost")
     setSelectedPostId(undefined)
   }
   return {

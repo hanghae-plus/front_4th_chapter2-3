@@ -1,11 +1,12 @@
-import { useState } from "react"
 import { useQuery } from "@tanstack/react-query"
+import { useState } from "react"
 
 import { userQueries } from "../../../../entities/user/api"
-import { useModal } from "../../../../shared/lib"
+import { ToggleKey } from "../../../../pages/main/model"
+import { useToggleState } from "../../../../shared/model/toggle-state.model"
 
 export const useViewUserProfile = () => {
-  const { isOpen, open, close } = useModal()
+  const { onOpen } = useToggleState<ToggleKey>()
   const [selectedUserId, setSelectedUserId] = useState<number>()
 
   const { data: user, isLoading } = useQuery({
@@ -15,11 +16,10 @@ export const useViewUserProfile = () => {
 
   const handleViewProfile = (userId: number) => {
     setSelectedUserId(userId)
-    open()
+    onOpen("viewProfile")
   }
 
   return {
-    isOpen,
     user,
     isLoading,
     handleViewProfile,

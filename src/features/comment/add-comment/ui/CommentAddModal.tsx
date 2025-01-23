@@ -1,20 +1,21 @@
 import { DialogContent, DialogTitle } from "@radix-ui/react-dialog"
 
 import { Modal, DialogHeader, Textarea, Button } from "../../../../shared/ui"
+import { ToggleKey } from "../../../../pages/main/model"
+import { useToggleState } from "../../../../shared/model/toggle-state.model"
 
 interface CommentAddModalProps {
   post?: Comment
-  isOpen: boolean
   body: string | null
-  onClose: () => void
   onChange: (value: string) => void
   onSubmit: () => void
   isSubmitting: boolean
 }
 
-export const CommentAddModal = ({ isOpen, onClose, body, onChange, onSubmit, isSubmitting }: CommentAddModalProps) => {
+export const CommentAddModal = ({ body, onChange, onSubmit, isSubmitting }: CommentAddModalProps) => {
+  const { isOpen, onClose } = useToggleState<ToggleKey>()
   return (
-    <Modal open={isOpen} onClose={onClose}>
+    <Modal open={isOpen("addComment")} onClose={() => onClose("addComment")}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>새 댓글 추가</DialogTitle>

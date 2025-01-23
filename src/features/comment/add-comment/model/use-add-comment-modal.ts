@@ -3,11 +3,12 @@ import { useState } from "react"
 
 import { commentMutations, commentQueries } from "../../../../entities/comment/api"
 import { queryClient } from "../../../../shared/api"
-import { useModal } from "../../../../shared/lib"
+import { useToggleState } from "../../../../shared/model/toggle-state.model"
 import { Comment } from "../../../../entities/comment/model"
+import { ToggleKey } from "../../../../pages/main/model"
 
 export const useAddCommentModal = (postId: number | undefined) => {
-  const { isOpen, open, close } = useModal()
+  const { onClose } = useToggleState<ToggleKey>()
   const [body, setBody] = useState<string | null>(null)
 
   const addCommentMutation = useMutation({
@@ -23,7 +24,7 @@ export const useAddCommentModal = (postId: number | undefined) => {
           ],
         }
       })
-      onClose()
+      handleClose()
     },
     onError: (error) => {
       console.error("댓글 추가 오류:", error)
@@ -44,17 +45,14 @@ export const useAddCommentModal = (postId: number | undefined) => {
     })
   }
 
-  const onClose = () => {
-    close()
+  const handleClose = () => {
+    onClose("addComment")
     setBody(null)
   }
 
   return {
-    isOpen,
     body,
     handleChange,
-    handleOpen: open,
-    handleClose: onClose,
     handleSubmit,
     isSubmitting: addCommentMutation.isPending,
   }

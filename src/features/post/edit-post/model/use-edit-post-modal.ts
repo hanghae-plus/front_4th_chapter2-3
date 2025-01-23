@@ -1,13 +1,14 @@
-import { useEffect, useState } from "react"
 import { useMutation, useQuery } from "@tanstack/react-query"
+import { useEffect, useState } from "react"
 
 import { postMutations, postQueries } from "../../../../entities/post/api"
-import { queryClient } from "../../../../shared/api"
-import { useModal } from "../../../../shared/lib"
 import { Post } from "../../../../entities/post/model"
+import { ToggleKey } from "../../../../pages/main/model"
+import { queryClient } from "../../../../shared/api"
+import { useToggleState } from "../../../../shared/model/toggle-state.model"
 
 export const useEditPostModal = () => {
-  const { isOpen, open, close } = useModal()
+  const { isOpen, onOpen } = useToggleState<ToggleKey>()
   const [postId, setPostId] = useState<number>()
   const [editingPost, setEditingPost] = useState<Post>()
 
@@ -16,11 +17,13 @@ export const useEditPostModal = () => {
     enabled: !!postId,
   })
 
+  const isOpenEditPost = isOpen("editPost")
+
   useEffect(() => {
-    if (isOpen && post) {
+    if (isOpenEditPost && post) {
       setEditingPost(post)
     }
-  }, [isOpen, post])
+  }, [isOpenEditPost, post])
 
   const updatePostMutation = useMutation({
     ...postMutations.updateMutation(),
@@ -35,13 +38,7 @@ export const useEditPostModal = () => {
 
   const handleEdit = (id: number) => {
     setPostId(id)
-    open()
-  }
-
-  const handleClose = () => {
-    close()
-    setPostId(undefined)
-    setEditingPost(undefined)
+    onOpen("editPost")
   }
 
   const handleChange = (field: string, value: string | number) => {
@@ -64,10 +61,8 @@ export const useEditPostModal = () => {
   }
 
   return {
-    isOpen,
     post: editingPost,
     handleEdit,
-    handleClose,
     handleChange,
     handleSubmit,
     isSubmitting: updatePostMutation.isPending,

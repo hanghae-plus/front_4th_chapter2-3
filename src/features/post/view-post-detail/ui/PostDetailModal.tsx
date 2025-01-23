@@ -4,18 +4,19 @@ import { JSX } from "react"
 import { Post } from "../../../../entities/post/model"
 import { highlightText } from "../../../../shared/lib"
 import { DialogHeader, Modal } from "../../../../shared/ui"
+import { ToggleKey } from "../../../../pages/main/model"
+import { useToggleState } from "../../../../shared/model/toggle-state.model"
 
 interface PostDetailModalProps {
-  isOpen: boolean
-  onClose: () => void
   post?: Post
   searchQuery?: string
   CommentList: () => JSX.Element | null
 }
 
-export const PostDetailModal = ({ isOpen, onClose, post, searchQuery = "", CommentList }: PostDetailModalProps) => {
+export const PostDetailModal = ({ post, searchQuery = "", CommentList }: PostDetailModalProps) => {
+  const { isOpen, onClose } = useToggleState<ToggleKey>()
   return (
-    <Modal open={isOpen} onClose={onClose}>
+    <Modal open={isOpen("detailPost")} onClose={() => onClose("detailPost")}>
       <DialogHeader>
         <DialogTitle>{highlightText(post?.title ?? "", searchQuery)}</DialogTitle>
       </DialogHeader>

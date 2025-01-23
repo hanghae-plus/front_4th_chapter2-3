@@ -18,14 +18,17 @@ import { PostDetailModal, useDetailPostModal } from "../../../features/post/view
 import { UserProfileModal, useViewUserProfile } from "../../../features/user/view-user-profile"
 
 import { commentMutations, commentQueries } from "../../../entities/comment/api"
+import { CommentList } from "../../../entities/comment/ui"
+import { TagFilter, useTagFilter } from "../../../features/post/filter-by-tag"
+import { SearchPostForm, useSearchPost } from "../../../features/post/search-post"
+import { SortControls, useSortPost } from "../../../features/post/sort-post"
 import { queryClient } from "../../../shared/api"
 import { usePagination } from "../../../widgets/pagination/model"
 import { Pagination } from "../../../widgets/pagination/ui"
 import { PostsTable } from "../../../widgets/posts-table/ui"
-import { CommentList } from "../../../entities/comment/ui"
-import { useSearchPost, SearchPostForm } from "../../../features/post/search-post"
-import { TagFilter, useTagFilter } from "../../../features/post/filter-by-tag"
-import { SortControls, useSortPost } from "../../../features/post/sort-post"
+
+import { useToggleState } from "../../../shared/model/toggle-state.model"
+import { ToggleKey } from "../model"
 
 export const PostsManagerPage = () => {
   const [searchParams] = useSearchParams()
@@ -157,51 +160,30 @@ export const PostsManagerPage = () => {
     await deletePostMutation.mutateAsync(id)
   }
 
-  const { isOpen, handleViewProfile, handleClose, user } = useViewUserProfile()
+  const { onOpen } = useToggleState<ToggleKey>()
+  const { handleViewProfile, user } = useViewUserProfile()
+
+  const { formData, handleChange, handleSubmit: submitAddPost, isSubmitting: isAddSubmitting } = useAddPostModal()
 
   const {
-    isOpen: isAddOpen,
-    formData,
-    handleChange,
-    handleOpen: openAddPost,
-    handleClose: closeAddPost,
-    handleSubmit: submitAddPost,
-    isSubmitting: isAddSubmitting,
-  } = useAddPostModal()
-
-  const {
-    isOpen: isEditOpen,
     post: editingPost,
     handleEdit,
-    handleClose: closeEditPost,
     handleChange: handleEditChange,
     handleSubmit: submitEditPost,
     isSubmitting: isEditSubmitting,
   } = useEditPostModal()
 
-  const {
-    isOpen: isDetailOpen,
-    post: selectedPost,
-    comments,
-    handleView: handleViewDetail,
-    handleClose: closeDetail,
-  } = useDetailPostModal()
+  const { post: selectedPost, comments, handleView: handleViewDetail } = useDetailPostModal()
 
   const {
-    isOpen: isAddCommentModalOpen,
     body: newAddCommentBody,
-    handleOpen: openAddCommentModal,
-    handleClose: closeAddCommentModal,
     handleChange: handleChangeAddCommentBody,
     handleSubmit: submitAddComment,
     isSubmitting: isAddCommentSubmitting,
   } = useAddCommentModal(selectedPost?.id)
 
   const {
-    isOpen: isEditCommentModalOpen,
     body: newEditCommentBody,
-    handleOpen: openEditCommentModal,
-    handleClose: closeEditCommentModal,
     handleChange: handleChangeEditCommentBody,
     handleSubmit: submitEditComment,
     isSubmitting: isEditCommentSubmitting,
@@ -213,7 +195,7 @@ export const PostsManagerPage = () => {
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <span>게시물 관리자</span>
-          <Button onClick={openAddPost}>
+          <Button onClick={() => onOpen("addPost")}>
             <Plus className="w-4 h-4 mr-2" />
             게시물 추가
           </Button>
@@ -260,26 +242,20 @@ export const PostsManagerPage = () => {
         </div>
       </CardContent>
 
-      <UserProfileModal isOpen={isOpen} onClose={handleClose} user={user} />
+      <UserProfileModal user={user} />
       <PostAddModal
-        isOpen={isAddOpen}
-        onClose={closeAddPost}
         formData={formData}
         onChange={handleChange}
         onSubmit={submitAddPost}
         isSubmitting={isAddSubmitting}
       />
       <PostEditModal
-        isOpen={isEditOpen}
-        onClose={closeEditPost}
         post={editingPost}
         onChange={handleEditChange}
         onSubmit={submitEditPost}
         isSubmitting={isEditSubmitting}
       />
       <PostDetailModal
-        isOpen={isDetailOpen}
-        onClose={closeDetail}
         post={selectedPost}
         searchQuery={searchQuery}
         CommentList={() => {
@@ -288,10 +264,10 @@ export const PostsManagerPage = () => {
             <CommentList
               comments={comments || []}
               postId={selectedPost?.id}
-              addComment={() => openAddCommentModal()}
+              addComment={() => onOpen("addComment")}
               editComment={(comment) => {
                 selectEditComment(comment)
-                openEditCommentModal()
+                onOpen("editComment")
               }}
               deleteComment={(comment) => deleteCommentMutation.mutateAsync(comment.id)}
               increaseLike={(comment) => likeCommentMutation.mutateAsync({ id: comment.id, likes: comment.likes + 1 })}
@@ -302,8 +278,6 @@ export const PostsManagerPage = () => {
       />
 
       <CommentAddModal
-        isOpen={isAddCommentModalOpen}
-        onClose={closeAddCommentModal}
         body={newAddCommentBody}
         onChange={handleChangeAddCommentBody}
         onSubmit={submitAddComment}
@@ -311,8 +285,6 @@ export const PostsManagerPage = () => {
       />
 
       <CommentEditModal
-        isOpen={isEditCommentModalOpen}
-        onClose={closeEditCommentModal}
         body={newEditCommentBody}
         onChange={handleChangeEditCommentBody}
         onSubmit={submitEditComment}
