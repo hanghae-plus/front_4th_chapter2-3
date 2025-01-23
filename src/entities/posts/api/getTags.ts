@@ -1,13 +1,11 @@
+import { AxiosResponse } from "axios";
+
+import { instance } from "@/shared/api";
+
 import { Tag } from "../model";
 
 export const getTags = async () => {
-  const response = await fetch("/api/posts/tags");
+  const response: AxiosResponse<Tag[]> = await instance.get("/api/posts/tags");
 
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
-
-  const data = (await response.json()) as Tag[];
-
-  return data;
+  return response.data;
 };

@@ -1,17 +1,9 @@
+import { instance } from "@/shared/api";
+
 import { Post } from "../model";
 
 export const updatePost = async (post: Post) => {
-  const response = await fetch(`/api/posts/${post.id}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(post),
-  });
+  const response = await instance.put(`/api/posts/${post.id}`, post);
 
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
-
-  const data = await response.json();
-
-  return data;
+  return response.data;
 };

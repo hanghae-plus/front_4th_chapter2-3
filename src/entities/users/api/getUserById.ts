@@ -1,13 +1,11 @@
+import { AxiosResponse } from "axios";
+
+import { instance } from "@/shared/api";
+
 import { User } from "../model";
 
 export const getUserById = async (userId: User["id"]) => {
-  const response = await fetch(`/api/users/${userId}`);
+  const response: AxiosResponse<User> = await instance.get(`/api/users/${userId}`);
 
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
-
-  const data = (await response.json()) as User;
-
-  return data;
+  return response.data;
 };

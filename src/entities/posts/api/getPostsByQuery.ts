@@ -1,7 +1,10 @@
+import { AxiosResponse } from "axios";
+
+import { instance } from "@/shared/api";
 import { ListResponse } from "@/shared/model";
 
-import { Post } from "../model";
 import { GetPostsProps } from "./getPosts";
+import { Post } from "../model";
 
 export interface GetPostsByQueryProps extends GetPostsProps {
   searchQuery: string;
@@ -14,15 +17,9 @@ export const getPostsByQuery = async ({
   sortBy = "id",
   order = "asc",
 }: GetPostsByQueryProps) => {
-  const response = await fetch(
-    `/api/posts/search?q=${searchQuery}&limit=${limit}&skip=${skip}&sortBy=${sortBy}&order=${order}`,
-  );
+  const response: AxiosResponse<ListResponse<{ posts: Post[] }>> = await instance.get("/api/posts/search", {
+    params: { q: searchQuery, limit, skip, sortBy, order },
+  });
 
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
-
-  const data = (await response.json()) as ListResponse<{ posts: Post[] }>;
-
-  return data;
+  return response.data;
 };

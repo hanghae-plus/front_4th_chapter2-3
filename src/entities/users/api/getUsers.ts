@@ -1,15 +1,17 @@
+import { AxiosResponse } from "axios";
+
+import { instance } from "@/shared/api";
 import { ListResponse } from "@/shared/model";
 
 import { User } from "../model";
 
 export const getUsers = async () => {
-  const response = await fetch("/api/users?limit=0&select=username,image");
+  const response: AxiosResponse<ListResponse<{ users: User[] }>> = await instance.get("/api/users", {
+    params: {
+      limit: 0,
+      select: "username,image",
+    },
+  });
 
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
-
-  const data = (await response.json()) as ListResponse<{ users: User[] }>;
-
-  return data;
+  return response.data;
 };

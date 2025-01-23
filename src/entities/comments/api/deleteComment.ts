@@ -1,15 +1,9 @@
+import { instance } from "@/shared/api";
+
 import { Comment } from "../model";
 
 export const deleteComment = async (id: Comment["id"]) => {
-  const response = await fetch(`/api/comments/${id}`, {
-    method: "DELETE",
-  });
+  const response = await instance.delete(`/api/comments/${id}`);
 
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
-
-  const data = await response.json();
-
-  return data;
+  return response.data;
 };
