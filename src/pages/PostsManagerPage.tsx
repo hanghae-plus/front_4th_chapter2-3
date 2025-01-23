@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom"
 import { Button } from "../shared/ui/Button/ui"
 import { Card, CardContent, CardHeader, CardTitle } from "../shared/ui/Card/ui"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../shared/ui/Dialog/ui"
-import { Input } from "../shared/ui/Input/ui"
 import { Textarea } from "../shared/ui/Textarea/ui"
 import { useDeletePosts, useGetPosts, useGetSearchPosts, usePostPosts, usePutPosts } from "../features/post/api"
 import { useGetPostsByTag, useGetTags } from "../features/tag/api"
@@ -31,7 +30,6 @@ interface Post {
   views: number
   tags: string[]
   reactions: Reactions
-  author?: User | undefined
 }
 
 interface User {
@@ -158,9 +156,6 @@ const PostsManager = () => {
     )
   }
 
-  // 게시물 업데이트
-  const updatePost = async () => {}
-
   // 게시물 삭제
   const deletePost = async (id: number) => {
     deletePostMutation(id, {
@@ -286,7 +281,7 @@ const PostsManager = () => {
 
     putPostMutation(newForm, {
       onSuccess: (data) => {
-        setPosts([data, ...posts])
+        setPosts(posts.map((post) => (post.id === data.id ? data : post)))
         closePostModal()
       },
       onError: (error) => {
@@ -388,58 +383,6 @@ const PostsManager = () => {
           </div>
         </CardContent>
       </Card>
-
-      {/* 게시물 추가 대화상자 */}
-      {/* <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>새 게시물 추가</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <Input
-              placeholder="제목"
-              value={newPost.title}
-              onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}
-            />
-            <Textarea
-              rows={30}
-              placeholder="내용"
-              value={newPost.body}
-              onChange={(e) => setNewPost({ ...newPost, body: e.target.value })}
-            />
-            <Input
-              type="number"
-              placeholder="사용자 ID"
-              value={newPost.userId}
-              onChange={(e) => setNewPost({ ...newPost, userId: Number(e.target.value) })}
-            />
-            <Button onClick={addPost}>게시물 추가</Button>
-          </div>
-        </DialogContent>
-      </Dialog> */}
-
-      {/* 게시물 수정 대화상자 */}
-      {/* <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>게시물 수정</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <Input
-              placeholder="제목"
-              value={selectedPost?.title || ""}
-              onChange={(e) => selectedPost && setSelectedPost({ ...selectedPost, title: e.target.value })}
-            />
-            <Textarea
-              rows={15}
-              placeholder="내용"
-              value={selectedPost?.body || ""}
-              onChange={(e) => selectedPost && setSelectedPost({ ...selectedPost, body: e.target.value })}
-            />
-            <Button onClick={updatePost}>게시물 업데이트</Button>
-          </div>
-        </DialogContent>
-      </Dialog> */}
 
       {/* 게시물 상세 보기 대화상자 */}
       <Dialog open={showPostDetailDialog} onOpenChange={setShowPostDetailDialog}>

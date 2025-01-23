@@ -3,14 +3,14 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../../share
 import usePostModalStore from "../model/usePostModalStore"
 
 export const PostModal: FC = () => {
-  const { visible, children, title, desc, closeModal } = usePostModalStore()
+  const { visible, children, title, desc, closePostModal } = usePostModalStore()
 
   return (
     <>
       <Dialog
         open={visible}
         onOpenChange={() => {
-          closeModal()
+          closePostModal()
         }}
       >
         {title && (
