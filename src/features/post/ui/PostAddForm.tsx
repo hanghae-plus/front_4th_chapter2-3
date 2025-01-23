@@ -1,7 +1,7 @@
 import { useState } from "react"
 
+import { useMutationAddPost } from "../../../entities/post/model/queries/useMutationAddPost"
 import { Button, Input, Textarea } from "../../../shared/ui"
-import { useMutationAddPost } from "../model/hooks/useMutationAddPost"
 
 interface PostAddFormProps {
   onCloseDialog: () => void

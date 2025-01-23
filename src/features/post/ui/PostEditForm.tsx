@@ -1,7 +1,7 @@
 import { useState } from "react"
 
+import { useMutationUpdatePost } from "../../../entities/post/model/queries/useMutationEditPost"
 import { Button, Input, Textarea } from "../../../shared/ui"
-import { useMutationUpdatePost } from "../model/hooks/useMutationEditPost"
 
 import type { Post } from "../../../entities/post/model/types/post"
 
