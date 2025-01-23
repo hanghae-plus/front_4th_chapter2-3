@@ -1,13 +1,12 @@
+import { usePageParamActions, useSortOrder } from "../../../entities/tag/model/store/PageParamProvider"
 import { Select } from "../../../shared/ui"
 
-interface SortOrderSelectProps {
-  sortOrder: string
-  setSortOrder: (sortOrder: string) => void
-}
+export const SortOrderSelect = () => {
+  const actions = usePageParamActions()
+  const sortOrder = useSortOrder()
 
-export const SortOrderSelect = ({ sortOrder, setSortOrder }: SortOrderSelectProps) => {
   return (
-    <Select value={sortOrder} onValueChange={setSortOrder}>
+    <Select value={sortOrder} onValueChange={actions.setSortOrder}>
       <Select.Trigger className="w-[180px]">
         <Select.Value placeholder="정렬 순서" />
       </Select.Trigger>

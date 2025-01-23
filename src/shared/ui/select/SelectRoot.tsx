@@ -4,6 +4,6 @@ import type { PropsWithChildren } from "react"
 
 export const Select = SelectPrimitive.Root
 
-export const SelectRoot = ({ children }: PropsWithChildren<SelectPrimitive.SelectProps>) => {
-  return <Select>{children}</Select>
+export const SelectRoot = ({ children, ...props }: PropsWithChildren<SelectPrimitive.SelectProps>) => {
+  return <Select {...props}>{children}</Select>
 }

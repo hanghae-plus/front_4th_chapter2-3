@@ -1,15 +1,16 @@
+import { usePageParamActions, useSelectedTag } from "../../../entities/tag/model/store/PageParamProvider"
 import { Select } from "../../../shared/ui"
 
 import type { Tag } from "../../../entities/tag/model/types/tag"
 
 interface TagSelectProps {
   tags: Tag[]
-  selectedTag: string
-  setSelectedTag: (tag: string) => void
-  updateURL: () => void
 }
 
-export const TagSelect = ({ tags, selectedTag, setSelectedTag, updateURL }: TagSelectProps) => {
+export const TagSelect = ({ tags }: TagSelectProps) => {
+  const actions = usePageParamActions()
+  const selectedTag = useSelectedTag()
+
   // const fetchPostsByTag = async (tag) => {
   //   if (!tag || tag === "all") {
   //     fetchPosts()
@@ -43,9 +44,8 @@ export const TagSelect = ({ tags, selectedTag, setSelectedTag, updateURL }: TagS
     <Select
       value={selectedTag}
       onValueChange={(value) => {
-        setSelectedTag(value)
+        actions.setSelectedTag(value)
         fetchPostsByTag(value)
-        updateURL()
       }}
     >
       <Select.Trigger className="w-[180px]">

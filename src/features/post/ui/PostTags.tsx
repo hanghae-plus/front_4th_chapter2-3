@@ -1,13 +1,15 @@
+import { usePageParamActions, useSelectedTag } from "../../../entities/tag/model/store/PageParamProvider"
+
 import type { PostWithUser } from "../../../entities/post/model/types/post"
 
 interface PostTagsProps {
   post: PostWithUser
-  selectedTag: string
-  setSelectedTag: (tag: string) => void
-  updateURL: () => void
 }
 
-export const PostTags = ({ post, selectedTag, setSelectedTag, updateURL }: PostTagsProps) => {
+export const PostTags = ({ post }: PostTagsProps) => {
+  const selectedTag = useSelectedTag()
+  const actions = usePageParamActions()
+
   return (
     <div className="flex flex-wrap gap-1">
       {post.tags?.map((tag) => (
@@ -19,8 +21,7 @@ export const PostTags = ({ post, selectedTag, setSelectedTag, updateURL }: PostT
               : "text-blue-800 bg-blue-100 hover:bg-blue-200"
           }`}
           onClick={() => {
-            setSelectedTag(tag)
-            updateURL()
+            actions.setSelectedTag(tag)
           }}
         >
           {tag}

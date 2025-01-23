@@ -1,4 +1,5 @@
 import { PostReaction } from "../../../entities/post/ui/PostReaction"
+import { useSearchQuery } from "../../../entities/tag/model/store/PageParamProvider"
 import { PostAuthProfile } from "../../../features/post/ui/PostAuthProfile"
 import { PostDeleteButton } from "../../../features/post/ui/PostDeleteButton"
 import { PostDetailOpenButton } from "../../../features/post/ui/PostDetailOpenButton"
@@ -10,13 +11,11 @@ import type { PostWithUser } from "../../../entities/post/model/types/post"
 
 interface PostTableProps {
   posts: PostWithUser[]
-  searchQuery: string
-  setSelectedTag: (tag: string) => void
-  updateURL: () => void
-  selectedTag: string
 }
 
-export const PostTable = ({ posts, searchQuery, selectedTag, setSelectedTag, updateURL }: PostTableProps) => {
+export const PostTable = ({ posts }: PostTableProps) => {
+  const searchQuery = useSearchQuery()
+
   return (
     <Table>
       <Table.Header>
@@ -35,7 +34,7 @@ export const PostTable = ({ posts, searchQuery, selectedTag, setSelectedTag, upd
             <Table.Cell>
               <div className="space-y-1">
                 <HighlightText text={post.title} highlight={searchQuery} />
-                <PostTags post={post} selectedTag={selectedTag} setSelectedTag={setSelectedTag} updateURL={updateURL} />
+                <PostTags post={post} />
               </div>
             </Table.Cell>
             <Table.Cell>

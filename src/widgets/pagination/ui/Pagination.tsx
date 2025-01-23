@@ -1,19 +1,20 @@
+import { useLimit, usePageParamActions, useSkip } from "../../../entities/tag/model/store/PageParamProvider"
 import { Button, Select } from "../../../shared/ui"
 
 interface PaginationProps {
-  skip: number
-  setSkip: (skip: number) => void
-  limit: number
-  setLimit: (limit: number) => void
   total: number
 }
 
-export const Pagination = ({ skip, setSkip, limit, setLimit, total }: PaginationProps) => {
+export const Pagination = ({ total }: PaginationProps) => {
+  const actions = usePageParamActions()
+  const skip = useSkip()
+  const limit = useLimit()
+
   return (
     <div className="flex justify-between items-center">
       <div className="flex items-center gap-2">
         <span>표시</span>
-        <Select value={limit.toString()} onValueChange={(value) => setLimit(Number(value))}>
+        <Select value={limit.toString()} onValueChange={(value) => actions.setLimit(Number(value))}>
           <Select.Trigger className="w-[180px]">
             <Select.Value placeholder="10" />
           </Select.Trigger>
@@ -27,10 +28,10 @@ export const Pagination = ({ skip, setSkip, limit, setLimit, total }: Pagination
       </div>
       {/* Feature - ?? */}
       <div className="flex gap-2">
-        <Button disabled={skip === 0} onClick={() => setSkip(Math.max(0, skip - limit))}>
+        <Button disabled={skip === 0} onClick={() => actions.setSkip(Math.max(0, skip - limit))}>
           이전
         </Button>
-        <Button disabled={skip + limit >= total} onClick={() => setSkip(skip + limit)}>
+        <Button disabled={skip + limit >= total} onClick={() => actions.setSkip(skip + limit)}>
           다음
         </Button>
       </div>

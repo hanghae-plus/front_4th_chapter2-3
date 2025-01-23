@@ -1,13 +1,17 @@
+import { usePageParamActions, useSortBy } from "../../../entities/tag/model/store/PageParamProvider"
 import { Select } from "../../../shared/ui"
 
-interface SortBySelectProps {
-  sortBy: string
-  setSortBy: (sortBy: string) => void
-}
+export const SortBySelect = () => {
+  const actions = usePageParamActions()
+  const sortBy = useSortBy()
 
-export const SortBySelect = ({ sortBy, setSortBy }: SortBySelectProps) => {
   return (
-    <Select value={sortBy} onValueChange={setSortBy}>
+    <Select
+      value={sortBy}
+      onValueChange={(string) => {
+        actions.setSortBy(string)
+      }}
+    >
       <Select.Trigger className="w-[180px]">
         <Select.Value placeholder="정렬 기준" />
       </Select.Trigger>

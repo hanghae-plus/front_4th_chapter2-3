@@ -1,12 +1,12 @@
 import { QueryClient } from "@tanstack/react-query"
-import { useEffect, useState } from "react"
-import { useLocation, useNavigate } from "react-router-dom"
 
 import { getPostsQueryKeys, useQueryGetPosts } from "../entities/post/model/queries/useQueryGetPosts"
-import { fetchTags } from "../entities/tag/api/fetchTags"
+import { useQueryGetTags } from "../entities/tag/model/hooks/useQueryGetTags"
+import { useLimit, useSkip } from "../entities/tag/model/store/PageParamProvider"
 import { PostAddDialogOpenButton } from "../features/post/ui/PostAddDialogOpenButton"
 import { PostSearchForm } from "../features/post/ui/PostSearchForm"
 import { Card } from "../shared/ui"
+import { usePageParam } from "./model/hooks/usePageParam"
 import { Pagination } from "../widgets/pagination/ui/Pagination"
 import { PostTable } from "../widgets/post-table/ui/PostTable"
 import { SortBySelect } from "../widgets/sort-by-select/ui/SortBySelect"
@@ -14,39 +14,23 @@ import { SortOrderSelect } from "../widgets/sort-order-select/ui/SortOrderSelect
 import { TagSelect } from "../widgets/tag-select/ui/TagSelect"
 
 const PostsManager = () => {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const queryParams = new URLSearchParams(location.search)
-
   // 상태 관리
   // const [posts, setPosts] = useState<PostWithUser[]>([])
   // const [total, setTotal] = useState(0)
-  const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"))
-  const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"))
-  const [searchQuery, setSearchQuery] = useState(queryParams.get("search") || "")
-  const [sortBy, setSortBy] = useState(queryParams.get("sortBy") || "")
-  const [sortOrder, setSortOrder] = useState(queryParams.get("sortOrder") || "asc")
-  const [loading, setLoading] = useState(false)
-  const [tags, setTags] = useState([])
-  const [selectedTag, setSelectedTag] = useState(queryParams.get("tag") || "")
-
-  // URL 업데이트 함수
-  const updateURL = () => {
-    const params = new URLSearchParams()
-    if (skip) params.set("skip", skip.toString())
-    if (limit) params.set("limit", limit.toString())
-    if (searchQuery) params.set("search", searchQuery)
-    if (sortBy) params.set("sortBy", sortBy)
-    if (sortOrder) params.set("sortOrder", sortOrder)
-    if (selectedTag) params.set("tag", selectedTag)
-    navigate(`?${params.toString()}`)
-  }
 
   const queryClient = new QueryClient()
+
+  const skip = useSkip()
+  const limit = useLimit()
+
+  usePageParam()
   const { data, isLoading } = useQueryGetPosts({ limit, skip })
+  const { data: tagsData } = useQueryGetTags()
 
   const posts = data?.posts || []
   const total = data?.total || 0
+
+  const tags = tagsData || []
 
   // 태그별 게시물 가져오기
   // Feature
@@ -78,39 +62,15 @@ const PostsManager = () => {
   //   setLoading(false)
   // }
 
-  // 게시물 상세 보기
   // Feature
-  // const openPostDetail = (post) => {
-  //   setSelectedPost(post)
-  //   fetchComments(post.id)
-  //   setShowPostDetailDialog(true)
-  // }
-
-  // Feature
-  useEffect(() => {
-    fetchTags()
-  }, [])
-
-  // Feature
-  useEffect(() => {
-    if (selectedTag) {
-      // fetchPostsByTag(selectedTag)
-    } else {
-      queryClient.invalidateQueries(getPostsQueryKeys["all"])
-    }
-    updateURL()
-  }, [skip, limit, sortBy, sortOrder, selectedTag])
-
-  // Feature? 뭐야이거
-  useEffect(() => {
-    const params = new URLSearchParams(location.search)
-    setSkip(parseInt(params.get("skip") || "0"))
-    setLimit(parseInt(params.get("limit") || "10"))
-    setSearchQuery(params.get("search") || "")
-    setSortBy(params.get("sortBy") || "")
-    setSortOrder(params.get("sortOrder") || "asc")
-    setSelectedTag(params.get("tag") || "")
-  }, [location.search])
+  // useEffect(() => {
+  //   if (selectedTag) {
+  //     // fetchPostsByTag(selectedTag)
+  //   } else {
+  //     queryClient.invalidateQueries(getPostsQueryKeys["all"])
+  //   }
+  //   updateURL()
+  // }, [skip, limit, sortBy, sortOrder, selectedTag])
 
   return (
     <Card className="w-full max-w-6xl mx-auto">
@@ -122,29 +82,14 @@ const PostsManager = () => {
       </Card.Header>
       <Card.Content>
         <div className="flex flex-col gap-4">
-          {/* 검색 및 필터 컨트롤 */}
           <div className="flex gap-4">
-            <PostSearchForm searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
-            <TagSelect tags={tags} selectedTag={setSelectedTag} updateURL={updateURL} />
-            <SortBySelect sortBy={sortBy} setSortBy={setSortBy} />
-            <SortOrderSelect sortOrder={sortOrder} setSortOrder={setSortOrder} />
+            <PostSearchForm />
+            <TagSelect tags={tags} />
+            <SortBySelect />
+            <SortOrderSelect />
           </div>
-
-          {/* 게시물 테이블 */}
-          {isLoading ? (
-            <div className="flex justify-center p-4">로딩 중...</div>
-          ) : (
-            <PostTable
-              posts={posts}
-              searchQuery={searchQuery}
-              setSelectedTag={setSelectedTag}
-              updateURL={updateURL}
-              selectedTag={selectedTag}
-            />
-          )}
-
-          {/* 페이지네이션 */}
-          <Pagination skip={skip} setSkip={setSkip} limit={limit} setLimit={setLimit} total={total} />
+          {isLoading ? <div className="flex justify-center p-4">로딩 중...</div> : <PostTable posts={posts} />}
+          <Pagination total={total} />
         </div>
       </Card.Content>
     </Card>

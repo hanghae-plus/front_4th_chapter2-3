@@ -1,14 +1,17 @@
 import { Search } from "lucide-react"
+import { useState } from "react"
 
+import { usePageParamActions } from "../../../entities/tag/model/store/PageParamProvider"
 import { Input } from "../../../shared/ui"
 
-interface PostSearchFormProps {
-  searchQuery: string
-  setSearchQuery: (searchQuery: string) => void
-}
+export const PostSearchForm = () => {
+  const [query, setQuery] = useState("")
 
-export const PostSearchForm = ({ searchQuery, setSearchQuery }: PostSearchFormProps) => {
-  const searchPosts = () => {}
+  const actions = usePageParamActions()
+
+  const searchPosts = () => {
+    actions.setSearchQuery(query)
+  }
 
   return (
     <div className="flex-1">
@@ -17,8 +20,8 @@ export const PostSearchForm = ({ searchQuery, setSearchQuery }: PostSearchFormPr
         <Input
           placeholder="게시물 검색..."
           className="pl-8"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
           onKeyPress={(e) => e.key === "Enter" && searchPosts()}
         />
       </div>
