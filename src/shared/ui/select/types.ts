@@ -12,6 +12,6 @@ export interface SelectContentProps extends HTMLAttributes<HTMLDivElement> {
 
 export interface SelectItemProps extends HTMLAttributes<HTMLDivElement> {
   className?: string
-  children?: ReactElement
+  children?: ReactElement | string
   value: string
 }
