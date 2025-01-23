@@ -44,7 +44,6 @@ const PostsManager = () => {
   const [showUserModal, setShowUserModal] = useState(false)
   const [selectedUser, setSelectedUser] = useState<UserInfo | null>(null)
 
-  console.log("c : ", selectedUser)
   // URL 업데이트 함수
   const updateURL = () => {
     const params = new URLSearchParams()
