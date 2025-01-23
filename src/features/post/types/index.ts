@@ -1,11 +1,8 @@
-export interface Post {
+export interface Post extends NewPost {
   id: number
   author: Author
-  body: string
   reactions: Reactions
   tags: string[]
-  title: string
-  userId: number
   views: number
 }
 
@@ -24,4 +21,10 @@ export interface Tags {
   name: string
   slug: string
   url: string
+}
+
+export interface NewPost {
+  title: string
+  body: string
+  userId: number
 }
