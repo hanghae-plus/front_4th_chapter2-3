@@ -1,1 +1,1 @@
-export type { UsersResponse } from './UserApiResponse';
+export type { UsersResponse } from './UserResponse';
