@@ -2,14 +2,14 @@ import { create } from 'zustand';
 
 import { createStoreSelector } from '@/shared/lib/createStoreSelector';
 
-import type { Post } from '@/entities/posts/model';
+import type { PostWithUser } from '@/entities/posts/model';
 
 export interface PostsStore {
-  posts: Post[];
-  setPosts: (posts: Post[]) => void;
-  addPost: (post: Post) => void;
+  posts: PostWithUser[];
+  setPosts: (posts: PostWithUser[]) => void;
+  addPost: (post: PostWithUser) => void;
   deletePost: (postId: number) => void;
-  updatePost: (post: Post) => void;
+  updatePost: (post: PostWithUser) => void;
 }
 
 export const usePostsStore = create<PostsStore>()((set) => ({

@@ -1,4 +1,4 @@
-import type { NewPost } from '@/entities/posts/model/NewPost';
+import type { NewPost } from '@/entities/posts/model';
 
 export const initialNewPost: NewPost = {
   title: '',

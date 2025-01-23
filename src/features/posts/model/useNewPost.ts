@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import type { NewPost } from '@/entities/posts/model/NewPost';
+import type { NewPost } from '@/entities/posts/model';
 
 import { initialNewPost } from '../config/initialData';
 
