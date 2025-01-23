@@ -1,6 +1,6 @@
 import { useSetSearchParam } from "../../../features/serchPost/lib"
 import { AddPostButton } from "../../../features/addComment/ui"
-import { SearchPost } from "../../../features/serchPost/ui"
+import { SearchPostBar } from "../../../features/serchPost/ui"
 import { PostsWithUsersTable } from "../../../features/postsWithUsers/ui"
 import { Pagination } from "../../../features/pagination/ui"
 import { AddPostDialog } from "../../../features/addPost/ui"
@@ -25,11 +25,7 @@ export const PostsManagerWidget = () => {
         </CardHeader>
         <CardContent>
           <div className="flex flex-col gap-4">
-            <SearchPost
-              {...{
-                updateURL,
-              }}
-            />
+            <SearchPostBar />
             <PostsWithUsersTable
               {...{
                 updateURL,

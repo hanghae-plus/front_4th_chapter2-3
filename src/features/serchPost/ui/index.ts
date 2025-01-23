@@ -1,1 +1,1 @@
-export { SearchPost } from "./SearchPost.tsx"
+export { SearchPostBar } from "./SearchPostBar.tsx"
