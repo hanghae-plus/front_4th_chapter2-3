@@ -4,18 +4,18 @@ import UserProfile from "./UserProfile"
 
 interface UserDialogProps {
   open: boolean
-  onOpenChange: (open: boolean) => void
-  selectedUser: UserDetail | null
+  onClose: () => void
+  user: UserDetail | null
 }
 
-const UserDialog = ({ open, onOpenChange, selectedUser }: UserDialogProps) => {
+const UserDialog = ({ open, onClose, user }: UserDialogProps) => {
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>사용자 정보</DialogTitle>
         </DialogHeader>
-        <UserProfile user={selectedUser} />
+        <UserProfile user={user} />
       </DialogContent>
     </Dialog>
   )

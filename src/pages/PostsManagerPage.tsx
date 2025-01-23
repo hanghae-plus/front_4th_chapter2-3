@@ -27,6 +27,7 @@ import {
 } from "../shared/ui"
 import UserDialog from "../entities/user/ui/UserDialog"
 import { useGetTags } from "../entities/tag/api/useGetTag"
+import { useUserDialog } from "../entities/user/model/useUserDialog"
 
 interface Post {
   id: number
@@ -191,10 +192,11 @@ const PostsManager = () => {
 
   // Dialogs and modals state
   const [showPostDetailDialog, setShowPostDetailDialog] = useState<boolean>(false)
-  const [showUserModal, setShowUserModal] = useState<boolean>(false)
+  //const [showUserModal, setShowUserModal] = useState<boolean>(false)
+  const { isOpen, handleClose, user, handleUserDialog } = useUserDialog()
 
   //user
-  const [selectedUser, setSelectedUser] = useState<UserDetail | null>(null)
+  //const [selectedUser, setSelectedUser] = useState<UserDetail | null>(null)
 
   // URL 업데이트 함수
   const updateURL = () => {
@@ -424,16 +426,16 @@ const PostsManager = () => {
   }
 
   // 사용자 모달 열기
-  const openUserModal = async (user: User) => {
-    try {
-      const response = await fetch(`/api/users/${user.id}`)
-      const userData = await response.json()
-      setSelectedUser(userData)
-      setShowUserModal(true)
-    } catch (error) {
-      console.error("사용자 정보 가져오기 오류:", error)
-    }
-  }
+  // const openUserModal = async (user: User) => {
+  //   try {
+  //     const response = await fetch(`/api/users/${user.id}`)
+  //     const userData = await response.json()
+  //     setSelectedUser(userData)
+  //     setShowUserModal(true)
+  //   } catch (error) {
+  //     console.error("사용자 정보 가져오기 오류:", error)
+  //   }
+  // }
 
   useEffect(() => {
     if (selectedTag) {
@@ -510,7 +512,10 @@ const PostsManager = () => {
               </div>
             </TableCell>
             <TableCell>
-              <div className="flex items-center space-x-2 cursor-pointer" onClick={() => openUserModal(post.author!)}>
+              <div
+                className="flex items-center space-x-2 cursor-pointer"
+                onClick={() => handleUserDialog(post.author!.id)}
+              >
                 <img src={post.author?.image} alt={post.author?.username} className="w-8 h-8 rounded-full" />
                 <span>{post.author?.username}</span>
               </div>
@@ -797,7 +802,7 @@ const PostsManager = () => {
       </Dialog>
 
       {/* 사용자 모달 */}
-      <UserDialog open={showUserModal} onOpenChange={setShowUserModal} selectedUser={selectedUser} />
+      {user && <UserDialog open={isOpen} onClose={handleClose} user={user} />}
     </Card>
   )
 }
