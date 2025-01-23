@@ -60,7 +60,7 @@ export const PostDetailDialog = ({
                   <CommentItem comment={comment} searchQuery={searchQuery} />
                   <div className="flex items-center space-x-1">
                     <LikeCommentButton comment={comment} postId={postId} />
-                    <EditCommentButton postId={postId} />
+                    <EditCommentButton comment={comment} />
                     <DeleteCommentButton comment={comment} postId={postId} />
                   </div>
                 </div>

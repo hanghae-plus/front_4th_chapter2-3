@@ -13,13 +13,17 @@ interface CommentEditDialogProps {
 export const CommentEditDialog = ({ open, comment, dialogId }: CommentEditDialogProps) => {
   const { closeDialog } = useDialog()
 
+  const handleClose = () => {
+    closeDialog(dialogId)
+  }
+
   return (
-    <Dialog open={open} onOpenChange={() => closeDialog(dialogId)}>
+    <Dialog open={open} onOpenChange={handleClose}>
       <Dialog.Content>
         <Dialog.Header>
           <Dialog.Title>댓글 수정</Dialog.Title>
         </Dialog.Header>
-        <CommentEditForm comment={comment} />
+        <CommentEditForm comment={comment} handleClose={handleClose} />
       </Dialog.Content>
     </Dialog>
   )
