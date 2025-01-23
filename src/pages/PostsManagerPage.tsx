@@ -9,6 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from ".
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../widgets/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../shared/ui/select"
 import UserProfile from "../entities/user/ui/UserProfile"
+import PostForm from "../entities/post/ui/PostForm"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -560,7 +561,8 @@ const PostsManager = () => {
           <DialogHeader>
             <DialogTitle>새 게시물 추가</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
+          <PostForm type="POST" />
+          {/* <div className="space-y-4">
             <Input
               placeholder="제목"
               value={newPost.title}
@@ -579,7 +581,7 @@ const PostsManager = () => {
               onChange={(e) => setNewPost({ ...newPost, userId: Number(e.target.value) })}
             />
             <Button onClick={addPost}>게시물 추가</Button>
-          </div>
+          </div> */}
         </DialogContent>
       </Dialog>
 
@@ -589,7 +591,8 @@ const PostsManager = () => {
           <DialogHeader>
             <DialogTitle>게시물 수정</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
+          <PostForm type="PATCH" postData={selectedPost} />
+          {/* <div className="space-y-4">
             <Input
               placeholder="제목"
               value={selectedPost?.title || ""}
@@ -602,7 +605,7 @@ const PostsManager = () => {
               onChange={(e) => setSelectedPost({ ...selectedPost, body: e.target.value })}
             />
             <Button onClick={updatePost}>게시물 업데이트</Button>
-          </div>
+          </div> */}
         </DialogContent>
       </Dialog>
 
