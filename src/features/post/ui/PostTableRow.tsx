@@ -3,9 +3,10 @@ import { Button, TableCell, TableRow } from "@shared/ui";
 import { Edit2, MessageSquare, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react";
 import { usePostQuery, usePostStore } from "../model";
 import { getUser, User } from "@entities/user";
+import { highlightText } from "@shared/lib";
 
 const PostTableRow = (post: PostWithUser) => {
-  const { posts, setPosts, setSelectedPost } = usePostStore();
+  const { posts, setPosts, setSelectedPost, setShowEditDialog, setShowPostDetailDialog } = usePostStore();
   const { searchQuery, updatePostSearchParams } = usePostQuery();
 
   const fetchPostsByTag = async (tag: string) => {
