@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 
+import { fetchComments } from "../entities/comment/api/fetchComments"
+import { fetchPosts } from "../entities/post/api/fetchPosts"
+import { fetchTag } from "../entities/tag/api/fetchTag"
+import { fetchTags } from "../entities/tag/api/fetchTags"
+import { fetchUser } from "../entities/user/api/fetchUser"
+import { fetchUsernameAndImageOnly } from "../entities/user/api/fetchUsernameAndImageOnly"
 import { PostAddButton } from "../features/post/ui/PostAddButton"
 import { PostSearchForm } from "../features/post/ui/PostSearchForm"
 import { Card } from "../shared/ui"
@@ -18,6 +24,7 @@ import { UserDialog } from "../widgets/user-dialog/ui/UserDialog"
 
 import type { Comment } from "../entities/comment/model/types/comments"
 import type { PostWithUser } from "../entities/post/model/types/post"
+import type { User } from "../entities/user/model/types/user"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -46,7 +53,7 @@ const PostsManager = () => {
   const [showEditCommentDialog, setShowEditCommentDialog] = useState(false)
   const [showPostDetailDialog, setShowPostDetailDialog] = useState(false)
   const [showUserModal, setShowUserModal] = useState(false)
-  const [selectedUser, setSelectedUser] = useState(null)
+  const [selectedUser, setSelectedUser] = useState<User | null>(null)
 
   // URL 업데이트 함수
   const updateURL = () => {
@@ -62,81 +69,44 @@ const PostsManager = () => {
 
   // 게시물 가져오기
   // Feature
-  const fetchPosts = () => {
+  const getPosts = async () => {
     setLoading(true)
-    let postsData
-    let usersData
 
-    fetch(`/api/posts?limit=${limit}&skip=${skip}`)
-      .then((response) => response.json())
-      .then((data) => {
-        postsData = data
-        return fetch("/api/users?limit=0&select=username,image")
-      })
-      .then((response) => response.json())
-      .then((users) => {
-        usersData = users.users
-        const postsWithUsers = postsData.posts.map((post) => ({
-          ...post,
-          author: usersData.find((user) => user.id === post.userId),
-        }))
-        setPosts(postsWithUsers)
-        setTotal(postsData.total)
-      })
-      .catch((error) => {
-        console.error("게시물 가져오기 오류:", error)
-      })
-      .finally(() => {
-        setLoading(false)
-      })
-  }
-
-  // 태그 가져오기
-  // Feature
-  const fetchTags = async () => {
     try {
-      const response = await fetch("/api/posts/tags")
-      const data = await response.json()
-      setTags(data)
-    } catch (error) {
-      console.error("태그 가져오기 오류:", error)
-    }
-  }
+      const [postsData, usersData] = await Promise.all([fetchPosts(limit, skip), fetchUsernameAndImageOnly()])
 
-  // 게시물 검색
-  // Feature
-  const searchPosts = async () => {
-    if (!searchQuery) {
-      fetchPosts()
-      return
-    }
-    setLoading(true)
-    try {
-      const response = await fetch(`/api/posts/search?q=${searchQuery}`)
-      const data = await response.json()
-      setPosts(data.posts)
-      setTotal(data.total)
+      if (!postsData || !usersData) return
+
+      const postsWithUsers = postsData.posts.map((post) => ({
+        ...post,
+        author: usersData.users.find((user) => user.id === post.userId),
+      }))
+
+      setPosts(postsWithUsers)
+      setTotal(postsData.total)
     } catch (error) {
-      console.error("게시물 검색 오류:", error)
+      console.error("게시물 가져오기 오류:", error)
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
   }
 
   // 태그별 게시물 가져오기
   // Feature
-  const fetchPostsByTag = async (tag) => {
+  const fetchPostsByTag = async (tag: string) => {
     if (!tag || tag === "all") {
-      fetchPosts()
+      getPosts()
       return
     }
+
     setLoading(true)
+
     try {
-      const [postsResponse, usersResponse] = await Promise.all([
-        fetch(`/api/posts/tag/${tag}`),
-        fetch("/api/users?limit=0&select=username,image"),
-      ])
-      const postsData = await postsResponse.json()
-      const usersData = await usersResponse.json()
+      const [postsResponse, usersResponse] = await Promise.all([fetchTag(tag), fetchUsernameAndImageOnly()])
+      const postsData = postsResponse
+      const usersData = usersResponse
+
+      if (!postsData || !usersData) return
 
       const postsWithUsers = postsData.posts.map((post) => ({
         ...post,
@@ -151,49 +121,6 @@ const PostsManager = () => {
     setLoading(false)
   }
 
-  // // 게시물 업데이트
-  // // Feature
-  // const updatePost = async () => {
-  //   try {
-  //     const response = await fetch(`/api/posts/${selectedPost.id}`, {
-  //       method: "PUT",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify(selectedPost),
-  //     })
-  //     const data = await response.json()
-  //     setPosts(posts.map((post) => (post.id === data.id ? data : post)))
-  //     setShowEditDialog(false)
-  //   } catch (error) {
-  //     console.error("게시물 업데이트 오류:", error)
-  //   }
-  // }
-
-  // 게시물 삭제
-  // Feature
-  const deletePost = async (id) => {
-    try {
-      await fetch(`/api/posts/${id}`, {
-        method: "DELETE",
-      })
-      setPosts(posts.filter((post) => post.id !== id))
-    } catch (error) {
-      console.error("게시물 삭제 오류:", error)
-    }
-  }
-
-  // 댓글 가져오기
-  // Feature
-  const fetchComments = async (postId) => {
-    if (comments[postId]) return // 이미 불러온 댓글이 있으면 다시 불러오지 않음
-    try {
-      const response = await fetch(`/api/comments/post/${postId}`)
-      const data = await response.json()
-      setComments((prev) => ({ ...prev, [postId]: data.comments }))
-    } catch (error) {
-      console.error("댓글 가져오기 오류:", error)
-    }
-  }
-
   // 게시물 상세 보기
   // Feature
   const openPostDetail = (post) => {
@@ -204,10 +131,12 @@ const PostsManager = () => {
 
   // 사용자 모달 열기
   // Feature
-  const openUserModal = async (user) => {
+  const openUserModal = async (user: User) => {
     try {
-      const response = await fetch(`/api/users/${user.id}`)
-      const userData = await response.json()
+      const userData = await fetchUser(user.id)
+
+      if (!userData) return
+
       setSelectedUser(userData)
       setShowUserModal(true)
     } catch (error) {

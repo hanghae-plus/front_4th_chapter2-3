@@ -17,5 +17,12 @@ export interface Post {
 }
 
 export interface PostWithUser extends Post {
-  author: User
+  author?: Pick<User, "id" | "username" | "image">
+}
+
+export interface PostsResponse {
+  posts: Post[]
+  total: number
+  skip: number
+  limit: number
 }

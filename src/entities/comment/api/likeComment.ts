@@ -1,22 +1,13 @@
 import type { Comment } from "../model/types/comments"
 
-export const likeComment = async (
-  id: number,
-  postId: number,
-  comments: Record<number, Comment[]>,
-): Promise<Comment | undefined> => {
+export const likeComment = async (id: number, likeCount: number): Promise<Comment | undefined> => {
   // TODO: 사용하는 곳에서 해당 댓글을 찾아서 처리
-  const targetComment = comments[postId].find((c) => c.id === id)
-
-  if (!targetComment) return
-
-  const updateLikeCount = targetComment.likes + 1
 
   try {
     const response = await fetch(`/api/comments/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ likes: updateLikeCount }),
+      body: JSON.stringify({ likes: likeCount }),
     })
     const data = await response.json()
     return data
@@ -29,6 +20,7 @@ export const likeComment = async (
     //   ),
     // }))
   } catch (error) {
-    console.error("댓글 좋아요 오류:", error)
+    // console.error("댓글 좋아요 오류:", error)
+    throw error
   }
 }

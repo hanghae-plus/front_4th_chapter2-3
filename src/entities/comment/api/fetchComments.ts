@@ -12,6 +12,7 @@ export const fetchComments = async (postId: number): Promise<Comment[] | undefin
     // TODO: 사용하는 곳에서 처리
     // setComments((prev) => ({ ...prev, [postId]: data.comments }))
   } catch (error) {
-    console.error("댓글 가져오기 오류:", error)
+    // console.error("댓글 가져오기 오류:", error)
+    throw error
   }
 }

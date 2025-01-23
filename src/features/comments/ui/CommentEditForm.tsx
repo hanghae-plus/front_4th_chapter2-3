@@ -1,3 +1,4 @@
+import { updateComment } from "../../../entities/comment/api/updateComment"
 import { Button, Textarea } from "../../../shared/ui"
 
 import type { Comment } from "../../../entities/comment/model/types/comments"
@@ -8,7 +9,18 @@ interface CommentEditFormProps {
 }
 
 export const CommentEditForm = ({ selectedComment, setSelectedComment }: CommentEditFormProps) => {
-  const updateComment = () => {}
+  const handleUpdateCommentClick = async (selectedComment: Comment) => {
+    try {
+      const response = await updateComment(selectedComment)
+      // setComments((prev) => ({
+      //   ...prev,
+      //   [data.postId]: prev[data.postId].map((comment) => (comment.id === data.id ? data : comment)),
+      // }))
+      // setShowEditCommentDialog(false)
+    } catch (error) {
+      console.error("댓글 업데이트 오류:", error)
+    }
+  }
 
   return (
     <div className="space-y-4">
@@ -17,7 +29,7 @@ export const CommentEditForm = ({ selectedComment, setSelectedComment }: Comment
         value={selectedComment?.body || ""}
         onChange={(e) => setSelectedComment({ ...selectedComment, body: e.target.value })}
       />
-      <Button onClick={updateComment}>댓글 업데이트</Button>
+      <Button onClick={() => handleUpdateCommentClick(selectedComment)}>댓글 업데이트</Button>
     </div>
   )
 }

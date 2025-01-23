@@ -10,14 +10,7 @@ export const updateComment = async (selectedComment: Comment) => {
     const data = await response.json()
 
     return data
-
-    // TODO: 호출하는 곳에서 처리하도록 수정
-    // setComments((prev) => ({
-    //   ...prev,
-    //   [data.postId]: prev[data.postId].map((comment) => (comment.id === data.id ? data : comment)),
-    // }))
-    // setShowEditCommentDialog(false)
   } catch (error) {
-    console.error("댓글 업데이트 오류:", error)
+    throw error
   }
 }
