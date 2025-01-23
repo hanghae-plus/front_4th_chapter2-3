@@ -38,6 +38,7 @@ interface PostsState {
   handleCommentEdit: (comment: Comment) => void
   handleCommentDelete: (id: number, postId: number) => Promise<void>
   handleUserDetail: (userId: number) => Promise<void>
+  handleCommentUpdate: (comment: Comment) => Promise<void>
 
   // 필터 관련 액션들
   setSearchQuery: (query: string) => void
@@ -256,6 +257,33 @@ export const usePostsStore = create<PostsState>()(
           })
         } catch (error) {
           console.error("사용자 정보 가져오기 오류:", error)
+        }
+      },
+
+      handleCommentUpdate: async (updatedComment) => {
+        try {
+          const response = await fetch(`/api/comments/${updatedComment.id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(updatedComment),
+          })
+          const data = await response.json()
+
+          const { posts, setPosts } = get()
+          setPosts(
+            posts.map((post) => {
+              if (post.comments) {
+                return {
+                  ...post,
+                  comments: post.comments.map((comment) => (comment.id === data.id ? data : comment)),
+                }
+              }
+              return post
+            }),
+          )
+          set({ showEditCommentDialog: false })
+        } catch (error) {
+          console.error("댓글 업데이트 오류:", error)
         }
       },
 
