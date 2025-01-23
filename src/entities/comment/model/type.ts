@@ -1,16 +1,16 @@
 export interface Comment {
-  postId: number
+  postId: number | null
   id: number
-  body: string
-  user: {
+  body?: string
+  user?: {
     username: string
   }
-  likes: number
-  userId: number
+  likes?: number
+  userId?: number
 }
 
 export interface newComment {
   body: string
-  postId: string
+  postId: number | null
   userId: number
 }

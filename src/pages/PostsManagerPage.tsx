@@ -167,7 +167,7 @@ const PostsManager = () => {
     setLoading(false)
   }
 
-  // 게시물 추가ap
+  // 게시물 추가
   // entities -> post -> model/api -> addPost()
   const addPost = async () => {
     try {
@@ -650,6 +650,7 @@ const PostsManager = () => {
       </Dialog>
 
       {/* 댓글 추가 대화상자 */}
+      {/* feature -> addToComment -> model/ui */}
       <Dialog open={showAddCommentDialog} onOpenChange={setShowAddCommentDialog}>
         <DialogContent>
           <DialogHeader>
@@ -667,6 +668,7 @@ const PostsManager = () => {
       </Dialog>
 
       {/* 댓글 수정 대화상자 */}
+      {/* feature -> EditToComment -> model/ui */}
       <Dialog open={showEditCommentDialog} onOpenChange={setShowEditCommentDialog}>
         <DialogContent>
           <DialogHeader>

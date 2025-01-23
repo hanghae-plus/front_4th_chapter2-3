@@ -4,8 +4,8 @@ export interface Post {
   body: string
   tag?: string[]
   author?: {
-    image?: string
-    username?: string
+    image: string
+    username: string
   }
   reactions?: {
     likes?: number

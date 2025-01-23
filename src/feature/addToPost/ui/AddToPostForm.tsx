@@ -7,13 +7,13 @@ export const AddToPostForm: React.FC = () => {
   const [newPost, setNewPost] = useState<newPost>({
     title: "",
     body: "",
-    userId: 0,
+    userId: 1,
   })
 
   const handleAddPost = () => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     useAddToPost({ ...newPost, id: Date.now() })
-    setNewPost({ title: "", body: "", userId: 0 })
+    setNewPost({ title: "", body: "", userId: 1 })
   }
   return (
     <div className="space-y-4">
