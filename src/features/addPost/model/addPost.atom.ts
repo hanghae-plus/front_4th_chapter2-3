@@ -1,5 +1,6 @@
 import { atom } from "jotai"
-import type { PostWithUsers } from "../../postsWithUsers/model"
+
+import type { PostWithUsers } from "@features/postsWithUsers/model"
 
 export const newPostAtom = atom<PostWithUsers>({
   id: 0,

@@ -1,7 +1,7 @@
 import { useSetAtom } from "jotai"
-import { useDeletePostMutation } from "../api"
-import { postsWithUsersAtom } from "../../postsWithUsers/model"
-import { Button } from "../../../shared/ui/common"
+import { postsWithUsersAtom } from "@features/postsWithUsers/model"
+import { useDeletePostMutation } from "@features/deletePost/api"
+import { Button } from "@shared/ui/common"
 
 import type { ReactNode } from "react"
 

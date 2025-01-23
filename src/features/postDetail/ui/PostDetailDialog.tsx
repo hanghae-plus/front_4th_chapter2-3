@@ -1,11 +1,10 @@
 import { useAtom, useAtomValue } from "jotai"
-
-import { selectedPostAtom } from "../model"
-import { searchQueryAtom } from "../../searchPost/model"
-import { CommentsList } from "../../comments/ui"
-import { DialogContainer, DialogContent, DialogHeader, DialogTitle } from "../../../shared/ui/dialog"
-import { highlightText } from "../../../shared/lib"
-import { dialogAtomFamily } from "../../../shared/model"
+import { searchQueryAtom } from "@features/searchPost/model"
+import { selectedPostAtom } from "@features/postDetail/model"
+import { CommentsList } from "@features/comments/ui"
+import { highlightText } from "@shared/lib"
+import { dialogAtomFamily } from "@shared/model"
+import { DialogContainer, DialogContent, DialogHeader, DialogTitle } from "@shared/ui/dialog"
 
 export const PostDetailDialog = () => {
   const [showPostDetailDialog, setShowPostDetailDialog] = useAtom(dialogAtomFamily("post-detail"))

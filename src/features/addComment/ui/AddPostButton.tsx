@@ -1,7 +1,7 @@
 import { useSetAtom } from "jotai"
 import { Plus } from "lucide-react"
-import { dialogAtomFamily } from "../../../shared/model"
-import { Button } from "../../../shared/ui/common"
+import { dialogAtomFamily } from "@shared/model"
+import { Button } from "@shared/ui/common"
 
 export const AddPostButton = () => {
   const setShowAddDialog = useSetAtom(dialogAtomFamily("add-post"))

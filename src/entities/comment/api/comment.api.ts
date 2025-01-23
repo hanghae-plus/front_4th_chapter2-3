@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
-import { CommentsResponse } from "../model"
+
+import type { CommentsResponse } from "@entities/comment/model"
 
 export const useCommentsQuery = (postId: number) =>
   useQuery<CommentsResponse>({

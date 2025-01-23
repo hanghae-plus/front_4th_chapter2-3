@@ -1,7 +1,8 @@
-import { ReactNode } from "react"
 import { useSetAtom } from "jotai"
-import { selectedUserIdAtom } from "../model"
-import { dialogAtomFamily } from "../../../shared/model"
+import { selectedUserIdAtom } from "@entities/user/model"
+import { dialogAtomFamily } from "@shared/model"
+
+import type { ReactNode } from "react"
 
 interface Props {
   children: ReactNode

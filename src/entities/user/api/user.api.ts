@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
+
 import type { UseQueryOptions } from "@tanstack/react-query"
-import type { UserType, UserResponse, UsersResponse } from "../model"
+import type { UserResponse, UsersResponse, UserType } from "@entities/user/model"
 
 export const useUserQuery = (
   id: UserType["id"],

@@ -1,4 +1,5 @@
 import { atom } from "jotai"
-import { CommentType } from "./comment.type.ts"
+
+import type { CommentType } from "@entities/comment/model/comment.type.ts"
 
 export const commentsAtom = atom<CommentType[]>([])

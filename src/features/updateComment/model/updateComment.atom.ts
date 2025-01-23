@@ -1,5 +1,5 @@
 import { atom } from "jotai"
-import { CommentType } from "../../../entities/comment/model"
+import { CommentType } from "@entities/comment/model"
 
 export const selectedCommentIdAtom = atom<number | null>(null)
 

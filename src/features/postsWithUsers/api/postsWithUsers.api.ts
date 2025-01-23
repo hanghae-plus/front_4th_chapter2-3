@@ -1,7 +1,8 @@
 import { useMemo } from "react"
-import { PostsWithUsersQueryResponse } from "../model"
-import { usePostsQuery } from "../../../entities/post/api"
-import { useUsersQuery } from "../../../entities/user/api"
+import { usePostsQuery } from "@entities/post/api"
+import { useUsersQuery } from "@entities/user/api"
+
+import type { PostsWithUsersQueryResponse } from "@features/postsWithUsers/model"
 
 export const usePostsWithUsersQuery = ({
   limit,

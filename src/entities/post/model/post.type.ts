@@ -1,4 +1,4 @@
-import type { UserType } from "../../user/model"
+import type { UserType } from "@entities/user/model"
 
 export interface PostType {
   id: number

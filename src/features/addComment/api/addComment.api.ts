@@ -1,6 +1,7 @@
 import { useMutation, UseMutationOptions } from "@tanstack/react-query"
-import { NewCommentType } from "../model"
-import { CommentType } from "../../../entities/comment/model"
+
+import type { NewCommentType } from "@features/addComment/model"
+import type { CommentType } from "@entities/comment/model"
 
 export const useAddCommentMutation = (options?: UseMutationOptions<CommentType, Error, NewCommentType>) =>
   useMutation({

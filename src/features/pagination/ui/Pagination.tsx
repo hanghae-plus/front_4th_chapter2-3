@@ -1,9 +1,8 @@
 import { useAtom, useAtomValue } from "jotai"
-
-import { limitAtom, skipAtom } from "../../searchPost/model"
-import { postsTotalAtom } from "../../postsWithUsers/model"
-import { Button } from "../../../shared/ui/common"
-import { SelectContainer, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../shared/ui/select"
+import { limitAtom, skipAtom } from "@features/searchPost/model"
+import { postsTotalAtom } from "@features/postsWithUsers/model"
+import { Button } from "@shared/ui/common"
+import { SelectContainer, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@shared/ui/select"
 
 export const Pagination = () => {
   const [skip, setSkip] = useAtom(skipAtom)

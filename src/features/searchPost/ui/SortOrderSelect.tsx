@@ -1,6 +1,6 @@
 import { useAtom } from "jotai"
-import { sortOrderAtom } from "../model"
-import { SelectContainer, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../shared/ui/select"
+import { sortOrderAtom } from "@features/searchPost/model"
+import { SelectContainer, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@shared/ui/select"
 
 export const SortOrderSelect = () => {
   const [sortOrder, setSortOrder] = useAtom(sortOrderAtom)

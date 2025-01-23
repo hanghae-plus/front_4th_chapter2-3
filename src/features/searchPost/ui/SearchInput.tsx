@@ -1,10 +1,10 @@
 import { useEffect } from "react"
 import { useAtom, useSetAtom } from "jotai"
 import { Search } from "lucide-react"
-import { usePostsBySearchQuery } from "../api"
-import { searchQueryAtom } from "../model"
-import { postsWithUsersAtom } from "../../postsWithUsers/model"
-import { Input } from "../../../shared/ui/common"
+import { searchQueryAtom } from "@features/searchPost/model"
+import { postsWithUsersAtom } from "@features/postsWithUsers/model"
+import { usePostsBySearchQuery } from "@features/searchPost/api"
+import { Input } from "@shared/ui/common"
 
 export const SearchInput = () => {
   const setPosts = useSetAtom(postsWithUsersAtom)

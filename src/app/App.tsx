@@ -1,5 +1,5 @@
 import { RouterProvider, ReactQueryProvider } from "./provider"
-import { PostsManagerPage } from "../pages/postsManager/ui"
+import { PostsManagerPage } from "@pages/postsManager/ui"
 
 const App = () => {
   return (

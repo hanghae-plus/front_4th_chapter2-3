@@ -1,11 +1,11 @@
 import { useEffect } from "react"
 import { useAtom, useAtomValue, useSetAtom } from "jotai"
-import { postsWithUsersAtom } from "../model"
-import { usePostsByTagQuery } from "../../searchPost/api"
-import { searchQueryAtom, selectedTagAtom } from "../../searchPost/model"
-import { highlightText } from "../../../shared/lib"
+import { postsWithUsersAtom } from "@features/postsWithUsers/model"
+import { searchQueryAtom, selectedTagAtom } from "@features/searchPost/model"
+import { usePostsByTagQuery } from "@features/searchPost/api"
+import { highlightText } from "@shared/lib"
 
-import type { PostType } from "../../../entities/post/model"
+import type { PostType } from "@entities/post/model"
 
 interface Props {
   post: PostType

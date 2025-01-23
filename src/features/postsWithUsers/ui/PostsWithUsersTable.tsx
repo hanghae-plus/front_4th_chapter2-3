@@ -1,16 +1,15 @@
 import { useEffect } from "react"
 import { useAtom, useAtomValue, useSetAtom } from "jotai"
 import { Edit2, MessageSquare, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react"
-
-import { usePostsWithUsersQuery } from "../api"
-import { postsTotalAtom, postsWithUsersAtom } from "../model"
-import { limitAtom, skipAtom } from "../../searchPost/model"
 import { PostTags } from "./PostTags.tsx"
-import { OpenPostDetailButton } from "../../postDetail/ui"
-import { OpenUpdatePostDialogButton } from "../../updatePost/ui"
-import { DeletePostButton } from "../../deletePost/ui"
-import { OpenUserDialogButton } from "../../../entities/user/ui"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../shared/ui/table"
+import { usePostsWithUsersQuery } from "@features/postsWithUsers/api"
+import { postsTotalAtom, postsWithUsersAtom } from "@features/postsWithUsers/model"
+import { limitAtom, skipAtom } from "@features/searchPost/model"
+import { OpenPostDetailButton } from "@features/postDetail/ui"
+import { OpenUpdatePostDialogButton } from "@features/updatePost/ui"
+import { DeletePostButton } from "@features/deletePost/ui"
+import { OpenUserDialogButton } from "@entities/user/ui"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@shared/ui/table"
 
 export const PostsWithUsersTable = () => {
   const limit = useAtomValue(limitAtom)

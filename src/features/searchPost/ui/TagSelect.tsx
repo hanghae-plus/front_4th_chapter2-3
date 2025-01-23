@@ -1,9 +1,9 @@
 import { useEffect } from "react"
 import { useAtom } from "jotai"
-import { selectedTagAtom } from "../model"
-import { tagsAtom } from "../../../entities/tag/model"
-import { useTagsQuery } from "../../../entities/tag/api"
-import { SelectContainer, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../shared/ui/select"
+import { selectedTagAtom } from "@features/searchPost/model"
+import { tagsAtom } from "@entities/tag/model"
+import { useTagsQuery } from "@entities/tag/api"
+import { SelectContainer, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@shared/ui/select"
 
 export const TagSelect = () => {
   const [tags, setTags] = useAtom(tagsAtom)

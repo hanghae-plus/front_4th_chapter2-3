@@ -1,5 +1,5 @@
-import { PostType } from "../../../entities/post/model"
-import { UserType } from "../../../entities/user/model"
+import { PostType } from "@entities/post/model"
+import { UserType } from "@entities/user/model"
 
 export interface PostWithUsers extends PostType {
   author?: UserType

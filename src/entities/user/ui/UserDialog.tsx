@@ -1,10 +1,9 @@
 import { useEffect } from "react"
 import { useAtom, useAtomValue } from "jotai"
-
-import { useUserQuery } from "../api"
-import { selectedUserAtom, selectedUserIdAtom } from "../model"
-import { dialogAtomFamily } from "../../../shared/model"
-import { DialogContainer, DialogContent, DialogHeader, DialogTitle } from "../../../shared/ui/dialog"
+import { useUserQuery } from "@entities/user/api"
+import { selectedUserAtom, selectedUserIdAtom } from "@entities/user/model"
+import { dialogAtomFamily } from "@shared/model"
+import { DialogContainer, DialogContent, DialogHeader, DialogTitle } from "@shared/ui/dialog"
 
 export const UserDialog = () => {
   const selectedUserId = useAtomValue(selectedUserIdAtom)

@@ -1,5 +1,7 @@
-import { useMutation, UseMutationOptions } from "@tanstack/react-query"
-import type { NewPostType } from "../model"
+import { useMutation } from "@tanstack/react-query"
+
+import type { UseMutationOptions } from "@tanstack/react-query"
+import type { NewPostType } from "@features/addPost/model"
 
 export const useAddPostMutation = (options: UseMutationOptions<NewPostType, Error, NewPostType>) =>
   useMutation({

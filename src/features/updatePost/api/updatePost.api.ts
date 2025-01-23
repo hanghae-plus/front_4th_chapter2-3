@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query"
+
 import type { UseMutationOptions } from "@tanstack/react-query"
-import type { PostType } from "../../../entities/post/model"
+import type { PostType } from "@entities/post/model"
 
 export const useUpdatePostMutation = (options?: UseMutationOptions<PostType, Error, PostType>) =>
   useMutation({

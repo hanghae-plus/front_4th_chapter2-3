@@ -1,4 +1,5 @@
 import { useMutation } from "@tanstack/react-query"
+
 import type { UseMutationOptions } from "@tanstack/react-query"
 
 export const useDeletePostMutation = (options: UseMutationOptions<number, Error, number>) =>

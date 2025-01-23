@@ -1,10 +1,10 @@
 import { useSetAtom } from "jotai"
-import { Button } from "../../../shared/ui/common"
-import { dialogAtomFamily } from "../../../shared/model"
-import { selectedPostAtom } from "../model"
+import { selectedPostAtom } from "@features/postDetail/model"
+import { Button } from "@shared/ui/common"
+import { dialogAtomFamily } from "@shared/model"
 
 import type { ReactNode } from "react"
-import type { PostType } from "../../../entities/post/model"
+import type { PostType } from "@entities/post/model"
 
 interface Props {
   children: ReactNode

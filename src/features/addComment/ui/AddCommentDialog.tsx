@@ -1,11 +1,10 @@
 import { useAtom, useSetAtom } from "jotai"
-
-import { useAddCommentMutation } from "../api"
-import { newCommentAtom } from "../model"
-import { commentsAtom } from "../../../entities/comment/model"
-import { DialogContainer, DialogContent, DialogHeader, DialogTitle } from "../../../shared/ui/dialog"
-import { Button, Textarea } from "../../../shared/ui/common"
-import { dialogAtomFamily } from "../../../shared/model"
+import { useAddCommentMutation } from "@features/addComment/api"
+import { newCommentAtom } from "@features/addComment/model"
+import { commentsAtom } from "@entities/comment/model"
+import { Button, Textarea } from "@shared/ui/common"
+import { dialogAtomFamily } from "@shared/model"
+import { DialogContainer, DialogContent, DialogHeader, DialogTitle } from "@shared/ui/dialog"
 
 export const AddCommentDialog = () => {
   const [showAddCommentDialog, setShowAddCommentDialog] = useAtom(dialogAtomFamily("add-comment"))

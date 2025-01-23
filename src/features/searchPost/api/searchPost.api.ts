@@ -1,8 +1,9 @@
 import { useQuery } from "@tanstack/react-query"
+
 import type { UseQueryOptions } from "@tanstack/react-query"
-import type { UsersResponse } from "../../../entities/user/model"
-import type { PostsResponse } from "../../../entities/post/model"
-import type { PostsWithUsersResponse } from "../../postsWithUsers/model"
+import type { UsersResponse } from "@entities/user/model"
+import type { PostsResponse } from "@entities/post/model"
+import type { PostsWithUsersResponse } from "@features/postsWithUsers/model"
 
 export const usePostsBySearchQuery = (searchQuery: string, options?: UseQueryOptions<PostsWithUsersResponse>) =>
   useQuery<PostsWithUsersResponse>({

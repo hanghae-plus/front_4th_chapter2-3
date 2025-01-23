@@ -1,6 +1,6 @@
-import { PostsManagerWidget } from "../../../widgets/postsManager/ui"
-import { Header } from "../../../shared/ui/header"
-import { Footer } from "../../../shared/ui/footer"
+import { PostsManagerWidget } from "@widgets/postsManager/ui"
+import { Header } from "@shared/ui/header"
+import { Footer } from "@shared/ui/footer"
 
 export const PostsManagerPage = () => {
   return (

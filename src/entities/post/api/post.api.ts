@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
+
 import type { UseQueryOptions } from "@tanstack/react-query"
-import type { PostsResponse } from "../model"
+import { PostsResponse } from "@entities/post/model"
 
 export const usePostsQuery = (
   { limit, skip }: { limit: number; skip: number },

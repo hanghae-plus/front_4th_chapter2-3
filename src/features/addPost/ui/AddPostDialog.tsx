@@ -1,11 +1,10 @@
 import { useAtom, useSetAtom } from "jotai"
-
-import { useAddPostMutation } from "../api"
-import { newPostAtom } from "../model"
-import { postsWithUsersAtom } from "../../postsWithUsers/model"
-import { dialogAtomFamily } from "../../../shared/model"
-import { Button, Input, Textarea } from "../../../shared/ui/common"
-import { DialogContainer, DialogContent, DialogHeader, DialogTitle } from "../../../shared/ui/dialog"
+import { useAddPostMutation } from "@features/addPost/api"
+import { newPostAtom } from "@features/addPost/model"
+import { postsWithUsersAtom } from "@features/postsWithUsers/model"
+import { dialogAtomFamily } from "@shared/model"
+import { Button, Input, Textarea } from "@shared/ui/common"
+import { DialogContainer, DialogContent, DialogHeader, DialogTitle } from "@shared/ui/dialog"
 
 export const AddPostDialog = () => {
   const [showAddDialog, setShowAddDialog] = useAtom(dialogAtomFamily("add-post"))

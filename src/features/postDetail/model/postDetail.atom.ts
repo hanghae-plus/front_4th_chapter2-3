@@ -1,5 +1,6 @@
 import { atom } from "jotai"
-import type { PostType } from "../../../entities/post/model"
+
+import type { PostType } from "@entities/post/model"
 
 export const selectedPostAtom = atom<PostType>({
   id: 0,

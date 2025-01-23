@@ -1,8 +1,14 @@
 import { useEffect } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { useAtom } from "jotai"
-
-import { limitAtom, searchQueryAtom, selectedTagAtom, skipAtom, sortByAtom, sortOrderAtom } from "../model"
+import {
+  skipAtom,
+  limitAtom,
+  searchQueryAtom,
+  sortByAtom,
+  sortOrderAtom,
+  selectedTagAtom,
+} from "@features/searchPost/model"
 
 export const useSetSearchParam = () => {
   const navigate = useNavigate()
