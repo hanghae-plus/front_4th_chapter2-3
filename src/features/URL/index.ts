@@ -1,1 +1,0 @@
-export {updateURL} from './model';
