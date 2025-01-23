@@ -1,6 +1,6 @@
 import { queryOptions } from "@tanstack/react-query"
 
-import { userApi } from "."
+import { userApi } from "./api"
 
 export const userQueries = {
   all: () => ["users"] as const,

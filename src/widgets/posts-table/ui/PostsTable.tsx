@@ -1,9 +1,9 @@
 import { ThumbsUp, ThumbsDown, MessageSquare, Edit2, Trash2 } from "lucide-react"
-import { Post } from "../../../entities/post/model/types"
+
+import { Post } from "../../../entities/post/model"
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell, Button } from "../../../shared/ui"
-import { User } from "../../../entities/user/model/types"
-import { highlightText } from "../../../shared/lib/utils/highlight-text"
-import { useQueryParams } from "../../../shared/lib/hooks/navigate/use-search-params"
+import { User } from "../../../entities/user/model"
+import { highlightText, useQueryParams } from "../../../shared/lib"
 
 interface PostWithUser extends Post {
   author: User | undefined

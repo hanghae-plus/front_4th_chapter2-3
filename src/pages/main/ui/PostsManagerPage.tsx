@@ -2,15 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query"
 import { Plus, Search } from "lucide-react"
 import { useMemo, useState } from "react"
 import { useLocation } from "react-router-dom"
-import { Comment } from "../../../entities/comment/model/types"
-import { postMutations } from "../../../entities/post/api/mutations"
-import { postQueries } from "../../../entities/post/api/queries"
-import { SortOrder } from "../../../entities/post/model/types"
-import { userQueries } from "../../../entities/user/api/queries"
-import { PostAddModal } from "../../../features/add-post/ui/PostAddModal"
-import { useAddPostModal, useDetailPostModal, useEditPostModal } from "../../../features/post/model"
-import { useViewUserProfile } from "../../../features/view-user-profile/model/use-view-user-profile"
-import { UserProfileModal } from "../../../features/view-user-profile/ui/UserProfileModal"
+
 import {
   Button,
   Card,
@@ -24,18 +16,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../../shared/ui"
+import { useQueryParams } from "../../../shared/lib"
 
-import { PostEditModal } from "../../../features/edit-post/ui/modal/PostEditModal"
+import { Comment } from "../../../entities/comment/model"
+import { postMutations, postQueries } from "../../../entities/post/api"
+import { SortOrder } from "../../../entities/post/model"
+import { userQueries } from "../../../entities/user/api"
 
-import { useAddCommentModal, useEditCommentModal } from "../../../features/comment/model"
-import { CommentAddModal, CommentEditModal } from "../../../features/comment/ui"
-import { PostDetailModal } from "../../../features/view-post-detail/ui/PostDetailModal"
-import { useQueryParams } from "../../../shared/lib/hooks/navigate/use-search-params"
-import { usePagination } from "../../../widgets/pagination/model/use-pagination"
-import { Pagination } from "../../../widgets/pagination/ui/Pagination"
-import { PostsTable } from "../../../widgets/posts-table/ui/PostsTable"
+import { useAddCommentModal, CommentAddModal } from "../../../features/comment/add-comment"
+import { useEditCommentModal, CommentEditModal } from "../../../features/comment/edit-comment"
+import { useAddPostModal, PostAddModal } from "../../../features/post/add-post"
+import { useEditPostModal, PostEditModal } from "../../../features/post/edit-post"
+import { useDetailPostModal, PostDetailModal } from "../../../features/post/view-post-detail"
+import { useViewUserProfile, UserProfileModal } from "../../../features/user/view-user-profile"
 
-const PostsManager = () => {
+import { usePagination } from "../../../widgets/pagination/model"
+import { Pagination } from "../../../widgets/pagination/ui"
+import { PostsTable } from "../../../widgets/posts-table/ui"
+
+export const PostsManagerPage = () => {
   const location = useLocation()
   const queryParams = new URLSearchParams(location.search)
 
@@ -366,5 +365,3 @@ const PostsManager = () => {
     </Card>
   )
 }
-
-export default PostsManager

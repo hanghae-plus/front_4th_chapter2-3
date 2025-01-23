@@ -1,7 +1,7 @@
 import { queryOptions } from "@tanstack/react-query"
 
-import { FetchPostsBySearchParams, FetchPostsByTagParams, FetchPostsParams } from "../model/types"
-import { postApi } from "."
+import { FetchPostsBySearchParams, FetchPostsByTagParams, FetchPostsParams } from "../model"
+import { postApi } from "./api"
 
 export const postQueries = {
   all: () => ["posts"] as const,

@@ -1,6 +1,6 @@
-import { postApi } from "."
-import { queryClient } from "../../../shared/api/query-client"
-import { CreatePostDto, Post } from "../model/types"
+import { postApi } from "./api"
+import { queryClient } from "../../../shared/api"
+import { CreatePostDto, Post } from "../model"
 import { postQueries } from "./queries"
 
 export const postMutations = {

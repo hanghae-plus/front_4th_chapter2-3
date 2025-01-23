@@ -1,5 +1,6 @@
 import { queryOptions } from "@tanstack/react-query"
-import { commentsApi } from "."
+
+import { commentsApi } from "./api"
 
 export const commentQueries = {
   all: () => ["comments"] as const,

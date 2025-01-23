@@ -1,4 +1,4 @@
-import { User } from "../model/types"
+import { User } from "../model"
 
 interface UserProfileProps {
   user: User

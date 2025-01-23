@@ -1,5 +1,5 @@
-import { commentsApi } from "."
-import { AddCommentRequest } from "../model/types"
+import { commentsApi } from "./api"
+import { AddCommentRequest } from "../model"
 import { commentQueries } from "./queries"
 
 export const commentMutations = {
