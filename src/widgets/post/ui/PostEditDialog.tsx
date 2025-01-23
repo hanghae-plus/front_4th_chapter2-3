@@ -1,11 +1,11 @@
-import type { usePostEditDialog } from '@/features/dialog/model';
+import type { usePostDialog } from '@/features/dialog/model';
 import { CustomDialog } from '@/features/dialog/ui';
 import { useUpdatePost } from '@/features/posts/api';
 import { useSelectedPostStore } from '@/features/posts/model';
 import { Button, Input, Textarea } from '@/shared/ui';
 
 interface Props {
-  dialogState: ReturnType<typeof usePostEditDialog>['dialog'];
+  dialogState: ReturnType<typeof usePostDialog>;
 }
 /**
  * 게시물 수정 다이얼로그

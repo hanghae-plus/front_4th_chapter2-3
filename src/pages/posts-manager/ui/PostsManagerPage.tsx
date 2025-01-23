@@ -4,7 +4,7 @@ import { useState } from 'react';
 import type { Post } from '@/entities/posts/model';
 import type { User } from '@/entities/users/model';
 import { useUserDialog } from '@/features/dialog/model';
-import { usePostAddDialog, usePostEditDialog } from '@/features/dialog/model/usePostDialog';
+import { usePostDialog } from '@/features/dialog/model/usePostDialog';
 import { CustomDialog } from '@/features/dialog/ui/CustomDialog';
 import { useUrlParams } from '@/features/posts/lib';
 import { useSelectedPostStore } from '@/features/posts/model';
@@ -16,13 +16,14 @@ import { PostAddDialog, PostEditDialog, PostsTable } from '@/widgets/post/ui';
 import { UserDialog } from '@/widgets/user/ui';
 
 import { PostPagination } from '@/features/posts/ui/PostPagination';
+import { PostDetailDialog } from '@/widgets/post/ui/PostDetailDialog';
 import type { Comment } from '../model/types';
 
 export const PostsManagerPage = () => {
   const { search: searchQuery } = useUrlParams();
 
   // 상태 관리
-  const { selectedPost, setSelectedPost } = useSelectedPostStore();
+  const { setSelectedPost } = useSelectedPostStore();
 
   const [comments, setComments] = useState<{
     [key: number]: Comment[];
@@ -36,10 +37,11 @@ export const PostsManagerPage = () => {
 
   const [showAddCommentDialog, setShowAddCommentDialog] = useState(false);
   const [showEditCommentDialog, setShowEditCommentDialog] = useState(false);
-  const [showPostDetailDialog, setShowPostDetailDialog] = useState(false);
+  // const [showPostDetailDialog, setShowPostDetailDialog] = useState(false);
 
-  const { dialog: postAddDialogState } = usePostAddDialog();
-  const { dialog: postEditDialogState } = usePostEditDialog();
+  const postAddDialogState = usePostDialog();
+  const postEditDialogState = usePostDialog();
+  const postDetailDialogState = usePostDialog();
   const userDialogState = useUserDialog();
 
   // 댓글 가져오기
@@ -120,10 +122,10 @@ export const PostsManagerPage = () => {
   };
 
   // 게시물 상세 보기
-  const openPostDetail = (post: Post) => {
+  const onPostDetailOpen = (post: Post) => {
     setSelectedPost(post);
     fetchComments(post.id);
-    setShowPostDetailDialog(true);
+    postDetailDialogState.open();
   };
 
   // 댓글 렌더링
@@ -194,7 +196,7 @@ export const PostsManagerPage = () => {
           {/* 게시물 테이블 */}
           <PostsTable
             onUserClick={userDialogState.onOpenUserDialog}
-            onPostDetail={openPostDetail}
+            onPostDetail={onPostDetailOpen}
             onPostEditDialogOpen={postEditDialogState.open}
           />
           {/* 페이지네이션 */}
@@ -209,22 +211,7 @@ export const PostsManagerPage = () => {
       <PostEditDialog dialogState={postEditDialogState} />
 
       {/* 게시물 상세 보기 대화상자 */}
-      <CustomDialog
-        open={showPostDetailDialog}
-        onOpenChange={setShowPostDetailDialog}
-        title={
-          selectedPost?.title && (
-            <HighlightedText text={selectedPost?.title} highlight={searchQuery} />
-          )
-        }
-      >
-        <p>
-          {selectedPost?.body && (
-            <HighlightedText text={selectedPost?.body} highlight={searchQuery} />
-          )}
-        </p>
-        {selectedPost?.id ? renderComments(selectedPost?.id) : null}
-      </CustomDialog>
+      <PostDetailDialog dialogState={postDetailDialogState} renderComments={renderComments} />
 
       {/* 댓글 추가 대화상자 */}
       <CustomDialog

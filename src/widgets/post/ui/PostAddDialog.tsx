@@ -1,4 +1,4 @@
-import type { usePostAddDialog } from '@/features/dialog/model';
+import type { usePostDialog } from '@/features/dialog/model';
 import { CustomDialog } from '@/features/dialog/ui';
 import { useCreatePost } from '@/features/posts/api';
 import { usePostsStoreSelector } from '@/features/posts/model';
@@ -6,7 +6,7 @@ import { useNewPost } from '@/features/posts/model/useNewPost';
 import { Button, Input, Textarea } from '@/shared/ui';
 
 interface Props {
-  dialogState: ReturnType<typeof usePostAddDialog>['dialog'];
+  dialogState: ReturnType<typeof usePostDialog>;
 }
 /**
  * 게시물 추가 다이얼로그

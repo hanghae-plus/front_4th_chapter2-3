@@ -1,15 +1,7 @@
 import { useDialog } from './useDialog';
 
-export const usePostAddDialog = () => {
+export const usePostDialog = () => {
   const dialog = useDialog();
-  const openPostAddDialog = dialog.open;
 
-  return { dialog, openPostAddDialog };
-};
-
-export const usePostEditDialog = () => {
-  const dialog = useDialog();
-  const openPostEditDialog = dialog.open;
-
-  return { dialog, openPostEditDialog };
+  return dialog;
 };
