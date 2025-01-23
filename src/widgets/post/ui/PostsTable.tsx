@@ -16,7 +16,7 @@ interface Props {
 }
 export const PostsTable = ({ onUserClick, onPostDetail, onPostEditDialogOpen }: Props) => {
   const { updateParams, ...params } = useUrlParams();
-  const { data: posts } = useQueryPostsWithUsers({
+  const { data: posts, isLoading } = useQueryPostsWithUsers({
     ...params,
   });
   const setSelectedPost = useSelectedPostStore((state) => state.setSelectedPost);
@@ -35,6 +35,10 @@ export const PostsTable = ({ onUserClick, onPostDetail, onPostEditDialogOpen }: 
   const handleTagSelect = (tag: string) => {
     updateParams({ tag });
   };
+
+  if (isLoading) {
+    return <div className='flex justify-center p-4'>로딩 중...</div>;
+  }
 
   return (
     <Table>

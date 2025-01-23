@@ -6,32 +6,20 @@ import type { User } from '@/entities/users/model';
 import { useUserDialog } from '@/features/dialog/model';
 import { usePostAddDialog, usePostEditDialog } from '@/features/dialog/model/usePostDialog';
 import { CustomDialog } from '@/features/dialog/ui/CustomDialog';
-import { useQueryPosts } from '@/features/posts/api/usePostsQueries';
 import { useUrlParams } from '@/features/posts/lib';
 import { useSelectedPostStore } from '@/features/posts/model';
 import { PostSearchFilter } from '@/features/posts/ui/PostSearchFilter';
 import { get, patch, post, put, remove } from '@/shared/api/fetch';
-import {
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  Textarea,
-} from '@/shared/ui';
+import { Button, Card, CardContent, CardHeader, CardTitle, Textarea } from '@/shared/ui';
 import { HighlightedText } from '@/shared/ui/HighlightedText';
 import { PostAddDialog, PostEditDialog, PostsTable } from '@/widgets/post/ui';
 import { UserDialog } from '@/widgets/user/ui';
 
+import { PostPagination } from '@/features/posts/ui/PostPagination';
 import type { Comment } from '../model/types';
 
 export const PostsManagerPage = () => {
-  const { skip, limit, search: searchQuery, tag: selectedTag, updateParams } = useUrlParams();
+  const { search: searchQuery } = useUrlParams();
 
   // 상태 관리
   const { selectedPost, setSelectedPost } = useSelectedPostStore();
@@ -53,14 +41,6 @@ export const PostsManagerPage = () => {
   const { dialog: postAddDialogState } = usePostAddDialog();
   const { dialog: postEditDialogState } = usePostEditDialog();
   const userDialogState = useUserDialog();
-
-  // 게시물 데이터 가져오기
-  const { data: postsData, isLoading: loading } = useQueryPosts({
-    limit,
-    skip,
-    search: searchQuery,
-    tag: selectedTag,
-  });
 
   // 댓글 가져오기
   const fetchComments = async (postId: number) => {
@@ -212,50 +192,13 @@ export const PostsManagerPage = () => {
           {/* 검색 및 필터 컨트롤 */}
           <PostSearchFilter />
           {/* 게시물 테이블 */}
-          {loading ? (
-            <div className='flex justify-center p-4'>로딩 중...</div>
-          ) : (
-            <PostsTable
-              onUserClick={userDialogState.onOpenUserDialog}
-              onPostDetail={openPostDetail}
-              onPostEditDialogOpen={postEditDialogState.open}
-            />
-          )}
-
+          <PostsTable
+            onUserClick={userDialogState.onOpenUserDialog}
+            onPostDetail={openPostDetail}
+            onPostEditDialogOpen={postEditDialogState.open}
+          />
           {/* 페이지네이션 */}
-          <div className='flex justify-between items-center'>
-            <div className='flex items-center gap-2'>
-              <span>표시</span>
-              <Select
-                value={limit.toString()}
-                onValueChange={(value) => updateParams({ limit: Number(value) })}
-              >
-                <SelectTrigger className='w-[180px]'>
-                  <SelectValue placeholder='10' />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value='10'>10</SelectItem>
-                  <SelectItem value='20'>20</SelectItem>
-                  <SelectItem value='30'>30</SelectItem>
-                </SelectContent>
-              </Select>
-              <span>항목</span>
-            </div>
-            <div className='flex gap-2'>
-              <Button
-                disabled={skip === 0}
-                onClick={() => updateParams({ skip: Math.max(0, skip - limit) })}
-              >
-                이전
-              </Button>
-              <Button
-                disabled={skip + limit >= (postsData?.total ?? 0)}
-                onClick={() => updateParams({ skip: skip + limit })}
-              >
-                다음
-              </Button>
-            </div>
-          </div>
+          <PostPagination />
         </div>
       </CardContent>
 
