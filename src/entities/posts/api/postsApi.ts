@@ -1,9 +1,10 @@
 import type { Post } from '@/entities/posts/model';
 import { get, post, put, remove } from '@/shared/api/fetch';
+
 import type { PostsResponse } from './PostsResponse';
 
-const fetchPosts = async (limit: number, skip: number): Promise<PostsResponse> => {
-  const url = `/api/posts?limit=${limit}&skip=${skip}`;
+const fetchPosts = async (params: string): Promise<PostsResponse> => {
+  const url = `/api/posts?${params}`;
   return get(url);
 };
 

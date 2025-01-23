@@ -1,23 +1,30 @@
 import { useQuery } from '@tanstack/react-query';
 
+import { postsApi } from '@/entities/posts/api';
 import type { PostsResponse } from '@/entities/posts/api/PostsResponse';
 import type { Post } from '@/entities/posts/model';
 
 import { postsQueryKeys } from '../config/postsQueryKeys';
+import type { PostsUrlParams } from '../lib';
 
-export const useQueryPosts = (limit: number, skip: number) =>
-  useQuery<
-    PostsResponse,
-    Error,
-    PostsResponse,
-    readonly ['posts', 'list', { params: { limit: number; skip: number } }]
-  >({
-    ...postsQueryKeys.list({ limit, skip }),
+export const useQueryPosts = (params: PostsUrlParams) =>
+  useQuery<PostsResponse>({
+    queryKey: postsQueryKeys.list(params).queryKey,
+    queryFn: () => {
+      const searchParams = new URLSearchParams();
+      for (const [key, value] of Object.entries(params)) {
+        if (value) {
+          searchParams.set(key, String(value));
+        }
+      }
+      return postsApi.fetchPosts(searchParams.toString());
+    },
     placeholderData: (previousData) => previousData,
   });
 
 export const useQueryPostBy = (id: number) =>
-  useQuery<Post, Error, Post, readonly ['posts', 'detail', number]>({
-    ...postsQueryKeys.detail(id),
+  useQuery<Post>({
+    queryKey: postsQueryKeys.detail(id).queryKey,
+    queryFn: () => postsApi.fetchPostById(id),
     enabled: Boolean(id),
   });

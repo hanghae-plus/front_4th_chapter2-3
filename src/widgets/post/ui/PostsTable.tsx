@@ -1,31 +1,23 @@
+import { Button, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/ui';
+import { Edit2, MessageSquare, ThumbsDown, ThumbsUp, Trash2 } from 'lucide-react';
+
 import type { Post } from '@/entities/posts/model';
 import type { User } from '@/entities/users/model';
 import { useDeletePost } from '@/features/posts/api';
-import { usePostsStoreSelector } from '@/features/posts/model';
-import { useSelectedPostStore } from '@/features/posts/model/useSelectedPostStore';
-import { useSelectedTagsStore } from '@/features/tags/model';
-import { Button, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/ui';
+import { useUrlParams } from '@/features/posts/lib';
+import { usePostsStoreSelector, useSelectedPostStore } from '@/features/posts/model';
 import { HighlightedText } from '@/shared/ui/HighlightedText';
-import { Edit2, MessageSquare, ThumbsDown, ThumbsUp, Trash2 } from 'lucide-react';
 
 interface Props {
-  searchQuery: string;
-  updateURL: () => void;
   onUserClick: (user: User) => void;
   onPostDetail: (post: Post) => void;
   onPostAddDialogOpen: () => void;
 }
-export const PostsTable = ({
-  searchQuery,
-  updateURL,
-  onUserClick,
-  onPostDetail,
-  onPostAddDialogOpen,
-}: Props) => {
+export const PostsTable = ({ onUserClick, onPostDetail, onPostAddDialogOpen }: Props) => {
   const { posts, deletePost } = usePostsStoreSelector(['posts', 'deletePost']);
-  const { mutateAsync: mutatePostDelete } = useDeletePost();
-  const { selectedTag, setSelectedTag } = useSelectedTagsStore();
   const setSelectedPost = useSelectedPostStore((state) => state.setSelectedPost);
+  const { mutateAsync: mutatePostDelete } = useDeletePost();
+  const { tag: selectedTag, search: searchQuery, updateParams } = useUrlParams();
 
   // 게시물 삭제
   const handlePostDelete = async (id: number) => {
@@ -42,8 +34,7 @@ export const PostsTable = ({
 
   // 태그 선택
   const handleTagSelect = (tag: string) => {
-    setSelectedTag(tag);
-    updateURL();
+    updateParams({ tag });
   };
 
   return (
