@@ -450,6 +450,7 @@ const PostsManager = () => {
                 <ThumbsUp className="w-3 h-3" />
                 <span className="ml-1 text-xs">{comment.likes}</span>
               </Button>
+              <p>테스트</p>
               <Button
                 variant="ghost"
                 size="sm"

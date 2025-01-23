@@ -2,22 +2,19 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { usePostFilter } from "@features/postFilter/model/usePostFilter.ts";
 import { useTagStore } from "@core/store/useTagStore.ts";
 import { usePostStore } from "@core/store/usePostStore.ts";
+import PostSearch from "@features/post-search/ui/PostSearch.tsx";
 
 function PostFilter() {
   const { filters } = usePostStore();
   const { handleSortChange, handleTagSelect } = usePostFilter();
-  const { tags, selectedTag } = useTagStore();
+  const { tags } = useTagStore();
 
   return (
     <>
       검색 및 필터 컨트롤
       <div className="flex gap-4">
-        {/*<PostSearch*/}
-        {/*  searchQuery={searchQuery}*/}
-        {/*  handleKeyPress={handleKeyPress}*/}
-        {/*  handleSearchQueryChange={handleSearchQueryChange}*/}
-        {/*/>*/}
-        <Select value={selectedTag?.slug} onValueChange={(tag) => handleTagSelect(tag)}>
+        <PostSearch />
+        <Select value={filters.selectedTag} onValueChange={(tag) => handleTagSelect(tag)}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="태그 선택" />
           </SelectTrigger>

@@ -16,7 +16,6 @@ export const usePostFilter = () => {
 
   // 정렬 기준 변경
   const handleSortChange = (sortBy: string, sortOrder: "asc" | "desc") => {
-    console.log("new", sortBy, sortOrder);
     setFilters({ ...filters, sortBy, sortOrder });
     setSearchParams((params) => {
       params.set("sortBy", sortBy);

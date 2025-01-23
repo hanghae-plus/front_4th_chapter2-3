@@ -1,35 +1,28 @@
-import { useCallback, useState } from "react";
-import { searchPosts } from "@features/post-search/api/searchPosts.ts";
-import { usePost } from "@entities/post/model/usePost.ts";
+import { usePostStore } from "@core/store/usePostStore.ts";
+import { useSearchParams } from "react-router-dom";
 
 export const usePostSearch = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const { updatePosts } = usePost();
+  const { filters, setFilters } = usePostStore();
+  const [, setSearchParams] = useSearchParams();
 
-  const _handleSearchPost = useCallback(async () => {
-    const { posts } = await searchPosts(searchQuery);
-    console.log("posts", posts);
-    updatePosts(() => [...posts]);
-  }, [searchQuery, updatePosts]);
+  const _handleSearchPost = async (newSearchQuery: string) => {
+    setSearchParams((params) => {
+      params.set("search", newSearchQuery);
+      return params;
+    });
+  };
 
-  const handleSearchQueryChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setSearchQuery(e.target.value);
-    },
-    [setSearchQuery],
-  );
+  const handleSearchQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFilters({ ...filters, searchQuery: e.currentTarget.value });
+  };
 
-  const handleKeyPress = useCallback(
-    async (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Enter") {
-        await _handleSearchPost();
-      }
-    },
-    [_handleSearchPost],
-  );
+  const handleKeyPress = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && e.currentTarget.value) {
+      await _handleSearchPost(e.currentTarget.value);
+    }
+  };
 
   return {
-    searchQuery,
     handleSearchQueryChange,
     handleKeyPress,
   };

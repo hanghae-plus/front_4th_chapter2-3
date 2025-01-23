@@ -26,7 +26,7 @@ function PostTable() {
             <TableCell>{post.id}</TableCell>
             <TableCell>
               <div className="space-y-1">
-                <div>{HighlightMatch(post.title, "searchQuery")}</div>
+                <div>{HighlightMatch(post.title, filters.searchQuery)}</div>
                 <div className="flex flex-wrap gap-1">
                   {post.tags?.map((tag) => {
                     return (
