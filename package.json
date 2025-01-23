@@ -9,7 +9,19 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest",
-    "coverage": "vitest run --coverage"
+    "coverage": "vitest run --coverage",
+    "api:init": "mkdir -p quicktype",
+    "api:fetch:posts": "npm run api:init && curl \"https://dummyjson.com/posts?limit=10&skip=0\" > quicktype/postsResponse.json",
+    "api:fetch:users": "npm run api:init && curl \"https://dummyjson.com/users\" > quicktype/usersResponse.json",
+    "api:fetch:comments": "npm run api:init && curl \"https://dummyjson.com/comments/post/1\" > quicktype/commentsResponse.json",
+    "api:fetch:tags": "npm run api:init && curl \"https://dummyjson.com/posts/tags\" > quicktype/tagsResponse.json",
+    "api:fetch": "npm run api:fetch:posts && npm run api:fetch:users && npm run api:fetch:comments && npm run api:fetch:tags",
+    "api:types:posts": "npx quicktype quicktype/postsResponse.json -o quicktype/postsTypes.ts",
+    "api:types:users": "npx quicktype quicktype/usersResponse.json -o quicktype/usersTypes.ts",
+    "api:types:comments": "npx quicktype quicktype/commentsResponse.json -o quicktype/commentsTypes.ts",
+    "api:types:tags": "npx quicktype quicktype/tagsResponse.json -o quicktype/tagsTypes.ts",
+    "api:types:generate": "npm run api:types:posts && npm run api:types:users && npm run api:types:comments && npm run api:types:tags",
+    "api:types": "npm run api:fetch && npm run api:types:generate"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.64.2",
