@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Edit2, MessageSquare, Plus, Search, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react"
+import { Plus, Search } from "lucide-react"
 import { useLocation, useNavigate } from "react-router-dom"
 import {
   Button,
@@ -17,12 +17,6 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
   Textarea,
 } from "../shared/ui"
 import { Post, Tags } from "../features/post/types"
@@ -31,6 +25,9 @@ import RenderPostTable from "../features/post/ui/RenderPostTable"
 import RenderComments from "../features/comment/ui/RenderComments"
 import Pagination from "../shared/ui/Pagination"
 import AddCommentDialog from "../features/comment/ui/AddCommentDialog"
+import ModifyPost from "../features/post/ui/ModifyPost"
+import { Comment } from "../features/comment/types"
+import ModifyComment from "../features/comment/ui/ModifyComment"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -53,7 +50,7 @@ const PostsManager = () => {
   const [tags, setTags] = useState<Tags[]>([])
   const [selectedTag, setSelectedTag] = useState(queryParams.get("tag") || "")
   const [comments, setComments] = useState({})
-  const [selectedComment, setSelectedComment] = useState(null)
+  const [selectedComment, setSelectedComment] = useState<Comment | null>(null)
   const [newComment, setNewComment] = useState({ body: "", postId: null, userId: 1 })
   const [showAddCommentDialog, setShowAddCommentDialog] = useState(false)
   const [showEditCommentDialog, setShowEditCommentDialog] = useState(false)
@@ -61,7 +58,7 @@ const PostsManager = () => {
   const [showUserModal, setShowUserModal] = useState(false)
   const [selectedUser, setSelectedUser] = useState(null)
 
-  console.log("c : ", comments)
+  console.log("c : ", selectedComment)
   // URL 업데이트 함수
   const updateURL = () => {
     const params = new URLSearchParams()
@@ -456,27 +453,13 @@ const PostsManager = () => {
       </Dialog>
 
       {/* 게시물 수정 대화상자 */}
-      <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>게시물 수정</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <Input
-              placeholder="제목"
-              value={selectedPost?.title || ""}
-              onChange={(e) => setSelectedPost({ ...selectedPost, title: e.target.value })}
-            />
-            <Textarea
-              rows={15}
-              placeholder="내용"
-              value={selectedPost?.body || ""}
-              onChange={(e) => setSelectedPost({ ...selectedPost, body: e.target.value })}
-            />
-            <Button onClick={updatePost}>게시물 업데이트</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <ModifyPost
+        showEditDialog={showEditDialog}
+        setShowEditDialog={setShowEditDialog}
+        selectedPost={selectedPost}
+        setSelectedPost={setSelectedPost}
+        updatePost={updatePost}
+      />
 
       {/* 댓글 추가 대화상자 */}
       <AddCommentDialog
@@ -488,21 +471,13 @@ const PostsManager = () => {
       />
 
       {/* 댓글 수정 대화상자 */}
-      <Dialog open={showEditCommentDialog} onOpenChange={setShowEditCommentDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>댓글 수정</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <Textarea
-              placeholder="댓글 내용"
-              value={selectedComment?.body || ""}
-              onChange={(e) => setSelectedComment({ ...selectedComment, body: e.target.value })}
-            />
-            <Button onClick={updateComment}>댓글 업데이트</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <ModifyComment
+        showEditCommentDialog={showEditCommentDialog}
+        setShowEditCommentDialog={setShowEditCommentDialog}
+        selectedComment={selectedComment}
+        setSelectedComment={setSelectedComment}
+        updateComment={updateComment}
+      />
 
       {/* 게시물 상세 보기 대화상자 */}
       <Dialog open={showPostDetailDialog} onOpenChange={setShowPostDetailDialog}>
