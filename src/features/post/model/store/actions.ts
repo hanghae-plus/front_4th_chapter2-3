@@ -4,9 +4,8 @@ import {
   SetPaginationActionType,
   SetPostListActionType,
   SetSearchQueryActionType,
-  SetSortingActionType,
   Set,
-} from 'src/entities/post/model/types';
+} from '../../../../entities/post/model/types';
 
 // 상태 업데이트를 위한 공통 함수
 const setState = <K extends keyof PostStoreStateType>(
@@ -48,18 +47,16 @@ export const setPaginationAction = (set: Set<PostStoreStateType>): SetPagination
     set((state) => ({ ...state, pagination: { ...state.pagination, limit } })),
 });
 
-// 정렬 정보를 업데이트
-export const setSortingAction = (set: Set<PostStoreStateType>): SetSortingActionType => ({
-  // 정렬 기준 업데이트
-  setSortBy: (sortBy: 'date' | 'title' | 'author') =>
-    set((state) => ({ ...state, sorting: { ...state.sorting, sortBy } })),
-
-  // 정렬 순서 업데이트
-  setSortOrder: (sortOrder: 'asc' | 'desc') =>
-    set((state) => ({ ...state, sorting: { ...state.sorting, sortOrder } })),
-});
-
 // 검색 쿼리를 업데이트
 export const setSearchQueryAction = (set: Set<PostStoreStateType>): SetSearchQueryActionType => ({
   setSearchQuery: (searchQuery: string) => setState(set, 'searchQuery', searchQuery),
+});
+
+// 다이얼로그 상태를 업데이트
+export const setPostDialogAction = (set: Set<PostStoreStateType>) => ({
+  setDialog: (type: string, isOpen: boolean) =>
+    set((state: PostStoreStateType) => ({
+      ...state,
+      dialogs: { ...state.dialogs, [type]: isOpen },
+    })),
 });
