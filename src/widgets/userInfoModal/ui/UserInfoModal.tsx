@@ -1,19 +1,17 @@
+import { useSelectedUserStore } from '../../../entities/user/model/store';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../../shared/ui/dialog';
+import { UserInfo } from '../../../entities/user/ui';
 
-interface UserInfoModalProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  children: React.ReactNode;
-}
+export const UserInfoModal = () => {
+  const { showUserModal, setShowUserModal } = useSelectedUserStore();
 
-export const UserInfoModal = ({ open, onOpenChange, children }: UserInfoModalProps) => {
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+    <Dialog open={showUserModal} onOpenChange={setShowUserModal}>
+      <DialogContent aria-describedby='dialog-description'>
         <DialogHeader>
           <DialogTitle>사용자 정보</DialogTitle>
         </DialogHeader>
-        {children}
+        <UserInfo />
       </DialogContent>
     </Dialog>
   );
