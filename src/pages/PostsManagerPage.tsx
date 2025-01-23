@@ -21,6 +21,7 @@ import { useAddComment } from "../features/comment/model/useAddComment.query"
 import { useAddPost } from "../features/post/model/useAddPost.query"
 import { useGetPosts } from "../features/post/model/useGetPosts.query"
 import { useUpdatePost } from "../features/post/model/useUpdatePost.query"
+import { useUpdateComment } from "../features/comment/model/useUpdateComment.query"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -173,26 +174,21 @@ const PostsManager = () => {
   }
 
   // 댓글 업데이트
-  const updateComment = async () => {
-    try {
-      if (!selectedComment) throw new Error("댓글이 선택되지 않았습니다.")
-      const response = await fetch(`/api/comments/${selectedComment.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ body: selectedComment.body }),
-      })
-      const data = await response.json()
+  const { updateComment } = useUpdateComment({
+    onSuccess: (responseComment) => {
+      console.log(comments)
       setComments((prev) => ({
         ...prev,
-        [data.postId]: prev[data.postId].map((comment) =>
-          comment.id === data.id ? data : comment,
+        [responseComment.postId]: prev[responseComment.postId].map((comment) =>
+          comment.id === responseComment.id ? responseComment : comment,
         ),
       }))
       setShowEditCommentDialog(false)
-    } catch (error) {
+    },
+    onError: (error) => {
       console.error("댓글 업데이트 오류:", error)
-    }
-  }
+    },
+  })
 
   // 댓글 삭제
   const deleteComment = async (

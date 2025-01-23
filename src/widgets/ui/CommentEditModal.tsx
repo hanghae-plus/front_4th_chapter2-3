@@ -1,12 +1,19 @@
-import { Dialog, DialogContent, DialogTitle, DialogHeader, Textarea, Button } from "../../shared/ui"
-import { Comment } from "../../entities/post/model/types"
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogHeader,
+  Textarea,
+  Button,
+} from "../../shared/ui"
+import type { Comment } from "../../entities/comment/model/types"
 
 interface CommentEditModalProps {
   showEditCommentDialog: boolean
   setShowEditCommentDialog: (value: boolean) => void
   selectedComment: Comment
   setSelectedComment: React.Dispatch<React.SetStateAction<Comment | null>>
-  updateComment: () => void
+  updateComment: (comment: Comment) => void
 }
 
 const CommentEditModal: React.FC<CommentEditModalProps> = ({
@@ -17,7 +24,10 @@ const CommentEditModal: React.FC<CommentEditModalProps> = ({
   updateComment,
 }) => {
   return (
-    <Dialog open={showEditCommentDialog} onOpenChange={setShowEditCommentDialog}>
+    <Dialog
+      open={showEditCommentDialog}
+      onOpenChange={setShowEditCommentDialog}
+    >
       <DialogContent>
         <DialogHeader>
           <DialogTitle>댓글 수정</DialogTitle>
@@ -26,9 +36,13 @@ const CommentEditModal: React.FC<CommentEditModalProps> = ({
           <Textarea
             placeholder="댓글 내용"
             value={selectedComment?.body || ""}
-            onChange={(e) => setSelectedComment({ ...selectedComment, body: e.target.value })}
+            onChange={(e) =>
+              setSelectedComment({ ...selectedComment, body: e.target.value })
+            }
           />
-          <Button onClick={updateComment}>댓글 업데이트</Button>
+          <Button onClick={() => updateComment(selectedComment)}>
+            댓글 업데이트
+          </Button>
         </div>
       </DialogContent>
     </Dialog>

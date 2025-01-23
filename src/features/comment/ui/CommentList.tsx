@@ -52,13 +52,24 @@ const CommentList: React.FC<CommentListProps> = ({
       </div>
       <div className="space-y-1">
         {postComments[postId]?.map((comment) => (
-          <div key={comment.id} className="flex items-center justify-between text-sm border-b pb-1">
+          <div
+            key={comment.id}
+            className="flex items-center justify-between text-sm border-b pb-1"
+          >
             <div className="flex items-center space-x-2 overflow-hidden">
-              <span className="font-medium truncate">{comment.user.username}:</span>
-              <span className="truncate">{highlightText(comment.body, searchQuery)}</span>
+              <span className="font-medium truncate">
+                {comment.user.username}:
+              </span>
+              <span className="truncate">
+                {highlightText(comment.body, searchQuery)}
+              </span>
             </div>
             <div className="flex items-center space-x-1">
-              <Button variant="ghost" size="sm" onClick={() => likeComment(comment.id, postId)}>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => likeComment(comment.id, postId)}
+              >
                 <ThumbsUp className="w-3 h-3" />
                 <span className="ml-1 text-xs">{comment.likes}</span>
               </Button>
@@ -72,7 +83,11 @@ const CommentList: React.FC<CommentListProps> = ({
               >
                 <Edit2 className="w-3 h-3" />
               </Button>
-              <Button variant="ghost" size="sm" onClick={() => deleteComment(comment.id, postId)}>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => deleteComment(comment.id, postId)}
+              >
                 <Trash2 className="w-3 h-3" />
               </Button>
             </div>
