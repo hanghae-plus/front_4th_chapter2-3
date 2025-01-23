@@ -2,11 +2,12 @@ import { Button, Select, SelectContent, SelectItem, SelectTrigger, SelectValue }
 import { useAtom, useAtomValue } from "jotai"
 import { limitAtom, skipAtom } from "../../search/model/store.ts"
 import { totalAtom } from "../../../features/posts/model/postsStore.ts"
+import usePostsQuery from "../../../features/posts/model/usePostsQuery.ts"
 
 export default function Pagination() {
   const [limit, setLimit] = useAtom(limitAtom);
   const [skip, setSkip] = useAtom(skipAtom);
-  const total = useAtomValue(totalAtom);
+  const {total} = usePostsQuery();
   return (
     <div className="flex justify-between items-center">
       <div className="flex items-center gap-2">

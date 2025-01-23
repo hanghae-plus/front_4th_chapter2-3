@@ -32,13 +32,12 @@ export const useURLParams = () => {
       sortOrder,
       searchQuery,
       selectedTag})
-    console.log("태그 변경", paramString);
     setParams(paramString);
-  }, [sortBy, sortOrder, searchQuery, selectedTag]);
+  }, [sortBy, sortOrder, searchQuery, selectedTag, skip, limit]);
   
   useEffect(() => {
     changeParameter();
-  }, [ sortBy, sortOrder, searchQuery, selectedTag]);
+  }, [ sortBy, sortOrder, searchQuery, selectedTag, skip, limit]);
   
   return {
     params,

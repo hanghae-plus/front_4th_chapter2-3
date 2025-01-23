@@ -84,6 +84,22 @@ export default function usePostData() {
     }
   });
   
+  // 좋아요 누르기, 싫어요 누르기
+  const handleThumbs = useMutation({
+    mutationFn: () => Promise.resolve(),
+    onMutate: (data) => {
+      queryClient.setQueryData(['posts', params], (oldData) => {
+        const thisPost = oldData.posts.find(post => post.id === data.post.id);
+        if (data.type === "up") {
+          thisPost.reactions.likes += 1;
+        } else {
+          thisPost.reactions.dislikes += 1;
+        }
+        return oldData;
+      });
+    }
+  });
+  
   // 게시물 상세 보기
   const openPostDetail = async (post : InfPost) => {
     setSelectedPost(post)
@@ -103,9 +119,9 @@ export default function usePostData() {
   }
   
   return {
-    addPost: addPostMutation.mutate,
-    updatePost: updatePostMutation.mutate,
-    deletePost: deletePostMutation.mutate,
+    addPost: (post) => addPostMutation.mutate(post),
+    updatePost: (post) => updatePostMutation.mutate(post),
+    deletePost: (id) => deletePostMutation.mutate(id),
     posts,
     searchQuery,
     selectedTag,
@@ -114,5 +130,6 @@ export default function usePostData() {
     setShowEditDialog,
     openPostDetail,
     openUserModal,
+    handleThumbs: (post, type) => handleThumbs.mutate({post, type})
   }
 }

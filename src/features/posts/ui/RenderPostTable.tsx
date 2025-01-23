@@ -18,6 +18,7 @@ export default function RenderPostTable() {
     setShowEditDialog,
     openPostDetail,
     openUserModal,
+    handleThumbs,
   } = usePostData();
   const {updateURL} = updateSearchParams();
   const isLoading = useAtomValue(isLoadingAtom);
@@ -73,10 +74,14 @@ export default function RenderPostTable() {
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1" onClick={() => handleThumbs(post, "up")}>
                     <ThumbsUp className="w-4 h-4" />
                     <span>{post.reactions?.likes || 0}</span>
-                    <ThumbsDown className="w-4 h-4" />
-                    <span>{post.reactions?.dislikes || 0}</span>
+                  </div>
+                    <div className="flex items-center gap-1" onClick={() => handleThumbs(post, "down")}>
+                      <ThumbsDown className="w-4 h-4" />
+                      <span>{post.reactions?.dislikes || 0}</span>
+                    </div>
                   </div>
                 </TableCell>
                 <TableCell>

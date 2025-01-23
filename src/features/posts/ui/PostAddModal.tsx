@@ -33,9 +33,7 @@ export default function PostAddModal() {
           value={newPost.userId}
           onChange={(e) => setNewPost({ ...newPost, userId: Number(e.target.value) })}
         />
-        <Button onClick={() => {
-          addPost(newPost)
-        }}>게시물 추가</Button>
+        <Button onClick={() => addPost(newPost)}>게시물 추가</Button>
       </div>
     </Modal>
   )
