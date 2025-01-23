@@ -1,11 +1,22 @@
 import { User } from "@entities/user";
 
 export type SortBy = "id" | "title" | "reactions";
-export type SortOrder = "asc" | "dsc";
+export type SortOrder = "asc" | "desc";
+
+export interface PostSearchParams {
+  skip?: number;
+  limit?: number;
+  searchQuery?: string;
+  sortBy?: SortBy;
+  sortOrder?: SortOrder;
+  selectedTag?: string;
+}
 
 export interface PostsRequestDto {
   limit?: number;
   skip?: number;
+  sortBy?: string;
+  sortOrder?: SortOrder;
 }
 
 export interface PostsResponseDto {

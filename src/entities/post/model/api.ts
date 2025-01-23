@@ -1,7 +1,12 @@
 import { NewPost, Post, PostsRequestDto, PostsResponseDto } from "./types";
 
-export const getPosts = async ({ limit = 0, skip = 0 }: PostsRequestDto): Promise<PostsResponseDto> =>
-  fetch(`/api/posts?limit=${limit}&skip=${skip}`)
+export const getPosts = async ({
+  limit = 10,
+  skip = 0,
+  sortBy = "",
+  sortOrder = "asc",
+}: PostsRequestDto): Promise<PostsResponseDto> =>
+  fetch(`/api/posts?limit=${limit}&skip=${skip}&sortBy=${sortBy}&sortOrder=&${sortOrder}`)
     .then((response) => response.json())
     .catch((error) => {
       console.error("게시물 가져오기 오류:", error);

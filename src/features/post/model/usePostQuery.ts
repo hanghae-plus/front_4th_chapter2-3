@@ -1,4 +1,11 @@
-import { getPosts, getPostsByTag, PostsRequestDto, PostsResponseDto, searchPosts } from "@entities/post";
+import {
+  getPosts,
+  getPostsByTag,
+  PostSearchParams,
+  PostsRequestDto,
+  PostsResponseDto,
+  searchPosts,
+} from "@entities/post";
 import { useQuery } from "@tanstack/react-query";
 import { postQueryKey } from "./postQueryKey";
 
@@ -11,14 +18,20 @@ const POST_QUERY_TYPE_MAP: Record<PostQueryType, PostQueryKeyFn<any>> = {
   BY_TAG: { key: postQueryKey.listByTag, fn: getPostsByTag } as PostQueryKeyFn<string>,
 };
 
-export type UsePostQueryProps =
-  | { type: "DEFAULT"; params: PostsRequestDto }
-  | { type: "BY_SEARCH"; params: string }
-  | { type: "BY_TAG"; params: string };
+export const usePostQuery = ({ limit, skip, sortBy, sortOrder, searchQuery, selectedTag }: PostSearchParams) => {
+  const type = searchQuery ? "BY_SEARCH" : selectedTag ? "BY_TAG" : "DEFAULT";
+  const paramByType = {
+    BY_SEARCH: searchQuery,
+    BY_TAG: selectedTag,
+    DEFAULT: { limit, skip, sortBy, sortOrder },
+  };
 
-export const usePostQuery = ({ type, params }: UsePostQueryProps) => {
+  console.log(type);
+  console.log(paramByType[type]);
+
   return useQuery<PostsResponseDto>({
-    queryKey: POST_QUERY_TYPE_MAP[type].key(params),
-    queryFn: async () => POST_QUERY_TYPE_MAP[type].fn(params),
+    queryKey: POST_QUERY_TYPE_MAP[type].key(paramByType[type]),
+    queryFn: async () => POST_QUERY_TYPE_MAP[type].fn(paramByType[type]),
+    staleTime: 1000 * 60,
   });
 };
