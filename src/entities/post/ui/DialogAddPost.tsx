@@ -1,4 +1,3 @@
-import { Dispatch, SetStateAction } from "react";
 import {
   Dialog,
   DialogContent,
@@ -8,27 +7,20 @@ import {
   Input,
   Button,
 } from "../../../shared/ui";
-import { NewPostProps } from "../model/types";
 import { useAtom } from "jotai";
-import { newPostAtom } from "../../../app/store/atom";
+import { addDialogAtom, newPostAtom } from "../../../app/store/atom";
+import { usePosts } from "../lib/usePosts";
 
-interface DialogAddPostProps {
-  onOpen: boolean;
-  onOpenChange: Dispatch<SetStateAction<boolean>>;
-  onAddPost: (newPost: NewPostProps) => void;
-}
-
-export const DialogAddPost: React.FC<DialogAddPostProps> = ({
-  onOpen,
-  onOpenChange,
-  onAddPost,
-}) => {
+export const DialogAddPost: React.FC = () => {
   const [newPost, setNewPost] = useAtom(newPostAtom);
+  const [showAddDialog, setShowAddDialog] = useAtom(addDialogAtom);
+
+  const { handleAddPost } = usePosts();
 
   return (
     <Dialog
-      open={onOpen}
-      onOpenChange={onOpenChange}
+      open={showAddDialog}
+      onOpenChange={setShowAddDialog}
     >
       <DialogContent>
         <DialogHeader>
@@ -54,7 +46,7 @@ export const DialogAddPost: React.FC<DialogAddPostProps> = ({
               setNewPost({ ...newPost, userId: parseInt(e.target.value) })
             }
           />
-          <Button onClick={() => onAddPost(newPost)}>게시물 추가</Button>
+          <Button onClick={handleAddPost}>게시물 추가</Button>
         </div>
       </DialogContent>
     </Dialog>

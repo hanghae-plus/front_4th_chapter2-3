@@ -1,27 +1,20 @@
-import { Dispatch, SetStateAction } from "react";
 import {
   Dialog,
   DialogHeader,
   DialogContent,
   DialogTitle,
 } from "../../../shared/ui";
-import { User } from "../model/types";
+import { selectedUserAtom, userModalAtom } from "../../../app/store/atom";
+import { useAtom } from "jotai";
 
-interface UserModal {
-  onOpen: boolean;
-  onOpenChange: Dispatch<SetStateAction<boolean>>;
-  selectedUser: User | null;
-}
+export const UserModal: React.FC = () => {
+  const [selectedUser] = useAtom(selectedUserAtom);
+  const [showUserModal, setShowUserModal] = useAtom(userModalAtom);
 
-export const UserModal: React.FC<UserModal> = ({
-  onOpen,
-  onOpenChange,
-  selectedUser,
-}) => {
   return (
     <Dialog
-      open={onOpen}
-      onOpenChange={onOpenChange}
+      open={showUserModal}
+      onOpenChange={setShowUserModal}
     >
       <DialogContent>
         <DialogHeader>

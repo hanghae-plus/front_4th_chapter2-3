@@ -25,7 +25,6 @@ import {
   selectedPostAtom,
   searchQueryAtom,
   selectedCommentAtom,
-  selectedUserAtom,
   selectedTagAtom,
   loadingAtom,
   limitAtom,
@@ -38,7 +37,6 @@ import {
   sortByAtom,
   sortOrderAtom,
   postDetailDialogAtom,
-  userModalAtom,
 } from "../app/store/atom.ts";
 import { usePosts } from "../entities/post/lib/usePosts.ts";
 import { useComment } from "../entities/comment/lib/useComment.ts";
@@ -49,7 +47,6 @@ import { useInitializePosts } from "../shared/hook/useInitializePosts.ts";
 const PostsManager = () => {
   // 전역 변수
   const [searchQuery] = useAtom(searchQueryAtom);
-  const [selectedUser] = useAtom(selectedUserAtom);
   const [selectedTag] = useAtom(selectedTagAtom);
   const [loading] = useAtom(loadingAtom);
   const [skip] = useAtom(skipAtom);
@@ -62,7 +59,7 @@ const PostsManager = () => {
   const [newComment, setNewComment] = useAtom(newCommentAtom);
 
   const [showEditDialog, setShowEditDialog] = useAtom(editDialogAtom);
-  const [showAddDialog, setShowAddDialog] = useAtom(addDialogAtom);
+  const [, setShowAddDialog] = useAtom(addDialogAtom);
   const [showAddCommentDialog, setShowAddCommentDialog] =
     useAtom(addCommentDialogAtom);
   const [showEditCommentDialog, setShowEditCommentDialog] = useAtom(
@@ -70,16 +67,11 @@ const PostsManager = () => {
   );
   const [showPostDetailDialog, setShowPostDetailDialog] =
     useAtom(postDetailDialogAtom);
-  const [showUserModal, setShowUserModal] = useAtom(userModalAtom);
 
   const { handleFetchTags } = useTags();
 
-  const {
-    handleFetchPost,
-    handleFetchPostsByTag,
-    handleAddPost,
-    handleUpdatePost,
-  } = usePosts();
+  const { handleFetchPost, handleFetchPostsByTag, handleUpdatePost } =
+    usePosts();
 
   const { handleAddComments, handleUpdateComments } = useComment();
 
@@ -136,11 +128,7 @@ const PostsManager = () => {
       </CardContent>
 
       {/* 게시물 추가 대화상자 */}
-      <DialogAddPost
-        onOpen={showAddDialog}
-        onOpenChange={setShowAddDialog}
-        onAddPost={handleAddPost}
-      />
+      <DialogAddPost />
 
       {/* 게시물 수정 대화상자 */}
       <Dialog
@@ -235,11 +223,7 @@ const PostsManager = () => {
       </Dialog>
 
       {/* 사용자 모달 */}
-      <UserModal
-        onOpen={showUserModal}
-        onOpenChange={setShowUserModal}
-        selectedUser={selectedUser}
-      />
+      <UserModal />
     </Card>
   );
 };
