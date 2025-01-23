@@ -8,8 +8,12 @@ export const QUERY_KEYS = {
   TAG: ["tags"],
   POST: {
     all: ["posts"],
-    getPostList: (limit: string, skip: string) => ["posts", { limit, skip }],
+    getPostList: (limit: string, skip: string) => [...QUERY_KEYS.POST.all, { limit, skip }],
     getPostDetail: (postId: string | undefined) => [...QUERY_KEYS.POST.all, postId],
-    postPost: (newPost: Partial<Post>) => ["post", JSON.stringify(newPost)],
+    postPost: (newPost: Partial<Post>) => [...QUERY_KEYS.POST.all, JSON.stringify(newPost)],
+  },
+  COMMENT: {
+    all: ["comment"],
+    getCommentList: (postId: Post["id"]) => [...QUERY_KEYS.COMMENT.all, postId.toLocaleString()],
   },
 }
