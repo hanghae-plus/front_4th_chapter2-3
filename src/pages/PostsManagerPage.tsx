@@ -1,8 +1,8 @@
 import { Card, CardContent } from '../shared/ui';
 import UserDialog from '../features/user/ui/UserDialog.tsx';
 import PostDetailDialog from '../features/post/ui/PostDetailDialog.tsx';
-import EditCommentDialog from '../features/comment/ui/EditCommentDialog.tsx';
-import AddCommentDialog from '../features/comment/ui/AddCommentDialog.tsx';
+import { EditCommentDialog } from '../features/edit-comment/ui';
+import { AddCommentDialog } from '../features/add-comment/ui';
 import EditPostDialog from '../features/post/ui/EditPostDialog.tsx';
 import AddPostDialog from '../features/post/ui/AddPostDialog.tsx';
 import PostTable from '../features/post/ui/PostTable.tsx';

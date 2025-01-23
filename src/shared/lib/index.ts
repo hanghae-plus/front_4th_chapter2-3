@@ -1,1 +1,1 @@
-export { transformFormValue } from './transform-form-value.ts';
+export { transformFormValue } from './transform-form-value';
