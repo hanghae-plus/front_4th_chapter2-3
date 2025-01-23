@@ -7,7 +7,7 @@ import { queryClient } from "../../../shared/api/query-client"
 import { Post } from "../../../entities/post/model/types"
 import { useModal } from "../../../shared/lib/hooks/modal/use-modal"
 
-export const useEditPost = () => {
+export const useEditPostModal = () => {
   const { isOpen, open, close } = useModal()
   const [postId, setPostId] = useState<number>()
   const [editingPost, setEditingPost] = useState<Post>()
@@ -57,7 +57,6 @@ export const useEditPost = () => {
   }
 
   const handleSubmit = () => {
-    console.log(editingPost)
     if (!editingPost) return
     updatePostMutation.mutate({
       id: editingPost.id,

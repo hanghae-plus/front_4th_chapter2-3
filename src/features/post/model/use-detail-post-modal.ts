@@ -5,7 +5,7 @@ import { useModal } from "../../../shared/lib/hooks/modal/use-modal"
 import { postQueries } from "../../../entities/post/api/queries"
 import { commentQueries } from "../../../entities/comment/api/queries"
 
-export const usePostDetail = () => {
+export const useDetailPostModal = () => {
   const { isOpen, open, close } = useModal()
   const [selectedPostId, setSelectedPostId] = useState<string>()
 
