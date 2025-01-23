@@ -1,25 +1,9 @@
-import { User } from "../../user/api/userApi"
-
+import { Post } from "../model/types"
 export interface PostsTypes {
   posts: Post[]
   total: number
   skip: number
   limit: number
-}
-
-export interface Post {
-  id: number
-  title: string
-  body: string
-  tags: string[]
-  reactions: Reactions
-  views: number
-  userId: User["id"]
-}
-
-export interface Reactions {
-  likes: number
-  dislikes: number
 }
 
 export interface CreatePostParams {

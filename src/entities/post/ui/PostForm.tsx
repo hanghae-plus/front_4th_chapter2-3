@@ -1,8 +1,9 @@
-import { Post } from "../api/postApi"
 import { Input, Textarea } from "../../../shared/ui"
+import { CreatePostParams } from "../api/postApi"
+import { Post } from "../model/types"
 
-interface PostFormProps {
-  post: Pick<Post, "title" | "body" | "userId">
+export interface PostFormProps {
+  post: CreatePostParams["body"]
   onChange: (post: Pick<Post, "title" | "body" | "userId">) => void
 }
 

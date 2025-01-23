@@ -1,5 +1,5 @@
 import { CardHeader, CardTitle } from "../../shared/ui"
-import { AddPostDialog } from "../../features/post/ui/AddPostDialog"
+import { AddPostDialog } from "../../features/addPost/ui/AddPostDialog"
 
 export const Header = () => {
   return (

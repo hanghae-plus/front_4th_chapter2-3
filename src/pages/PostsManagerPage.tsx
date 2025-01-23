@@ -23,11 +23,12 @@ import {
   TableRow,
   Textarea,
 } from "../shared/ui"
-import { Post, PostsTypes } from "../entities/post/api/postApi"
+import { PostsTypes } from "../entities/post/api/postApi"
 import { User, UsersTypes } from "../entities/user/api/userApi"
 import { Comment } from "../entities/comments/api/commentsApi"
 import { Tag } from "../entities/tag/api/tagApi"
 import { Header } from "./ui/Header"
+import { Post } from "../entities/post/model/types"
 
 interface PostWithUser extends Post {
   author: User
