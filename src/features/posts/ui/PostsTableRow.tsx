@@ -4,12 +4,19 @@ import { highlightText } from '../../../shared/lib';
 import { Post } from 'src/shared/types';
 import { DeletePostButton, OpenEditDialogButton, OpenPostDetailButton } from '.';
 import { PostUserButton } from './PostUserButton';
+import { useSearchStore } from '../model/searchStore';
 
 interface PostsTableRowProps {
   post: Post;
 }
 
 export const PostsTableRow = ({ post }: PostsTableRowProps) => {
+  const { searchQuery, selectedTag, setSelectedTag } = useSearchStore();
+
+  const handleTagClick = (tag: string) => {
+    setSelectedTag(tag);
+  };
+
   return (
     <>
       <TableRow key={post.id}>
@@ -26,10 +33,7 @@ export const PostsTableRow = ({ post }: PostsTableRowProps) => {
                       ? 'text-white bg-blue-500 hover:bg-blue-600'
                       : 'text-blue-800 bg-blue-100 hover:bg-blue-200'
                   }`}
-                  onClick={() => {
-                    setSelectedTag(tag);
-                    updateURL();
-                  }}
+                  onClick={() => handleTagClick(tag)}
                 >
                   {tag}
                 </span>
