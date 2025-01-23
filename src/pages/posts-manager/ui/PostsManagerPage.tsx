@@ -1,48 +1,41 @@
-import { Edit2, Plus, ThumbsUp, Trash2 } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { useState } from 'react';
 
+import type { Comment } from '@/entities/comments/model';
 import type { Post } from '@/entities/posts/model';
-import type { User } from '@/entities/users/model';
-import { useUserDialog } from '@/features/dialog/model';
-import { usePostDialog } from '@/features/dialog/model/usePostDialog';
+import { useNewCommentStoreSelector } from '@/features/comments/model/useNewCommentStore';
+import { CommentAdd } from '@/features/comments/ui/CommentAdd';
+import { CommentItem } from '@/features/comments/ui/CommentItem';
+import { useDialog, useUserDialog } from '@/features/dialog/model';
 import { CustomDialog } from '@/features/dialog/ui/CustomDialog';
-import { useUrlParams } from '@/features/posts/lib';
 import { useSelectedPostStore } from '@/features/posts/model';
+import { PostPagination } from '@/features/posts/ui/PostPagination';
 import { PostSearchFilter } from '@/features/posts/ui/PostSearchFilter';
-import { get, patch, post, put, remove } from '@/shared/api/fetch';
+import { get, patch, put, remove } from '@/shared/api/fetch';
 import { Button, Card, CardContent, CardHeader, CardTitle, Textarea } from '@/shared/ui';
-import { HighlightedText } from '@/shared/ui/HighlightedText';
-import { PostAddDialog, PostEditDialog, PostsTable } from '@/widgets/post/ui';
+import { CommentAddDialog, PostAddDialog, PostEditDialog, PostsTable } from '@/widgets/post/ui';
+import { PostDetailDialog } from '@/widgets/post/ui/PostDetailDialog';
 import { UserDialog } from '@/widgets/user/ui';
 
-import { PostPagination } from '@/features/posts/ui/PostPagination';
-import { PostDetailDialog } from '@/widgets/post/ui/PostDetailDialog';
-import type { Comment } from '../model/types';
-
 export const PostsManagerPage = () => {
-  const { search: searchQuery } = useUrlParams();
-
   // 상태 관리
-  const { setSelectedPost } = useSelectedPostStore();
+  const { selectedPost, setSelectedPost } = useSelectedPostStore();
 
   const [comments, setComments] = useState<{
     [key: number]: Comment[];
   }>({});
   const [selectedComment, setSelectedComment] = useState<Comment | null>(null);
-  const [newComment, setNewComment] = useState<Partial<Comment> & { userId: User['id'] }>({
-    body: '',
-    postId: null,
-    userId: 1,
-  });
+  const { newComment, updateNewComment } = useNewCommentStoreSelector([
+    'newComment',
+    'updateNewComment',
+  ]);
 
-  const [showAddCommentDialog, setShowAddCommentDialog] = useState(false);
-  const [showEditCommentDialog, setShowEditCommentDialog] = useState(false);
-  // const [showPostDetailDialog, setShowPostDetailDialog] = useState(false);
-
-  const postAddDialogState = usePostDialog();
-  const postEditDialogState = usePostDialog();
-  const postDetailDialogState = usePostDialog();
+  const postAddDialogState = useDialog();
+  const postEditDialogState = useDialog();
+  const postDetailDialogState = useDialog();
   const userDialogState = useUserDialog();
+  const commentAddDialogState = useDialog();
+  const commentEditDialogState = useDialog();
 
   // 댓글 가져오기
   const fetchComments = async (postId: number) => {
@@ -52,21 +45,6 @@ export const PostsManagerPage = () => {
       setComments((prev) => ({ ...prev, [postId]: data.comments }));
     } catch (error) {
       console.error('댓글 가져오기 오류:', error);
-    }
-  };
-
-  // 댓글 추가
-  const addComment = async () => {
-    try {
-      const data = await post('/api/comments/add', newComment);
-      setComments((prev) => ({
-        ...prev,
-        [data.postId]: [...(prev[data.postId] || []), data],
-      }));
-      setShowAddCommentDialog(false);
-      setNewComment({ body: '', postId: null, userId: 1 });
-    } catch (error) {
-      console.error('댓글 추가 오류:', error);
     }
   };
 
@@ -82,10 +60,16 @@ export const PostsManagerPage = () => {
           comment.id === data.id ? data : comment,
         ),
       }));
-      setShowEditCommentDialog(false);
+      commentEditDialogState.close();
     } catch (error) {
       console.error('댓글 업데이트 오류:', error);
     }
+  };
+
+  // 댓글 추가
+  const onCommentAdd = async () => {
+    commentAddDialogState.open();
+    updateNewComment({ ...newComment, postId: selectedPost?.id });
   };
 
   // 댓글 삭제
@@ -131,48 +115,20 @@ export const PostsManagerPage = () => {
   // 댓글 렌더링
   const renderComments = (postId: number) => (
     <div className='mt-2'>
-      <div className='flex items-center justify-between mb-2'>
-        <h3 className='text-sm font-semibold'>댓글</h3>
-        <Button
-          size='sm'
-          onClick={() => {
-            setNewComment((prev) => ({ ...prev, postId }));
-            setShowAddCommentDialog(true);
-          }}
-        >
-          <Plus className='w-3 h-3 mr-1' />
-          댓글 추가
-        </Button>
-      </div>
+      <CommentAdd onCommentAdd={onCommentAdd} />
       <div className='space-y-1'>
         {comments[postId]?.map((comment) => (
-          <div key={comment.id} className='flex items-center justify-between text-sm border-b pb-1'>
-            <div className='flex items-center space-x-2 overflow-hidden'>
-              <span className='font-medium truncate'>{comment.user.username}:</span>
-              <span className='truncate'>
-                <HighlightedText text={comment.body} highlight={searchQuery} />
-              </span>
-            </div>
-            <div className='flex items-center space-x-1'>
-              <Button variant='ghost' size='sm' onClick={() => likeComment(comment.id, postId)}>
-                <ThumbsUp className='w-3 h-3' />
-                <span className='ml-1 text-xs'>{comment.likes}</span>
-              </Button>
-              <Button
-                variant='ghost'
-                size='sm'
-                onClick={() => {
-                  setSelectedComment(comment);
-                  setShowEditCommentDialog(true);
-                }}
-              >
-                <Edit2 className='w-3 h-3' />
-              </Button>
-              <Button variant='ghost' size='sm' onClick={() => deleteComment(comment.id, postId)}>
-                <Trash2 className='w-3 h-3' />
-              </Button>
-            </div>
-          </div>
+          <CommentItem
+            key={comment.id}
+            comment={comment}
+            onCommentEditDialogOpen={() => {
+              setSelectedComment(comment);
+              commentEditDialogState.open();
+            }}
+            onDelete={deleteComment}
+            onLike={likeComment}
+            postId={postId}
+          />
         ))}
       </div>
     </div>
@@ -214,23 +170,12 @@ export const PostsManagerPage = () => {
       <PostDetailDialog dialogState={postDetailDialogState} renderComments={renderComments} />
 
       {/* 댓글 추가 대화상자 */}
-      <CustomDialog
-        open={showAddCommentDialog}
-        onOpenChange={setShowAddCommentDialog}
-        title='새 댓글 추가'
-      >
-        <Textarea
-          placeholder='댓글 내용'
-          value={newComment.body}
-          onChange={(e) => setNewComment({ ...newComment, body: e.target.value })}
-        />
-        <Button onClick={addComment}>댓글 추가</Button>
-      </CustomDialog>
+      <CommentAddDialog dialogState={commentAddDialogState} />
 
       {/* 댓글 수정 대화상자 */}
       <CustomDialog
-        open={showEditCommentDialog}
-        onOpenChange={setShowEditCommentDialog}
+        open={commentEditDialogState.isOpen}
+        onOpenChange={commentEditDialogState.close}
         title='댓글 수정'
       >
         <Textarea
