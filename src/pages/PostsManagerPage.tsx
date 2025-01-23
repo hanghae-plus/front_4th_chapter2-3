@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Edit2, MessageSquare, Plus, Search, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react";
+import { Edit2, Plus, Search, ThumbsUp, Trash2 } from "lucide-react";
 
 import {
   Button,
@@ -17,44 +17,22 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
   Textarea,
 } from "../shared/ui";
 
-import {
-  Post,
-  PostWithUser,
-  Tag,
-  User,
-  Comment,
-  NewComment,
-  addPost,
-  updatePost,
-  deletePost,
-  getUser,
-  PostSearchParams,
-} from "@entities/index";
+import { Post, Tag, User, Comment, NewComment, addPost, updatePost } from "@entities/index";
 import { addComment, deleteComment, likeComment, updateComment } from "@entities/comment/model";
-import { usePostQuery } from "@features/post";
+import { usePostQuery, usePostStore } from "@features/post";
 import { useUserQuery } from "@features/user";
-import { useSearchParams } from "react-router-dom";
 import { useTagQuery } from "@features/tag";
 import { commentQueryKey, useCommentQuery } from "@features/comment";
 import { useQueryClient } from "@tanstack/react-query";
+import { getPostWithUser } from "@features/post/model/post";
+import PostTable from "@features/post/ui/PostTable";
 
 const PostsManager = () => {
-  // 상태 관리
-  const [posts, setPosts] = useState<PostWithUser[]>([]);
-  const [total, setTotal] = useState(0);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
-  const [newPost, setNewPost] = useState({ title: "", body: "", userId: 1 });
   const [loading, setLoading] = useState(false);
   const [selectedComment, setSelectedComment] = useState<Comment | null>(null);
   const [newComment, setNewComment] = useState<NewComment>({ body: "", postId: null, userId: 1 });
@@ -64,45 +42,32 @@ const PostsManager = () => {
   const [showUserModal, setShowUserModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const updateSearchParams = (key: keyof PostSearchParams, value: string) => {
-    setSearchParams((prev) => {
-      const newParams = new URLSearchParams(prev);
-      newParams.set(key, value);
-      return newParams;
-    });
-  };
-
-  const limit = Number(searchParams.get("limit") ?? "10");
-
-  const skip = Number(searchParams.get("skip") ?? "0");
-  const searchQuery = searchParams.get("searchQuery") ?? "";
-  const selectedTag = searchParams.get("selectedTag") ?? "";
-  const sortBy = searchParams.get("sortBy") ?? "";
-  const sortOrder = searchParams.get("sortOrder") ?? "asc";
-
+  const { posts, total, selectedPost, newPost, setPosts, setNewPost, setSelectedPost } = usePostStore();
   const queryClient = useQueryClient();
 
   const {
     data: postsData,
     isSuccess: isPostsSuccess,
     isLoading: isPostsLoading,
-  } = usePostQuery(Object.fromEntries(searchParams) as PostSearchParams);
+    limit,
+    skip,
+    searchQuery,
+    selectedTag,
+    sortBy,
+    sortOrder,
+    updatePostSearchParams,
+  } = usePostQuery();
+
   const { data: usersData, isSuccess: isUsersSucess, isLoading: isUsersLoading } = useUserQuery();
   const { data: tags } = useTagQuery();
   const { data: comments } = useCommentQuery(selectedPost?.id);
 
   useEffect(() => {
     if (isPostsSuccess && isUsersSucess) {
-      const postsWithUsers = postsData.posts.map((post) => ({
-        ...post,
-        author: usersData.users.find((user) => user.id === post.userId) ?? null,
-      }));
+      const postsWithUsers = postsData?.posts.map((post) => getPostWithUser(post, usersData.users)) ?? [];
       setPosts(postsWithUsers);
-      setTotal(postsData.total);
     }
-  }, [isPostsSuccess, isUsersSucess, postsData, usersData]);
+  }, [isPostsSuccess, isUsersSucess, postsData, usersData, setPosts]);
 
   useEffect(() => {
     setLoading(isPostsLoading || isUsersLoading);
@@ -110,19 +75,16 @@ const PostsManager = () => {
 
   // 게시물 검색
   const searchPosts = async (searchQuery: string) => {
-    if (!searchQuery) {
-      return;
-    }
-    updateSearchParams("searchQuery", searchQuery);
+    updatePostSearchParams("searchQuery", searchQuery);
   };
 
   // 태그별 게시물 가져오기
   const fetchPostsByTag = async (tag: string) => {
     if (tag === "all") {
-      updateSearchParams("selectedTag", "");
+      updatePostSearchParams("selectedTag", "");
       return;
     }
-    updateSearchParams("selectedTag", tag);
+    updatePostSearchParams("selectedTag", tag);
   };
 
   // 게시물 추가
@@ -140,15 +102,12 @@ const PostsManager = () => {
 
     const data = await updatePost(selectedPost);
 
-    // FIX_ME: auther 추후 수정
-    setPosts(posts.map((post) => (post.id === data.id ? { ...data, author: null } : post)));
+    setPosts(
+      posts.map((post) =>
+        post.id === data.id ? { ...data, author: null } : getPostWithUser(post, usersData?.users ?? []),
+      ),
+    );
     setShowEditDialog(false);
-  };
-
-  // 게시물 삭제
-  const deletePostAndUpdate = async (id: number) => {
-    await deletePost(id);
-    setPosts(posts.filter((post) => post.id !== id));
   };
 
   // 댓글 추가
@@ -192,34 +151,6 @@ const PostsManager = () => {
     );
   };
 
-  // 게시물 상세 보기
-  const openPostDetail = (post: Post) => {
-    setSelectedPost(post);
-    setShowPostDetailDialog(true);
-  };
-
-  // 사용자 모달 열기
-  const openUserModal = async (user: User) => {
-    try {
-      const userData = await getUser(user.id);
-      setSelectedUser(userData);
-      setShowUserModal(true);
-    } catch (error) {
-      console.error("사용자 정보 가져오기 오류:", error);
-    }
-  };
-
-  useEffect(() => {
-    setSearchParams((prev) => ({
-      skip: prev.get("skip") ?? "0",
-      limit: prev.get("limit") ?? "10",
-      searchQuery: prev.get("searchQuery") ?? "",
-      sortBy: prev.get("sortBy") ?? "",
-      sortOrder: prev.get("sortOrder") ?? "asc",
-      selectedTag: prev.get("selectedTag") ?? "",
-    }));
-  }, []);
-
   // 하이라이트 함수 추가
   const highlightText = (text: string, highlight: string) => {
     if (!text) return null;
@@ -234,85 +165,6 @@ const PostsManager = () => {
       </span>
     );
   };
-
-  // 게시물 테이블 렌더링
-  const renderPostTable = () => (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead className="w-[50px]">ID</TableHead>
-          <TableHead>제목</TableHead>
-          <TableHead className="w-[150px]">작성자</TableHead>
-          <TableHead className="w-[150px]">반응</TableHead>
-          <TableHead className="w-[150px]">작업</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {posts.map((post) => (
-          <TableRow key={post.id}>
-            <TableCell>{post.id}</TableCell>
-            <TableCell>
-              <div className="space-y-1">
-                <div>{highlightText(post.title, searchQuery)}</div>
-
-                <div className="flex flex-wrap gap-1">
-                  {post.tags?.map((tag) => (
-                    <span
-                      key={tag}
-                      className={`px-1 text-[9px] font-semibold rounded-[4px] cursor-pointer ${
-                        selectedTag === tag
-                          ? "text-white bg-blue-500 hover:bg-blue-600"
-                          : "text-blue-800 bg-blue-100 hover:bg-blue-200"
-                      }`}
-                      onClick={() => {
-                        fetchPostsByTag(tag);
-                      }}
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </TableCell>
-            <TableCell>
-              <div className="flex items-center space-x-2 cursor-pointer" onClick={() => openUserModal(post.author)}>
-                <img src={post.author?.image} alt={post.author?.username} className="w-8 h-8 rounded-full" />
-                <span>{post.author?.username}</span>
-              </div>
-            </TableCell>
-            <TableCell>
-              <div className="flex items-center gap-2">
-                <ThumbsUp className="w-4 h-4" />
-                <span>{post.reactions?.likes || 0}</span>
-                <ThumbsDown className="w-4 h-4" />
-                <span>{post.reactions?.dislikes || 0}</span>
-              </div>
-            </TableCell>
-            <TableCell>
-              <div className="flex items-center gap-2">
-                <Button variant="ghost" size="sm" onClick={() => openPostDetail(post)}>
-                  <MessageSquare className="w-4 h-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    setSelectedPost(post);
-                    setShowEditDialog(true);
-                  }}
-                >
-                  <Edit2 className="w-4 h-4" />
-                </Button>
-                <Button variant="ghost" size="sm" onClick={() => deletePostAndUpdate(post.id)}>
-                  <Trash2 className="w-4 h-4" />
-                </Button>
-              </div>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  );
 
   // 댓글 렌더링
   const renderComments = (postId?: number) =>
@@ -407,7 +259,7 @@ const PostsManager = () => {
                 ))}
               </SelectContent>
             </Select>
-            <Select value={sortBy} onValueChange={(value) => updateSearchParams("sortBy", value)}>
+            <Select value={sortBy} onValueChange={(value) => updatePostSearchParams("sortBy", value)}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="정렬 기준" />
               </SelectTrigger>
@@ -418,7 +270,7 @@ const PostsManager = () => {
                 <SelectItem value="reactions">반응</SelectItem>
               </SelectContent>
             </Select>
-            <Select value={sortOrder} onValueChange={(value) => updateSearchParams("sortOrder", value)}>
+            <Select value={sortOrder} onValueChange={(value) => updatePostSearchParams("sortOrder", value)}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="정렬 순서" />
               </SelectTrigger>
@@ -430,7 +282,7 @@ const PostsManager = () => {
           </div>
 
           {/* 게시물 테이블 */}
-          {loading ? <div className="flex justify-center p-4">로딩 중...</div> : renderPostTable()}
+          {loading ? <div className="flex justify-center p-4">로딩 중...</div> : <PostTable />}
 
           {/* 페이지네이션 */}
           <div className="flex justify-between items-center">
@@ -439,7 +291,7 @@ const PostsManager = () => {
               <Select
                 value={limit.toString()}
                 onValueChange={(value) => {
-                  updateSearchParams("limit", value);
+                  updatePostSearchParams("limit", value);
                 }}
               >
                 <SelectTrigger className="w-[180px]">
@@ -456,13 +308,13 @@ const PostsManager = () => {
             <div className="flex gap-2">
               <Button
                 disabled={skip === 0}
-                onClick={() => updateSearchParams("sortBy", Math.max(0, skip - limit).toString())}
+                onClick={() => updatePostSearchParams("sortBy", Math.max(0, skip - limit).toString())}
               >
                 이전
               </Button>
               <Button
                 disabled={skip + limit >= total}
-                onClick={() => updateSearchParams("skip", (skip + limit).toString())}
+                onClick={() => updatePostSearchParams("skip", (skip + limit).toString())}
               >
                 다음
               </Button>

@@ -44,5 +44,5 @@ export const likeComment = async (id: number, likes: number): Promise<Comment> =
   })
     .then((response) => response.json())
     .catch((error) => {
-      console.error("댓글 업데이트 오류:", error);
+      console.error("댓글 좋아요 오류:", error);
     });
