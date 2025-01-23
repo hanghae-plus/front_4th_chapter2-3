@@ -5,13 +5,13 @@ import { Button } from "../shared/ui/Button/ui"
 import { Card, CardContent, CardHeader, CardTitle } from "../shared/ui/Card/ui"
 import { useDeletePosts, useGetPosts, useGetSearchPosts, usePostPosts, usePutPosts } from "../features/post/api"
 import { useGetPostsByTag, useGetTags } from "../features/tag/api"
-import PostTable from "../components/PostTable"
-import Pagination from "../components/Pagination"
+import PostTable from "../features/post/ui/PostTable"
+import Pagination from "../widgets/ui/Pagination"
 import { useSearchStore } from "../shared/model/useSearchStore"
-import SearchForm from "../components/SearchForm"
 import usePostModalStore from "../entities/modal/model/usePostModalStore"
-import PostForm from "../components/PostForm"
 import { Post, postPostsRequest } from "../entities/post/model/type"
+import PostForm from "../features/post/ui/PostForm"
+import SearchForm from "../features/post/ui/SearchForm"
 
 const PostsManager = () => {
   const { search, tag, sortBy, sortOrder, limit, skip, resetSearchParams } = useSearchStore()

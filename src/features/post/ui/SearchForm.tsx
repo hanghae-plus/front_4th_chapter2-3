@@ -1,8 +1,8 @@
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../shared/ui/Select/ui"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../shared/ui/Select/ui"
 import { Search } from "lucide-react"
-import { Input } from "../shared/ui/Input/ui"
-import { getTagsResponse } from "../entities/tag/model/type"
-import { useSearchStore } from "../shared/model/useSearchStore"
+import { Input } from "../../../shared/ui/Input/ui"
+import { getTagsResponse } from "../../../entities/tag/model/type"
+import { useSearchStore } from "../../../shared/model/useSearchStore"
 
 interface SearchFormProps {
   tags: getTagsResponse[]

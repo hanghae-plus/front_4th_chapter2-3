@@ -1,20 +1,15 @@
-import { useSearchStore } from "../shared/model/useSearchStore"
-import { highlightText } from "../util/highlightText"
+import { useSearchStore } from "../../../shared/model/useSearchStore"
+import { highlightText } from "../../../shared/ui/highlightText"
 import { Edit2, Plus, ThumbsUp, Trash2 } from "lucide-react"
-import { Button } from "../shared/ui/Button/ui"
-import {
-  useDeleteComments,
-  useGetComments,
-  usePatchCommentsLike,
-  usePostComments,
-  usePutComments,
-} from "../features/comment/api"
-import useCommentModalStore from "../entities/modal/model/useCommentModalStore"
-import CommentForm from "./CommentForm"
-import { CommentFormValues } from "../features/comment/model/type"
-import { Post } from "../entities/post/model/type"
+import { Button } from "../../../shared/ui/Button/ui"
+import { useDeleteComments, useGetComments, usePatchCommentsLike, usePostComments, usePutComments } from "../api"
+import useCommentModalStore from "../../../entities/modal/model/useCommentModalStore"
+
+import { CommentFormValues } from "../model/type"
+import { Post } from "../../../entities/post/model/type"
 import { useEffect, useState } from "react"
-import { Comment } from "../entities/comment/model/type"
+import { Comment } from "../../../entities/comment/model/type"
+import CommentForm from "./CommentForm"
 
 interface CommentListProps {
   post: Post

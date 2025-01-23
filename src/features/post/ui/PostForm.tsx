@@ -1,10 +1,10 @@
-import { Post } from "../entities/post/model/type"
-import { Input } from "../shared/ui/Input/ui"
-import { Textarea } from "../shared/ui/Textarea/ui"
-import { Button } from "../shared/ui/Button/ui"
-import { useForm } from "../shared/model/useForm"
+import { Post } from "../../../entities/post/model/type"
+import { Input } from "../../../shared/ui/Input/ui"
+import { Textarea } from "../../../shared/ui/Textarea/ui"
+import { Button } from "../../../shared/ui/Button/ui"
+import { useForm } from "../../../shared/model/useForm"
 import { useEffect } from "react"
-import { PostFormValues } from "../features/post/model/type"
+import { PostFormValues } from "../../../features/post/model/type"
 
 interface PostFormProps {
   posts?: Post

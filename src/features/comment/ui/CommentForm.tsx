@@ -1,9 +1,9 @@
-import { Textarea } from "../shared/ui/Textarea/ui"
-import { Button } from "../shared/ui/Button/ui"
-import { Comment } from "../entities/comment/model/type"
-import { useForm } from "../shared/model/useForm"
+import { Textarea } from "../../../shared/ui/Textarea/ui"
+import { Button } from "../../../shared/ui/Button/ui"
+import { Comment } from "../../../entities/comment/model/type"
+import { useForm } from "../../../shared/model/useForm"
 import { useEffect } from "react"
-import { CommentFormValues } from "../features/comment/model/type"
+import { CommentFormValues } from "../../../features/comment/model/type"
 
 interface CommentFormProps {
   comment?: Comment

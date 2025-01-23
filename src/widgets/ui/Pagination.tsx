@@ -1,6 +1,6 @@
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../shared/ui/Select/ui"
-import { Button } from "../shared/ui/Button/ui"
-import { useSearchStore } from "../shared/model/useSearchStore"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../shared/ui/Select/ui"
+import { Button } from "../../shared/ui/Button/ui"
+import { useSearchStore } from "../../shared/model/useSearchStore"
 
 interface PaginationProps {
   total: number
