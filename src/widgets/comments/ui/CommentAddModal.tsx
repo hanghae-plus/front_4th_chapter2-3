@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import { useMutationAddComment } from "@/features/comments";
+import { useModalStore } from "@/features/modal";
 
 import { Button, DialogContent, DialogHeader, DialogTitle, Textarea } from "@/shared/ui";
 
@@ -10,7 +11,13 @@ interface CommentAddModalProps {
 
 export const CommentAddModal = ({ postId }: CommentAddModalProps) => {
   const { mutate: addComment } = useMutationAddComment();
+  const { close } = useModalStore();
   const [newComment, setNewComment] = useState({ body: "", postId, userId: 1 });
+
+  const handleAddComment = () => {
+    addComment(newComment);
+    close();
+  };
 
   return (
     <DialogContent>
@@ -23,7 +30,7 @@ export const CommentAddModal = ({ postId }: CommentAddModalProps) => {
           value={newComment.body}
           onChange={(e) => setNewComment({ ...newComment, body: e.target.value })}
         />
-        <Button onClick={() => addComment(newComment)}>댓글 추가</Button>
+        <Button onClick={handleAddComment}>댓글 추가</Button>
       </div>
     </DialogContent>
   );

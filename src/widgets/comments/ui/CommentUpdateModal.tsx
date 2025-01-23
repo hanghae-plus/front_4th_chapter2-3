@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import { useMutationUpdateComment } from "@/features/comments";
+import { useModalStore } from "@/features/modal";
 
 import { Comment } from "@/entities/comments";
 
@@ -12,8 +13,13 @@ interface CommentUpdateModalProps {
 
 export const CommentUpdateModal = ({ comment }: CommentUpdateModalProps) => {
   const { mutate: updateComment } = useMutationUpdateComment();
-
+  const { close } = useModalStore();
   const [selectedComment, setSelectedComment] = useState(comment);
+
+  const handleUpdateComment = () => {
+    updateComment(selectedComment);
+    close();
+  };
 
   return (
     <DialogContent>
@@ -26,7 +32,7 @@ export const CommentUpdateModal = ({ comment }: CommentUpdateModalProps) => {
           value={selectedComment?.body || ""}
           onChange={(e) => setSelectedComment({ ...selectedComment, body: e.target.value })}
         />
-        <Button onClick={() => updateComment(selectedComment)}>댓글 업데이트</Button>
+        <Button onClick={handleUpdateComment}>댓글 업데이트</Button>
       </div>
     </DialogContent>
   );

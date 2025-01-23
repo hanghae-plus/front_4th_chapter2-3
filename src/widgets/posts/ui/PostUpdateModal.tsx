@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import { useModalStore } from "@/features/modal";
 import { useMutationUpdatePost } from "@/features/posts";
 
 import { Post } from "@/entities/posts";
@@ -12,8 +13,14 @@ interface PostUpdateModal {
 
 export const PostUpdateModal = ({ post }: PostUpdateModal) => {
   const { mutate: updatePost } = useMutationUpdatePost();
+  const { close } = useModalStore();
 
   const [editedPost, setEditedPost] = useState(post);
+
+  const handleUpdatePost = () => {
+    updatePost(editedPost);
+    close();
+  };
 
   return (
     <DialogContent>
@@ -32,7 +39,7 @@ export const PostUpdateModal = ({ post }: PostUpdateModal) => {
           value={post.body}
           onChange={(e) => setEditedPost({ ...post, body: e.target.value })}
         />
-        <Button onClick={() => updatePost(editedPost)}>게시물 업데이트</Button>
+        <Button onClick={handleUpdatePost}>게시물 업데이트</Button>
       </div>
     </DialogContent>
   );

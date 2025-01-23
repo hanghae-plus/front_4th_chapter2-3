@@ -2,17 +2,24 @@ import { useState } from "react";
 
 import { DialogTitle } from "@radix-ui/react-dialog";
 
+import { useModalStore } from "@/features/modal";
 import { useMutationAddPost } from "@/features/posts";
 
 import { Button, DialogContent, DialogHeader, Input, Textarea } from "@/shared/ui";
 
 export const PostAddModal = () => {
   const { mutate: addPost } = useMutationAddPost();
+  const { close } = useModalStore();
   const [newPost, setNewPost] = useState({
     title: "",
     body: "",
     userId: 1,
   });
+
+  const handleAddPost = () => {
+    addPost(newPost);
+    close();
+  };
 
   return (
     <DialogContent>
@@ -37,7 +44,7 @@ export const PostAddModal = () => {
           value={newPost.userId}
           onChange={(e) => setNewPost({ ...newPost, userId: Number(e.target.value) })}
         />
-        <Button onClick={() => addPost(newPost)}>게시물 추가</Button>
+        <Button onClick={handleAddPost}>게시물 추가</Button>
       </div>
     </DialogContent>
   );
