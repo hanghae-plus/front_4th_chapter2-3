@@ -5,6 +5,7 @@ import { Post, PostDTO } from "../../../entities/post/model/types"
 import { setAttributes } from "../../../shared/lib/setAttribute"
 import { useEffect, useState } from "react"
 import { getPostsByTextApi } from "../../../entities/post/api/getPostsByText.api"
+import { usePostStore } from "../../../entities/post/model/usePost.store"
 
 interface GetPostsApiParams {
   limit: number
@@ -12,7 +13,7 @@ interface GetPostsApiParams {
 }
 
 const useGetPosts = ({ limit, skip }: GetPostsApiParams) => {
-  const [posts, setPosts] = useState<Post[]>([])
+  const { posts, setPosts } = usePostStore()
   const [total, setTotal] = useState<number>(0)
   const [searchQuery, setSearchQuery] = useState("")
   const [inputValue, setInputValue] = useState<string>("") // 임시 상태

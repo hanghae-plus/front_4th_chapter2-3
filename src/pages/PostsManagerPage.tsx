@@ -22,6 +22,7 @@ import { useAddPost } from "../features/post/model/useAddPost.query"
 import { useGetPosts } from "../features/post/model/useGetPosts.query"
 import { useUpdatePost } from "../features/post/model/useUpdatePost.query"
 import { useUpdateComment } from "../features/comment/model/useUpdateComment.query"
+import { usePostStore } from "../entities/post/model/usePost.store"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -71,8 +72,9 @@ const PostsManager = () => {
     },
   })
 
+  const { posts } = usePostStore()
+
   const {
-    posts,
     isLoading: isLoadingPosts,
     searchQuery,
     refetchGetPosts,
