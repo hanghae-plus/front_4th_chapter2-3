@@ -1,16 +1,17 @@
+import type { usePostAddDialog } from '@/features/dialog/model';
+import { CustomDialog } from '@/features/dialog/ui';
 import { useCreatePost } from '@/features/posts/api';
 import { usePostsStoreSelector } from '@/features/posts/model';
 import { useNewPost } from '@/features/posts/model/useNewPost';
-import { Button, CustomDialog, Input, Textarea } from '@/shared/ui';
+import { Button, Input, Textarea } from '@/shared/ui';
 
 interface Props {
-  open: boolean;
-  onOpenChange: (show: boolean) => void;
+  dialogState: ReturnType<typeof usePostAddDialog>['dialog'];
 }
 /**
  * 게시물 추가 다이얼로그
  */
-export default function PostAddDialog({ open, onOpenChange }: Props) {
+export default function PostAddDialog({ dialogState }: Props) {
   const { newPost, updateNewPost, resetNewPost } = useNewPost();
   const { mutateAsync: mutatePostCreate } = useCreatePost();
   const { addPost } = usePostsStoreSelector(['posts', 'addPost']);
@@ -21,7 +22,7 @@ export default function PostAddDialog({ open, onOpenChange }: Props) {
       await mutatePostCreate(newPost, {
         onSuccess: (post) => {
           addPost(post);
-          onOpenChange(false);
+          dialogState.close();
           resetNewPost();
         },
       });
@@ -31,7 +32,7 @@ export default function PostAddDialog({ open, onOpenChange }: Props) {
   };
 
   return (
-    <CustomDialog open={open} onOpenChange={onOpenChange} title='새 게시물 추가'>
+    <CustomDialog open={dialogState.isOpen} onOpenChange={dialogState.close} title='새 게시물 추가'>
       <Input
         placeholder='제목'
         value={newPost.title}

@@ -1,16 +1,17 @@
+import type { usePostEditDialog } from '@/features/dialog/model';
+import { CustomDialog } from '@/features/dialog/ui';
 import { useUpdatePost } from '@/features/posts/api';
 import { usePostsStoreSelector } from '@/features/posts/model';
 import { useSelectedPostStore } from '@/features/posts/model/useSelectedPostStore';
-import { Button, CustomDialog, Input, Textarea } from '@/shared/ui';
+import { Button, Input, Textarea } from '@/shared/ui';
 
 interface Props {
-  open: boolean;
-  onOpenChange: (show: boolean) => void;
+  dialogState: ReturnType<typeof usePostEditDialog>['dialog'];
 }
 /**
- * 게시물 추가 다이얼로그
+ * 게시물 수정 다이얼로그
  */
-export default function PostAddDialog({ open, onOpenChange }: Props) {
+export default function PostEditDialog({ dialogState }: Props) {
   const { selectedPost, setSelectedPost } = useSelectedPostStore();
   const { mutateAsync: mutatePostUpdate } = useUpdatePost();
   const { updatePost } = usePostsStoreSelector(['updatePost']);
@@ -22,7 +23,7 @@ export default function PostAddDialog({ open, onOpenChange }: Props) {
       await mutatePostUpdate(selectedPost, {
         onSuccess: (updatedPost) => {
           updatePost(updatedPost);
-          onOpenChange(false);
+          dialogState.close();
         },
       });
     } catch (error) {
@@ -31,7 +32,7 @@ export default function PostAddDialog({ open, onOpenChange }: Props) {
   };
 
   return (
-    <CustomDialog open={open} onOpenChange={onOpenChange} title='게시물 수정'>
+    <CustomDialog open={dialogState.isOpen} onOpenChange={dialogState.close} title='게시물 수정'>
       <Input
         placeholder='제목'
         value={selectedPost?.title || ''}

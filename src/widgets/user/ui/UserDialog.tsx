@@ -1,18 +1,21 @@
-import { useSelectedUserStore } from '@/features/users/model';
-import { CustomDialog } from '@/shared/ui';
+import type { useUserDialog } from '@/features/dialog/model';
+import { CustomDialog } from '@/features/dialog/ui';
 
 interface Props {
-  open: boolean;
-  onOpenChange: (show: boolean) => void;
+  dialogState: ReturnType<typeof useUserDialog>;
 }
+
 /**
  * 유저 다이얼로그
  */
-export default function UserDialog({ open, onOpenChange }: Props) {
-  const selectedUser = useSelectedUserStore((state) => state.selectedUser);
+export default function UserDialog({ dialogState }: Props) {
+  const {
+    dialog: { isOpen, close },
+    selectedUser,
+  } = dialogState;
 
   return (
-    <CustomDialog open={open} onOpenChange={onOpenChange} title='사용자 정보'>
+    <CustomDialog open={isOpen} onOpenChange={close} title='사용자 정보'>
       <img
         src={selectedUser?.image}
         alt={selectedUser?.username}

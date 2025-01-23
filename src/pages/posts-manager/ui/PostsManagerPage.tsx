@@ -6,8 +6,12 @@ import type { PostsResponse } from '@/entities/posts/api/PostsResponse';
 import type { Post } from '@/entities/posts/model';
 import type { UsersResponse } from '@/entities/users/api';
 import type { User } from '@/entities/users/model';
+import { useUserDialog } from '@/features/dialog/model';
+import { usePostAddDialog, usePostEditDialog } from '@/features/dialog/model/usePostDialog';
+import { CustomDialog } from '@/features/dialog/ui/CustomDialog';
 import { useDeletePost, useQueryPosts } from '@/features/posts/api';
 import { usePostsStoreSelector } from '@/features/posts/model';
+import { useSelectedPostStore } from '@/features/posts/model/useSelectedPostStore';
 import { useQueryUsers } from '@/features/users/api/useUsersQueries';
 import { get, patch, post, put, remove } from '@/shared/api/fetch';
 import {
@@ -16,7 +20,6 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-  CustomDialog,
   Input,
   Select,
   SelectContent,
@@ -32,12 +35,10 @@ import {
   Textarea,
 } from '@/shared/ui';
 import { HighlightedText } from '@/shared/ui/HighlightedText';
-
-import { useSelectedPostStore } from '@/features/posts/model/useSelectedPostStore';
-import { useSelectedUserStore } from '@/features/users/model';
 import PostAddDialog from '@/widgets/post/ui/PostAddDialog';
-import PostUpdateDialog from '@/widgets/post/ui/PostUpdateDialog';
+import PostUpdateDialog from '@/widgets/post/ui/PostEditDialog';
 import UserDialog from '@/widgets/user/ui/UserDialog';
+
 import type { Comment, Tag } from '../model/types';
 
 export const PostsManagerPage = () => {
@@ -60,8 +61,6 @@ export const PostsManagerPage = () => {
   const { selectedPost, setSelectedPost } = useSelectedPostStore();
   const [sortBy, setSortBy] = useState(queryParams.get('sortBy') || '');
   const [sortOrder, setSortOrder] = useState(queryParams.get('sortOrder') || 'asc');
-  const [showAddDialog, setShowAddDialog] = useState(false);
-  const [showEditDialog, setShowEditDialog] = useState(false);
   const [tags, setTags] = useState<Tag[]>([]);
   const [comments, setComments] = useState<{
     [key: number]: Comment[];
@@ -75,8 +74,10 @@ export const PostsManagerPage = () => {
   const [showAddCommentDialog, setShowAddCommentDialog] = useState(false);
   const [showEditCommentDialog, setShowEditCommentDialog] = useState(false);
   const [showPostDetailDialog, setShowPostDetailDialog] = useState(false);
-  const [showUserModal, setShowUserModal] = useState(false);
-  const setSelectedUser = useSelectedUserStore((state) => state.setSelectedUser);
+
+  const { dialog: postAddDialogState } = usePostAddDialog();
+  const { dialog: postEditDialogState } = usePostEditDialog();
+  const userDialogState = useUserDialog();
 
   // 게시물 관련 훅
   const {
@@ -272,17 +273,6 @@ export const PostsManagerPage = () => {
     setShowPostDetailDialog(true);
   };
 
-  // 사용자 모달 열기
-  const openUserModal = async (user: User) => {
-    try {
-      const userData = await get(`/api/users/${user.id}`);
-      setSelectedUser(userData);
-      setShowUserModal(true);
-    } catch (error) {
-      console.error('사용자 정보 가져오기 오류:', error);
-    }
-  };
-
   useEffect(() => {
     fetchTags();
   }, []);
@@ -362,7 +352,7 @@ export const PostsManagerPage = () => {
             <TableCell>
               <div
                 className='flex items-center space-x-2 cursor-pointer'
-                onClick={() => openUserModal(post.author)}
+                onClick={() => userDialogState.onOpenUserDialog(post.author)}
               >
                 <img
                   src={post.author?.image}
@@ -390,7 +380,7 @@ export const PostsManagerPage = () => {
                   size='sm'
                   onClick={() => {
                     setSelectedPost(post);
-                    setShowEditDialog(true);
+                    postAddDialogState.open();
                   }}
                 >
                   <Edit2 className='w-4 h-4' />
@@ -461,7 +451,7 @@ export const PostsManagerPage = () => {
       <CardHeader>
         <CardTitle className='flex items-center justify-between'>
           <span>게시물 관리자</span>
-          <Button onClick={() => setShowAddDialog(true)}>
+          <Button onClick={postAddDialogState.open}>
             <Plus className='w-4 h-4 mr-2' />
             게시물 추가
           </Button>
@@ -557,10 +547,10 @@ export const PostsManagerPage = () => {
       </CardContent>
 
       {/* 게시물 추가 대화상자 */}
-      <PostAddDialog open={showAddDialog} onOpenChange={setShowAddDialog} />
+      <PostAddDialog dialogState={postAddDialogState} />
 
       {/* 게시물 수정 대화상자 */}
-      <PostUpdateDialog open={showEditDialog} onOpenChange={setShowEditDialog} />
+      <PostUpdateDialog dialogState={postEditDialogState} />
 
       {/* 게시물 상세 보기 대화상자 */}
       <CustomDialog
@@ -611,7 +601,7 @@ export const PostsManagerPage = () => {
       </CustomDialog>
 
       {/* 사용자 모달 */}
-      <UserDialog open={showUserModal} onOpenChange={setShowUserModal} />
+      <UserDialog dialogState={userDialogState} />
     </Card>
   );
 };
