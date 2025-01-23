@@ -15,13 +15,21 @@ import { useSearchStore } from '../features/posts/model/searchStore';
 import { useCommentStore } from '../features/comments/model/store';
 import { PostDetailDialog } from '../features/posts/ui/PostDetailDialog';
 import { useCommentDialogStore } from '../features/comments/model/commentDialogStore';
+
 import {
-  addComment,
-  updateComment,
-  deleteComment,
-  likeComment,
-} from '../features/comments/api/comment';
-import { fetchPosts, fetchPostsByTag, fetchTags, searchPosts } from '../features/posts/api/posts';
+  usePostsQuery,
+  useTagsQuery,
+  usePostsByTagQuery,
+  useSearchPostsQuery,
+  useAddPostMutation,
+  useUpdatePostMutation,
+} from '../features/posts/hooks/usePostsQuery';
+import {
+  useAddCommentMutation,
+  useUpdateCommentMutation,
+  useDeleteCommentMutation,
+  useLikeCommentMutation,
+} from '../features/comments/hooks/useCommentsQuery';
 
 const PostsManager = () => {
   const navigate = useNavigate();
@@ -30,11 +38,8 @@ const PostsManager = () => {
 
   // store에서 상태와 액션 가져오기
   const {
-    posts,
-    loading,
     total,
     setPosts,
-    setLoading,
     setTotal,
     showEditDialog,
     closeEditDialog,
@@ -52,7 +57,7 @@ const PostsManager = () => {
     sortOrder,
     setSortOrder,
   } = useSearchStore();
-  const { comments, setComments } = useCommentStore();
+  const { comments } = useCommentStore();
 
   const {
     selectedComment,
@@ -72,6 +77,22 @@ const PostsManager = () => {
   const [newPost, setNewPost] = useState({ title: '', body: '', userId: 1 });
   const [tags, setTags] = useState<Tag[]>([]);
 
+  // Posts Queries
+  const { data: postsData, isLoading } = usePostsQuery(limit, skip);
+  const { data: tagsData } = useTagsQuery();
+  const { data: tagPostsData } = usePostsByTagQuery(selectedTag);
+  const { data: searchData, refetch } = useSearchPostsQuery(searchQuery);
+
+  // Posts Mutations
+  const { mutate: addPostMutate } = useAddPostMutation();
+  const { mutate: updatePostMutate } = useUpdatePostMutation();
+
+  // Comments Mutations
+  const { mutate: addCommentMutate } = useAddCommentMutation();
+  const { mutate: updateCommentMutate } = useUpdateCommentMutation();
+  const { mutate: deleteCommentMutate } = useDeleteCommentMutation();
+  const { mutate: likeCommentMutate } = useLikeCommentMutation();
+
   // URL 업데이트 함수
   const updateURL = () => {
     const params = new URLSearchParams();
@@ -84,161 +105,80 @@ const PostsManager = () => {
     navigate(`?${params.toString()}`);
   };
 
-  // 게시물 가져오기
-  const handleFetchPosts = async () => {
-    try {
-      setLoading(true);
-      const { posts, total } = await fetchPosts(limit, skip);
-      setPosts(posts);
-      setTotal(total);
-    } catch (error) {
-      console.error('게시물 가져오기 오류:', error);
-    } finally {
-      setLoading(false);
+  // 데이터 업데이트 Effects
+  useEffect(() => {
+    if (postsData) {
+      setPosts(postsData.posts);
+      setTotal(postsData.total);
     }
+  }, [postsData]);
+
+  useEffect(() => {
+    if (tagsData) {
+      setTags(tagsData);
+    }
+  }, [tagsData]);
+
+  useEffect(() => {
+    if (tagPostsData) {
+      setPosts(tagPostsData.posts);
+      setTotal(tagPostsData.total);
+    }
+  }, [tagPostsData]);
+
+  useEffect(() => {
+    if (searchData) {
+      setPosts(searchData.posts);
+      setTotal(searchData.total);
+    }
+  }, [searchData]);
+
+  // 핸들러 함수들
+  const handleAddPost = () => {
+    addPostMutate(newPost, {
+      onSuccess: () => {
+        setShowAddDialog(false);
+        setNewPost({ title: '', body: '', userId: 1 });
+      },
+    });
   };
 
-  // 태그로 게시물 가져오기
-  const handleFetchPostsByTag = async (tag: string) => {
-    try {
-      setLoading(true);
-      const data = await fetchPostsByTag(tag);
-      setPosts(data.posts);
-      setTotal(data.total);
-    } catch (error) {
-      console.error('태그별 게시물 가져오기 오류:', error);
-    } finally {
-      setLoading(false);
-    }
+  const handleUpdatePost = () => {
+    if (!selectedPost) return;
+    updatePostMutate(selectedPost, {
+      onSuccess: () => closeEditDialog(),
+    });
   };
 
-  // 태그 가져오기
-  const handleFetchTags = async () => {
-    try {
-      const tags = await fetchTags();
-      setTags(tags);
-    } catch (error) {
-      console.error('태그 가져오기 오류:', error);
-    }
+  const handleAddComment = () => {
+    addCommentMutate(newComment, {
+      onSuccess: () => closeAddDialog(),
+    });
   };
 
-  // 게시물 검색
-  const handleSearchPosts = async () => {
-    try {
-      setLoading(true);
-      const data = await searchPosts(searchQuery);
-      setPosts(data.posts);
-      setTotal(data.total);
-    } catch (error) {
-      console.error('게시물 검색 오류:', error);
-    } finally {
-      setLoading(false);
-    }
+  const handleUpdateComment = () => {
+    if (!selectedComment) return;
+    updateCommentMutate(
+      { id: selectedComment.id, body: selectedComment.body },
+      { onSuccess: () => closeCommentEditDialog() },
+    );
   };
 
-  // 게시물 추가
-  const addPost = async () => {
-    try {
-      const response = await fetch('/api/posts/add', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newPost),
-      });
-      const data = await response.json();
-      setPosts([data, ...posts]);
-      setShowAddDialog(false);
-      setNewPost({ title: '', body: '', userId: 1 });
-    } catch (error) {
-      console.error('게시물 추가 오류:', error);
-    }
+  const handleDeleteComment = (id: number, postId: number) => {
+    deleteCommentMutate({ id, postId });
   };
 
-  // 게시물 업데이트
-  const updatePost = async () => {
-    try {
-      const response = await fetch(`/api/posts/${selectedPost?.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(selectedPost),
-      });
-      const data = await response.json();
-      setPosts(posts.map((post: Post) => (post.id === data.id ? data : post)));
-      closeEditDialog();
-    } catch (error) {
-      console.error('게시물 업데이트 오류:', error);
-    }
+  const handleLikeComment = (id: number, postId: number) => {
+    const likes = comments[postId].find((c) => c.id === id)?.likes ?? 0;
+    likeCommentMutate({ id, likes });
   };
 
-  // 댓글 추가
-  const handleAddComment = async () => {
-    try {
-      const data = await addComment(newComment);
-      setComments((prev) => ({
-        ...prev,
-        [data.postId]: [...(prev[data.postId] || []), data],
-      }));
-      closeAddDialog();
-    } catch (error) {
-      console.error('댓글 추가 오류:', error);
-    }
-  };
-
-  // 댓글 업데이트
-  const handleUpdateComment = async () => {
-    try {
-      if (!selectedComment) return;
-      const data = await updateComment(selectedComment.id, selectedComment.body);
-      setComments((prev) => ({
-        ...prev,
-        [data.postId]: prev[data.postId].map((comment) =>
-          comment.id === data.id ? data : comment,
-        ),
-      }));
-      closeCommentEditDialog();
-    } catch (error) {
-      console.error('댓글 업데이트 오류:', error);
-    }
-  };
-
-  // 댓글 삭제
-  const handleDeleteComment = async (id: number, postId: number) => {
-    try {
-      await deleteComment(id);
-      setComments((prev) => ({
-        ...prev,
-        [postId]: prev[postId].filter((comment) => comment.id !== id),
-      }));
-    } catch (error) {
-      console.error('댓글 삭제 오류:', error);
-    }
-  };
-
-  // 댓글 좋아요
-  const handleLikeComment = async (id: number, postId: number) => {
-    try {
-      const likes = comments[postId].find((c) => c.id === id)?.likes ?? 0;
-      const data = await likeComment(id, likes);
-      setComments((prev) => ({
-        ...prev,
-        [postId]: prev[postId]?.map((comment) =>
-          comment.id === data.id ? { ...data, likes: comment.likes + 1 } : comment,
-        ),
-      }));
-    } catch (error) {
-      console.error('댓글 좋아요 오류:', error);
-    }
+  const handleSearchPosts = () => {
+    if (!searchQuery) return;
+    refetch();
   };
 
   useEffect(() => {
-    handleFetchTags();
-  }, []);
-
-  useEffect(() => {
-    if (selectedTag) {
-      handleFetchPostsByTag(selectedTag);
-    } else {
-      handleFetchPosts();
-    }
     updateURL();
   }, [skip, limit, sortBy, sortOrder, selectedTag, searchQuery]);
 
@@ -275,7 +215,6 @@ const PostsManager = () => {
                   className='pl-8'
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleSearchPosts()}
                 />
               </div>
             </div>
@@ -283,7 +222,6 @@ const PostsManager = () => {
               value={selectedTag}
               onValueChange={(value) => {
                 setSelectedTag(value);
-                handleFetchPostsByTag(value);
                 updateURL();
               }}
             >
@@ -322,7 +260,7 @@ const PostsManager = () => {
           </div>
 
           {/* 게시물 테이블 */}
-          {loading ? <div className='flex justify-center p-4'>로딩 중...</div> : <PostsTable />}
+          {isLoading ? <div className='flex justify-center p-4'>로딩 중...</div> : <PostsTable />}
 
           {/* 페이지네이션 */}
           <div className='flex justify-between items-center'>
@@ -376,7 +314,7 @@ const PostsManager = () => {
               value={newPost.userId}
               onChange={(e) => setNewPost({ ...newPost, userId: Number(e.target.value) })}
             />
-            <Button onClick={addPost}>게시물 추가</Button>
+            <Button onClick={handleAddPost}>게시물 추가</Button>
           </div>
         </DialogContent>
       </Dialog>
@@ -407,7 +345,7 @@ const PostsManager = () => {
                 }
               }}
             />
-            <Button onClick={updatePost}>게시물 업데이트</Button>
+            <Button onClick={handleUpdatePost}>게시물 업데이트</Button>
           </div>
         </DialogContent>
       </Dialog>
