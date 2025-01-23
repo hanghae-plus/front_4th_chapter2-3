@@ -1,25 +1,26 @@
 import { Edit2, Plus, ThumbsUp, Trash2 } from "lucide-react"
+
 import { Button } from "../../../shared/ui"
-import { Comment } from "../model/types"
-import { highlightText } from "../../../shared/lib/utils/highlight-text"
+import { Comment } from "../model"
+import { highlightText } from "../../../shared/lib"
 
 interface CommentListProps {
   comments?: Comment[]
   postId: number
-  onClickAddButton: () => void
-  onClickEditButton: (id: number, body: string) => void
-  onClickDeleteButton: (id: number, postId: number) => void
-  onClickLikeButton: (id: number, postId: number) => void
+  addComment: () => void
+  editComment: (comment: Comment) => void
+  deleteComment: (comment: Comment) => void
+  increaseLike: (comment: Comment, postId: number) => void
   searchQuery: string
 }
 
 export const CommentList = ({
   comments,
   postId,
-  onClickAddButton,
-  onClickEditButton,
-  onClickDeleteButton,
-  onClickLikeButton,
+  addComment,
+  editComment,
+  deleteComment,
+  increaseLike,
   searchQuery,
 }: CommentListProps) => {
   return (
@@ -29,7 +30,7 @@ export const CommentList = ({
         <Button
           size="sm"
           onClick={() => {
-            onClickAddButton()
+            addComment()
           }}
         >
           <Plus className="w-3 h-3 mr-1" />
@@ -44,20 +45,14 @@ export const CommentList = ({
               <span className="break-all">{highlightText(comment.body, searchQuery)}</span>
             </div>
             <div className="flex items-center space-x-1 flex-shrink-0">
-              <Button variant="ghost" size="sm" onClick={() => onClickLikeButton(comment.id, postId)}>
+              <Button variant="ghost" size="sm" onClick={() => increaseLike(comment, postId)}>
                 <ThumbsUp className="w-3 h-3" />
                 <span className="ml-1 text-xs">{comment.likes}</span>
               </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  onClickEditButton(comment.id, comment.body)
-                }}
-              >
+              <Button variant="ghost" size="sm" onClick={() => editComment(comment)}>
                 <Edit2 className="w-3 h-3" />
               </Button>
-              <Button variant="ghost" size="sm" onClick={() => onClickDeleteButton(comment.id, postId)}>
+              <Button variant="ghost" size="sm" onClick={() => deleteComment(comment)}>
                 <Trash2 className="w-3 h-3" />
               </Button>
             </div>

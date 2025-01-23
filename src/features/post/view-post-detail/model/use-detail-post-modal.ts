@@ -1,9 +1,9 @@
-import { useState } from "react"
 import { useQuery } from "@tanstack/react-query"
+import { useState } from "react"
 
+import { commentQueries } from "../../../../entities/comment/api"
 import { postQueries } from "../../../../entities/post/api"
 import { useModal } from "../../../../shared/lib"
-import { commentQueries } from "../../../../entities/comment/api"
 
 export const useDetailPostModal = () => {
   const { isOpen, open, close } = useModal()
@@ -29,7 +29,6 @@ export const useDetailPostModal = () => {
     close()
     setSelectedPostId(undefined)
   }
-
   return {
     isOpen,
     post,

@@ -1,8 +1,9 @@
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { Plus, Search } from "lucide-react"
-import { useMemo, useState } from "react"
+import { useMemo } from "react"
 import { useLocation } from "react-router-dom"
 
+import { useQueryParams } from "../../../shared/lib"
 import {
   Button,
   Card,
@@ -10,29 +11,32 @@ import {
   CardHeader,
   CardTitle,
   Input,
+  LoadingIndicator,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "../../../shared/ui"
-import { useQueryParams } from "../../../shared/lib"
 
-import { Comment } from "../../../entities/comment/model"
+import { Comment, useSelectedComment } from "../../../entities/comment/model"
 import { postMutations, postQueries } from "../../../entities/post/api"
 import { SortOrder } from "../../../entities/post/model"
 import { userQueries } from "../../../entities/user/api"
 
-import { useAddCommentModal, CommentAddModal } from "../../../features/comment/add-comment"
-import { useEditCommentModal, CommentEditModal } from "../../../features/comment/edit-comment"
-import { useAddPostModal, PostAddModal } from "../../../features/post/add-post"
-import { useEditPostModal, PostEditModal } from "../../../features/post/edit-post"
-import { useDetailPostModal, PostDetailModal } from "../../../features/post/view-post-detail"
-import { useViewUserProfile, UserProfileModal } from "../../../features/user/view-user-profile"
+import { CommentAddModal, useAddCommentModal } from "../../../features/comment/add-comment"
+import { CommentEditModal, useEditCommentModal } from "../../../features/comment/edit-comment"
+import { PostAddModal, useAddPostModal } from "../../../features/post/add-post"
+import { PostEditModal, useEditPostModal } from "../../../features/post/edit-post"
+import { PostDetailModal, useDetailPostModal } from "../../../features/post/view-post-detail"
+import { UserProfileModal, useViewUserProfile } from "../../../features/user/view-user-profile"
 
+import { commentMutations, commentQueries } from "../../../entities/comment/api"
+import { queryClient } from "../../../shared/api"
 import { usePagination } from "../../../widgets/pagination/model"
 import { Pagination } from "../../../widgets/pagination/ui"
 import { PostsTable } from "../../../widgets/posts-table/ui"
+import { CommentList } from "../../../entities/comment/ui"
 
 export const PostsManagerPage = () => {
   const location = useLocation()
@@ -106,37 +110,51 @@ export const PostsManagerPage = () => {
 
   const deletePostMutation = useMutation({
     ...postMutations.deleteMutation(),
+  })
+
+  const deleteCommentMutation = useMutation({
+    ...commentMutations.deleteMutation(),
+    onSuccess(_, commentId) {
+      if (!selectedPost) return
+
+      queryClient.setQueryData<{ comments: Comment[] }>(commentQueries.byPost(selectedPost.id), (prev) => {
+        if (!prev) return { comments: [] }
+
+        return {
+          comments: prev.comments.filter((comment) => comment.id !== commentId),
+        }
+      })
+
+      resetSelectedComment()
+    },
     onError: (error) => {
-      console.error("게시물 삭제 오류:", error)
+      console.error("댓글 삭제 오류:", error)
     },
   })
 
-  // 댓글 삭제
-  const deleteComment = async (id, postId) => {
-    try {
-      await fetch(`/api/comments/${id}`, {
-        method: "DELETE",
-      })
-      setSelectedComment(null)
-    } catch (error) {
-      console.error("댓글 삭제 오류:", error)
-    }
-  }
+  const likeCommentMutation = useMutation({
+    ...commentMutations.likeMutation(),
+    onSuccess(_, { id: commentId, likes }) {
+      if (!selectedPost) return
 
-  // 댓글 좋아요
-  const likeComment = async (id, postId) => {
-    try {
-      const response = await fetch(`/api/comments/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ likes: comments.find((c) => c.id === id).likes + 1 }),
+      queryClient.setQueryData<{ comments: Comment[] }>(commentQueries.byPost(selectedPost.id), (prev) => {
+        if (!prev) return { comments: [] }
+
+        const updatedComments = prev.comments.find((comment) => comment.id === commentId)
+
+        if (!updatedComments) return prev
+
+        return {
+          comments: [...prev.comments.filter((comment) => comment.id !== commentId), { ...updatedComments, likes }],
+        }
       })
-      const data = await response.json()
-      setSelectedComment({ ...selectedComment, likes: data.likes + 1 })
-    } catch (error) {
+
+      resetSelectedComment()
+    },
+    onError: (error) => {
       console.error("댓글 좋아요 오류:", error)
-    }
-  }
+    },
+  })
 
   const posts = searchQuery ? searchResults?.posts : selectedTag ? listByTag?.posts : list?.posts
 
@@ -290,7 +308,7 @@ export const PostsManagerPage = () => {
 
           {/* 게시물 테이블 */}
           {isPostsLoading ? (
-            <div className="flex justify-center p-4">로딩 중...</div>
+            <LoadingIndicator />
           ) : (
             <PostsTable
               posts={postsWithUsers}
@@ -334,15 +352,24 @@ export const PostsManagerPage = () => {
         isOpen={isDetailOpen}
         onClose={closeDetail}
         post={selectedPost}
-        comments={comments ?? []}
         searchQuery={searchQuery}
-        onClickAddButton={() => openAddCommentModal()}
-        onClickEditButton={(id, body) => {
-          selectEditComment(id, body)
-          openEditCommentModal()
+        CommentList={() => {
+          if (!selectedPost) return null
+          return (
+            <CommentList
+              comments={comments || []}
+              postId={selectedPost?.id}
+              addComment={() => openAddCommentModal()}
+              editComment={(comment) => {
+                selectEditComment(comment)
+                openEditCommentModal()
+              }}
+              deleteComment={(comment) => deleteCommentMutation.mutateAsync(comment.id)}
+              increaseLike={(comment) => likeCommentMutation.mutateAsync({ id: comment.id, likes: comment.likes + 1 })}
+              searchQuery={searchQuery}
+            />
+          )
         }}
-        onClickDeleteButton={(id, postId) => deleteComment(id, postId)}
-        onClickLikeButton={(id, postId) => likeComment(id, postId)}
       />
 
       <CommentAddModal
