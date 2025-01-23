@@ -51,9 +51,11 @@ export const PostsFilter = () => {
           <SelectValue placeholder="태그 선택" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">전체</SelectItem>
+          <SelectItem key="all" value="all">
+            전체
+          </SelectItem>
           {tags.map((tag) => (
-            <SelectItem key={tag.id} value={tag.slug}>
+            <SelectItem key={`${tag.id}-${tag.slug}`} value={tag.slug}>
               {tag.slug}
             </SelectItem>
           ))}
@@ -71,9 +73,15 @@ export const PostsFilter = () => {
           <SelectValue placeholder="정렬 기준" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="none">기본</SelectItem>
-          <SelectItem value="title">제목</SelectItem>
-          <SelectItem value="likes">좋아요</SelectItem>
+          <SelectItem key="none" value="none">
+            기본
+          </SelectItem>
+          <SelectItem key="title" value="title">
+            제목
+          </SelectItem>
+          <SelectItem key="likes" value="likes">
+            좋아요
+          </SelectItem>
         </SelectContent>
       </Select>
 
@@ -88,8 +96,12 @@ export const PostsFilter = () => {
           <SelectValue placeholder="정렬 순서" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="asc">오름차순</SelectItem>
-          <SelectItem value="desc">내림차순</SelectItem>
+          <SelectItem key="asc" value="asc">
+            오름차순
+          </SelectItem>
+          <SelectItem key="desc" value="desc">
+            내림차순
+          </SelectItem>
         </SelectContent>
       </Select>
     </div>
