@@ -2,7 +2,7 @@ import { Search } from "lucide-react"
 import { Input } from "@shared/ui"
 import { Tag } from "@entities/post/types"
 import { useTagsQuery } from "@features/post/model"
-import { SelectPostFilter } from "@features/post/ui/SelectPostFilter.tsx"
+import { SelectPostFilter } from "@entities/post/ui"
 import { useSearchParams } from "react-router-dom"
 import { useState } from "react"
 

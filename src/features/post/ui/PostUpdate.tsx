@@ -1,16 +1,16 @@
 import { Button, DialogContent, DialogHeader, DialogTitle, Input, Textarea } from "@shared/ui"
-import { Post } from "@entities/post/types"
+import { PostWithUser } from "@entities/post/types"
 import { useUpdatePostMutation } from "@features/post/model"
 import { useState } from "react"
 import { useModalStore } from "@shared/model"
 
 interface PostUpdateProps {
-  post: Post
+  post: PostWithUser
 }
 
 export function PostUpdate(props: PostUpdateProps) {
   const { post } = props
-  const [selectedPost, setSelectedPost] = useState<Post>(post)
+  const [selectedPost, setSelectedPost] = useState<PostWithUser>(post)
   const { mutate: updatePost } = useUpdatePostMutation()
   const { closeModal } = useModalStore()
 

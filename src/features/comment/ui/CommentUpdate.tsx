@@ -1,5 +1,5 @@
 import { Button, DialogContent, DialogHeader, DialogTitle, Textarea } from "@shared/ui"
-import { Comment } from "@entities/post/types"
+import { Comment } from "@entities/comment/types"
 import { useState } from "react"
 import { useUpdateCommentMutation } from "@features/comment/model"
 import { useModalStore } from "@shared/model"

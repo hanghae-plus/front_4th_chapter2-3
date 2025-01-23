@@ -1,7 +1,7 @@
 import { BrowserRouter as Router } from "react-router-dom"
 import { Header, Footer } from "@widgets/ui"
-import PostsManagerPage from "./pages/PostsManagerPage.tsx"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import PostsManagerPage from "@pages/PostsManagerPage.tsx"
 
 const queryClient = new QueryClient({})
 

@@ -1,5 +1,5 @@
 import { Button, CardHeader, CardTitle } from "@shared/ui"
-import { PostAdd } from "@features/post/ui/PostAdd.tsx"
+import { PostAdd } from "@features/post/ui"
 import { Plus } from "lucide-react"
 import { useModalStore } from "@shared/model"
 

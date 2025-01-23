@@ -1,11 +1,11 @@
 import { DialogContent, DialogHeader, DialogTitle } from "@shared/ui"
-import { Comments } from "@features/post/ui/Comments.tsx"
-import { Post } from "@entities/post/types"
+import { CommentList } from "@features/comment/ui/CommentList.tsx"
+import { PostWithUser } from "@entities/post/types"
 import { useSearchParams } from "react-router-dom"
 import { HighlightText } from "@shared/ui"
 
 interface PostDetailProps {
-  post: Post
+  post: PostWithUser
 }
 
 export function PostDetail(props: PostDetailProps) {
@@ -24,7 +24,7 @@ export function PostDetail(props: PostDetailProps) {
         <p>
           <HighlightText text={post?.body} highlight={searchQuery} />
         </p>
-        <Comments postId={post.id} />
+        <CommentList postId={post.id} />
       </div>
     </DialogContent>
   )

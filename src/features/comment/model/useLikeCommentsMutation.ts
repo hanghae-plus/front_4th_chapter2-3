@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { likeComment } from "@entities/post/api"
+import { likeComment } from "@entities/comment/api"
 
 export const useLikeCommentsMutation = () => {
   const queryClient = useQueryClient()

@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { deleteComment } from "@entities/post/api"
+import { deleteComment } from "@entities/comment/api"
 
 export const useDeleteCommentMutation = () => {
   const queryClient = useQueryClient()

@@ -1,5 +1,5 @@
 import { Card } from "@shared/ui"
-import { Modal } from "@shared/ui/modal/Modal.tsx"
+import { Modal } from "@shared/ui/modal"
 import { PostManagerHeader, PostManagerContent } from "@widgets/post/ui"
 
 const PostsManager = () => {
