@@ -1,17 +1,14 @@
 import { ResponseWithData } from '../../search/model';
 import { User } from '../../user/model';
+import { Reaction } from '@/entities/reaction';
 
 export interface Post {
   id: number;
   title: string;
   body: string;
   userId: number;
-
   tags?: string[];
-  reactions?: {
-    likes: number;
-    dislikes: number;
-  };
+  reactions?: Reaction;
   views?: number;
   author?: User;
 }
