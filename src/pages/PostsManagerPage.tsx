@@ -2,31 +2,19 @@ import { QueryClient } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 
-import { fetchComments } from "../entities/comment/api/fetchComments"
-import { fetchPosts } from "../entities/post/api/fetchPosts"
 import { getPostsQueryKeys, useQueryGetPosts } from "../entities/post/model/queries/useQueryGetPosts"
-import { fetchTag } from "../entities/tag/api/fetchTag"
 import { fetchTags } from "../entities/tag/api/fetchTags"
-import { fetchUser } from "../entities/user/api/fetchUser"
-import { fetchUsernameAndImageOnly } from "../entities/user/api/fetchUsernameAndImageOnly"
-import { PostAddButton } from "../features/post/ui/PostAddButton"
+import { PostAddDialogOpenButton } from "../features/post/ui/PostAddDialogOpenButton"
 import { PostSearchForm } from "../features/post/ui/PostSearchForm"
 import { Card } from "../shared/ui"
-import { CommentAddDialog } from "../widgets/comment-add-dialog/ui/CommentAddDialog"
-import { CommentEditDialog } from "../widgets/comment-edit-dialog/ui/CommentEditDialog"
 import { Pagination } from "../widgets/pagination/ui/Pagination"
-import { PostAddDialog } from "../widgets/post-add-dialog/ui/PostAddDialog"
-import { PostDetailDialog } from "../widgets/post-detail-dialog/ui/PostDetailDialog"
 import { PostEditDialog } from "../widgets/post-edit-dialog/ui/PostEditDialog"
 import { PostTable } from "../widgets/post-table/ui/PostTable"
 import { SortBySelect } from "../widgets/sort-by-select/ui/SortBySelect"
 import { SortOrderSelect } from "../widgets/sort-order-select/ui/SortOrderSelect"
 import { TagSelect } from "../widgets/tag-select/ui/TagSelect"
-import { UserDialog } from "../widgets/user-dialog/ui/UserDialog"
 
-import type { Comment } from "../entities/comment/model/types/comments"
 import type { PostWithUser } from "../entities/post/model/types/post"
-import type { User } from "../entities/user/model/types/user"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -42,14 +30,10 @@ const PostsManager = () => {
   const [selectedPost, setSelectedPost] = useState<PostWithUser | null>(null)
   const [sortBy, setSortBy] = useState(queryParams.get("sortBy") || "")
   const [sortOrder, setSortOrder] = useState(queryParams.get("sortOrder") || "asc")
-  const [showAddDialog, setShowAddDialog] = useState(false)
   const [showEditDialog, setShowEditDialog] = useState(false)
-  const [newPost, setNewPost] = useState({ title: "", body: "", userId: 1 })
   const [loading, setLoading] = useState(false)
   const [tags, setTags] = useState([])
   const [selectedTag, setSelectedTag] = useState(queryParams.get("tag") || "")
-  const [newComment, setNewComment] = useState({ body: "", postId: null, userId: 1 })
-  const [showAddCommentDialog, setShowAddCommentDialog] = useState(false)
 
   // URL 업데이트 함수
   const updateURL = () => {
@@ -138,7 +122,7 @@ const PostsManager = () => {
       <Card.Header>
         <Card.Title className="flex items-center justify-between">
           <span>게시물 관리자</span>
-          <PostAddButton />
+          <PostAddDialogOpenButton />
         </Card.Title>
       </Card.Header>
       <Card.Content>
@@ -171,9 +155,6 @@ const PostsManager = () => {
         </div>
       </Card.Content>
 
-      {/* 게시물 추가 대화상자 */}
-      <PostAddDialog open={showAddDialog} onOpenChange={setShowAddDialog} newPost={newPost} setNewPost={setNewPost} />
-
       {/* 게시물 수정 대화상자 */}
       <PostEditDialog
         open={showEditDialog}
@@ -183,14 +164,6 @@ const PostsManager = () => {
         onChangeEditPosts={(posts: any) => setPosts(posts)}
         onShowEditDialog={(open: boolean) => setShowEditDialog(open)}
         onChangeSelectedPost={(args: any) => setSelectedPost(args)}
-      />
-
-      {/* 댓글 추가 대화상자 */}
-      <CommentAddDialog
-        open={showAddCommentDialog}
-        setShowAddCommentDialog={setShowAddCommentDialog}
-        newComment={newComment}
-        setNewComment={setNewComment}
       />
     </Card>
   )

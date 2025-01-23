@@ -1,6 +1,6 @@
 import type { Post } from "../model/types/post"
 
-export const addPost = async (newPost: Post): Promise<Post[] | undefined> => {
+export const addPost = async (newPost: Pick<Post, "title" | "body" | "userId">) => {
   try {
     const response = await fetch("/api/posts/add", {
       method: "POST",

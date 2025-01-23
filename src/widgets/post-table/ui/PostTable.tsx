@@ -1,5 +1,4 @@
-import { ThumbsDown, ThumbsUp } from "lucide-react"
-
+import { PostReaction } from "../../../entities/post/ui/PostReaction"
 import { PostAuthProfile } from "../../../features/post/ui/PostAuthProfile"
 import { PostDeleteButton } from "../../../features/post/ui/PostDeleteButton"
 import { PostDetailOpenButton } from "../../../features/post/ui/PostDetailOpenButton"
@@ -53,14 +52,7 @@ export const PostTable = ({
               <PostAuthProfile post={post} />
             </Table.Cell>
             <Table.Cell>
-              {/* 엔티티 */}
-              {/* PostReaction */}
-              <div className="flex items-center gap-2">
-                <ThumbsUp className="w-4 h-4" />
-                <span>{post.reactions?.likes || 0}</span>
-                <ThumbsDown className="w-4 h-4" />
-                <span>{post.reactions?.dislikes || 0}</span>
-              </div>
+              <PostReaction reactions={post.reactions} />
             </Table.Cell>
             <Table.Cell>
               <div className="flex items-center gap-2">

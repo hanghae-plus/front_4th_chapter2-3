@@ -4,18 +4,18 @@ import { useMutationAddComment } from "../../../entities/comment/model/hooks/use
 import { Button, Textarea } from "../../../shared/ui"
 
 interface CommentAddFormProps {
-  oneCloseButtonClick: () => void
+  onCloseDialog: () => void
   postId: number
 }
 
-export const CommentAddForm = ({ oneCloseButtonClick, postId }: CommentAddFormProps) => {
+export const CommentAddForm = ({ onCloseDialog, postId }: CommentAddFormProps) => {
   const [comment, setComment] = useState({ body: "", postId, userId: 1 })
 
   const { mutateAsync: commentAddMutation } = useMutationAddComment()
 
   const handleAddClick = async () => {
     await commentAddMutation(comment)
-    oneCloseButtonClick()
+    onCloseDialog()
   }
 
   return (

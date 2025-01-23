@@ -11,17 +11,17 @@ interface CommentAddDialogProps {
 export const CommentAddDialog = ({ open, postId, dialogId }: CommentAddDialogProps) => {
   const { closeDialog } = useDialog()
 
-  const handleCloseButtonClick = () => {
+  const handleCloseDialog = () => {
     closeDialog(dialogId)
   }
 
   return (
-    <Dialog open={open} onOpenChange={handleCloseButtonClick}>
+    <Dialog open={open} onOpenChange={handleCloseDialog}>
       <Dialog.Content>
         <Dialog.Header>
           <Dialog.Title>새 댓글 추가</Dialog.Title>
         </Dialog.Header>
-        <CommentAddForm oneCloseButtonClick={handleCloseButtonClick} postId={postId} />
+        <CommentAddForm onCloseDialog={handleCloseDialog} postId={postId} />
       </Dialog.Content>
     </Dialog>
   )
