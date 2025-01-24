@@ -8,6 +8,15 @@ import PostsManager from "../src/pages/PostsManagerPage"
 import * as React from "react"
 import "@testing-library/jest-dom"
 import { TEST_POSTS, TEST_SEARCH_POST, TEST_USERS } from "./mockData"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+    },
+  },
+})
 
 // MSW 서버 설정
 const server = setupServer(
@@ -40,15 +49,20 @@ const server = setupServer(
 )
 
 beforeAll(() => server.listen({ onUnhandledRequest: "error" }))
-afterEach(() => server.resetHandlers())
+afterEach(() => {
+  server.resetHandlers()
+  queryClient.clear()
+})
 afterAll(() => server.close())
 
-// 테스트에 공통으로 사용될 render 함수
+//테스트 환경에서 QueryClient를 설정
 const renderPostsManager = () => {
   return render(
-    <MemoryRouter>
-      <PostsManager />
-    </MemoryRouter>,
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter>
+        <PostsManager />
+      </MemoryRouter>
+    </QueryClientProvider>,
   )
 }
 
