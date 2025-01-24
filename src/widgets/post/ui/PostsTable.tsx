@@ -3,23 +3,29 @@ import { Edit2, MessageSquare, ThumbsDown, ThumbsUp, Trash2 } from 'lucide-react
 
 import type { Post } from '@/entities/posts/model';
 import type { User } from '@/entities/users/model';
+import { useCommentsStoreSelector } from '@/features/comments/model';
 import { useDeletePost } from '@/features/posts/api';
 import { useQueryPostsWithUsers } from '@/features/posts/api/usePostsQueries';
 import { useUrlParams } from '@/features/posts/lib';
-import { useSelectedPostStore } from '@/features/posts/model';
+import { useSelectedPostStoreSelector } from '@/features/posts/model';
 import { HighlightedText } from '@/shared/ui/HighlightedText';
 
 interface Props {
   onUserClick: (user: User) => void;
-  onPostDetail: (post: Post) => void;
   onPostEditDialogOpen: () => void;
+  onPostDetailDialogOpen: () => void;
 }
-export const PostsTable = ({ onUserClick, onPostDetail, onPostEditDialogOpen }: Props) => {
+export const PostsTable = ({
+  onUserClick,
+  onPostEditDialogOpen,
+  onPostDetailDialogOpen,
+}: Props) => {
+  const { setSelectedPost } = useSelectedPostStoreSelector(['setSelectedPost']);
+  const { fetchComments } = useCommentsStoreSelector(['fetchComments']);
   const { updateParams, ...params } = useUrlParams();
   const { data: posts, isLoading } = useQueryPostsWithUsers({
     ...params,
   });
-  const setSelectedPost = useSelectedPostStore((state) => state.setSelectedPost);
   const { mutateAsync: mutatePostDelete } = useDeletePost();
 
   // 게시물 삭제
@@ -29,6 +35,13 @@ export const PostsTable = ({ onUserClick, onPostDetail, onPostEditDialogOpen }: 
     } catch (error) {
       console.error('게시물 삭제 오류:', error);
     }
+  };
+
+  // 게시물 상세 보기
+  const handlePostDetailOpen = (post: Post) => {
+    setSelectedPost(post);
+    fetchComments(post.id);
+    onPostDetailDialogOpen();
   };
 
   // 태그 선택
@@ -108,7 +121,7 @@ export const PostsTable = ({ onUserClick, onPostDetail, onPostEditDialogOpen }: 
             </TableCell>
             <TableCell>
               <div className='flex items-center gap-2'>
-                <Button variant='ghost' size='sm' onClick={() => onPostDetail(post)}>
+                <Button variant='ghost' size='sm' onClick={() => handlePostDetailOpen(post)}>
                   <MessageSquare className='w-4 h-4' />
                 </Button>
                 <Button

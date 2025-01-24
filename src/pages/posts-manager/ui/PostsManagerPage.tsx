@@ -1,13 +1,9 @@
 import { Plus } from 'lucide-react';
 
-import type { Post } from '@/entities/posts/model';
-import { useCommentsStoreSelector } from '@/features/comments/model/useCommentsStore';
 import { CommentList } from '@/features/comments/ui/CommentList';
 import { useDialog, useUserDialog } from '@/features/dialog/model';
-import { useSelectedPostStoreSelector } from '@/features/posts/model';
 import { PostPagination } from '@/features/posts/ui/PostPagination';
 import { PostSearchFilter } from '@/features/posts/ui/PostSearchFilter';
-import { get } from '@/shared/api/fetch';
 import { Button, Card, CardContent, CardHeader, CardTitle } from '@/shared/ui';
 import { CommentAddDialog, PostAddDialog, PostEditDialog, PostsTable } from '@/widgets/post/ui';
 import { CommentEditDialog } from '@/widgets/post/ui/CommentEditDialog';
@@ -15,34 +11,12 @@ import { PostDetailDialog } from '@/widgets/post/ui/PostDetailDialog';
 import { UserDialog } from '@/widgets/user/ui';
 
 export const PostsManagerPage = () => {
-  // 상태 관리
-  const { setSelectedPost } = useSelectedPostStoreSelector(['setSelectedPost']);
-  const { comments, setComments } = useCommentsStoreSelector(['comments', 'setComments']);
-
   const postAddDialogState = useDialog();
   const postEditDialogState = useDialog();
   const postDetailDialogState = useDialog();
   const userDialogState = useUserDialog();
   const commentAddDialogState = useDialog();
   const commentEditDialogState = useDialog();
-
-  // 댓글 가져오기
-  const fetchComments = async (postId: number) => {
-    if (comments[postId]) return; // 이미 불러온 댓글이 있으면 다시 불러오지 않음
-    try {
-      const data = await get(`/api/comments/post/${postId}`);
-      setComments((prev) => ({ ...prev, [postId]: data.comments }));
-    } catch (error) {
-      console.error('댓글 가져오기 오류:', error);
-    }
-  };
-
-  // 게시물 상세 보기
-  const onPostDetailOpen = (post: Post) => {
-    setSelectedPost(post);
-    fetchComments(post.id);
-    postDetailDialogState.open();
-  };
 
   return (
     <Card className='w-full max-w-6xl mx-auto'>
@@ -62,8 +36,8 @@ export const PostsManagerPage = () => {
           {/* 게시물 테이블 */}
           <PostsTable
             onUserClick={userDialogState.onOpenUserDialog}
-            onPostDetail={onPostDetailOpen}
             onPostEditDialogOpen={postEditDialogState.open}
+            onPostDetailDialogOpen={postDetailDialogState.open}
           />
           {/* 페이지네이션 */}
           <PostPagination />
