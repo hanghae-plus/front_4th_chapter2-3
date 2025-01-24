@@ -9,6 +9,7 @@ import { useDialog } from "@shared/dialog/model/useDialog.ts";
 import PostDetailDialog from "@features/dialog/ui/PostDetailDialog.tsx";
 import { Post } from "@/types/post.ts";
 import PostEditDialog from "@features/dialog/ui/PostEditDialog.tsx";
+import UserDetailDialog from "@features/dialog/ui/UserDetailDialog.tsx";
 
 function PostTable() {
   const { posts, filters } = usePostStore();
@@ -22,6 +23,10 @@ function PostTable() {
 
   const handleEditDialog = (selectedPost: Post) => {
     open(<PostEditDialog selectedPost={selectedPost} updatePost={updatePost} />);
+  };
+
+  const handleUserDetailDialog = (userId: number) => {
+    open(<UserDetailDialog userId={userId} />);
   };
 
   return (
@@ -62,10 +67,12 @@ function PostTable() {
               </div>
             </TableCell>
             <TableCell>
-              <div className="flex items-center space-x-2 cursor-pointer">
-                <img src={post.author?.image} alt={post.author?.username} className="w-8 h-8 rounded-full" />
-                <span>{post.author?.username}</span>
-              </div>
+              <button onClick={() => handleUserDetailDialog(post.userId)}>
+                <div className="flex items-center space-x-2">
+                  <img src={post.author?.image} alt={post.author?.username} className="w-8 h-8 rounded-full" />
+                  <span>{post.author?.username}</span>
+                </div>
+              </button>
             </TableCell>
             <TableCell>
               <div className="flex items-center gap-2">

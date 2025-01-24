@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { UserResponse } from "@/types/user.ts";
+import { User, UserResponse } from "@/types/user.ts";
 
 export const useFetchUsersQuery = () => {
   return useQuery<UserResponse>({
@@ -9,8 +9,8 @@ export const useFetchUsersQuery = () => {
   });
 };
 
-export const useFetchUserQuery = (userId: string) => {
-  return useQuery({
+export const useFetchUserQuery = (userId: number) => {
+  return useQuery<User>({
     queryKey: ["users", userId],
     queryFn: () => axios.get(`/api/users/${userId}`).then((res) => res.data),
     enabled: !!userId,
