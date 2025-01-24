@@ -125,7 +125,7 @@ export const TEST_POSTS = {
   total: 251,
   skip: 0,
   limit: 10,
-}
+};
 
 export const TEST_USERS = {
   users: [
@@ -1173,7 +1173,7 @@ export const TEST_USERS = {
   total: 208,
   skip: 0,
   limit: 208,
-}
+};
 
 export const TEST_SEARCH_POST = {
   posts: [
@@ -1190,4 +1190,4 @@ export const TEST_SEARCH_POST = {
   total: 1,
   skip: 0,
   limit: 1,
-}
+};

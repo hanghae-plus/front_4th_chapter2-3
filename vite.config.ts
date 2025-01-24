@@ -1,9 +1,12 @@
-import { defineConfig } from "vite"
+/// <reference types="vitest" />
+
 import react from "@vitejs/plugin-react"
+import tsconfigPaths from "vite-tsconfig-paths"
+import { defineConfig } from "vitest/config"
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tsconfigPaths()],
   server: {
     proxy: {
       "/api": {
@@ -13,5 +16,9 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/api/, ""),
       },
     },
+  },
+  test: {
+    globals: true,
+    environment: "jsdom",
   },
 })
