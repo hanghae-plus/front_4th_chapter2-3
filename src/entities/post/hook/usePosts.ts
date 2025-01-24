@@ -68,7 +68,7 @@ export const usePosts = () => {
     } finally {
       setLoading(false);
     }
-  }, ["setLoading", "setPosts", "setTotal", "skip"]);
+  }, [setLoading, setPosts, setTotal, skip, limit]);
 
   // 태그별 게시물 가져오기
   const handleFetchPostsByTag = useCallback(
