@@ -1,10 +1,12 @@
-import { usePostDetailActions } from "../../../features/post/model/usePostDetailActions"
+import { useUserActions } from "../../../features/user/model/useUserActions"
+
 import { useDialogStore } from "../../../shared/model/useDialogStore"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../../shared/ui"
 
 export const UserInfoDialog: React.FC = () => {
-  const { selectedUser } = usePostDetailActions()
+  const { selectedUser } = useUserActions()
   const { showUserModal, setShowUserModal } = useDialogStore()
+
   return (
     <Dialog open={showUserModal} onOpenChange={setShowUserModal}>
       <DialogContent>

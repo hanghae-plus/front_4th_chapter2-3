@@ -20,10 +20,9 @@ const PostsManager: React.FC = () => {
   const { isLoading } = useLoadingStore()
   const { setShowAddDialog } = useDialogStore()
   const [tags, setTags] = useState<Tag[]>([])
-
   const { updateURL, sortBy, sortOrder, selectedTag } = usePostsFilter()
   const { fetchPosts, fetchPostsByTag } = usePostActions()
-  // 태그 가져오기
+
   const fetchTags = async () => {
     try {
       const response = await fetch("/api/posts/tags")

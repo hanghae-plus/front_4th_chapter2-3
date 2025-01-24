@@ -6,20 +6,15 @@ import { usePostDetailActions } from "../model/usePostDetailActions"
 import { useDialogStore } from "../../../shared/model/useDialogStore"
 import { usePostsFilter } from "../model/usePostFilter"
 import { usePostActions } from "../model/usePostActions"
+import { useUserActions } from "../../user/model/useUserActions"
 
 export const PostTable = () => {
   const { posts, setSelectedPost } = usePostStore()
   const { deletePost } = usePostActions()
-  const { openPostDetail, openUserModal } = usePostDetailActions()
+  const { openPostDetail } = usePostDetailActions()
+  const { openUserModal } = useUserActions()
   const { setShowEditDialog } = useDialogStore()
-  const {
-    updateURL,
-
-    searchQuery,
-
-    selectedTag,
-    setSelectedTag,
-  } = usePostsFilter()
+  const { updateURL, searchQuery, selectedTag, setSelectedTag } = usePostsFilter()
   return (
     <Table>
       <TableHeader>

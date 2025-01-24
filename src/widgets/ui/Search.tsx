@@ -17,9 +17,6 @@ export const SearchAndFilter = ({ tags }) => {
     setSelectedTag,
   } = usePostsFilter()
 
-  console.log("tags", tags)
-  console.log("searchQuery", searchQuery)
-  console.log("setSortOrder", sortOrder)
   return (
     <div className="flex gap-4">
       <div className="flex-1">
@@ -32,7 +29,7 @@ export const SearchAndFilter = ({ tags }) => {
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyPress={(e) => {
               if (e.key === "Enter") {
-                searchPosts(e.target.value)
+                searchPosts((e.target as HTMLInputElement).value)
               }
             }}
           />
