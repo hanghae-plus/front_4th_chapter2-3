@@ -17,6 +17,8 @@ interface PostStore {
   selectedPost: Post | null
   newPost: Omit<Post, "id">
   showPostDetailDialog: boolean
+  showAddDialog: boolean
+  showEditDialog: boolean
 
   // actions
   setPosts: (posts: Post[]) => void
@@ -34,6 +36,12 @@ interface PostStore {
   setNewPostTitle: (title: string) => void
   setNewPostBody: (body: string) => void
   setShowPostDetailDialog: (show: boolean) => void
+  setShowAddDialog: (show: boolean) => void
+  setShowEditDialog: (show: boolean) => void
+  handleAddPost: () => void
+  handleEditPost: (post: Post) => void
+  handleSubmitAdd: () => void
+  handleSubmitEdit: () => void
 
   // async actions
   fetchPosts: () => Promise<void>
@@ -60,6 +68,8 @@ export const usePostStore = create<PostStore>((set, get) => ({
   selectedPost: null,
   newPost: { title: "", body: "", userId: 1 },
   showPostDetailDialog: false,
+  showAddDialog: false,
+  showEditDialog: false,
 
   setPosts: (posts) => set({ posts }),
   setTotal: (total) => set({ total }),
@@ -82,6 +92,33 @@ export const usePostStore = create<PostStore>((set, get) => ({
       newPost: { ...state.newPost, body },
     })),
   setShowPostDetailDialog: (show) => set({ showPostDetailDialog: show }),
+  setShowAddDialog: (show) => set({ showAddDialog: show }),
+  setShowEditDialog: (show) => set({ showEditDialog: show }),
+
+  handleAddPost: () => {
+    set({ showAddDialog: true })
+  },
+
+  handleEditPost: (post) => {
+    set({
+      selectedPost: post,
+      showEditDialog: true,
+    })
+  },
+
+  handleSubmitAdd: () => {
+    const { newPost, addPost } = get()
+    addPost(newPost)
+    set({ showAddDialog: false })
+  },
+
+  handleSubmitEdit: () => {
+    const { selectedPost, updatePost } = get()
+    if (selectedPost) {
+      updatePost(selectedPost)
+      set({ showEditDialog: false })
+    }
+  },
 
   fetchPosts: async () => {
     const { limit, skip } = get()

@@ -1,31 +1,57 @@
-import { Dialog } from "@shared/ui"
-import { Post } from "@entities/post/model"
-import { PostFormContainer } from "@features/post/ui"
+import { Dialog, Button } from "@shared/ui"
+import { PostForm } from "@features/post/ui"
+import { usePostStore } from "@features/post/model/stores"
 
 interface PostFormDialogProps {
   mode: "add" | "edit"
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  post?: Post | null
-  onSubmit: () => void
-  onTitleChange?: (title: string) => void
-  onBodyChange?: (body: string) => void
 }
 
-export const PostFormDialog = ({
-  mode,
-  open,
-  onOpenChange,
-  post,
-  onSubmit,
-  onTitleChange,
-  onBodyChange,
-}: PostFormDialogProps) => {
+export const PostFormDialog = ({ mode }: PostFormDialogProps) => {
+  const {
+    showAddDialog,
+    showEditDialog,
+    newPost,
+    selectedPost,
+    setShowAddDialog,
+    setShowEditDialog,
+    setNewPostTitle,
+    setNewPostBody,
+    setSelectedPost,
+    handleSubmitAdd,
+    handleSubmitEdit,
+  } = usePostStore()
+
   const isEdit = mode === "edit"
+  const isOpen = isEdit ? showEditDialog : showAddDialog
+  const post = isEdit ? selectedPost : { ...newPost, id: 0 }
+
+  const handleOpenChange = (open: boolean) => {
+    if (isEdit) {
+      setShowEditDialog(open)
+    } else {
+      setShowAddDialog(open)
+    }
+  }
+
+  const handleTitleChange = (title: string) => {
+    if (isEdit && selectedPost) {
+      setSelectedPost({ ...selectedPost, title })
+    } else {
+      setNewPostTitle(title)
+    }
+  }
+
+  const handleBodyChange = (body: string) => {
+    if (isEdit && selectedPost) {
+      setSelectedPost({ ...selectedPost, body })
+    } else {
+      setNewPostBody(body)
+    }
+  }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <Dialog.Content aria-describedby="dialog-description">
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+      <Dialog.Content>
         <Dialog.Header>
           <Dialog.Title>{isEdit ? "게시물 수정" : "새 게시물 추가"}</Dialog.Title>
           <p id="dialog-description">
@@ -34,14 +60,17 @@ export const PostFormDialog = ({
               : "새 게시물을 작성하려면 아래 양식을 작성해주세요."}
           </p>
         </Dialog.Header>
-        <PostFormContainer
-          isEdit={isEdit}
-          title={post?.title ?? ""}
-          body={post?.body ?? ""}
-          onTitleChange={onTitleChange ?? (() => {})}
-          onBodyChange={onBodyChange ?? (() => {})}
-          onSubmit={onSubmit}
+        <PostForm
+          title={post?.title || ""}
+          body={post?.body || ""}
+          onTitleChange={handleTitleChange}
+          onBodyChange={handleBodyChange}
         />
+        <div className="flex justify-end gap-2 mt-4">
+          <Button onClick={isEdit ? handleSubmitEdit : handleSubmitAdd}>
+            {isEdit ? "게시물 수정" : "게시물 추가"}
+          </Button>
+        </div>
       </Dialog.Content>
     </Dialog>
   )

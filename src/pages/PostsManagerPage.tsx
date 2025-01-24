@@ -1,5 +1,3 @@
-import { useState } from "react"
-
 import { PostsManagerWidget, PostDetailDialog, PostFormDialog } from "@widgets/post/ui"
 import { CommentFormDialog } from "@widgets/comment/ui"
 import { UserInfoDialog } from "@widgets/user/ui"
@@ -10,7 +8,6 @@ import { useUserManager } from "@features/user/model/hooks"
 
 const PostsManager = () => {
   const {
-    newPost,
     posts,
     total,
     skip,
@@ -23,9 +20,6 @@ const PostsManager = () => {
     loading,
     selectedPost,
     showPostDetailDialog,
-    setSelectedPost,
-    addPost,
-    updatePost,
     deletePost,
     setSearchQuery,
     searchPosts,
@@ -34,10 +28,10 @@ const PostsManager = () => {
     setSortOrder,
     setLimit,
     setSkip,
-    setNewPostTitle,
-    setNewPostBody,
     setShowPostDetailDialog,
     openPostDetail,
+    handleAddPost,
+    handleEditPost,
   } = usePostManager()
 
   const { comments, deleteComment, likeComment, handleAddComment, handleEditComment } = useCommentManager(
@@ -45,9 +39,6 @@ const PostsManager = () => {
   )
 
   const { handleUserClick } = useUserManager()
-
-  const [showAddDialog, setShowAddDialog] = useState(false)
-  const [showEditDialog, setShowEditDialog] = useState(false)
 
   return (
     <>
@@ -62,11 +53,8 @@ const PostsManager = () => {
         tags={tags || []}
         sortBy={sortBy}
         sortOrder={sortOrder}
-        onAddClick={() => setShowAddDialog(true)}
-        onEditPost={(post) => {
-          setSelectedPost(post)
-          setShowEditDialog(true)
-        }}
+        onAddClick={handleAddPost}
+        onEditPost={handleEditPost}
         onDeletePost={deletePost}
         onViewComments={openPostDetail}
         onUserClick={handleUserClick}
@@ -91,37 +79,10 @@ const PostsManager = () => {
         onLikeComment={likeComment}
       />
 
-      <PostFormDialog
-        mode="add"
-        open={showAddDialog}
-        onOpenChange={setShowAddDialog}
-        post={{ ...newPost, id: 0 }}
-        onTitleChange={setNewPostTitle}
-        onBodyChange={setNewPostBody}
-        onSubmit={() => {
-          addPost(newPost)
-          setShowAddDialog(false)
-        }}
-      />
-
-      <PostFormDialog
-        mode="edit"
-        open={showEditDialog}
-        onOpenChange={setShowEditDialog}
-        post={selectedPost}
-        onTitleChange={(title) => setSelectedPost(selectedPost ? { ...selectedPost, title } : null)}
-        onBodyChange={(body) => setSelectedPost(selectedPost ? { ...selectedPost, body } : null)}
-        onSubmit={() => {
-          if (selectedPost) {
-            updatePost(selectedPost)
-            setShowEditDialog(false)
-          }
-        }}
-      />
-
+      <PostFormDialog mode="add" />
+      <PostFormDialog mode="edit" />
       <CommentFormDialog mode="add" />
       <CommentFormDialog mode="edit" />
-
       <UserInfoDialog />
     </>
   )
