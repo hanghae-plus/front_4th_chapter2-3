@@ -8,7 +8,10 @@ export const QUERY_KEYS = {
   TAG: ["tags"],
   POST: {
     all: ["posts"],
-    getPostList: (limit: string, skip: string) => [...QUERY_KEYS.POST.all, { limit, skip }],
+    getPostList: (limit?: string, skip?: string, searchQuery?: string, tag?: string) => [
+      ...QUERY_KEYS.POST.all,
+      { limit, skip, searchQuery, tag },
+    ],
     getPostDetail: (postId: string | undefined) => [...QUERY_KEYS.POST.all, postId],
     postPost: (newPost: Partial<Post>) => [...QUERY_KEYS.POST.all, JSON.stringify(newPost)],
   },
