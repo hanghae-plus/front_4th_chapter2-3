@@ -1,0 +1,5 @@
+export * from "./PostAdd.tsx"
+export * from "./PostDetail.tsx"
+export * from "./PostsTable.tsx"
+export * from "./PostUpdate.tsx"
+export * from "./Post.tsx"
