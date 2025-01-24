@@ -1,4 +1,4 @@
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { highlightText } from "../../../shared/lib/handleHighlightText";
 import { DialogWrapper } from "../../../shared/ui/dialog/DialogWrapper";
 import {
@@ -9,8 +9,9 @@ import {
 import { CommentItem } from "../../../features/comment/ui/CommentItem";
 
 export const DialogPostDetail = () => {
-  const [searchQuery] = useAtom(searchQueryAtom);
-  const [selectedPost] = useAtom(selectedPostAtom);
+  const searchQuery = useAtomValue(searchQueryAtom);
+  const selectedPost = useAtomValue(selectedPostAtom);
+
   const [showPostDetailDialog, setShowPostDetailDialog] =
     useAtom(postDetailDialogAtom);
 

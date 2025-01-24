@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader } from "../shared/ui";
 import { UserModal } from "../entities/user/ui/UserModal.tsx";
 import { DialogAddPost } from "../entities/post/ui/DialogAddPost.tsx";
 
-import { useAtom } from "jotai";
+import { useAtomValue } from "jotai";
 import {
   selectedTagAtom,
   limitAtom,
@@ -25,11 +25,11 @@ import { CardTitleContents } from "../entities/card/ui/CardTitleContents.tsx";
 
 const PostsManager = () => {
   // 전역 변수
-  const [selectedTag] = useAtom(selectedTagAtom);
-  const [skip] = useAtom(skipAtom);
-  const [limit] = useAtom(limitAtom);
-  const [sortBy] = useAtom(sortByAtom);
-  const [sortOrder] = useAtom(sortOrderAtom);
+  const selectedTag = useAtomValue(selectedTagAtom);
+  const skip = useAtomValue(skipAtom);
+  const limit = useAtomValue(limitAtom);
+  const sortBy = useAtomValue(sortByAtom);
+  const sortOrder = useAtomValue(sortOrderAtom);
 
   const { handleFetchTags } = useTags();
 

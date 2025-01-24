@@ -1,4 +1,4 @@
-import { useAtom } from "jotai";
+import { useSetAtom } from "jotai";
 import { selectedTagAtom, tagsAtom } from "../../../app/store/atom";
 import { fetchTag } from "../api/tagApi";
 import { useParams } from "../../../shared/hook/useParams";
@@ -6,8 +6,8 @@ import { usePosts } from "../../post/hook/usePosts";
 import { useCallback } from "react";
 
 export const useTags = () => {
-  const [, setTags] = useAtom(tagsAtom);
-  const [, setSelectedTag] = useAtom(selectedTagAtom);
+  const setTags = useSetAtom(tagsAtom);
+  const setSelectedTag = useSetAtom(selectedTagAtom);
 
   const { handleFetchPostsByTag } = usePosts();
   const { updateURL } = useParams();

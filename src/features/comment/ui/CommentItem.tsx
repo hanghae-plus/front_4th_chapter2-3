@@ -3,11 +3,11 @@ import { Button } from "../../../shared/ui";
 import { CommentRow } from "./CommentRow";
 import { Comment } from "../../../entities/comment/model/types";
 import { commentsAtom } from "../../../app/store/atom";
-import { useAtom } from "jotai";
+import { useAtomValue } from "jotai";
 import { useComment } from "../../../entities/comment/hook/useComment";
 
 export const CommentItem: React.FC = () => {
-  const [comments] = useAtom(commentsAtom);
+  const comments = useAtomValue(commentsAtom);
 
   const { handleShowAddCommentModal } = useComment();
 

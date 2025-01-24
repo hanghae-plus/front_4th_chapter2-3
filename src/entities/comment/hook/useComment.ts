@@ -1,4 +1,4 @@
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import {
   addComments,
   deleteComments,
@@ -20,9 +20,11 @@ export const useComment = () => {
   const [comments, setComments] = useAtom(commentsAtom);
   const [newComment, setNewComment] = useAtom(newCommentAtom);
   const [selectedComment, setSelectedComment] = useAtom(selectedCommentAtom);
-  const [selectedPost] = useAtom(selectedPostAtom);
-  const [, setShowAddCommentDialog] = useAtom(addCommentDialogAtom);
-  const [, setShowEditCommentDialog] = useAtom(editCommentDialogAtom);
+
+  const selectedPost = useAtomValue(selectedPostAtom);
+
+  const setShowAddCommentDialog = useSetAtom(addCommentDialogAtom);
+  const setShowEditCommentDialog = useSetAtom(editCommentDialogAtom);
 
   // 댓글 가져오기
   const handleFetchComments = async (postId: number) => {

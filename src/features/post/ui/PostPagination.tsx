@@ -1,4 +1,4 @@
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { skipAtom, totalAtom } from "../../../app/store/atom";
 import { limitAtom } from "../../../app/store/atom";
 import {
@@ -11,7 +11,8 @@ import {
 } from "../../../shared/ui";
 
 export const PostPagination: React.FC = () => {
-  const [total] = useAtom(totalAtom);
+  const total = useAtomValue(totalAtom);
+
   const [skip, setSkip] = useAtom(skipAtom);
   const [limit, setLimit] = useAtom(limitAtom);
 

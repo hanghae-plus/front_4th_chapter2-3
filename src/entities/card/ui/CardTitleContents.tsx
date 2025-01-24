@@ -1,4 +1,4 @@
-import { useAtom } from "jotai";
+import { useSetAtom } from "jotai";
 import { addDialogAtom } from "../../../app/store/atom";
 import { Button } from "../../../shared/ui";
 
@@ -7,7 +7,7 @@ import { CardTitle } from "../../../shared/ui";
 import { Plus } from "lucide-react";
 
 export const CardTitleContents = () => {
-  const [, setShowAddDialog] = useAtom(addDialogAtom);
+  const setShowAddDialog = useSetAtom(addDialogAtom);
 
   return (
     <CardTitle className="flex items-center justify-between">

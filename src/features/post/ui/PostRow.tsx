@@ -1,4 +1,4 @@
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import {
   editDialogAtom,
   selectedPostAtom,
@@ -19,10 +19,12 @@ interface PostRowProps {
 }
 
 export const PostRow: React.FC<PostRowProps> = ({ post }) => {
-  const [searchQuery] = useAtom(searchQueryAtom);
+  const searchQuery = useAtomValue(searchQueryAtom);
+
   const [selectedTag, setSelectedTag] = useAtom(selectedTagAtom);
-  const [, setSelectedPost] = useAtom(selectedPostAtom);
-  const [, setShowEditDialog] = useAtom(editDialogAtom);
+
+  const setSelectedPost = useSetAtom(selectedPostAtom);
+  const setShowEditDialog = useSetAtom(editDialogAtom);
 
   const { handleDeletePost } = usePosts();
   const { updateURL } = useParams();

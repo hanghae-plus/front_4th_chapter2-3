@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useAtom } from "jotai";
+import { useSetAtom } from "jotai";
 import { useLocation } from "react-router-dom";
 import {
   skipAtom,
@@ -13,12 +13,12 @@ import {
 export const useInitializePosts = () => {
   const location = useLocation();
 
-  const [, setSkip] = useAtom(skipAtom);
-  const [, setLimit] = useAtom(limitAtom);
-  const [, setSearchQuery] = useAtom(searchQueryAtom);
-  const [, setSortBy] = useAtom(sortByAtom);
-  const [, setSortOrder] = useAtom(sortOrderAtom);
-  const [, setSelectedTag] = useAtom(selectedTagAtom);
+  const setSkip = useSetAtom(skipAtom);
+  const setLimit = useSetAtom(limitAtom);
+  const setSearchQuery = useSetAtom(searchQueryAtom);
+  const setSortBy = useSetAtom(sortByAtom);
+  const setSortOrder = useSetAtom(sortOrderAtom);
+  const setSelectedTag = useSetAtom(selectedTagAtom);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);

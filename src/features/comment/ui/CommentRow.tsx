@@ -1,4 +1,4 @@
-import { useAtom } from "jotai";
+import { useAtomValue } from "jotai";
 import { searchQueryAtom } from "../../../app/store/atom";
 import { highlightText } from "../../../shared/lib/handleHighlightText";
 import { Comment } from "../../../entities/comment/model/types";
@@ -9,7 +9,7 @@ interface CommentRowProps {
 }
 
 export const CommentRow: React.FC<CommentRowProps> = ({ comment }) => {
-  const [searchQuery] = useAtom(searchQueryAtom);
+  const searchQuery = useAtomValue(searchQueryAtom);
 
   return (
     <div

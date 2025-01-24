@@ -1,4 +1,4 @@
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import {
   addNewPost,
   deletePost,
@@ -27,18 +27,20 @@ import { useComment } from "../../comment/hook/useComment";
 import { useCallback } from "react";
 
 export const usePosts = () => {
-  const [skip] = useAtom(skipAtom);
-  const [limit] = useAtom(limitAtom);
-  const [searchQuery] = useAtom(searchQueryAtom);
-  const [selectedPost] = useAtom(selectedPostAtom);
+  const skip = useAtomValue(skipAtom);
+  const limit = useAtomValue(limitAtom);
+  const searchQuery = useAtomValue(searchQueryAtom);
+  const selectedPost = useAtomValue(selectedPostAtom);
+
   const [newPost, setNewPost] = useAtom(newPostAtom);
-  const [, setPosts] = useAtom(postsAtom);
-  const [, setLoading] = useAtom(loadingAtom);
-  const [, setTotal] = useAtom(totalAtom);
-  const [, setShowAddDialog] = useAtom(addDialogAtom);
-  const [, setShowEditDialog] = useAtom(editDialogAtom);
-  const [, setSelectedPost] = useAtom(selectedPostAtom);
-  const [, setShowPostDetailDialog] = useAtom(postDetailDialogAtom);
+
+  const setPosts = useSetAtom(postsAtom);
+  const setLoading = useSetAtom(loadingAtom);
+  const setTotal = useSetAtom(totalAtom);
+  const setShowAddDialog = useSetAtom(addDialogAtom);
+  const setShowEditDialog = useSetAtom(editDialogAtom);
+  const setSelectedPost = useSetAtom(selectedPostAtom);
+  const setShowPostDetailDialog = useSetAtom(postDetailDialogAtom);
 
   const { handleFetchComments } = useComment();
 

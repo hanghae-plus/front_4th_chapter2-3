@@ -7,7 +7,7 @@ import {
   SelectItem,
 } from "../../../shared/ui";
 import { Search } from "lucide-react";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import {
   searchQueryAtom,
   selectedTagAtom,
@@ -19,11 +19,12 @@ import { usePosts } from "../../../entities/post/hook/usePosts";
 import { useTags } from "../../../entities/tag/hook/useTags";
 
 export const PostFilter: React.FC = () => {
-  const [SearchQuery, setSearchQuery] = useAtom<string>(searchQueryAtom);
-  const [selectedTag] = useAtom(selectedTagAtom);
+  const selectedTag = useAtomValue(selectedTagAtom);
+  const tags = useAtomValue(tagsAtom);
+
+  const [SearchQuery, setSearchQuery] = useAtom(searchQueryAtom);
   const [sortBy, setSortBy] = useAtom(sortByAtom);
   const [sortOrder, setSortOrder] = useAtom(sortOrderAtom);
-  const [tags] = useAtom(tagsAtom);
 
   const { handleSearchPost } = usePosts();
   const { handleControlFilter } = useTags();

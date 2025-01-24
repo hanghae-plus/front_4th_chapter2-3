@@ -2,11 +2,11 @@ import { PostHeader } from "./PostHeader";
 import { Table, TableBody, TableHeader } from "../../../shared/ui";
 import { PostRow } from "./PostRow";
 import { loadingAtom, postsAtom } from "../../../app/store/atom";
-import { useAtom } from "jotai";
+import { useAtomValue } from "jotai";
 
 export const PostItem: React.FC = () => {
-  const [posts] = useAtom(postsAtom);
-  const [loading] = useAtom(loadingAtom);
+  const posts = useAtomValue(postsAtom);
+  const loading = useAtomValue(loadingAtom);
 
   if (loading) return <div className="flex justify-center p-4">로딩 중...</div>;
 

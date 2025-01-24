@@ -5,10 +5,11 @@ import {
   DialogTitle,
 } from "../../../shared/ui";
 import { selectedUserAtom, userModalAtom } from "../../../app/store/atom";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 
 export const UserModal: React.FC = () => {
-  const [selectedUser] = useAtom(selectedUserAtom);
+  const selectedUser = useAtomValue(selectedUserAtom);
+
   const [showUserModal, setShowUserModal] = useAtom(userModalAtom);
 
   return (
