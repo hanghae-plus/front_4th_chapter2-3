@@ -1,11 +1,10 @@
 import { Search } from "lucide-react";
 import { Input } from "@shared/input/ui";
 import { usePostSearch } from "@features/posts/model/usePostSearch.ts";
-import { usePostStore } from "@core/store/usePostStore.ts";
 
 function PostSearch() {
-  const { handleSearchQueryChange, handleKeyPress } = usePostSearch();
-  const { filters } = usePostStore();
+  const { searchQuery, handleSearchQueryChange, handleKeyPress } = usePostSearch();
+
   return (
     <div className="flex-1">
       <div className="relative">
@@ -13,7 +12,7 @@ function PostSearch() {
         <Input
           placeholder="게시물 검색..."
           className="pl-8"
-          value={filters.searchQuery}
+          value={searchQuery ?? ""}
           onChange={handleSearchQueryChange}
           onKeyPress={handleKeyPress}
         />

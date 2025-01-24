@@ -1,12 +1,10 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@shared/select/ui";
 import { usePostFilter } from "@features/posts/model/usePostFilter.ts";
-import { usePostStore } from "@core/store/usePostStore.ts";
 import PostSearch from "@features/posts/ui/PostSearch.tsx";
 import { useFetchTagsQuery } from "@entities/post/api";
 
 function PostFilter() {
-  const { filters } = usePostStore();
-  const { handleSortChange, handleTagSelect } = usePostFilter();
+  const { filters, handleSortChange, handleTagSelect } = usePostFilter();
   const { data: tags } = useFetchTagsQuery();
 
   return (

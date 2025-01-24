@@ -14,7 +14,6 @@ export const useFetchPostsQuery = (params: {
   return useQuery<PostResponse>({
     queryKey: ["posts", params],
     queryFn: async () => {
-      console.log("post 요청", params);
       if (searchQuery) {
         return axios.get(`/api/posts/search?q=${searchQuery}`).then((res) => res.data);
       }

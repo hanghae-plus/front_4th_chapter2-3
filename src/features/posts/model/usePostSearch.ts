@@ -1,8 +1,8 @@
-import { usePostStore } from "@core/store/usePostStore.ts";
 import { useSearchParams } from "react-router-dom";
+import { useSearchStore } from "@core/store/useSearchStore.ts";
 
 export const usePostSearch = () => {
-  const { filters, setFilters } = usePostStore();
+  const { searchQuery, setSearchQuery } = useSearchStore();
   const [, setSearchParams] = useSearchParams();
 
   const _handleSearchPost = async (newSearchQuery: string) => {
@@ -13,7 +13,7 @@ export const usePostSearch = () => {
   };
 
   const handleSearchQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFilters({ ...filters, searchQuery: e.currentTarget.value });
+    setSearchQuery(e.currentTarget.value);
   };
 
   const handleKeyPress = async (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -23,6 +23,7 @@ export const usePostSearch = () => {
   };
 
   return {
+    searchQuery,
     handleSearchQueryChange,
     handleKeyPress,
   };

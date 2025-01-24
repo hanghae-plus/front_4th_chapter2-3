@@ -2,12 +2,12 @@ import { Card, CardContent } from "@/shared/card/ui";
 import PostTable from "../widgets/post/PostTable.tsx";
 import PostFilter from "@features/posts/ui/PostFilter.tsx";
 import PostManagementHeader from "@widgets/post/PostManagementHeader.tsx";
-import { useQueryPost } from "@features/posts/model/useInitializePost.ts";
+import { usePostQuery } from "@features/posts/model/usePostQuery.ts";
 import PostPagination from "@features/posts/ui/PostPagination.tsx";
 import LoadingIndicator from "@shared/indicator/ui/LoadingIndicator.tsx";
 
 const PostsManager = () => {
-  const { isLoading } = useQueryPost();
+  const { isLoading } = usePostQuery();
 
   return (
     <Card className="w-full max-w-6xl mx-auto">

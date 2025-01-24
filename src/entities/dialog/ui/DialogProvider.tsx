@@ -1,5 +1,5 @@
 import { useDialog } from "@shared/dialog/model/useDialog.ts";
-import { Dialog } from "@shared/ui";
+import { Dialog } from "@shared/dialog/ui";
 
 export const DialogProvider = () => {
   const { stack, close } = useDialog();

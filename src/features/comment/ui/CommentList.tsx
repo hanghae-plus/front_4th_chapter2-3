@@ -1,20 +1,20 @@
 import { Button } from "@shared/button/ui";
 import { Edit2, Plus, ThumbsUp, Trash2 } from "lucide-react";
 import { HighlightMatch } from "@shared/hightlight/ui/HighlightMatch.tsx";
-import { usePostStore } from "@core/store/usePostStore.ts";
 import { useComment } from "@features/comment/model/useComment.ts";
 import { useDialog } from "@shared/dialog/model/useDialog.ts";
 import CommentModifyDialog from "@features/dialog/ui/CommentModifyDialog.tsx";
 import { Comment } from "@/types/comment.ts";
 import CommentAddDialog from "@features/dialog/ui/CommentAddDialog.tsx";
+import { useSearchStore } from "@core/store/useSearchStore.ts";
 
 interface CommentListProps {
   postId: number;
 }
 
 function CommentList({ postId }: CommentListProps) {
-  const { filters } = usePostStore();
   const { open } = useDialog();
+  const { searchQuery } = useSearchStore();
   const { comments, isLoading, addComment, deleteComment, likeComment, updateComment } = useComment(postId);
 
   const handleCommentModifyDialog = (selectedComment: Comment) => {
@@ -40,7 +40,7 @@ function CommentList({ postId }: CommentListProps) {
             <div key={comment.id} className="flex items-center justify-between text-sm border-b pb-1">
               <div className="flex items-center space-x-2 overflow-hidden">
                 <span className="font-medium truncate">{comment.user.username}:</span>
-                <span className="truncate">{HighlightMatch(comment.body, filters.searchQuery)}</span>
+                <span className="truncate">{HighlightMatch(comment.body, searchQuery)}</span>
               </div>
               <div className="flex items-center space-x-1">
                 <Button variant="ghost" size="sm" onClick={() => likeComment(comment.id)}>

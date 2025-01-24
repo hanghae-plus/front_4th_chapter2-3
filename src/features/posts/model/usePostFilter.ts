@@ -1,13 +1,16 @@
-import { usePostStore } from "@core/store/usePostStore.ts";
 import { useSearchParams } from "react-router-dom";
 
 export const usePostFilter = () => {
-  const { filters, setFilters } = usePostStore();
-  const [, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const filters = {
+    selectedTag: searchParams.get("tag") || "",
+    sortBy: searchParams.get("sortBy") || "date",
+    sortOrder: (searchParams.get("sortOrder") || "desc") as "asc" | "desc",
+  };
 
   // 태그를 기준으로 필터링
   const handleTagSelect = (tag: string) => {
-    setFilters({ ...filters, selectedTag: tag });
     setSearchParams((params) => {
       params.set("tag", tag);
       return params;
@@ -16,7 +19,6 @@ export const usePostFilter = () => {
 
   // 정렬 기준 변경
   const handleSortChange = (sortBy: string, sortOrder: "asc" | "desc") => {
-    setFilters({ ...filters, sortBy, sortOrder });
     setSearchParams((params) => {
       params.set("sortBy", sortBy);
       params.set("sortOrder", sortOrder);
@@ -25,6 +27,7 @@ export const usePostFilter = () => {
   };
 
   return {
+    filters,
     handleTagSelect,
     handleSortChange,
   };

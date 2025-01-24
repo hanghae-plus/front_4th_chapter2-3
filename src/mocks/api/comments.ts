@@ -13,7 +13,6 @@ const getComments = http.get("/api/comments/post/:postId", ({ params, request })
 
   const filteredComments = [...comments].filter((comment) => comment.postId.toString() === postId?.toString());
 
-  console.log("아이디", postId, filteredComments.length);
   return HttpResponse.json({
     comments: filteredComments,
     total: comments.length,
@@ -35,7 +34,6 @@ const addComment = http.post("/api/comments/add", async ({ request }) => {
 
   comments = [newComment, ...comments];
 
-  console.log("수정후", comments);
   return HttpResponse.json(newComment);
 });
 

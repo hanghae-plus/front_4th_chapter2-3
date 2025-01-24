@@ -10,12 +10,14 @@ import PostDetailDialog from "@features/dialog/ui/PostDetailDialog.tsx";
 import { Post } from "@/types/post.ts";
 import PostEditDialog from "@features/dialog/ui/PostEditDialog.tsx";
 import UserDetailDialog from "@features/dialog/ui/UserDetailDialog.tsx";
+import { useSearchStore } from "@core/store/useSearchStore.ts";
 
 function PostTable() {
-  const { posts, filters } = usePostStore();
-  const { handleTagSelect } = usePostFilter();
-  const { deletePost, updatePost } = usePost();
+  const { posts } = usePostStore();
+  const { searchQuery } = useSearchStore();
   const { open } = useDialog();
+  const { filters, handleTagSelect } = usePostFilter();
+  const { deletePost, updatePost } = usePost();
 
   const handleDetailDialog = (selectedPost: Post) => {
     open(<PostDetailDialog selectedPost={selectedPost} />);
@@ -46,7 +48,7 @@ function PostTable() {
             <TableCell>{post.id}</TableCell>
             <TableCell>
               <div className="space-y-1">
-                <div>{HighlightMatch(post.title, filters.searchQuery)}</div>
+                <div>{HighlightMatch(post.title, searchQuery ?? "")}</div>
                 <div className="flex flex-wrap gap-1">
                   {post.tags?.map((tag) => {
                     return (

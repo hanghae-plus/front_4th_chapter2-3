@@ -8,7 +8,7 @@ import { sortPost } from "@features/posts/lib/sortPost.ts";
 /**
  *  SearchParams 따라 동적으로 post fetching 훅
  */
-export function useQueryPost() {
+export function usePostQuery() {
   const { searchParams, queryParams } = useInitializeSearchParams();
   const { setPosts } = usePostStore();
 

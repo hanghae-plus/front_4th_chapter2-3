@@ -13,12 +13,14 @@ export const useInitializeSearchParams = () => {
 
   useEffect(() => {
     const defaultParams = {
-      sortOrder: "asc",
+      sortBy: "none",
+      sortOrder: "desc",
       limit: "10",
       skip: "0",
     };
 
     setSearchParams((prev) => {
+      prev.set("search", "");
       Object.entries(defaultParams).forEach(([key, value]) => {
         if (!prev.has(key)) prev.set(key, value);
       });

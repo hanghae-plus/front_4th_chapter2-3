@@ -1,6 +1,5 @@
 import { http, HttpResponse } from "msw";
 import { Post, PostResponse } from "@/types/post.ts";
-import { sortPost } from "@features/posts/lib/sortPost.ts";
 import { dummyUser } from "@/mocks/dummy/user.ts";
 
 let { posts }: PostResponse = await fetch("https://dummyjson.com/posts?limit=0").then((res) => res.json());
@@ -10,23 +9,15 @@ const parseQueryParams = (request: Request) => {
   return {
     limit: Number(url.searchParams.get("limit")) || 10,
     skip: Number(url.searchParams.get("skip")) || 0,
-    sortBy: url.searchParams.get("sortBy") || "id",
-    order: url.searchParams.get("order") || "asc",
-    query: url.searchParams.get("q") || null,
+    query: url.searchParams.get("q") || "",
   };
 };
 
 const getAllPost = http.get("/api/posts", async ({ request }) => {
-  const { limit, sortBy, order, skip } = parseQueryParams(request);
-
-  const sortedPosts = sortPost([...posts], sortBy, order);
-
-  const paginatedPosts = sortedPosts.slice(skip, skip + limit);
-
-  console.log("sorted", order, paginatedPosts);
+  const { limit, skip } = parseQueryParams(request);
 
   return HttpResponse.json({
-    posts: paginatedPosts,
+    posts: posts,
     total: posts.length,
     skip,
     limit,
@@ -72,16 +63,11 @@ const updatePost = http.put("/api/posts/:postId", async ({ request, params }) =>
 });
 
 const getPostsByQuery = http.get("/api/posts/search", async ({ request }) => {
-  const { limit, skip, query, sortBy, order } = parseQueryParams(request);
+  const { limit, skip, query } = parseQueryParams(request);
 
-  let sortedPosts = sortPost([...posts], sortBy, order);
+  const regex = new RegExp(`(${query})`, "gi");
+  const sortedPosts = posts.filter((post) => regex.test(post.title));
 
-  if (query) {
-    const searchLower = query.toLowerCase();
-    sortedPosts = sortedPosts.filter(
-      (post) => post.title.toLowerCase().includes(searchLower) || post.body.toLowerCase().includes(searchLower),
-    );
-  }
   const paginatedPosts = sortedPosts.slice(skip, skip + limit);
   return HttpResponse.json({
     posts: paginatedPosts,
@@ -92,14 +78,11 @@ const getPostsByQuery = http.get("/api/posts/search", async ({ request }) => {
 });
 
 const getPostsByTag = http.get("/api/posts/tag/:tag", ({ params, request }) => {
-  const { limit, skip, sortBy, order } = parseQueryParams(request);
+  const { limit, skip } = parseQueryParams(request);
   const { tag } = params;
 
-  console.log("tag", tag);
-  let sortedPosts = sortPost([...posts], sortBy, order);
-  sortedPosts = sortedPosts.filter((post) => post.tags.includes(tag as string));
+  const sortedPosts = posts.filter((post) => post.tags.includes(tag as string));
   const paginatedPosts = sortedPosts.slice(skip, skip + limit);
-  console.log("sorted", paginatedPosts);
 
   return HttpResponse.json({
     posts: paginatedPosts,

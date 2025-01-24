@@ -9,7 +9,6 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: path.resolve(__dirname, "index.html"),
-        legacy: path.resolve(__dirname, "index.legacy.html"),
       },
     },
   },
@@ -25,7 +24,6 @@ export default defineConfig({
     },
   },
   server: {
-    open: process.env.MODE === "legacy" ? "/index.legacy.html" : "/index.html",
     proxy: {
       "/api": {
         // target: 'https://jsonplaceholder.typicode.com',
