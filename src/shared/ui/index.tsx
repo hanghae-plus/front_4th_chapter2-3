@@ -1,3 +1,4 @@
+export { Loader } from "./Loader"
 export { Button } from "./button"
 export { Input } from "./input"
 export { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "./select"

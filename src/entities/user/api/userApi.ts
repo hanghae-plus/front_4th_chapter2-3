@@ -1,6 +1,8 @@
-import { TUser } from "../model/types"
+import { apiClient } from "../../../shared/api/apiClient"
+import { IUser } from "../model/types"
 
-export const getUserById = async (userId: number): Promise<TUser> => {
-  const response = await fetch(`/api/users/${userId}`)
-  return response.json()
+export const getUserById = async (userId: number): Promise<IUser> => {
+  const response = await apiClient.get(`/api/users/${userId}`)
+
+  return response.data
 }

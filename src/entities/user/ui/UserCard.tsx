@@ -1,9 +1,9 @@
 import { FunctionComponent } from "react"
-import { TUser } from "../model/types"
+import { IUser } from "../model/types"
 
-type TUserProfile = { user: TUser }
+type TUserProfile = { user: IUser }
 
-const UserProfile: FunctionComponent<TUserProfile> = ({ user }) => {
+const UserCard: FunctionComponent<TUserProfile> = ({ user }) => {
   return (
     <div className="space-y-4">
       <img src={user.image} alt={user?.username} className="w-24 h-24 rounded-full mx-auto" />
@@ -32,4 +32,4 @@ const UserProfile: FunctionComponent<TUserProfile> = ({ user }) => {
   )
 }
 
-export default UserProfile
+export default UserCard

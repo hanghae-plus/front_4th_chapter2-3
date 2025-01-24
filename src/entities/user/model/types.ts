@@ -1,4 +1,4 @@
-export type TUser = {
+export interface IUser {
   id: number
   username: string
   image: string
@@ -7,13 +7,30 @@ export type TUser = {
   age?: number
   email?: string
   phone?: string
-  address?: {
-    address: string
-    city: string
-    state: string
-  }
-  company?: {
-    name: string
-    title: string
-  }
+  address?: Address
+  company?: Company
+}
+
+export interface Address {
+  address: string
+  city: string
+  state: string
+}
+
+export interface Company {
+  name: string
+  title: string
+}
+
+export interface User {
+  id: string
+  username: string
+  firstName: string
+  lastName: string
+  age: number
+  email: string
+  phone: string
+  image: string
+  address: Address
+  company: Company
 }

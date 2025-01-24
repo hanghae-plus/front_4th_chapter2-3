@@ -1,5 +1,6 @@
 import { FunctionComponent } from "react"
 import { Button, Input, Textarea } from "../../../shared/ui"
+import { IPost } from "../model/types"
 
 const ButtonLabel = {
   POST: "게시물 추가",
@@ -10,17 +11,10 @@ type TPost = keyof typeof ButtonLabel
 
 type TPostForm = {
   type: TPost
-  postData?: { title: string; body: string; userId?: number }
+  postData: IPost
 }
 
-const PostForm: FunctionComponent<TPostForm> = ({
-  postData = {
-    title: "",
-    body: "",
-    userId: 1,
-  },
-  type,
-}) => {
+const PostForm: FunctionComponent<TPostForm> = ({ type, postData }) => {
   return (
     <div className="space-y-4">
       <Input

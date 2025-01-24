@@ -8,14 +8,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "../widgets/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../shared/ui/table"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../widgets/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../shared/ui/select"
-import UserProfile from "../entities/user/ui/UserProfile"
+import UserProfile from "../entities/user/ui/UserCard"
 import PostForm from "../entities/post/ui/PostForm"
 import { TComment } from "../entities/comment/model/types"
 import CommnetForm from "../entities/comment/ui/CommentForm"
 import { getUserById } from "../entities/user/api/userApi"
-import { TUser } from "../entities/user/model/types"
+import { IUser } from "../entities/user/model/types"
 import { deletePost } from "../entities/post/api"
-import { TPost } from "../entities/post/model/types"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -23,12 +22,12 @@ const PostsManager = () => {
   const queryParams = new URLSearchParams(location.search)
 
   // 상태 관리
-  const [posts, setPosts] = useState<TPost>([])
+  const [posts, setPosts] = useState<[]>([])
   const [total, setTotal] = useState(0)
   const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"))
   const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"))
   const [searchQuery, setSearchQuery] = useState(queryParams.get("search") || "")
-  const [selectedPost, setSelectedPost] = useState<TPost>()
+  const [selectedPost, setSelectedPost] = useState()
   const [sortBy, setSortBy] = useState(queryParams.get("sortBy") || "")
   const [sortOrder, setSortOrder] = useState(queryParams.get("sortOrder") || "asc")
   const [showAddDialog, setShowAddDialog] = useState(false)
@@ -294,7 +293,7 @@ const PostsManager = () => {
   }
 
   // 사용자 모달 열기
-  const openUserModal = async (user: TUser) => {
+  const openUserModal = async (user: IUser) => {
     try {
       // const response = await fetch(`/api/users/${user.id}`)
       // const userData = await response.json()
@@ -342,7 +341,7 @@ const PostsManager = () => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {posts.map((post: TPost) => (
+        {posts.map((post) => (
           <TableRow key={post.id}>
             <TableCell>{post.id}</TableCell>
             <TableCell>
