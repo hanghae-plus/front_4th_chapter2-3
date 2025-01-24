@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import { postApi } from "../postApi"
-import { postQueryKeys } from "../postQueryKeys"
+import { postQueryKeys } from "./postQueryKeys"
 
 export const useGetPosts = (limit: number, skip: number) => {
   return useQuery({

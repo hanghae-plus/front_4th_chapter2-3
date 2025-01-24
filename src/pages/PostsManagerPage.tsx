@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Edit2, Plus, Search, ThumbsUp, Trash2 } from "lucide-react"
+import { Edit2, Plus, Search, Trash2 } from "lucide-react"
 import { useLocation, useNavigate } from "react-router-dom"
 import {
   Button,
@@ -20,12 +20,13 @@ import {
 } from "../shared/ui"
 import { PostsTypes } from "../entities/post/api/postApi"
 import { User, UsersTypes } from "../entities/user/api/userApi"
-import { Comment } from "../entities/comments/api/commentsApi"
 import { Tag } from "../entities/tag/api/tagApi"
 import { Header } from "./ui/Header"
 import { Post } from "../entities/post/model/types"
 import { PostWithUser } from "../features/postTable/model/types"
 import { PostTable } from "../features/postTable/PostTable"
+import { LikeCommentButton } from "../features/postTable/ui/LikeCommentButton"
+import { Comment } from "../entities/comments/model/types"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -367,10 +368,8 @@ const PostsManager = () => {
               </span>
             </div>
             <div className="flex items-center space-x-1">
-              <Button variant="ghost" size="sm" onClick={() => likeComment(comment.id, postId)}>
-                <ThumbsUp className="w-3 h-3" />
-                <span className="ml-1 text-xs">{comment.likes}</span>
-              </Button>
+              <LikeCommentButton comment={comment} postId={postId} />
+
               <Button
                 variant="ghost"
                 size="sm"
