@@ -1,2 +1,2 @@
-export { usePostDialog } from './usePostDialog';
+export { useDialog } from './useDialog';
 export { useUserDialog } from './useUserDialog';

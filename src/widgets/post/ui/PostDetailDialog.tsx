@@ -1,11 +1,11 @@
-import type { usePostDialog } from '@/features/dialog/model';
+import type { useDialog } from '@/features/dialog/model';
 import { CustomDialog } from '@/features/dialog/ui';
 import { useUrlParams } from '@/features/posts/lib';
 import { useSelectedPostStore } from '@/features/posts/model';
 import { HighlightedText } from '@/shared/ui/HighlightedText';
 
 interface Props {
-  dialogState: ReturnType<typeof usePostDialog>;
+  dialogState: ReturnType<typeof useDialog>;
   renderComments: (postId: number) => React.ReactNode;
 }
 /**
