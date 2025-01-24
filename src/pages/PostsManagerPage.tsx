@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Card } from "../shared/ui";
-import { Post, Comment, Tag, fetchTags, deletePost, UserDetail } from "../entities";
+import { Post, Comment, deletePost, UserDetail } from "../entities";
 
 import { fetchCommentsByPostId } from "../features";
 import { PostsManager } from "../widgets/PostsManager/ui/PostsManager";
@@ -28,7 +28,6 @@ const PostsManagerPage = () => {
   const [sortBy, setSortBy] = useState(queryParams.get("sortBy") || "");
   const [sortOrder, setSortOrder] = useState(queryParams.get("sortOrder") || "asc");
   const [newPost, setNewPost] = useState({ title: "", body: "", userId: 1 });
-  const [tags, setTags] = useState<Tag[]>([]);
   const [selectedTag, setSelectedTag] = useState(queryParams.get("tag") || "");
   const [comments, setComments] = useState<Record<Post["id"], Comment[]>>({});
   const [selectedComment, setSelectedComment] = useState<Comment | null>(null);
@@ -51,15 +50,6 @@ const PostsManagerPage = () => {
     if (sortOrder) params.set("sortOrder", sortOrder);
     if (selectedTag) params.set("tag", selectedTag);
     navigate(`?${params.toString()}`);
-  };
-
-  // 태그 가져오기
-  const setFetchedTags = async () => {
-    try {
-      setTags(await fetchTags());
-    } catch (error) {
-      console.error("태그 가져오기 오류:", error);
-    }
   };
 
   // 게시물 삭제
@@ -94,10 +84,6 @@ const PostsManagerPage = () => {
   };
 
   useEffect(() => {
-    setFetchedTags();
-  }, []);
-
-  useEffect(() => {
     const params = new URLSearchParams(location.search);
     setSkip(parseInt(params.get("skip") || "0"));
     setLimit(parseInt(params.get("limit") || "10"));
@@ -128,7 +114,6 @@ const PostsManagerPage = () => {
           selectedTag={selectedTag}
           setSelectedTag={setSelectedTag}
           updateURL={updateURL}
-          tags={tags}
           sortBy={sortBy}
           setSortBy={setSortBy}
           sortOrder={sortOrder}

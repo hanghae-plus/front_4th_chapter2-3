@@ -11,11 +11,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../../shared/ui";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { fetchPosts, fetchPostsByTag, fetchUsers, mergePostAndUsers, Post, Tag, UserDetail } from "../../../entities";
 import { searchPosts } from "../../../features";
 import { PostTable } from "../../../features/post/ui/PostTable";
 import { useModal } from "../../../shared";
+import { useTags } from "../../../entities/tag/model/useTags";
+
+function TagItems() {
+  const { data: tags } = useTags();
+  return (
+    <>
+      <SelectItem value="all">모든 태그</SelectItem>
+      {tags.map((tag) => (
+        <SelectItem key={tag.url} value={tag.slug}>
+          {tag.slug}
+        </SelectItem>
+      ))}
+    </>
+  );
+}
 
 interface PostsTableProps {
   posts: Post[];
@@ -26,7 +41,6 @@ interface PostsTableProps {
   selectedTag: string;
   setSelectedTag: React.Dispatch<React.SetStateAction<string>>;
   updateURL: () => void;
-  tags: Tag[];
   sortBy: string;
   setSortBy: React.Dispatch<React.SetStateAction<string>>;
   sortOrder: string;
@@ -51,7 +65,6 @@ export const PostsManager = ({
   selectedTag,
   setSelectedTag,
   updateURL,
-  tags,
   sortBy,
   setSortBy,
   sortOrder,
@@ -176,12 +189,9 @@ export const PostsManager = ({
                 <SelectValue placeholder="태그 선택" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">모든 태그</SelectItem>
-                {tags.map((tag) => (
-                  <SelectItem key={tag.url} value={tag.slug}>
-                    {tag.slug}
-                  </SelectItem>
-                ))}
+                <Suspense fallback={"로딩 중..."}>
+                  <TagItems />
+                </Suspense>
               </SelectContent>
             </Select>
             <Select value={sortBy} onValueChange={setSortBy}>
