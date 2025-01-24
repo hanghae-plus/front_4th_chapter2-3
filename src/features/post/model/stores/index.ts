@@ -132,7 +132,25 @@ export const usePostStore = create<PostStore>((set, get) => ({
   addPost: async (newPost) => {
     try {
       const data = await postsApi.addPost(newPost)
-      set((state) => ({ posts: [data, ...state.posts] }))
+
+      // 작성자 정보를 가져오기 위해 users API 호출
+      const usersResponse = await fetch("/api/users?limit=0&select=username,image")
+      if (!usersResponse.ok) {
+        throw new Error("사용자 정보를 가져오는데 실패했습니다")
+      }
+      const usersData = await usersResponse.json()
+
+      // 작성자 정보를 포함한 새 포스트 데이터
+      const postWithAuthor = {
+        ...data,
+        author: usersData.users.find((user: { id: number }) => user.id === newPost.userId) || null,
+      }
+
+      set((state) => ({
+        posts: [postWithAuthor, ...state.posts],
+        newPost: { title: "", body: "", userId: 1 }, // 기본값으로 리셋
+        showPostDetailDialog: false,
+      }))
     } catch (error) {
       console.error("게시물 추가 오류:", error)
     }
@@ -142,7 +160,12 @@ export const usePostStore = create<PostStore>((set, get) => ({
     try {
       const data = await postsApi.updatePost(post)
       set((state) => ({
-        posts: state.posts.map((p) => (p.id === data.id ? data : p)),
+        posts: state.posts.map((p) =>
+          p.id === data.id
+            ? { ...data, author: p.author } // 기존 작성자 정보 유지
+            : p,
+        ),
+        showPostDetailDialog: false, // 모달 닫기
       }))
     } catch (error) {
       console.error("게시물 업데이트 오류:", error)

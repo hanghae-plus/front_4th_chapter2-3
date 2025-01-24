@@ -40,15 +40,11 @@ const PostsManager = () => {
     openPostDetail,
   } = usePostManager()
 
-  const {
-    comments,
-    deleteComment,
-    likeComment,
-    handleAddComment,
-    handleEditComment,
-  } = useCommentManager(selectedPost?.id || 0)
+  const { comments, deleteComment, likeComment, handleAddComment, handleEditComment } = useCommentManager(
+    selectedPost?.id || 0,
+  )
 
-  const {  handleUserClick } = useUserManager()
+  const { handleUserClick } = useUserManager()
 
   const [showAddDialog, setShowAddDialog] = useState(false)
   const [showEditDialog, setShowEditDialog] = useState(false)
@@ -102,7 +98,10 @@ const PostsManager = () => {
         post={{ ...newPost, id: 0 }}
         onTitleChange={setNewPostTitle}
         onBodyChange={setNewPostBody}
-        onSubmit={() => addPost(newPost)}
+        onSubmit={() => {
+          addPost(newPost)
+          setShowAddDialog(false)
+        }}
       />
 
       <PostFormDialog
@@ -112,7 +111,12 @@ const PostsManager = () => {
         post={selectedPost}
         onTitleChange={(title) => setSelectedPost(selectedPost ? { ...selectedPost, title } : null)}
         onBodyChange={(body) => setSelectedPost(selectedPost ? { ...selectedPost, body } : null)}
-        onSubmit={() => selectedPost && updatePost(selectedPost)}
+        onSubmit={() => {
+          if (selectedPost) {
+            updatePost(selectedPost)
+            setShowEditDialog(false)
+          }
+        }}
       />
 
       <CommentFormDialog mode="add" />
