@@ -1,4 +1,4 @@
-import { Comments } from "@/widgets/comments";
+import { Comments } from "@/features/comments";
 
 import { Post } from "@/entities/posts";
 

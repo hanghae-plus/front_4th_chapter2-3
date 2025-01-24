@@ -1,2 +1,2 @@
 export * from "./model";
-export { CommentAddModal, CommentUpdateModal } from "./ui";
+export { CommentAddModal, CommentUpdateModal, Comments } from "./ui";
