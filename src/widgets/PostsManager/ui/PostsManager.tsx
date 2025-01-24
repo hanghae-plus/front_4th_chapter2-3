@@ -15,10 +15,10 @@ import { useEffect, useState } from "react";
 import { fetchPosts, fetchPostsByTag, fetchUsers, mergePostAndUsers, Post, Tag, UserDetail } from "../../../entities";
 import { searchPosts } from "../../../features";
 import { PostTable } from "../../../features/post/ui/PostTable";
+import { useModal } from "../../../shared";
 
 interface PostsTableProps {
   posts: Post[];
-  setShowAddDialog: (_: boolean) => void;
   searchQuery: string;
   setPosts: React.Dispatch<React.SetStateAction<Post[]>>;
   setTotal: React.Dispatch<React.SetStateAction<number>>;
@@ -44,7 +44,6 @@ interface PostsTableProps {
 
 export const PostsManager = ({
   posts,
-  setShowAddDialog,
   searchQuery,
   setPosts,
   setTotal,
@@ -67,6 +66,7 @@ export const PostsManager = ({
   removePost,
   openPostEdit,
 }: PostsTableProps) => {
+  const { handleModalToggle: handlePostAddModalToggle } = useModal("addPostModal");
   const [loading, setLoading] = useState(false);
   // 태그별 게시물 가져오기
   const setFetchedPostsByTag = async (tag: string) => {
@@ -142,7 +142,7 @@ export const PostsManager = ({
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <span>게시물 관리자</span>
-          <Button onClick={() => setShowAddDialog(true)}>
+          <Button onClick={() => handlePostAddModalToggle()}>
             <Plus className="w-4 h-4 mr-2" />
             게시물 추가
           </Button>

@@ -36,6 +36,7 @@ export const PostTable = ({
 }) => {
   const { handleModalToggle } = useModal("userModal");
   const { handleModalToggle: handlePostDetailModal } = useModal("postDetailModal");
+  const { handleModalToggle: handlePostEditModal } = useModal("modifyPostModal");
 
   // 사용자 모달 열기
   const openUserModal = async (user: User) => {
@@ -117,6 +118,7 @@ export const PostTable = ({
                   onClick={() => {
                     openPostEdit(post);
                     handlePostDetailModal();
+                    handlePostEditModal();
                   }}
                 >
                   <Edit2 className="w-4 h-4" />
