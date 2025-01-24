@@ -1,51 +1,33 @@
 import { useEffect, useState } from "react"
-import { Edit2, MessageSquare, Plus, Search, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react"
+import { Plus } from "lucide-react"
 import { useLocation, useNavigate } from "react-router-dom"
-import {
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  Input,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "../shared/ui"
-import UserDialog from "../entities/user/ui/UserDialog"
-import { useGetTags } from "../entities/tag/api/useGetTag"
-import { useUserDialog } from "../entities/user/model/useUserDialog"
-import { useDeletePost } from "../entities/post/api/useDeletePost"
-import { highlightText } from "../shared/lib/highlightText"
-import { usePostDetail } from "../entities/post/model/usePostDetail"
-import { PostDetailDialog } from "../entities/post/ui/PostDetailDialog"
-import { PostAddDialog } from "../entities/post/ui/PostAddDialog"
-import { useAddPost } from "../entities/post/model/useAddPost"
-import { useEditPost } from "../entities/post/model/useEditPost"
-import { PostEditDialog } from "../entities/post/ui/PostEditDialog"
-import { useAddComment } from "../entities/comment/model/useAddComment"
-import { CommentAddDialog } from "../entities/comment/ui/CommentAddDialog"
-import { useEditComment } from "../entities/comment/model/useEditComment"
-import { CommentEditDialog } from "../entities/comment/ui/CommentEditDialog"
-import { useDeleteComment } from "../entities/comment/api/useDeleteComment"
-import { useLikeComment } from "../entities/comment/api/useUpdateLikeComment"
-import { CommentList } from "../entities/comment/ui/CommentList"
-import { Post } from "../entities/post/model/types"
-import { PostResponse, UserResponse } from "../entities/post/api/useGetPostList"
-import { Comment } from "../entities/comment/model/types"
-import { User } from "../entities/user/model/types"
-
-interface PostWithAuthor extends Post {
-  author?: User
-}
+import { Button, Card, CardContent, CardHeader, CardTitle, Input } from "../../../shared/ui"
+import UserDialog from "../../../entities/user/ui/UserDialog"
+import { useGetTags } from "../../../entities/tag/api/useGetTag"
+import { useUserDialog } from "../../../entities/user/model/useUserDialog"
+import { useDeletePost } from "../../../entities/post/api/useDeletePost"
+import { usePostDetail } from "../../../entities/post/model/usePostDetail"
+import { PostDetailDialog } from "../../../entities/post/ui/PostDetailDialog"
+import { PostAddDialog } from "../../../entities/post/ui/PostAddDialog"
+import { useAddPost } from "../../../entities/post/model/useAddPost"
+import { useEditPost } from "../../../entities/post/model/useEditPost"
+import { PostEditDialog } from "../../../entities/post/ui/PostEditDialog"
+import { useAddComment } from "../../../entities/comment/model/useAddComment"
+import { CommentAddDialog } from "../../../entities/comment/ui/CommentAddDialog"
+import { useEditComment } from "../../../entities/comment/model/useEditComment"
+import { CommentEditDialog } from "../../../entities/comment/ui/CommentEditDialog"
+import { useDeleteComment } from "../../../entities/comment/api/useDeleteComment"
+import { useLikeComment } from "../../../entities/comment/api/useUpdateLikeComment"
+import { CommentList } from "../../../entities/comment/ui/CommentList"
+import { PostResponse, UserResponse } from "../../../entities/post/api/useGetPostList"
+import { Comment } from "../../../entities/comment/model/types"
+import { PostWithAuthor } from "../../../features/posts-search/model/types"
+import { PostTable } from "../../../features/posts-search/ui/PostTable"
+import { TagSelect } from "../../../features/posts-search/ui/TagSelect"
+import { SortBySelect } from "../../../features/posts-search/ui/SortBySelect"
+import { SortOrderSelect } from "../../../features/posts-search/ui/SortOrderSelect"
+import { Pagination } from "../../../features/posts-search/ui/Pagination"
+import { SearchInput } from "../../../features/posts-search/ui/SearchInput"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -228,81 +210,10 @@ const PostsManager = () => {
     setSelectedTag(params.get("tag") || "")
   }, [location.search])
 
-  // 게시물 테이블 렌더링
-  const renderPostTable = () => (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead className="w-[50px]">ID</TableHead>
-          <TableHead>제목</TableHead>
-          <TableHead className="w-[150px]">작성자</TableHead>
-          <TableHead className="w-[150px]">반응</TableHead>
-          <TableHead className="w-[150px]">작업</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {posts.map((post) => (
-          <TableRow key={post.id}>
-            <TableCell>{post.id}</TableCell>
-            <TableCell>
-              <div className="space-y-1">
-                <div>{highlightText(post.title, searchQuery)}</div>
-
-                <div className="flex flex-wrap gap-1">
-                  {post.tags?.map((tag) => (
-                    <span
-                      key={tag}
-                      className={`px-1 text-[9px] font-semibold rounded-[4px] cursor-pointer ${
-                        selectedTag === tag
-                          ? "text-white bg-blue-500 hover:bg-blue-600"
-                          : "text-blue-800 bg-blue-100 hover:bg-blue-200"
-                      }`}
-                      onClick={() => {
-                        setSelectedTag(tag)
-                        updateURL()
-                      }}
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </TableCell>
-            <TableCell>
-              <div
-                className="flex items-center space-x-2 cursor-pointer"
-                onClick={() => handleUserDialog(post.author!.id)}
-              >
-                <img src={post.author?.image} alt={post.author?.username} className="w-8 h-8 rounded-full" />
-                <span>{post.author?.username}</span>
-              </div>
-            </TableCell>
-            <TableCell>
-              <div className="flex items-center gap-2">
-                <ThumbsUp className="w-4 h-4" />
-                <span>{post.reactions?.likes || 0}</span>
-                <ThumbsDown className="w-4 h-4" />
-                <span>{post.reactions?.dislikes || 0}</span>
-              </div>
-            </TableCell>
-            <TableCell>
-              <div className="flex items-center gap-2">
-                <Button variant="ghost" size="sm" onClick={() => handlePostDetail(post.id)}>
-                  <MessageSquare className="w-4 h-4" />
-                </Button>
-                <Button variant="ghost" size="sm" onClick={() => handleEditPost(post)}>
-                  <Edit2 className="w-4 h-4" />
-                </Button>
-                <Button variant="ghost" size="sm" onClick={() => handleDeletePost(post.id)}>
-                  <Trash2 className="w-4 h-4" />
-                </Button>
-              </div>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  )
+  const handlePostTable = (tag: string) => {
+    setSelectedTag(tag)
+    updateURL()
+  }
 
   return (
     <Card className="w-full max-w-6xl mx-auto">
@@ -319,88 +230,37 @@ const PostsManager = () => {
         <div className="flex flex-col gap-4">
           {/* 검색 및 필터 컨트롤 */}
           <div className="flex gap-4">
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="게시물 검색..."
-                  className="pl-8"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyPress={(e) => e.key === "Enter" && searchPosts()}
-                />
-              </div>
-            </div>
-            <Select
-              value={selectedTag}
-              onValueChange={(value) => {
-                setSelectedTag(value)
-                fetchPostsByTag(value)
+            <SearchInput searchQuery={searchQuery} onSearchChange={setSearchQuery} onSearch={searchPosts} />
+            <TagSelect
+              tags={tags}
+              selectedTag={selectedTag}
+              onTagChange={(tag) => {
+                setSelectedTag(tag)
+                fetchPostsByTag(tag)
                 updateURL()
               }}
-            >
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="태그 선택" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">모든 태그</SelectItem>
-                {tags.map((tag) => (
-                  <SelectItem key={tag.url} value={tag.slug}>
-                    {tag.slug}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="정렬 기준" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="none">없음</SelectItem>
-                <SelectItem value="id">ID</SelectItem>
-                <SelectItem value="title">제목</SelectItem>
-                <SelectItem value="reactions">반응</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select value={sortOrder} onValueChange={setSortOrder}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="정렬 순서" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="asc">오름차순</SelectItem>
-                <SelectItem value="desc">내림차순</SelectItem>
-              </SelectContent>
-            </Select>
+            />
+            <SortBySelect sortBy={sortBy} onSortByChange={setSortBy} />
+            <SortOrderSelect sortOrder={sortOrder} onSortOrderChange={setSortOrder} />
           </div>
 
           {/* 게시물 테이블 */}
-          {loading ? <div className="flex justify-center p-4">로딩 중...</div> : renderPostTable()}
-
+          {loading ? (
+            <div className="flex justify-center p-4">로딩 중...</div>
+          ) : (
+            <PostTable
+              posts={posts}
+              searchQuery={searchQuery}
+              selectedTag={selectedTag}
+              onTagClick={handlePostTable}
+              onUserClick={handleUserDialog}
+              onPostDetailClick={handlePostDetail}
+              onEditPostClick={handleEditPost}
+              onDeletePostClick={handleDeletePost}
+            />
+          )}
           {/* 페이지네이션 */}
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2">
-              <span>표시</span>
-              <Select value={limit.toString()} onValueChange={(value) => setLimit(Number(value))}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="10" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="10">10</SelectItem>
-                  <SelectItem value="20">20</SelectItem>
-                  <SelectItem value="30">30</SelectItem>
-                </SelectContent>
-              </Select>
-              <span>항목</span>
-            </div>
-            <div className="flex gap-2">
-              <Button disabled={skip === 0} onClick={() => setSkip(Math.max(0, skip - limit))}>
-                이전
-              </Button>
-              <Button disabled={skip + limit >= total} onClick={() => setSkip(skip + limit)}>
-                다음
-              </Button>
-            </div>
-          </div>
+          <Pagination total={total} skip={skip} limit={limit} onLimitChange={setLimit} onSkipChange={setSkip} />
         </div>
       </CardContent>
 
