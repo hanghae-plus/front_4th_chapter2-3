@@ -1,17 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button, Card, Dialog, DialogContent, DialogHeader, DialogTitle, Input, Textarea } from "../shared/ui";
-import {
-  Post,
-  Comment,
-  Tag,
-  fetchTags,
-  createPost,
-  updatePost,
-  deletePost,
-  createComment,
-  UserDetail,
-} from "../entities";
+import { Post, Comment, Tag, fetchTags, createPost, updatePost, deletePost, UserDetail } from "../entities";
 
 import { fetchCommentsByPostId } from "../features";
 import { PostsManager } from "../widgets/PostsManager/ui/PostsManager";
@@ -19,6 +9,7 @@ import { UserInformationDialog } from "../widgets/ui/UserInformationDialog";
 import { ModalProvider } from "../shared";
 import { PostDetailDialog } from "../widgets/ui/PostDetailDialog";
 import { CommentModifyDialog } from "../widgets/ui/CommentModifyDialog";
+import { CommentAddDialog } from "../widgets/ui/CommentAddDialog";
 
 const PostsManagerPage = () => {
   const navigate = useNavigate();
@@ -48,7 +39,6 @@ const PostsManagerPage = () => {
     likes: 0,
     user: null,
   });
-  const [showAddCommentDialog, setShowAddCommentDialog] = useState(false);
   const [selectedUser, setSelectedUser] = useState<UserDetail | null>(null);
 
   // URL 업데이트 함수
@@ -114,27 +104,6 @@ const PostsManagerPage = () => {
       setComments((prev) => ({ ...prev, [postId]: data.comments }));
     } catch (error) {
       console.error("댓글 가져오기 오류:", error);
-    }
-  };
-
-  // 댓글 추가
-  const addComment = async () => {
-    try {
-      const data = await createComment({ newComment: newComment });
-      setComments((prev) => ({
-        ...prev,
-        [data.postId!]: [...(prev[data.postId!] || []), data],
-      }));
-      setShowAddCommentDialog(false);
-      setNewComment({
-        id: 0,
-        body: "",
-        postId: null,
-        likes: 0,
-        user: null,
-      });
-    } catch (error) {
-      console.error("댓글 추가 오류:", error);
     }
   };
 
@@ -252,22 +221,7 @@ const PostsManagerPage = () => {
           </DialogContent>
         </Dialog>
 
-        {/* 댓글 추가 대화상자 */}
-        <Dialog open={showAddCommentDialog} onOpenChange={setShowAddCommentDialog}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>새 댓글 추가</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
-              <Textarea
-                placeholder="댓글 내용"
-                value={newComment.body}
-                onChange={(e) => setNewComment({ ...newComment, body: e.target.value })}
-              />
-              <Button onClick={addComment}>댓글 추가</Button>
-            </div>
-          </DialogContent>
-        </Dialog>
+        <CommentAddDialog newComment={newComment} setNewComment={setNewComment} setComments={setComments} />
 
         {selectedComment && (
           <CommentModifyDialog
