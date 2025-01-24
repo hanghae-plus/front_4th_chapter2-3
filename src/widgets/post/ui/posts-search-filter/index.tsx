@@ -1,43 +1,54 @@
 import { SearchPost, PostFilter } from "@features/post/ui"
-import { PostTag } from "@entities/post/model"
+import { usePostManager } from "@features/post/model/hooks"
 
-interface PostsSearchFilterProps {
-  searchQuery: string
-  onSearchChange: (value: string) => void
-  onSearch: () => void
-  selectedTag: string
-  tags: PostTag[]
-  onTagChange: (tag: string) => void
-  sortBy: string
-  onSortByChange: (value: string) => void
-  sortOrder: string
-  onSortOrderChange: (value: string) => void
-}
+export const PostsSearchFilter = () => {
+  const {
+    searchQuery,
+    selectedTag,
+    tags,
+    sortBy,
+    sortOrder,
+    setSearchQuery,
+    searchPosts,
+    setSelectedTag,
+    setSortBy,
+    setSortOrder,
+  } = usePostManager()
 
-export const PostsSearchFilter = ({
-  searchQuery,
-  onSearchChange,
-  onSearch,
-  selectedTag,
-  tags,
-  onTagChange,
-  sortBy,
-  onSortByChange,
-  sortOrder,
-  onSortOrderChange,
-}: PostsSearchFilterProps) => (
-  <div className="flex gap-4">
-    <div className="flex-1">
-      <SearchPost value={searchQuery} onChange={onSearchChange} onSearch={onSearch} />
+  const onSearchChange = (value: string) => {
+    setSearchQuery(value)
+  }
+
+  const onSearch = () => {
+    searchPosts()
+  }
+
+  const onTagChange = (tag: string) => {
+    setSelectedTag(tag)
+  }
+
+  const onSortByChange = (value: string) => {
+    setSortBy(value)
+  }
+
+  const onSortOrderChange = (value: "asc" | "desc") => {
+    setSortOrder(value)
+  }
+
+  return (
+    <div className="flex gap-4">
+      <div className="flex-1">
+        <SearchPost value={searchQuery} onChange={onSearchChange} onSearch={onSearch} />
+      </div>
+      <PostFilter
+        selectedTag={selectedTag}
+        tags={tags}
+        onTagChange={onTagChange}
+        sortBy={sortBy}
+        onSortByChange={onSortByChange}
+        sortOrder={sortOrder}
+        onSortOrderChange={onSortOrderChange}
+      />
     </div>
-    <PostFilter
-      selectedTag={selectedTag}
-      tags={tags}
-      onTagChange={onTagChange}
-      sortBy={sortBy}
-      onSortByChange={onSortByChange}
-      sortOrder={sortOrder}
-      onSortOrderChange={onSortOrderChange}
-    />
-  </div>
-)
+  )
+}
