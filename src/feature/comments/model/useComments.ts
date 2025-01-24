@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { deleteCommentApi, getCommentsApi, updateCommentApi } from "../../../entity/comment/api/commentApi"
+import { deleteCommentApi, getCommentsApi, updateCommentApi } from "../../../entity/comment/api/comment"
 import { Comments } from "../../../entity/comment/model/types"
 
 const useComments = (postId) => {

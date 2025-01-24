@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
-import { deletePostApi, getPostsApi } from "../../../entity/post/api/postApi"
-import { getUsersApi } from "../../../entity/user/api/userApi"
+import { deletePostApi, getPostsApi } from "../../../entity/post/api/posts"
+import { getUsersApi } from "../../../entity/user/api/users"
 import { Post } from "../../../entity/post/model/types"
 
 type UsePostsProps = {
