@@ -4,12 +4,12 @@ import { Post } from "../model/types"
 interface Props {
   open: boolean
   onClose: () => void
-  post?: Post
+  editPost?: Post
   handleChange: (field: keyof Post) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
   handleSubmit: () => void
 }
 
-export const PostEditDialog = ({ open, onClose, post, handleChange, handleSubmit }: Props) => {
+export const PostEditDialog = ({ open, onClose, editPost, handleChange, handleSubmit }: Props) => {
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent>
@@ -17,8 +17,8 @@ export const PostEditDialog = ({ open, onClose, post, handleChange, handleSubmit
           <DialogTitle>게시물 수정</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
-          <Input placeholder="제목" value={post?.title || ""} onChange={handleChange("title")} />
-          <Textarea rows={15} placeholder="내용" value={post?.body || ""} onChange={handleChange("body")} />
+          <Input placeholder="제목" value={editPost?.title || ""} onChange={handleChange("title")} />
+          <Textarea rows={15} placeholder="내용" value={editPost?.body || ""} onChange={handleChange("body")} />
           <Button onClick={handleSubmit}>게시물 업데이트</Button>
         </div>
       </DialogContent>

@@ -9,9 +9,9 @@ interface Props {
   postId: Post["id"]
   searchQuery: string
   handleClickAddButton: () => void
-  handleClickEditButton: (id: number, body: string) => void
-  handleClickDeleteButton: (id: number, postId: number) => void
-  handleClickLikeButton: (id: number, postId: number) => void
+  handleClickEditButton: (comment: Comment) => void
+  handleClickDeleteButton: (comment: Comment) => void
+  handleClickLikeButton: (comment: Comment, postId: number) => void
 }
 export const CommentList = ({
   comments,
@@ -38,7 +38,7 @@ export const CommentList = ({
             <span className="truncate">{highlightText(comment.body, searchQuery)}</span>
           </div>
           <div className="flex items-center space-x-1">
-            <Button variant="ghost" size="sm" onClick={() => handleClickLikeButton(comment.id, postId)}>
+            <Button variant="ghost" size="sm" onClick={() => handleClickLikeButton(comment, postId)}>
               <ThumbsUp className="w-3 h-3" />
               <span className="ml-1 text-xs">{comment.likes}</span>
             </Button>
@@ -46,12 +46,12 @@ export const CommentList = ({
               variant="ghost"
               size="sm"
               onClick={() => {
-                handleClickEditButton(comment.id, comment.body)
+                handleClickEditButton(comment)
               }}
             >
               <Edit2 className="w-3 h-3" />
             </Button>
-            <Button variant="ghost" size="sm" onClick={() => handleClickDeleteButton(comment.id, postId)}>
+            <Button variant="ghost" size="sm" onClick={() => handleClickDeleteButton(comment)}>
               <Trash2 className="w-3 h-3" />
             </Button>
           </div>

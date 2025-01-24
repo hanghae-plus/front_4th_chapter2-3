@@ -37,150 +37,30 @@ import { useEditComment } from "../entities/comment/model/useEditComment"
 import { CommentEditDialog } from "../entities/comment/ui/CommentEditDialog"
 import { useDeleteComment } from "../entities/comment/api/useDeleteComment"
 import { useLikeComment } from "../entities/comment/api/useUpdateLikeComment"
+import { CommentList } from "../entities/comment/ui/CommentList"
+import { Post } from "../entities/post/model/types"
+import { PostResponse, UserResponse } from "../entities/post/api/useGetPostList"
+import { Comment } from "../entities/comment/model/types"
+import { User } from "../entities/user/model/types"
 
-interface Post {
-  id: number
-  title: string
-  body: string
-  userId: number
+interface PostWithAuthor extends Post {
   author?: User
-  tags: string[]
-  views: number
-  reactions: {
-    likes: number
-    dislikes: number
-  }
-}
-
-interface PostResponse {
-  posts: Post[]
-  total: number
-  skip: number
-  limit: number
-}
-
-interface User {
-  id: number
-  username: string
-  image: string
-}
-
-interface UserDetail extends User {
-  firstName: string
-  lastName: string
-  maidenName: string
-  age: number
-  gender: "male" | "female"
-  email: string
-  phone: string
-  password: string
-  birthDate: string
-  bloodGroup: string
-  height: number
-  weight: number
-  eyeColor: string
-  hair: {
-    color: string
-    type: string
-  }
-  address: {
-    address: string
-    city: string
-    state: string
-    stateCode: string
-    postalCode: string
-    coordinates: {
-      lat: number
-      lng: number
-    }
-    country: string
-  }
-  macAddress: string
-  university: string
-  bank: {
-    cardExpire: string
-    cardNumber: string
-    cardType: string
-    currency: string
-    iban: string
-  }
-  company: {
-    department: string
-    name: string
-    title: string
-    address: {
-      address: string
-      city: string
-      state: string
-      stateCode: string
-      postalCode: string
-      coordinates: {
-        lat: number
-        lng: number
-      }
-      country: string
-    }
-  }
-  ein: string
-  ssn: string
-  userAgent: string
-  crypto: {
-    coin: string
-    wallet: string
-    network: string
-  }
-  role: string
-}
-
-interface UserResponse {
-  users: User[]
-  total: number
-  skip: number
-  limit: number
-}
-
-interface Tag {
-  slug: string
-  name: string
-  url: string
-}
-
-interface Comment {
-  id: number
-  body: string
-  postId: number
-  likes: number
-  user: {
-    id: number
-    username: string
-    fullName: string
-  }
-}
-
-interface CommentResponse {
-  comments: Comment[] | null
-  total: number
-  skip: number
-  limit: number
 }
 
 const PostsManager = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const queryParams = new URLSearchParams(location.search)
-
-  // Posts state
-  const [posts, setPosts] = useState<Post[]>([])
-  const [total, setTotal] = useState<number>(0)
   const [skip, setSkip] = useState<number>(parseInt(queryParams.get("skip") || "0"))
   const [limit, setLimit] = useState<number>(parseInt(queryParams.get("limit") || "10"))
   const [searchQuery, setSearchQuery] = useState<string>(queryParams.get("search") || "")
-  //const [selectedPost, setSelectedPost] = useState<Post | null>(null)
   const [sortBy, setSortBy] = useState<string>(queryParams.get("sortBy") || "")
   const [sortOrder, setSortOrder] = useState<string>(queryParams.get("sortOrder") || "asc")
-  //const [showAddDialog, setShowAddDialog] = useState<boolean>(false)
-  //const [showEditDialog, setShowEditDialog] = useState<boolean>(false)
-  //const [newPost, setNewPost] = useState<Partial<Post>>({ title: "", body: "", userId: 1 })
+  const [selectedTag, setSelectedTag] = useState<string>(queryParams.get("tag") || "")
+
+  // Posts state
+  const [posts, setPosts] = useState<PostWithAuthor[]>([])
+  const [total, setTotal] = useState<number>(0)
   const [loading, setLoading] = useState<boolean>(false)
 
   const {
@@ -209,20 +89,9 @@ const PostsManager = () => {
   const { mutate: deletePost } = useDeletePost()
 
   // Tags state
-  //const [tags, setTags] = useState<Tag[]>([])
-  const [selectedTag, setSelectedTag] = useState<string>(queryParams.get("tag") || "")
   const { data: tags = [] } = useGetTags()
 
   // Comments state
-  //const [comments, setComments] = useState<Record<Post["id"], Comment[]>>({})
-  //const [selectedComment, setSelectedComment] = useState<Comment | null>(null)
-  // const [newComment, setNewComment] = useState<Comment | { body: string; postId: null; userId: number }>({
-  //   body: "",
-  //   postId: null,
-  //   userId: 1,
-  // })
-  // const [showAddCommentDialog, setShowAddCommentDialog] = useState<boolean>(false)
-  // const [showEditCommentDialog, setShowEditCommentDialog] = useState<boolean>(false)
   const {
     isOpen: isOpenAddComment,
     handleOpen: handleOpenAddComment,
@@ -242,13 +111,8 @@ const PostsManager = () => {
   const { mutate: deleteComment } = useDeleteComment()
   const { mutate: updateLikeComment } = useLikeComment()
 
-  // Dialogs and modals state
-  //const [showPostDetailDialog, setShowPostDetailDialog] = useState<boolean>(false)
-  //const [showUserModal, setShowUserModal] = useState<boolean>(false)
-
   //user
   const { isOpen, handleClose: handleCloseUserDialog, user, handleDialog: handleUserDialog } = useUserDialog()
-  //const [selectedUser, setSelectedUser] = useState<UserDetail | null>(null)
 
   // URL 업데이트 함수
   const updateURL = () => {
@@ -273,7 +137,7 @@ const PostsManager = () => {
       const usersResponse = await fetch("/api/users?limit=0&select=username,image")
       const usersData: UserResponse = await usersResponse.json()
 
-      const postsWithUsers: Post[] = postsData.posts.map((post) => ({
+      const postsWithUsers = postsData.posts.map((post) => ({
         ...post,
         author: usersData.users.find((user) => user.id === post.userId),
       }))
@@ -333,172 +197,16 @@ const PostsManager = () => {
     setLoading(false)
   }
 
-  // 게시물 추가
-  // const addPost = async () => {
-  //   try {
-  //     const response = await fetch("/api/posts/add", {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify(newPost),
-  //     })
-  //     const data = await response.json()
-  //     setPosts([data, ...posts])
-  //     setShowAddDialog(false)
-  //     setNewPost({ title: "", body: "", userId: 1 })
-  //   } catch (error) {
-  //     console.error("게시물 추가 오류:", error)
-  //   }
-  // }
-
-  // 게시물 업데이트
-  // const updatePost = async () => {
-  //   if (!selectedPost) return
-  //   try {
-  //     const response = await fetch(`/api/posts/${selectedPost.id}`, {
-  //       method: "PUT",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify(selectedPost),
-  //     })
-  //     const data = await response.json()
-  //     setPosts(posts.map((post) => (post.id === data.id ? data : post)))
-  //     setShowEditDialog(false)
-  //   } catch (error) {
-  //     console.error("게시물 업데이트 오류:", error)
-  //   }
-  // }
-
-  // 게시물 삭제
-  // const deletePost = async (id: Post["id"]) => {
-  //   try {
-  //     await fetch(`/api/posts/${id}`, {
-  //       method: "DELETE",
-  //     })
-  //     setPosts(posts.filter((post) => post.id !== id))
-  //   } catch (error) {
-  //     console.error("게시물 삭제 오류:", error)
-  //   }
-  // }
-
-  // 댓글 가져오기
-  // const fetchComments = async (postId: Post["id"]) => {
-  //   if (comments[postId]) return // 이미 불러온 댓글이 있으면 다시 불러오지 않음
-  //   try {
-  //     const response = await fetch(`/api/comments/post/${postId}`)
-  //     const data = (await response.json()) as CommentResponse
-  //     setComments((prev) => ({
-  //       ...prev,
-  //       [postId]: data.comments || [],
-  //     }))
-  //   } catch (error) {
-  //     console.error("댓글 가져오기 오류:", error)
-  //   }
-  // }
-
-  // 댓글 추가
-  // const addComment = async () => {
-  //   try {
-  //     const response = await fetch("/api/comments/add", {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify(newComment),
-  //     })
-  //     const data = await response.json()
-  //     setComments((prev) => ({
-  //       ...prev,
-  //       [data.postId]: [...(prev[data.postId] || []), data],
-  //     }))
-  //     setShowAddCommentDialog(false)
-  //     setNewComment({ body: "", postId: null, userId: 1 })
-  //   } catch (error) {
-  //     console.error("댓글 추가 오류:", error)
-  //   }
-  // }
-
-  // 댓글 업데이트
-  // const updateComment = async () => {
-  //   if (!selectedComment) return
-
-  //   try {
-  //     const response = await fetch(`/api/comments/${selectedComment.id}`, {
-  //       method: "PUT",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({ body: selectedComment.body }),
-  //     })
-  //     const data = await response.json()
-  //     setComments((prev) => ({
-  //       ...prev,
-  //       [data.postId]: prev[data.postId].map((comment) => (comment.id === data.id ? data : comment)),
-  //     }))
-  //     setShowEditCommentDialog(false)
-  //   } catch (error) {
-  //     console.error("댓글 업데이트 오류:", error)
-  //   }
-  // }
-
-  // 댓글 삭제
-  // const deleteComment = async (id: Comment["id"], postId: Post["id"]) => {
-  //   try {
-  //     await fetch(`/api/comments/${id}`, {
-  //       method: "DELETE",
-  //     })
-  //     setComments((prev) => ({
-  //       ...prev,
-  //       [postId]: prev[postId].filter((comment) => comment.id !== id),
-  //     }))
-  //   } catch (error) {
-  //     console.error("댓글 삭제 오류:", error)
-  //   }
-  // }
-
-  // 댓글 좋아요
-  // const likeComment = async (id: Comment["id"], postId: Post["id"]) => {
-  //   try {
-  //     const response = await fetch(`/api/comments/${id}`, {
-  //       method: "PATCH",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({ likes: (comments?.[postId]?.find?.((c) => c.id === id)?.likes ?? 0) + 1 }),
-  //     })
-  //     const data = await response.json()
-  //     setComments((prev) => ({
-  //       ...prev,
-  //       [postId]: prev[postId].map((comment) =>
-  //         comment.id === data.id ? { ...data, likes: comment.likes + 1 } : comment,
-  //       ),
-  //     }))
-  //   } catch (error) {
-  //     console.error("댓글 좋아요 오류:", error)
-  //   }
-  // }
-
-  // 게시물 상세 보기
-  // const openPostDetail = (post: Post) => {
-  //   setSelectedPost(post)
-  //   fetchComments(post.id)
-  //   setShowPostDetailDialog(true)
-  // }
-
-  // 사용자 모달 열기
-  // const openUserModal = async (user: User) => {
-  //   try {
-  //     const response = await fetch(`/api/users/${user.id}`)
-  //     const userData = await response.json()
-  //     setSelectedUser(userData)
-  //     setShowUserModal(true)
-  //   } catch (error) {
-  //     console.error("사용자 정보 가져오기 오류:", error)
-  //   }
-  // }
-
   const handleDeletePost = (postId: number) => {
     deletePost(postId)
   }
 
-  const handleDeleteComment = (id: number, postId: number) => {
-    deleteComment({ id, postId })
+  const handleDeleteComment = (comment: Comment, postId: number) => {
+    deleteComment({ id: comment.id, postId })
   }
 
-  const handleLikeButton = (id: number, postId: number) => {
-    updateLikeComment({ id, postId })
+  const handleLikeButton = (comment: Comment, postId: number) => {
+    updateLikeComment({ id: comment.id, postId })
   }
 
   useEffect(() => {
@@ -709,7 +417,7 @@ const PostsManager = () => {
       <PostEditDialog
         open={isOpenEditPost}
         onClose={handleCloseEditPost}
-        post={editPost}
+        editPost={editPost}
         handleChange={handleChangeEditPost}
         handleSubmit={handleSubmitEditPost}
       />
@@ -740,20 +448,17 @@ const PostsManager = () => {
         open={isOpenPostDetail}
         onClose={handleClosePostDetail}
         post={post}
-        comments={comments}
-        searchQuery={searchQuery}
-        handleClickAddButton={handleOpenAddComment}
-        handleClickEditButton={() => handleOpenEditComment(selectedComment!)}
-        handleClickDeleteButton={() => {
-          if (selectedComment?.id && post?.id) {
-            handleDeleteComment(selectedComment.id, post.id)
-          }
-        }}
-        handleClickLikeButton={() => {
-          if (selectedComment?.id && post?.id) {
-            handleLikeButton(selectedComment.id, post.id)
-          }
-        }}
+        renderComments={(postId) => (
+          <CommentList
+            comments={comments || []}
+            postId={postId}
+            searchQuery={searchQuery}
+            handleClickAddButton={handleOpenAddComment}
+            handleClickEditButton={(comment) => handleOpenEditComment(comment)}
+            handleClickDeleteButton={(comment) => handleDeleteComment(comment, postId)}
+            handleClickLikeButton={(comment, postId) => handleLikeButton(comment, postId)}
+          />
+        )}
       />
 
       {/* 사용자 다이얼로그 */}
