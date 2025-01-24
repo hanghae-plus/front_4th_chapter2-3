@@ -29,6 +29,7 @@ import { LikeCommentButton } from "../features/postTable/ui/LikeCommentButton"
 import { Comment } from "../entities/comments/model/types"
 import { DeleteCommentButton } from "../features/postTable/ui/DeleteCommentButton"
 import { EditCommentDialog } from "../features/postTable/ui/EditCommentDialog"
+import { AddCommentDialog } from "../features/postTable/ui/AddCommentDialog"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -314,16 +315,7 @@ const PostsManager = () => {
     <div className="mt-2">
       <div className="flex items-center justify-between mb-2">
         <h3 className="text-sm font-semibold">댓글</h3>
-        <Button
-          size="sm"
-          onClick={() => {
-            setNewComment((prev) => ({ ...prev, postId }))
-            setShowAddCommentDialog(true)
-          }}
-        >
-          <Plus className="w-3 h-3 mr-1" />
-          댓글 추가
-        </Button>
+        <AddCommentDialog postId={postId} />
       </div>
       <div className="space-y-1">
         {comments[postId]?.map((comment) => (
@@ -491,23 +483,6 @@ const PostsManager = () => {
               }}
             />
             <Button onClick={updatePost}>게시물 업데이트</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* 댓글 추가 대화상자 */}
-      <Dialog open={showAddCommentDialog} onOpenChange={setShowAddCommentDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>새 댓글 추가</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <Textarea
-              placeholder="댓글 내용"
-              value={newComment.body}
-              onChange={(e) => setNewComment({ ...newComment, body: e.target.value })}
-            />
-            <Button onClick={addComment}>댓글 추가</Button>
           </div>
         </DialogContent>
       </Dialog>

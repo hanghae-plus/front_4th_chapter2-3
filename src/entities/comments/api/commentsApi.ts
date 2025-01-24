@@ -1,4 +1,5 @@
 import { Post } from "../../post/model/types"
+import { User } from "../../user/api/userApi"
 import { Comment } from "../model/types"
 
 export interface CommentsTypes {
@@ -6,6 +7,14 @@ export interface CommentsTypes {
   total: number
   skip: number
   limit: number
+}
+
+export interface CreateCommentParams {
+  body: {
+    body: string
+    postId: Post["id"]
+    userId: User["id"]
+  }
 }
 
 export const commentsApi = {
@@ -17,12 +26,12 @@ export const commentsApi = {
       console.error("GET /api/comments/post/:id:", error)
     }
   },
-  createComment: async (comment: Comment) => {
+  createComment: async (newComment: CreateCommentParams["body"]) => {
     try {
       const response = await fetch("/api/comments/add", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(comment),
+        body: JSON.stringify(newComment),
       })
       return (await response.json()) as Comment
     } catch (error) {
