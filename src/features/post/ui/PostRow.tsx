@@ -11,7 +11,7 @@ import { Post } from "../../../entities/post/model/types";
 import { PostAuthor } from "./PostAuthor";
 import { PostIcons } from "./PostIcons";
 import { PostReactions } from "./PostReactions";
-import { usePosts } from "../../../entities/post/lib/usePosts";
+import { usePosts } from "../../../entities/post/hook/usePosts";
 import { useParams } from "../../../shared/hook/useParams";
 
 interface PostRowProps {

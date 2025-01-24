@@ -3,7 +3,7 @@ import { editDialogAtom, selectedPostAtom } from "../../../app/store/atom";
 import { Button } from "../../../shared/ui";
 
 import { Input, Textarea } from "../../../shared/ui";
-import { usePosts } from "../lib/usePosts";
+import { usePosts } from "../hook/usePosts";
 import { DialogWrapper } from "../../../shared/ui/dialog/DialogWrapper";
 
 export const DialogEditPost = () => {

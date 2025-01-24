@@ -6,7 +6,7 @@ import {
 import { Button } from "../../../shared/ui";
 import { Textarea } from "../../../shared/ui";
 import { DialogWrapper } from "../../../shared/ui/dialog/DialogWrapper";
-import { useComment } from "../lib/useComment";
+import { useComment } from "../hook/useComment";
 
 export const DialogEditComment = () => {
   const [showEditCommentDialog, setShowEditCommentDialog] = useAtom(

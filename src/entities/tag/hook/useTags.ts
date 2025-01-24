@@ -2,7 +2,7 @@ import { useAtom } from "jotai";
 import { selectedTagAtom, tagsAtom } from "../../../app/store/atom";
 import { fetchTag } from "../api/tagApi";
 import { useParams } from "../../../shared/hook/useParams";
-import { usePosts } from "../../post/lib/usePosts";
+import { usePosts } from "../../post/hook/usePosts";
 import { useCallback } from "react";
 
 export const useTags = () => {

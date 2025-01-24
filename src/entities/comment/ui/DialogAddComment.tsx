@@ -3,7 +3,7 @@ import { addCommentDialogAtom, newCommentAtom } from "../../../app/store/atom";
 import { Textarea } from "../../../shared/ui";
 import { Button } from "../../../shared/ui";
 import { DialogWrapper } from "../../../shared/ui/dialog/DialogWrapper";
-import { useComment } from "../lib/useComment";
+import { useComment } from "../hook/useComment";
 
 export const DialogAddComment = () => {
   const [showAddCommentDialog, setShowAddCommentDialog] =

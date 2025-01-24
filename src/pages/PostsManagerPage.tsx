@@ -12,8 +12,8 @@ import {
   sortByAtom,
   sortOrderAtom,
 } from "../app/store/atom.ts";
-import { usePosts } from "../entities/post/lib/usePosts.ts";
-import { useTags } from "../entities/tag/lib/useTags.ts";
+import { usePosts } from "../entities/post/hook/usePosts.ts";
+import { useTags } from "../entities/tag/hook/useTags.ts";
 import { useParams } from "../shared/hook/useParams.ts";
 import { useInitializePosts } from "../shared/hook/useInitializePosts.ts";
 import { DialogPostDetail } from "../entities/post/ui/DialogPostDetail.tsx";

@@ -9,7 +9,7 @@ import {
 } from "../../../shared/ui";
 import { useAtom } from "jotai";
 import { addDialogAtom, newPostAtom } from "../../../app/store/atom";
-import { usePosts } from "../lib/usePosts";
+import { usePosts } from "../hook/usePosts";
 
 export const DialogAddPost: React.FC = () => {
   const [newPost, setNewPost] = useAtom(newPostAtom);

@@ -1,5 +1,5 @@
 import { TableCell } from "../../../shared/ui";
-import { useUser } from "../../../entities/user/lib/useUser";
+import { useUser } from "../../../entities/user/hook/useUser";
 import { Post } from "../../../entities/post/model/types";
 
 interface PostAuthorProps {

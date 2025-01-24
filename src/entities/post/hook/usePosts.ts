@@ -23,7 +23,7 @@ import {
 import { getUser } from "../../user/api/userApi";
 import { User } from "../../user/model/types";
 import { Post } from "../model/types";
-import { useComment } from "../../comment/lib/useComment";
+import { useComment } from "../../comment/hook/useComment";
 import { useCallback } from "react";
 
 export const usePosts = () => {

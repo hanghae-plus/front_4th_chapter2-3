@@ -1,7 +1,7 @@
 import { Edit2, MessageSquare, Trash2 } from "lucide-react";
 import { Button, TableCell } from "../../../shared/ui";
 import { Post } from "../../../entities/post/model/types";
-import { usePosts } from "../../../entities/post/lib/usePosts";
+import { usePosts } from "../../../entities/post/hook/usePosts";
 
 interface PostIconsProps {
   post: Post;
