@@ -14,6 +14,8 @@ import { TComment } from "../entities/comment/model/types"
 import CommnetForm from "../entities/comment/ui/CommentForm"
 import { getUserById } from "../entities/user/api/userApi"
 import { TUser } from "../entities/user/model/types"
+import { deletePost } from "../entities/post/api"
+import { TPost } from "../entities/post/model/types"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -21,12 +23,12 @@ const PostsManager = () => {
   const queryParams = new URLSearchParams(location.search)
 
   // 상태 관리
-  const [posts, setPosts] = useState([])
+  const [posts, setPosts] = useState<TPost>([])
   const [total, setTotal] = useState(0)
   const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"))
   const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"))
   const [searchQuery, setSearchQuery] = useState(queryParams.get("search") || "")
-  const [selectedPost, setSelectedPost] = useState(null)
+  const [selectedPost, setSelectedPost] = useState<TPost>()
   const [sortBy, setSortBy] = useState(queryParams.get("sortBy") || "")
   const [sortOrder, setSortOrder] = useState(queryParams.get("sortOrder") || "asc")
   const [showAddDialog, setShowAddDialog] = useState(false)
@@ -176,13 +178,23 @@ const PostsManager = () => {
     }
   }
 
-  // 게시물 삭제
-  const deletePost = async (id) => {
+  // // 게시물 삭제
+  // const deletePost = async (id) => {
+  //   try {
+  //     await fetch(`/api/posts/${id}`, {
+  //       method: "DELETE",
+  //     })
+  //     setPosts(posts.filter((post) => post.id !== id))
+  //   } catch (error) {
+  //     console.error("게시물 삭제 오류:", error)
+  //   }
+  // }
+
+  // 게시물 삭제 핸들러
+  const handlerDeletePost = async (postId: number) => {
     try {
-      await fetch(`/api/posts/${id}`, {
-        method: "DELETE",
-      })
-      setPosts(posts.filter((post) => post.id !== id))
+      deletePost(postId)
+      setPosts(posts.filter((post) => post.id !== postId))
     } catch (error) {
       console.error("게시물 삭제 오류:", error)
     }
@@ -330,7 +342,7 @@ const PostsManager = () => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {posts.map((post) => (
+        {posts.map((post: TPost) => (
           <TableRow key={post.id}>
             <TableCell>{post.id}</TableCell>
             <TableCell>
@@ -386,7 +398,7 @@ const PostsManager = () => {
                 >
                   <Edit2 className="w-4 h-4" />
                 </Button>
-                <Button variant="ghost" size="sm" onClick={() => deletePost(post.id)}>
+                <Button variant="ghost" size="sm" onClick={() => handlerDeletePost(post.id)}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

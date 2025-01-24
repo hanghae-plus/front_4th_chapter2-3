@@ -1,3 +1,5 @@
+import { TUser } from "../../user/model/types"
+
 export type TPost = {
   id: number
   title: string
@@ -9,4 +11,5 @@ export type TPost = {
   }
   views: number
   userId: number
+  author?: TUser
 }
