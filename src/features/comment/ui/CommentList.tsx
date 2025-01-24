@@ -16,26 +16,13 @@ function CommentList({ postId }: CommentListProps) {
   const { open } = useDialog();
   const { comments, isLoading, deleteComment, likeComment } = useComment(postId);
 
-  const handleOpenCommentModifyDialog = (commentId: string) => {
+  const handleOpenCommentModifyDialog = (commentId: number) => {
     open(<CommentModifyDialog />);
   };
 
   const handleOpenCommentAddDialog = () => {
     // open();
   };
-
-  const handleDeleteComment = (commentId: string) => {};
-
-  const handleLikeComment = (commentId: string) => {};
-  //   try {
-  //
-  //     setComments((prev) => ({
-  //       ...prev,
-  //       [postId]: prev[postId].map((comment) =>
-  //         comment.id === data.id ? { ...data, likes: comment.likes + 1 } : comment,
-  //       ),
-  //     }));
-  // };
 
   return (
     <div className="mt-2">

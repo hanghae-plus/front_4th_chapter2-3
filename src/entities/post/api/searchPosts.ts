@@ -8,7 +8,7 @@ interface SearchPostsResponse {
 export const searchPosts = async (query: string): Promise<SearchPostsResponse> => {
   const response = await fetch(`/api/posts/search?q=${query}`);
   if (!response.ok) {
-    throw new Error("Failed to search posts");
+    throw new Error("Failed to search posts.ts");
   }
   return response.json();
 };

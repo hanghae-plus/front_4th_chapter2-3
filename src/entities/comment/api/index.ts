@@ -35,12 +35,27 @@ export const useUpdateCommentQuery = () => {
   });
 };
 
+const deleteComment = async (id: Comment["id"]) => {
+  const response = await fetch(`/api/comments/${id}`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  const data = await response.json();
+
+  return data;
+};
+
 // 댓글 삭제하기
 export const useDeleteCommentQuery = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (commentId: string) => axios.delete(`/api/comments/${commentId}`).then((res) => res.data),
+    // mutationFn: (commentId: number) => axios.delete(`/api/comments/${commentId}`).then((res) => res.data),
+    mutationFn: (commentId: number) => deleteComment(commentId),
     meta: {
       invalidates: queryClient.invalidateQueries({ queryKey: ["comments"] }),
     },
@@ -52,7 +67,7 @@ export const useLikeCommentQuery = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (commentId: string) => axios.patch(`/api/comments/${commentId}`).then((res) => res.data),
+    mutationFn: (commentId: number) => axios.patch(`/api/comments/${commentId}`).then((res) => res.data),
     meta: {
       invalidates: queryClient.invalidateQueries({ queryKey: ["comments"] }),
     },

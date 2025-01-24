@@ -30,12 +30,23 @@ export const useComment = (postId: string) => {
     });
   };
 
-  const deleteComment = (commentId: string) => {
-    deleteCommentMutation.mutate(commentId);
+  const deleteComment = (commentId: number) => {
+    deleteCommentMutation.mutate(commentId, {
+      onSuccess: (data) => {
+        console.log("delete success", data);
+      },
+    });
   };
 
-  const likeComment = (commentId: string) => {
-    likeCommentMutation.mutate(commentId);
+  const likeComment = (commentId: number) => {
+    likeCommentMutation.mutate(commentId, {
+      onSuccess: (data) => {
+        console.log("likeComment", data);
+      },
+      onError: (error) => {
+        console.error("likeComment", error);
+      },
+    });
   };
 
   return {

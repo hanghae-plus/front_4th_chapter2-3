@@ -14,3 +14,9 @@ export interface CommentResponse {
   skip: number;
   limit: number;
 }
+
+export interface CommentRequest {
+  body: string;
+  postId: number;
+  userId: number;
+}
