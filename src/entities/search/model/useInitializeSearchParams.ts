@@ -4,9 +4,16 @@ import { useEffect } from "react";
 export const useInitializeSearchParams = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
+  const queryParams = {
+    searchQuery: searchParams.get("search"),
+    tag: searchParams.get("tag"),
+    skip: Number(searchParams.get("skip")),
+    limit: Number(searchParams.get("limit")),
+  };
+
   useEffect(() => {
     const defaultParams = {
-      sortOrder: "desc",
+      sortOrder: "asc",
       limit: "10",
       skip: "0",
     };
@@ -19,5 +26,5 @@ export const useInitializeSearchParams = () => {
     });
   }, []);
 
-  return { searchParams, setSearchParams };
+  return { searchParams, queryParams, setSearchParams };
 };

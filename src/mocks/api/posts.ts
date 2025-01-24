@@ -23,6 +23,8 @@ const getAllPost = http.get("/api/posts", async ({ request }) => {
 
   const paginatedPosts = sortedPosts.slice(skip, skip + limit);
 
+  console.log("sorted", order, paginatedPosts);
+
   return HttpResponse.json({
     posts: paginatedPosts,
     total: posts.length,
@@ -93,9 +95,11 @@ const getPostsByTag = http.get("/api/posts/tag/:tag", ({ params, request }) => {
   const { limit, skip, sortBy, order } = parseQueryParams(request);
   const { tag } = params;
 
+  console.log("tag", tag);
   let sortedPosts = sortPost([...posts], sortBy, order);
   sortedPosts = sortedPosts.filter((post) => post.tags.includes(tag as string));
   const paginatedPosts = sortedPosts.slice(skip, skip + limit);
+  console.log("sorted", paginatedPosts);
 
   return HttpResponse.json({
     posts: paginatedPosts,
