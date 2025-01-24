@@ -12,6 +12,8 @@ import UserProfile from "../entities/user/ui/UserProfile"
 import PostForm from "../entities/post/ui/PostForm"
 import { TComment } from "../entities/comment/model/types"
 import CommnetForm from "../entities/comment/ui/CommentForm"
+import { getUserById } from "../entities/user/api/userApi"
+import { TUser } from "../entities/user/model/types"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -280,10 +282,11 @@ const PostsManager = () => {
   }
 
   // 사용자 모달 열기
-  const openUserModal = async (user) => {
+  const openUserModal = async (user: TUser) => {
     try {
-      const response = await fetch(`/api/users/${user.id}`)
-      const userData = await response.json()
+      // const response = await fetch(`/api/users/${user.id}`)
+      // const userData = await response.json()
+      const userData = await getUserById(user.id)
       setSelectedUser(userData)
       setShowUserModal(true)
     } catch (error) {
