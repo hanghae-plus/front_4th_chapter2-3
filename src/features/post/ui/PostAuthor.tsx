@@ -1,6 +1,6 @@
 import { TableCell } from "../../../shared/ui";
-import { useUser } from "../../user/lib/useUser";
-import { Post } from "../model/types";
+import { useUser } from "../../../entities/user/lib/useUser";
+import { Post } from "../../../entities/post/model/types";
 
 interface PostAuthorProps {
   post: Post;

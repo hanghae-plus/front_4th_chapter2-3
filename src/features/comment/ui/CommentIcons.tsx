@@ -1,7 +1,7 @@
 import { Edit2, ThumbsUp, Trash2 } from "lucide-react";
 import { Button } from "../../../shared/ui";
-import { Comment } from "../model/types";
-import { useComment } from "../lib/useComment";
+import { Comment } from "../../../entities/comment/model/types";
+import { useComment } from "../../../entities/comment/lib/useComment";
 
 interface CommentIconsProps {
   comment: Comment;

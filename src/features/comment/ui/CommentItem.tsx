@@ -1,10 +1,10 @@
 import { Plus } from "lucide-react";
 import { Button } from "../../../shared/ui";
 import { CommentRow } from "./CommentRow";
-import { Comment } from "../model/types";
+import { Comment } from "../../../entities/comment/model/types";
 import { commentsAtom } from "../../../app/store/atom";
 import { useAtom } from "jotai";
-import { useComment } from "../lib/useComment";
+import { useComment } from "../../../entities/comment/lib/useComment";
 
 export const CommentItem: React.FC = () => {
   const [comments] = useAtom(commentsAtom);
@@ -30,7 +30,7 @@ export const CommentItem: React.FC = () => {
           <CommentRow
             key={comment.id}
             comment={comment}
-           />
+          />
         ))}
       </div>
     </div>

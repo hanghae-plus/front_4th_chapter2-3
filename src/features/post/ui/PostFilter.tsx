@@ -15,8 +15,8 @@ import {
   sortOrderAtom,
   tagsAtom,
 } from "../../../app/store/atom";
-import { usePosts } from "../lib/usePosts";
-import { useTags } from "../../tag/lib/useTags";
+import { usePosts } from "../../../entities/post/lib/usePosts";
+import { useTags } from "../../../entities/tag/lib/useTags";
 
 export const PostFilter: React.FC = () => {
   const [SearchQuery, setSearchQuery] = useAtom<string>(searchQueryAtom);

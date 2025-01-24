@@ -1,7 +1,7 @@
 import { useAtom } from "jotai";
 import { searchQueryAtom } from "../../../app/store/atom";
 import { highlightText } from "../../../shared/lib/handleHighlightText";
-import { Comment } from "../model/types";
+import { Comment } from "../../../entities/comment/model/types";
 import { CommentIcons } from "./CommentIcons";
 
 interface CommentRowProps {
