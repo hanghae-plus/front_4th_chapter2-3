@@ -15,8 +15,7 @@ export interface CommentResponse {
   limit: number;
 }
 
-export interface CommentRequest {
+export interface AddCommentRequest {
   body: string;
   postId: number;
-  userId: number;
 }

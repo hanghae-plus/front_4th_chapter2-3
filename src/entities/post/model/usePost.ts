@@ -1,34 +1,34 @@
 import { useAddPostQuery, useUpdatePostQuery, useDeletePostQuery } from "../api";
-import { usePostStore } from "@core/store/usePostStore.ts";
-import { Post } from "@/types/post.ts";
+import { NewPost, UpdatePostRequest } from "@/types/post.ts";
 
 export const usePost = () => {
-  const { posts, setPosts } = usePostStore();
   const addPostMutation = useAddPostQuery();
   const updatePostMutation = useUpdatePostQuery();
   const deletePostMutation = useDeletePostQuery();
 
-  const handleAddPost = (newPost: Partial<Post>, onComplete?: () => void) => {
+  const addPost = (newPost: NewPost, onComplete?: () => void) => {
     addPostMutation.mutate(newPost, {
-      onSuccess: (data) => {
-        console.log(`addPost success : ${data}`);
-        // setPosts([data, ...posts]);
+      onSuccess: () => {
         onComplete?.();
       },
     });
   };
 
-  const handleDeletePost = (postId: number) => {
-    deletePostMutation.mutate(postId, {
+  const deletePost = (postId: number) => {
+    deletePostMutation.mutate(postId);
+  };
+
+  const updatePost = (request: UpdatePostRequest, onComplete?: () => void) => {
+    updatePostMutation.mutate(request, {
       onSuccess: () => {
-        console.log("deletePost");
+        onComplete?.();
       },
     });
   };
 
   return {
-    handleAddPost,
-    updatePost: updatePostMutation,
-    handleDeletePost,
+    addPost,
+    updatePost,
+    deletePost,
   };
 };

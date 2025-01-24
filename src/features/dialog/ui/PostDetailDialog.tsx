@@ -1,5 +1,4 @@
 import { DialogContent, DialogHeader, DialogTitle } from "@shared/dialog/ui";
-import { useDialog } from "@shared/dialog/model/useDialog.ts";
 import { HighlightMatch } from "@shared/hightlight/ui/HighlightMatch.tsx";
 import { Post } from "@/types/post.ts";
 import { usePostStore } from "@core/store/usePostStore.ts";

@@ -1,13 +1,28 @@
 import { create } from "zustand";
-import { DialogState, DialogStore } from "@shared/dialog/types";
+import { v4 as uuidv4 } from "uuid";
 
-const initialState: DialogState = {
-  component: null,
-  isOpen: false,
-};
+interface DialogState {
+  stack: {
+    component: React.ReactNode;
+    id: string;
+  }[];
+  open: (component: React.ReactNode) => string;
+  close: () => void;
+  closeAll: () => void;
+}
 
-export const useDialog = create<DialogStore>((set) => ({
-  ...initialState,
-  open: (component) => set({ component, isOpen: true }),
-  close: () => set(initialState),
+export const useDialog = create<DialogState>((set) => ({
+  stack: [],
+  open: (component) => {
+    const id = uuidv4();
+    set((state) => ({
+      stack: [...state.stack, { component, id }],
+    }));
+    return id;
+  },
+  close: () =>
+    set((state) => ({
+      stack: state.stack.slice(0, -1),
+    })),
+  closeAll: () => set({ stack: [] }),
 }));

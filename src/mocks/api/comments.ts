@@ -1,5 +1,6 @@
-import { Comment, CommentRequest, CommentResponse } from "@/types/comment.ts";
+import { Comment, AddCommentRequest, CommentResponse } from "@/types/comment.ts";
 import { http, HttpResponse } from "msw";
+import { dummyUser } from "@/mocks/dummy/user.ts";
 
 let { comments }: CommentResponse = await fetch("https://dummyjson.com/comments?limit=0").then((res) => res.json());
 
@@ -10,7 +11,9 @@ const getComments = http.get("/api/comments/post/:postId", ({ params, request })
 
   const { postId } = params;
 
-  const filteredComments = comments.filter((comment) => comment.postId === Number(postId));
+  const filteredComments = [...comments].filter((comment) => comment.postId.toString() === postId?.toString());
+
+  console.log("아이디", postId, filteredComments.length);
   return HttpResponse.json({
     comments: filteredComments,
     total: comments.length,
@@ -20,18 +23,19 @@ const getComments = http.get("/api/comments/post/:postId", ({ params, request })
 });
 
 const addComment = http.post("/api/comments/add", async ({ request }) => {
-  const { postId, body, userId } = (await request.json()) as CommentRequest;
+  const { postId, body } = (await request.json()) as AddCommentRequest;
 
-  const newComment = {
+  const newComment: Comment = {
     id: Math.max(...comments.map((comment) => comment.id)) + 1,
-    postId,
     body,
+    postId,
     likes: 0,
-    user: { id: userId, username: "", fullName: "" },
+    user: { id: dummyUser.id, username: dummyUser.username },
   };
 
-  comments = [...comments, newComment];
+  comments = [newComment, ...comments];
 
+  console.log("수정후", comments);
   return HttpResponse.json(newComment);
 });
 
@@ -55,4 +59,15 @@ const updateComment = http.put("/api/comments/:commentId", async ({ params, requ
   return HttpResponse.json(updatedComment);
 });
 
-export const commentsApis = [getComments, addComment, deleteComment, updateComment];
+const likeComment = http.patch("/api/comments/:commentId", ({ params }) => {
+  const { commentId } = params;
+
+  const updatedComment = comments.find((comment) => comment.id === Number(commentId));
+  comments = comments.map((comment) =>
+    comment.id === Number(commentId) ? { ...comment, likes: comment.likes + 1 } : comment,
+  );
+
+  return HttpResponse.json(updatedComment);
+});
+
+export const commentsApis = [getComments, addComment, likeComment, deleteComment, updateComment];

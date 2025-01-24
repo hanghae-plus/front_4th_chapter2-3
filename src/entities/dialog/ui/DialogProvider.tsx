@@ -2,13 +2,17 @@ import { useDialog } from "@shared/dialog/model/useDialog.ts";
 import { Dialog } from "@shared/ui";
 
 export const DialogProvider = () => {
-  const { component, isOpen, close } = useDialog();
+  const { stack, close } = useDialog();
 
-  if (!isOpen || !component) return null;
+  if (stack.length === 0) return null;
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && close()}>
-      {component}
-    </Dialog>
+    <>
+      {stack.map(({ component, id }) => (
+        <Dialog key={id} open={true} onOpenChange={(open) => !open && close()}>
+          {component}
+        </Dialog>
+      ))}
+    </>
   );
 };

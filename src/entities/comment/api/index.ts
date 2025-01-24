@@ -1,9 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { CommentResponse } from "@/types/comment.ts";
+import { AddCommentRequest, Comment, CommentResponse } from "@/types/comment.ts";
 
 // 댓글 목록 가져오기
-export const useFetchPostCommentsQuery = (postId: string) => {
+export const useFetchPostCommentsQuery = (postId: number) => {
   return useQuery<CommentResponse>({
     queryKey: ["comments", postId],
     queryFn: () => axios.get(`/api/comments/post/${postId}`).then((res) => res.data),
@@ -16,10 +16,8 @@ export const useAddCommentQuery = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (newComment: Partial<Comment>) => axios.post("/api/comments/add", newComment).then((res) => res.data),
-    meta: {
-      invalidates: queryClient.invalidateQueries({ queryKey: ["comments"] }),
-    },
+    mutationFn: (request: AddCommentRequest) => axios.post("/api/comments/add", request).then((res) => res.data),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["comments"] }),
   });
 };
 

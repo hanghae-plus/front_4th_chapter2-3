@@ -8,15 +8,20 @@ import { usePost } from "@entities/post/model/usePost.ts";
 import { useDialog } from "@shared/dialog/model/useDialog.ts";
 import PostDetailDialog from "@features/dialog/ui/PostDetailDialog.tsx";
 import { Post } from "@/types/post.ts";
+import PostEditDialog from "@features/dialog/ui/PostEditDialog.tsx";
 
 function PostTable() {
   const { posts, filters } = usePostStore();
   const { handleTagSelect } = usePostFilter();
-  const { handleDeletePost } = usePost();
+  const { deletePost, updatePost } = usePost();
   const { open } = useDialog();
 
-  const handleOpenPostDetailDialog = (selectedPost: Post) => {
+  const handleDetailDialog = (selectedPost: Post) => {
     open(<PostDetailDialog selectedPost={selectedPost} />);
+  };
+
+  const handleEditDialog = (selectedPost: Post) => {
+    open(<PostEditDialog selectedPost={selectedPost} updatePost={updatePost} />);
   };
 
   return (
@@ -73,12 +78,12 @@ function PostTable() {
             <TableCell>
               <div className="flex items-center gap-2">
                 <Button variant="ghost" size="sm">
-                  <MessageSquare className="w-4 h-4" onClick={() => handleOpenPostDetailDialog(post)} />
+                  <MessageSquare className="w-4 h-4" onClick={() => handleDetailDialog(post)} />
                 </Button>
                 <Button variant="ghost" size="sm">
-                  <Edit2 className="w-4 h-4" />
+                  <Edit2 className="w-4 h-4" onClick={() => handleEditDialog(post)} />
                 </Button>
-                <Button variant="ghost" size="sm" onClick={() => handleDeletePost(post.id)}>
+                <Button variant="ghost" size="sm" onClick={() => deletePost(post.id)}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

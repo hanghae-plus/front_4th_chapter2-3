@@ -23,3 +23,8 @@ export type NewPost = Pick<Post, "title" | "body" | "userId">;
 export interface PostResponse extends PaginationMeta {
   posts: Post[];
 }
+
+export interface UpdatePostRequest {
+  postId: number;
+  post: Pick<Post, "title" | "body">;
+}
