@@ -1,7 +1,9 @@
-import { Button, DialogContent, DialogHeader, DialogTitle, Textarea } from "@shared/ui"
 import { Comment } from "@entities/post/types"
 import { useState } from "react"
 import { useUpdateCommentMutation } from "@features/post/model"
+import { DialogContent, DialogHeader, DialogTitle } from "@/shared/ui/dialog"
+import { Textarea } from "@/shared/ui/textarea"
+import { Button } from "@/shared/ui/button"
 
 interface CommentUpdateProps {
   comment: Comment
