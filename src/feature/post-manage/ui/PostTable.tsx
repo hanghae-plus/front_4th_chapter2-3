@@ -1,15 +1,22 @@
-import { Edit2, MessageSquare, ThumbsDown, ThumbsUp } from "lucide-react"
+import { Edit2, MessageSquare, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react"
 import { Button, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../shared/ui"
 import { highlightText } from "../../lib/helpers"
-import { usePostStore } from "../model/store"
 import { useUserModal } from "../../user-manage/hooks/useUserModal"
 import { usePostDetailDialog } from "../hooks/usePostDetailDialog"
 
-export const PostTable = () => {
-  const { posts, searchQuery, selectedTag, setSelectedTag, updateURL } = usePostStore()
-  const { openUserModal } = useUserModal()
-  const { openPostDetailDialog, closePostDetailDialog } = usePostDetailDialog()
-
+export const PostTable = ({
+  posts,
+  searchQuery,
+  selectedTag,
+  setSelectedTag,
+  updateURL,
+  openPostDetailDialog,
+  setSelectedPost,
+  openEditDialog,
+  deletePost,
+  openUserModal,
+  setShowEditDialog,
+}: any) => {
   return (
     <Table>
       <TableHeader>

@@ -29,10 +29,11 @@ import { useCommentStore } from "../feature/comment-manage/model/store"
 import { useAddCommentDialog } from "../feature/comment-manage/hooks/useAddCommentDialog"
 import { useEditCommentDialog } from "../feature/comment-manage/hooks/useEditCommentdialog"
 import { useEditDialog } from "../feature/post-manage/hooks/useEditDialog"
-import { useDetailDialog } from "../feature/post-manage/hooks/useDetailDialog"
 import { usePostDetailDialog } from "../feature/post-manage/hooks/usePostDetailDialog"
 import { useUserModal } from "../feature/user-manage/hooks/useUserModal"
 import { useSelectedUser } from "../feature/user-manage/hooks/useSelectedUser"
+import { PostTable } from "../feature/post-manage/ui/PostTable"
+import { usePosts } from "../feature/post-manage/api/queries"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -63,6 +64,12 @@ const PostsManager = () => {
   const [selectedTag, setSelectedTag] = useState(queryParams.get("tag") || "")
   const [comments, setComments] = useState({})
   const [newComment, setNewComment] = useState({ body: "", postId: null, userId: 1 })
+
+  // const { data: postsData, isLoading: postsDataLoading } = usePosts(skip, limit)
+
+  // useEffect(() => {
+  //   console.log("postsData", postsData)
+  // }, [postsData])
 
   // URL 업데이트 함수
   const updateURL = () => {
@@ -552,7 +559,20 @@ const PostsManager = () => {
           </div>
 
           {/* 게시물 테이블 */}
-          {loading ? <div className="flex justify-center p-4">로딩 중...</div> : renderPostTable()}
+          <PostTable
+            posts={posts}
+            searchQuery={searchQuery}
+            selectedTag={selectedTag}
+            setSelectedTag={setSelectedTag}
+            updateURL={updateURL}
+            openPostDetailDialog={openPostDetailDialog}
+            setSelectedPost={setSelectedPost}
+            openEditDialog={openEditDialog}
+            deletePost={deletePost}
+            openUserModal={openUserModal}
+            setShowEditDialog={setShowEditDialog}
+          />
+          {/* {loading ? <div className="flex justify-center p-4">로딩 중...</div> : renderPostTable()} */}
 
           {/* 페이지네이션 */}
           <div className="flex justify-between items-center">
