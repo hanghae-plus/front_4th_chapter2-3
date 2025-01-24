@@ -6,17 +6,23 @@ import useComments from "../model/useComments"
 import { Edit2, ThumbsUp, Trash2 } from "lucide-react"
 import { EditCommentModal } from "./EditCommentModal"
 import { useQueryParams } from "../../../shared/model/useQueryParams"
+import { useEffect } from "react"
 
 type CommentsProps = {
-  postId: string
+  postId: number
 }
 
 function Comments({ postId }: CommentsProps) {
-  const { comments, likeComment, deleteComment } = useComments(postId)
+  const { getComments, comments, likeComment, deleteComment } = useComments()
 
   const { openModal } = useModalStore()
   const { searchQuery } = useQueryParams()
 
+  useEffect(() => {
+    getComments(postId)
+  }, [postId])
+
+  console.log(typeof postId)
   return (
     <div className="mt-2">
       <div className="flex items-center justify-between mb-2">
@@ -24,7 +30,7 @@ function Comments({ postId }: CommentsProps) {
         <Button
           size="sm"
           onClick={() => {
-            openModal(<AddCommentModal id={postId} />)
+            openModal(<AddCommentModal postId={postId} />)
           }}
         >
           <Plus className="w-3 h-3 mr-1" />
@@ -54,7 +60,7 @@ function Comments({ postId }: CommentsProps) {
               >
                 <Edit2 className="w-3 h-3" />
               </Button>
-              <Button variant="ghost" size="sm" onClick={() => deleteComment(comment.id)}>
+              <Button variant="ghost" size="sm" onClick={() => deleteComment(comment.id, postId)}>
                 <Trash2 className="w-3 h-3" />
               </Button>
             </div>

@@ -8,4 +8,6 @@ export interface Comment {
     username: string
   }
 }
+export type CommentForm = Pick<Comment, "body" | "userId" | "postId">
+
 export type Comments = Record<number, Comment[]>

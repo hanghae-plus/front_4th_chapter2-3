@@ -1,33 +1,14 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import { Button, DialogContent, DialogHeader, DialogTitle, Textarea } from "../../../shared/ui"
-import { useModalStore } from "../../../shared/model/useModalStore"
+import useComments from "../model/useComments"
+import { CommentForm } from "../../../entity/comment/model/types"
 
 type AddCommentModalProps = {
-  id: string
+  postId: number
 }
-function AddCommentModal({ id }: AddCommentModalProps) {
-  const { closeModal } = useModalStore()
-
-  const [newComment, setNewComment] = useState({ body: "", postId: id, userId: 1 })
-
-  // 댓글 추가
-  const addComment = async () => {
-    try {
-      const response = await fetch("/api/comments/add", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newComment),
-      })
-      await response.json()
-
-      //fetch comments
-
-      closeModal()
-      setNewComment({ body: "", postId: null, userId: 1 })
-    } catch (error) {
-      console.error("댓글 추가 오류:", error)
-    }
-  }
+function AddCommentModal({ postId }: AddCommentModalProps) {
+  const { addComment } = useComments()
+  const [newComment, setNewComment] = useState<CommentForm>({ body: "", postId, userId: 1 })
 
   return (
     <DialogContent>
@@ -40,7 +21,7 @@ function AddCommentModal({ id }: AddCommentModalProps) {
           value={newComment.body}
           onChange={(e) => setNewComment({ ...newComment, body: e.target.value })}
         />
-        <Button onClick={addComment}>댓글 추가</Button>
+        <Button onClick={() => addComment(newComment)}>댓글 추가</Button>
       </div>
     </DialogContent>
   )

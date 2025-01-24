@@ -1,30 +1,14 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import { Button, DialogContent, DialogHeader, DialogTitle, Textarea } from "../../../shared/ui"
-import { useModalStore } from "../../../shared/model/useModalStore"
+import useComments from "../model/useComments"
+import { Comment } from "../../../entity/comment/model/types"
 
 type EditCommentModalProps = {
-  comment: any
+  comment: Comment
 }
 function EditCommentModal({ comment }: EditCommentModalProps) {
-  const { closeModal } = useModalStore()
-
+  const { updateComment } = useComments()
   const [selectedComment, setSelectedComment] = useState(comment)
-
-  const updateComment = async () => {
-    try {
-      const response = await fetch(`/api/comments/${selectedComment.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ body: selectedComment.body }),
-      })
-      await response.json()
-      //fetch comments
-
-      closeModal()
-    } catch (error) {
-      console.error("댓글 업데이트 오류:", error)
-    }
-  }
 
   return (
     <DialogContent>
@@ -37,7 +21,7 @@ function EditCommentModal({ comment }: EditCommentModalProps) {
           value={selectedComment?.body || ""}
           onChange={(e) => setSelectedComment({ ...selectedComment, body: e.target.value })}
         />
-        <Button onClick={updateComment}>댓글 업데이트</Button>
+        <Button onClick={() => updateComment(selectedComment)}>댓글 업데이트</Button>
       </div>
     </DialogContent>
   )
