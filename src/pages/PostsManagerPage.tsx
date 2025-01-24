@@ -27,6 +27,7 @@ import { PostWithUser } from "../features/postTable/model/types"
 import { PostTable } from "../features/postTable/PostTable"
 import { LikeCommentButton } from "../features/postTable/ui/LikeCommentButton"
 import { Comment } from "../entities/comments/model/types"
+import { DeleteCommentButton } from "../features/postTable/ui/DeleteCommentButton"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -380,9 +381,8 @@ const PostsManager = () => {
               >
                 <Edit2 className="w-3 h-3" />
               </Button>
-              <Button variant="ghost" size="sm" onClick={() => deleteComment(comment.id, postId)}>
-                <Trash2 className="w-3 h-3" />
-              </Button>
+
+              <DeleteCommentButton comment={comment} postId={postId} />
             </div>
           </div>
         ))}

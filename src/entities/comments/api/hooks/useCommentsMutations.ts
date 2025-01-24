@@ -10,11 +10,30 @@ export const useLikeCommentMutation = (postId: Post["id"]) => {
 
   return useMutation({
     mutationFn: (comment: Comment) => commentsApi.likeComment(comment),
-    onMutate: async (prevComment) => {
-      return { prevComment }
+    onMutate: async (previousComments) => {
+      return { previousComments }
     },
     onError: (err, _, context) => {
-      queryClient.setQueryData(queryKey, context?.prevComment)
+      queryClient.setQueryData(queryKey, context?.previousComments)
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey })
+    },
+  })
+}
+
+export const useDeleteCommentMutation = (postId: Post["id"]) => {
+  const queryClient = useQueryClient()
+  const queryKey = commentsQueryKeys.lists(postId)
+
+  return useMutation({
+    mutationFn: (commentId: Comment["id"]) => commentsApi.deleteComment(commentId),
+    onMutate: async () => {
+      const previousComments = queryClient.getQueryData(queryKey)
+      return { previousComments }
+    },
+    onError: (err, _, context) => {
+      queryClient.setQueryData(queryKey, context?.previousComments)
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey })
