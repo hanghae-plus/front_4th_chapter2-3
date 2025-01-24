@@ -1,3 +1,6 @@
-export { useCommentsStore } from './useCommentsStore';
-export { useNewCommentStore } from './useNewCommentStore';
-export { useSelectedCommentStore } from './useSelectedCommentStore';
+export { useCommentsStore, useCommentsStoreSelector } from './useCommentsStore';
+export { useNewCommentStore, useNewCommentStoreSelector } from './useNewCommentStore';
+export {
+  useSelectedCommentStore,
+  useSelectedCommentStoreSelector,
+} from './useSelectedCommentStore';

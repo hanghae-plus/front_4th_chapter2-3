@@ -1,4 +1,4 @@
 export type { Posts } from './Posts';
 
 export { usePostsStore, usePostsStoreSelector } from './usePostsStore';
-export { useSelectedPostStore } from './useSelectedPostStore';
+export { useSelectedPostStore, useSelectedPostStoreSelector } from './useSelectedPostStore';
