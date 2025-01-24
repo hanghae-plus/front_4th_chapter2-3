@@ -13,34 +13,14 @@ import { useQueryParams } from "../../../shared/model/useQueryParams"
 import { usePosts } from "../model/usePosts"
 import { Edit2, MessageSquare, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react"
 import { useModalStore } from "../../../shared/model/useModalStore"
-import EditPostModal from "./EditPostModal"
-import { getCommentsApi } from "../../../entity/comment/api/commentApi"
 import { PostDetailModal } from "./PostDetailModal"
-import { Post } from "../../../entity/post/model/types"
-import UserInfoModal from "../../user/ui/UserInfoModal"
+import EditPostModal from "./EditPostModal"
 
 function PostTable() {
   const { openModal } = useModalStore()
-  const { searchQuery, skip, limit, updateURL, selectedTag, setSelectedTag } = useQueryParams()
+  const { searchQuery, updateURL, selectedTag, setSelectedTag } = useQueryParams()
 
-  const { posts, deletePost } = usePosts({ limit, skip })
-
-  //TODO:  포스트 상세 정리 필요
-  const openPostDetail = async (post: Post) => {
-    await getCommentsApi(post.id)
-    openModal(<PostDetailModal post={post} />)
-  }
-
-  //TODO:  사용자 모달 열기 정리 필요
-  const openUserModal = async (user) => {
-    try {
-      const response = await fetch(`/api/users/${user.id}`)
-      const userData = await response.json()
-      openModal(<UserInfoModal userInfo={userData} />)
-    } catch (error) {
-      console.error("사용자 정보 가져오기 오류:", error)
-    }
-  }
+  const { posts, deletePost } = usePosts()
 
   return (
     <Table>
@@ -83,7 +63,10 @@ function PostTable() {
               </div>
             </TableCell>
             <TableCell>
-              <div className="flex items-center space-x-2 cursor-pointer" onClick={() => openUserModal(post.author)}>
+              <div
+                className="flex items-center space-x-2 cursor-pointer"
+                onClick={() => openModal(<PostDetailModal post={post} />)}
+              >
                 <img src={post.author?.image} alt={post.author?.username} className="w-8 h-8 rounded-full" />
                 <span>{post.author?.username}</span>
               </div>
@@ -98,7 +81,7 @@ function PostTable() {
             </TableCell>
             <TableCell>
               <div className="flex items-center gap-2">
-                <Button variant="ghost" size="sm" onClick={() => openPostDetail(post)}>
+                <Button variant="ghost" size="sm" onClick={() => openModal(<PostDetailModal post={post} />)}>
                   <MessageSquare className="w-4 h-4" />
                 </Button>
                 <Button

@@ -16,7 +16,7 @@ export interface Post {
   }
 }
 
-export interface Posts {
+export interface PostInfo {
   posts: Post[]
   total: number
   skip: number

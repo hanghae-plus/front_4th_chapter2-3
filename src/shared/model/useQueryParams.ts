@@ -44,5 +44,9 @@ export const useQueryParams = () => {
     selectedTag,
     setSortOrder,
     setSelectedTag,
+    setSkip,
+    setLimit,
+    setSearchQuery,
+    setSortBy,
   }
 }

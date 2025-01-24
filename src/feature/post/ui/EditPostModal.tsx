@@ -1,29 +1,16 @@
 import { useState } from "react"
 import { Button, Dialog, DialogContent, DialogHeader, DialogTitle, Input, Textarea } from "../../../shared/ui"
 import { useModalStore } from "../../../shared/model/useModalStore"
+import { usePosts } from "../model/usePosts"
+import { Post } from "../../../entity/post/model/types"
 
 type EditPostModalProps = {
-  post: any
+  post: Post
 }
 function EditPostModal({ post }: EditPostModalProps) {
   const { isOpen, closeModal } = useModalStore()
+  const { updatePost } = usePosts()
   const [selectedPost, setSelectedPost] = useState(post)
-
-  // 게시물 추가
-  const updatePost = async () => {
-    try {
-      const response = await fetch(`/api/posts/${selectedPost.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(selectedPost),
-      })
-      await response.json()
-      //   fetch post
-      closeModal()
-    } catch (error) {
-      console.error("게시물 업데이트 오류:", error)
-    }
-  }
 
   return (
     <Dialog open={isOpen} onOpenChange={closeModal}>
@@ -43,7 +30,7 @@ function EditPostModal({ post }: EditPostModalProps) {
             value={selectedPost?.body || ""}
             onChange={(e) => setSelectedPost({ ...selectedPost, body: e.target.value })}
           />
-          <Button onClick={updatePost}>게시물 업데이트</Button>
+          <Button onClick={() => updatePost(selectedPost)}>게시물 업데이트</Button>
         </div>
       </DialogContent>
     </Dialog>
