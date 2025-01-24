@@ -19,11 +19,10 @@ interface PostRowProps {
 }
 
 export const PostRow: React.FC<PostRowProps> = ({ post }) => {
+  const [searchQuery] = useAtom(searchQueryAtom);
+  const [selectedTag, setSelectedTag] = useAtom(selectedTagAtom);
   const [, setSelectedPost] = useAtom(selectedPostAtom);
   const [, setShowEditDialog] = useAtom(editDialogAtom);
-
-  const [selectedTag, setSelectedTag] = useAtom(selectedTagAtom);
-  const [searchQuery] = useAtom(searchQueryAtom);
 
   const { handleDeletePost } = usePosts();
   const { updateURL } = useParams();

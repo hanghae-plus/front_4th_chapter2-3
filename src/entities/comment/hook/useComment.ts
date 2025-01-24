@@ -19,10 +19,10 @@ import { Comment } from "../model/types";
 export const useComment = () => {
   const [comments, setComments] = useAtom(commentsAtom);
   const [newComment, setNewComment] = useAtom(newCommentAtom);
-  const [, setShowAddCommentDialog] = useAtom(addCommentDialogAtom);
   const [selectedComment, setSelectedComment] = useAtom(selectedCommentAtom);
-  const [, setShowEditCommentDialog] = useAtom(editCommentDialogAtom);
   const [selectedPost] = useAtom(selectedPostAtom);
+  const [, setShowAddCommentDialog] = useAtom(addCommentDialogAtom);
+  const [, setShowEditCommentDialog] = useAtom(editCommentDialogAtom);
 
   // 댓글 가져오기
   const handleFetchComments = async (postId: number) => {

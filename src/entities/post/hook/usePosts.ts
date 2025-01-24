@@ -27,17 +27,16 @@ import { useComment } from "../../comment/hook/useComment";
 import { useCallback } from "react";
 
 export const usePosts = () => {
-  const [, setPosts] = useAtom(postsAtom);
-  const [, setLoading] = useAtom(loadingAtom);
-  const [, setTotal] = useAtom(totalAtom);
   const [skip] = useAtom(skipAtom);
   const [limit] = useAtom(limitAtom);
   const [searchQuery] = useAtom(searchQueryAtom);
-  const [, setShowAddDialog] = useAtom(addDialogAtom);
   const [selectedPost] = useAtom(selectedPostAtom);
-  const [, setShowEditDialog] = useAtom(editDialogAtom);
-
   const [newPost, setNewPost] = useAtom(newPostAtom);
+  const [, setPosts] = useAtom(postsAtom);
+  const [, setLoading] = useAtom(loadingAtom);
+  const [, setTotal] = useAtom(totalAtom);
+  const [, setShowAddDialog] = useAtom(addDialogAtom);
+  const [, setShowEditDialog] = useAtom(editDialogAtom);
   const [, setSelectedPost] = useAtom(selectedPostAtom);
   const [, setShowPostDetailDialog] = useAtom(postDetailDialogAtom);
 
