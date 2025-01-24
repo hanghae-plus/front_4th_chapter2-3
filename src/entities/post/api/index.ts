@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { Post, PostResponse } from "@/types/post.ts";
+import { NewPost, Post, PostResponse } from "@/types/post.ts";
 import { Tag } from "@/types/tag.ts";
 
 export const useFetchPostsQuery = (params: {
@@ -38,7 +38,7 @@ export const useAddPostQuery = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (newPost: Partial<Post>) => axios.post<Post>("/api/posts/add", newPost).then((res) => res.data),
+    mutationFn: (newPost: NewPost) => axios.post<Post>("/api/posts/add", newPost).then((res) => res.data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["posts"] }),
   });
 };

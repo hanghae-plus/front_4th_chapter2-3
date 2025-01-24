@@ -9,11 +9,10 @@ export const usePost = () => {
   const deletePostMutation = useDeletePostQuery();
 
   const handleAddPost = (newPost: Partial<Post>, onComplete?: () => void) => {
-    console.log("addPost");
     addPostMutation.mutate(newPost, {
       onSuccess: (data) => {
-        console.log(`addPost2 : ${data}`);
-        setPosts([data, ...posts]);
+        console.log(`addPost success : ${data}`);
+        // setPosts([data, ...posts]);
         onComplete?.();
       },
     });
@@ -22,7 +21,7 @@ export const usePost = () => {
   const handleDeletePost = (postId: number) => {
     deletePostMutation.mutate(postId, {
       onSuccess: () => {
-        setPosts([...posts].filter((post) => post.id !== postId));
+        console.log("deletePost");
       },
     });
   };

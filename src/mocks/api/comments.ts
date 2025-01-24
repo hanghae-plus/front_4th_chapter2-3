@@ -10,9 +10,7 @@ const getComments = http.get("/api/comments/post/:postId", ({ params, request })
 
   const { postId } = params;
 
-  console.log("comments", comments.length);
   const filteredComments = comments.filter((comment) => comment.postId === Number(postId));
-  console.log("comments", filteredComments);
   return HttpResponse.json({
     comments: filteredComments,
     total: comments.length,
@@ -42,7 +40,7 @@ const deleteComment = http.delete("/api/comments/:commentId", ({ params }) => {
 
   const deletedComment = comments.find((comment) => comment.id === Number(commentId));
   comments = comments.filter((comment) => comment.id !== Number(commentId));
-  return HttpResponse.json(comments);
+  return HttpResponse.json(deletedComment);
 });
 
 const updateComment = http.put("/api/comments/:commentId", async ({ params, request }) => {

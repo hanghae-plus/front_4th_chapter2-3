@@ -1,3 +1,3 @@
-import { commentsApis } from "./api";
+import { commentsApis, postsApis } from "./api";
 
-export const handlers = [...commentsApis];
+export const handlers = [...commentsApis, ...postsApis];
