@@ -13,7 +13,6 @@ import {
   sortOrderAtom,
 } from "../app/store/atom.ts";
 import { usePosts } from "../entities/post/hook/usePosts.ts";
-import { useTags } from "../entities/tag/hook/useTags.ts";
 import { useParams } from "../shared/hook/useParams.ts";
 import { useInitializePosts } from "../shared/hook/useInitializePosts.ts";
 import { DialogPostDetail } from "../entities/post/ui/DialogPostDetail.tsx";
@@ -31,13 +30,7 @@ const PostsManager = () => {
   const sortBy = useAtomValue(sortByAtom);
   const sortOrder = useAtomValue(sortOrderAtom);
 
-  const { handleFetchTags } = useTags();
-
   const { handleFetchPost, handleFetchPostsByTag } = usePosts();
-
-  useEffect(() => {
-    handleFetchTags();
-  }, [handleFetchTags]);
 
   const { updateURL } = useParams();
 

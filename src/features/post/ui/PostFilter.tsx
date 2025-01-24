@@ -13,21 +13,20 @@ import {
   selectedTagAtom,
   sortByAtom,
   sortOrderAtom,
-  tagsAtom,
 } from "../../../app/store/atom";
 import { usePosts } from "../../../entities/post/hook/usePosts";
 import { useTags } from "../../../entities/tag/hook/useTags";
+import { Tags } from "../../../entities/tag/model/types";
 
 export const PostFilter: React.FC = () => {
   const selectedTag = useAtomValue(selectedTagAtom);
-  const tags = useAtomValue(tagsAtom);
 
   const [SearchQuery, setSearchQuery] = useAtom(searchQueryAtom);
   const [sortBy, setSortBy] = useAtom(sortByAtom);
   const [sortOrder, setSortOrder] = useAtom(sortOrderAtom);
 
   const { handleSearchPost } = usePosts();
-  const { handleControlFilter } = useTags();
+  const { tags, handleControlFilter } = useTags();
 
   return (
     <div className="flex gap-4">
@@ -54,7 +53,7 @@ export const PostFilter: React.FC = () => {
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">모든 태그</SelectItem>
-          {tags.map((tag) => (
+          {tags?.map((tag: Tags) => (
             <SelectItem
               key={tag.url}
               value={tag.slug}
