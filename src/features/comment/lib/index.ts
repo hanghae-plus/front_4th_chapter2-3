@@ -1,5 +1,5 @@
 import { createQueryKeys } from "@lukemorales/query-key-factory"
 
 export const commentKeys = createQueryKeys("comment", {
-  fetch: () => ["comment"],
+  fetch: (postId: number) => ["comment", postId],
 })

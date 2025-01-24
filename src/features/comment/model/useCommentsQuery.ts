@@ -4,7 +4,7 @@ import { commentKeys } from "@features/comment/lib"
 
 export const useCommentsQuery = (postId: number) => {
   return useQuery({
-    queryKey: commentKeys.fetch().queryKey,
+    queryKey: commentKeys.fetch(postId).queryKey,
     queryFn: () => fetchCommentsByPostId(postId),
   })
 }
