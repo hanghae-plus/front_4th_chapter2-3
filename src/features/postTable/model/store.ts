@@ -1,15 +1,23 @@
 import { create } from "zustand"
 import { Post } from "../../../entities/post/model/types"
 import { User } from "../../../entities/user/api/userApi"
+import { PostWithUser } from "./types"
 
-interface PostsStore {
+interface PostTableStore {
   postsWithUsers: PostWithUser[]
-  setPostsWithUsers: (posts: Post[], users: User[]) => void
+  limit: number
+  skip: number
 }
 
-export const usePostsStore = create<PostsStore>((set) => ({
+interface PostTableActions {
+  addAuthorToPosts: (posts: Post[], users: Pick<User, "id" | "username" | "image">[]) => void
+}
+
+export const usePostTableStore = create<PostTableStore & PostTableActions>((set) => ({
   postsWithUsers: [],
-  setPostsWithUsers: (posts, users) => {
+  limit: 10,
+  skip: 0,
+  addAuthorToPosts: (posts, users) => {
     const postsWithUsers = posts
       .map((post) => ({
         ...post,

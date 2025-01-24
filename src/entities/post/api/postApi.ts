@@ -18,7 +18,7 @@ export const postApi = {
   getPosts: async (limit: number, skip: number) => {
     try {
       const response = await fetch(`/api/posts?limit=${limit}&skip=${skip}`)
-      return (await response.json()) as Post[]
+      return (await response.json()) as PostsTypes
     } catch (error) {
       console.error("GET /api/posts:", error)
     }

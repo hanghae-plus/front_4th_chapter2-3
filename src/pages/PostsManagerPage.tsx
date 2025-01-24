@@ -9,6 +9,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  HighlightText,
   Input,
   Select,
   SelectContent,
@@ -29,10 +30,7 @@ import { Comment } from "../entities/comments/api/commentsApi"
 import { Tag } from "../entities/tag/api/tagApi"
 import { Header } from "./ui/Header"
 import { Post } from "../entities/post/model/types"
-
-interface PostWithUser extends Post {
-  author: User
-}
+import { PostWithUser } from "../features/postTable/model/types"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -133,7 +131,7 @@ const PostsManager = () => {
     try {
       const response = await fetch(`/api/posts/search?q=${searchQuery}`)
       const data = await response.json()
-      setPosts(data.posts)
+      setPosts(data.posts) // 유저도 추가
       setTotal(data.total)
     } catch (error) {
       console.error("게시물 검색 오류:", error)
@@ -178,7 +176,7 @@ const PostsManager = () => {
         body: JSON.stringify(newPost),
       })
       const data = await response.json()
-      setPosts([data, ...posts])
+      setPosts([data, ...posts]) // 유저도 추가
       setShowAddDialog(false)
       setNewPost({ title: "", body: "", userId: 1 })
     } catch (error) {
@@ -347,19 +345,6 @@ const PostsManager = () => {
   }, [location.search])
 
   // 하이라이트 함수 추가
-  const highlightText = (text: string, highlight: string) => {
-    if (!text) return null
-    if (!highlight.trim()) {
-      return <span>{text}</span>
-    }
-    const regex = new RegExp(`(${highlight})`, "gi")
-    const parts = text.split(regex)
-    return (
-      <span>
-        {parts.map((part, i) => (regex.test(part) ? <mark key={i}>{part}</mark> : <span key={i}>{part}</span>))}
-      </span>
-    )
-  }
 
   // 게시물 테이블 렌더링
   const renderPostTable = () => (
@@ -379,7 +364,9 @@ const PostsManager = () => {
             <TableCell>{post.id}</TableCell>
             <TableCell>
               <div className="space-y-1">
-                <div>{highlightText(post.title, searchQuery)}</div>
+                <div>
+                  <HighlightText text={post.title} highlight={searchQuery} />
+                </div>
 
                 <div className="flex flex-wrap gap-1">
                   {post.tags?.map((tag) => (
@@ -462,7 +449,9 @@ const PostsManager = () => {
           <div key={comment.id} className="flex items-center justify-between text-sm border-b pb-1">
             <div className="flex items-center space-x-2 overflow-hidden">
               <span className="font-medium truncate">{comment.user.username}:</span>
-              <span className="truncate">{highlightText(comment.body, searchQuery)}</span>
+              <span className="truncate">
+                <HighlightText text={comment.body} highlight={searchQuery} />
+              </span>
             </div>
             <div className="flex items-center space-x-1">
               <Button variant="ghost" size="sm" onClick={() => likeComment(comment.id, postId)}>
@@ -681,10 +670,14 @@ const PostsManager = () => {
       <Dialog open={showPostDetailDialog} onOpenChange={setShowPostDetailDialog}>
         <DialogContent className="max-w-3xl">
           <DialogHeader>
-            <DialogTitle>{highlightText(selectedPost?.title || "", searchQuery)}</DialogTitle>
+            <DialogTitle>
+              <HighlightText text={selectedPost?.title || ""} highlight={searchQuery} />
+            </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <p>{highlightText(selectedPost?.body || "", searchQuery)}</p>
+            <p>
+              <HighlightText text={selectedPost?.body || ""} highlight={searchQuery} />
+            </p>
             {selectedPost && renderComments(selectedPost?.id)}
           </div>
         </DialogContent>

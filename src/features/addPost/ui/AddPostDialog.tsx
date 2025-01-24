@@ -26,7 +26,7 @@ export const AddPostDialog = () => {
 
   return (
     <Dialog>
-      <DialogTrigger>
+      <DialogTrigger asChild>
         <Button>
           <Plus className="w-4 h-4 mr-2" />
           게시물 추가
@@ -57,7 +57,7 @@ export const AddPostDialog = () => {
             onChange={(e) => setNewPost({ ...newPost, userId: Number(e.target.value) })}
           />
 
-          <DialogClose>
+          <DialogClose asChild>
             <Button onClick={handleAddPost}>게시물 추가</Button>
           </DialogClose>
         </div>
