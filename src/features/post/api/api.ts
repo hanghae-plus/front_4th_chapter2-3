@@ -1,3 +1,6 @@
+import { Post } from "../../../entities/post/model/types"
+import { User } from "../../../entities/user/model/types"
+
 export const postApi = {
   getPosts: async ({ limit, skip }: { limit: number; skip: number }) => {
     const [postsResponse, usersResponse] = await Promise.all([
@@ -8,12 +11,15 @@ export const postApi = {
     const postsData = await postsResponse.json()
     const usersData = await usersResponse.json()
 
+    const postsWithUsers = postsData.posts.map((post: Post) => ({
+      ...post,
+      author: usersData.users.find((user: User) => user.id === post.userId),
+    }))
+
     return {
-      posts: postsData.posts.map((post: any) => ({
-        ...post,
-        author: usersData.users.find((user: any) => user.id === post.userId),
-      })),
+      posts: postsWithUsers,
       total: postsData.total,
+      users: usersData.users,
     }
   },
   searchPosts: async (query: string) => {

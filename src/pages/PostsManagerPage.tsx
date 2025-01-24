@@ -1,7 +1,5 @@
-import { useEffect, useState } from "react"
 import { Plus } from "lucide-react"
 import { Button, Card, CardContent, CardHeader, CardTitle } from "../shared/ui"
-import { useLoadingStore } from "../shared/model/useLoadingStore"
 import { PostTable } from "../features/post/ui/PostTable"
 import { UserInfoDialog } from "../entities/user/ui/UserInfoDialog"
 import { PostDetailDialog } from "../features/post/ui/PostDetailDialog"
@@ -11,42 +9,10 @@ import { PostEditDialog } from "../features/post/ui/PostEditDialog"
 import { PostAddDialog } from "../features/post/ui/PostAddDialog"
 import { Pagination } from "../shared/ui/Pagination"
 import { SearchAndFilter } from "../widgets/ui/Search"
-import { usePostActions } from "../features/post/model/usePostActions"
-import { usePostsFilter } from "../features/post/model/usePostFilter"
-import { useDialogStore } from "../shared/model/useDialogStore"
-import { Tag } from "../entities/post/model/types"
+import { usePostsManager } from "../features/post/model/usePostManager"
 
 const PostsManager: React.FC = () => {
-  const { isLoading } = useLoadingStore()
-  const { setShowAddDialog } = useDialogStore()
-  const [tags, setTags] = useState<Tag[]>([])
-  const { updateURL, sortBy, sortOrder, selectedTag } = usePostsFilter()
-  const { fetchPosts, fetchPostsByTag } = usePostActions()
-
-  const fetchTags = async () => {
-    try {
-      const response = await fetch("/api/posts/tags")
-      const data = await response.json()
-      setTags(data)
-      console.log("태그:", data)
-    } catch (error) {
-      console.error("태그 가져오기 오류:", error)
-    }
-  }
-
-  useEffect(() => {
-    if (selectedTag) {
-      fetchPostsByTag(selectedTag)
-    } else {
-      fetchPosts()
-    }
-    updateURL()
-  }, [sortBy, sortOrder, selectedTag])
-
-  useEffect(() => {
-    fetchTags()
-  }, [])
-
+  const { tags, isLoading, setShowAddDialog } = usePostsManager()
   return (
     <Card className="w-full max-w-6xl mx-auto">
       <CardHeader>

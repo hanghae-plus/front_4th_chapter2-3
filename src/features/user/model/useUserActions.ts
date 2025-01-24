@@ -34,7 +34,6 @@ export const useUserActions = () => {
 
   return {
     selectedUser,
-
     isLoading,
     openUserModal,
   }
