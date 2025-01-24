@@ -1,0 +1,1 @@
+export { commentsApi } from './commentsApi';

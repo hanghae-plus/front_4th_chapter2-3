@@ -3,6 +3,7 @@ import { useState } from 'react';
 
 import type { Comment } from '@/entities/comments/model';
 import type { Post } from '@/entities/posts/model';
+import { useCommentsStoreSelector } from '@/features/comments/model/useCommentsStore';
 import { useNewCommentStoreSelector } from '@/features/comments/model/useNewCommentStore';
 import { CommentAdd } from '@/features/comments/ui/CommentAdd';
 import { CommentItem } from '@/features/comments/ui/CommentItem';
@@ -19,12 +20,9 @@ import { UserDialog } from '@/widgets/user/ui';
 
 export const PostsManagerPage = () => {
   // 상태 관리
-  const { selectedPost, setSelectedPost } = useSelectedPostStore();
-
-  const [comments, setComments] = useState<{
-    [key: number]: Comment[];
-  }>({});
   const [selectedComment, setSelectedComment] = useState<Comment | null>(null);
+  const { selectedPost, setSelectedPost } = useSelectedPostStore();
+  const { comments, setComments } = useCommentsStoreSelector(['comments', 'setComments']);
   const { newComment, updateNewComment } = useNewCommentStoreSelector([
     'newComment',
     'updateNewComment',
