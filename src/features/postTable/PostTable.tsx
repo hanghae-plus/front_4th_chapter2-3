@@ -1,19 +1,11 @@
-import {
-  Button,
-  HighlightText,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "../../../shared/ui"
+import { Button, HighlightText, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../shared/ui"
 import { Edit2, MessageSquare, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react"
-import { usePostTableStore } from "../model/store"
-import { useGetPosts } from "../../../entities/post/api/hooks/usePostQueries"
-import { useGetUsers } from "../../../entities/user/api/hooks/useUserQueries"
+import { usePostTableStore } from "./model/store"
+import { useGetPosts } from "../../entities/post/api/hooks/usePostQueries"
+import { useGetUsers } from "../../entities/user/api/hooks/useUserQueries"
 import { useEffect, useState } from "react"
-import { usePostSearchStore } from "../../postSearch/model/store"
+import { usePostSearchStore } from "../postSearch/model/store"
+import { PostDetailDialog } from "./ui/PostDetailDialog"
 
 export const PostTable = () => {
   const [selectedTag, setSelectedTag] = useState("")
@@ -94,15 +86,8 @@ export const PostTable = () => {
             </TableCell>
             <TableCell>
               <div className="flex items-center gap-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    // openPostDetail(post)
-                  }}
-                >
-                  <MessageSquare className="w-4 h-4" />
-                </Button>
+                <PostDetailDialog post={post} />
+
                 <Button
                   variant="ghost"
                   size="sm"

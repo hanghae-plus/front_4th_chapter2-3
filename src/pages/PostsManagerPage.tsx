@@ -25,7 +25,7 @@ import { Tag } from "../entities/tag/api/tagApi"
 import { Header } from "./ui/Header"
 import { Post } from "../entities/post/model/types"
 import { PostWithUser } from "../features/postTable/model/types"
-import { PostTable } from "../features/postTable/ui/PostTable"
+import { PostTable } from "../features/postTable/PostTable"
 
 const PostsManager = () => {
   const navigate = useNavigate()

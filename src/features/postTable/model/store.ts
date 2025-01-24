@@ -12,7 +12,6 @@ interface PostTableStore {
 
 interface PostTableActions {
   addAuthorToPosts: (posts: Post[], users: Pick<User, "id" | "username" | "image">[]) => void
-  setSelectedPost: (post: Post | null) => void
 }
 
 export const usePostTableStore = create<PostTableStore & PostTableActions>((set) => ({
@@ -29,8 +28,5 @@ export const usePostTableStore = create<PostTableStore & PostTableActions>((set)
       .filter((post): post is PostWithUser => post.author !== undefined)
 
     set({ postsWithUsers })
-  },
-  setSelectedPost: (post) => {
-    set({ selectedPost: post })
   },
 }))

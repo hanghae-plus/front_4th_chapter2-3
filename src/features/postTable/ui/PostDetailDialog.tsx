@@ -1,4 +1,3 @@
-import React from "react"
 import {
   Button,
   Dialog,
@@ -9,10 +8,15 @@ import {
   HighlightText,
 } from "../../../shared/ui"
 import { MessageSquare } from "lucide-react"
-import { usePostTableStore } from "../model/store"
+import { usePostSearchStore } from "../../postSearch/model/store"
+import { Post } from "../../../entities/post/model/types"
 
-export const PostDetailDialog = () => {
-  const { selectedPost, setShowPostDetailDialog } = usePostTableStore()
+interface PostDetailDialogProps {
+  post: Post
+}
+
+export const PostDetailDialog = ({ post }: PostDetailDialogProps) => {
+  const { searchQuery } = usePostSearchStore()
 
   return (
     <Dialog>
@@ -25,15 +29,15 @@ export const PostDetailDialog = () => {
       <DialogContent className="max-w-3xl">
         <DialogHeader>
           <DialogTitle>
-            <HighlightText text={selectedPost?.title || ""} highlight={searchQuery} />
+            <HighlightText text={post?.title || ""} highlight={searchQuery} />
           </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4">
           <p>
-            <HighlightText text={selectedPost?.body || ""} highlight={searchQuery} />
+            <HighlightText text={post?.body || ""} highlight={searchQuery} />
           </p>
-          {selectedPost && renderComments(selectedPost?.id)}
+          {post && "코멘트 영역"}
         </div>
       </DialogContent>
     </Dialog>
