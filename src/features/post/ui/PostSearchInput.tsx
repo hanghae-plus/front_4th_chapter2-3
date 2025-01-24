@@ -1,10 +1,10 @@
-import { usePage } from "@/pages/model/usePage.ts"
+import { usePostRouteParams } from "@/pages/model/usePostRouteParams.ts"
 import { Input } from "@/shared/ui"
 import { Search } from "lucide-react"
 import { useState } from "react"
 
 export function PostSearchInput() {
-  const { searchQuery, setSearchQuery } = usePage()
+  const { searchQuery, setSearchQuery } = usePostRouteParams()
   const [searchInput, setSearchInput] = useState(searchQuery)
 
   // 게시물 검색

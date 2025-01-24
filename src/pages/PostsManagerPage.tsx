@@ -1,5 +1,5 @@
 import { PostShowAddDialogButton } from "@/features/post/ui/PostShowAddDialogButton.tsx"
-import { PostActionBar } from "@/pages/ui/PostActionBar.tsx"
+import { PostActionBar } from "@/modules/post/ui/PostActionBar.tsx"
 import { PostPagination } from "@/pages/ui/PostPagination.tsx"
 import { PostTableSection } from "@/pages/ui/PostTableSection"
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui"

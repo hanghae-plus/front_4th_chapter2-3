@@ -1,9 +1,9 @@
 import { SortBy } from "@/entities/post/api"
-import { usePage } from "@/pages/model/usePage.ts"
+import { usePostRouteParams } from "@/pages/model/usePostRouteParams.ts"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui"
 
 export function PostSortBySelect() {
-  const { sortBy, setSortBy } = usePage()
+  const { sortBy, setSortBy } = usePostRouteParams()
 
   function handleSortByChange(value: SortBy) {
     setSortBy(value)

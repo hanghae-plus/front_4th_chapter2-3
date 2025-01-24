@@ -1,9 +1,9 @@
 import { SortOrder } from "@/entities/post/api"
-import { usePage } from "@/pages/model/usePage.ts"
+import { usePostRouteParams } from "@/pages/model/usePostRouteParams.ts"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui"
 
 export function PostSortOrderSelect() {
-  const { sortOrder, setSortOrder } = usePage()
+  const { sortOrder, setSortOrder } = usePostRouteParams()
 
   function handleSortOrderChange(value: SortOrder) {
     setSortOrder(value)

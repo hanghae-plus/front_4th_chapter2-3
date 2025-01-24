@@ -1,6 +1,6 @@
 import { usePost } from "@/features/post/model/usePost.ts"
 import { usePostDialog } from "@/features/post/model/usePostDialog.ts"
-import { usePage } from "@/pages/model/usePage.ts"
+import { usePostRouteParams } from "@/pages/model/usePostRouteParams.ts"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/shared/ui"
 import { highlightText } from "@/shared/lib/highlightText.tsx"
 import { CommentList } from "@/modules/comment/ui/CommentList.tsx"
@@ -8,7 +8,7 @@ import { CommentList } from "@/modules/comment/ui/CommentList.tsx"
 export default function PostDetailDialog() {
   const { showPostDetailDialog, setShowPostDetailDialog } = usePostDialog()
   const { selectedPost } = usePost()
-  const { searchQuery } = usePage()
+  const { searchQuery } = usePostRouteParams()
 
   if (!selectedPost) return null
   return (

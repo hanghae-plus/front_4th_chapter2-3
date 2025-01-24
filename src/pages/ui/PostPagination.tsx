@@ -1,9 +1,9 @@
 import { useQueryPostTable } from "@/modules/post/api/useQueryPostTable"
-import { usePage } from "@/pages/model/usePage.ts"
+import { usePostRouteParams } from "@/pages/model/usePostRouteParams.ts"
 import { Button, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui"
 
 export function PostPagination() {
-  const { limit, setLimit, skip, setSkip } = usePage()
+  const { limit, setLimit, skip, setSkip } = usePostRouteParams()
   const { data } = useQueryPostTable()
   const total = data?.total || 0
 

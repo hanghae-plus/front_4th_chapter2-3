@@ -4,14 +4,14 @@ import { PostOpenDetailButton } from "@/features/post/ui/PostOpenDetailButton.ts
 import { PostShowEditDialogButton } from "@/features/post/ui/PostShowEditDialogButton.tsx"
 import { TagBadge } from "@/features/tag/ui/TagBadge.tsx"
 import { UserOpenDialogButton } from "@/features/user/ui/UserOpenDialogButton.tsx"
-import { usePage } from "@/pages/model/usePage.ts"
+import { usePostRouteParams } from "@/pages/model/usePostRouteParams.ts"
 import { TableCell, TableRow } from "@/shared/ui"
 import { highlightText } from "@/shared/lib/highlightText.tsx"
 import { ThumbsDown, ThumbsUp } from "lucide-react"
 import { Key } from "react"
 
 export function PostTableItem({ post }: { key: Key; post: Post }) {
-  const { searchQuery } = usePage()
+  const { searchQuery } = usePostRouteParams()
 
   return (
     <TableRow key={post.id}>

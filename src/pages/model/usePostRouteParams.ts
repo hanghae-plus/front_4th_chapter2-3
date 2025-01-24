@@ -1,6 +1,6 @@
 import { atom, useAtom } from "jotai"
 import { useEffect } from "react"
-import { useLocation, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { useTag } from "@/features/tag/model/useTag.ts"
 import { SortBy, SortOrder } from "@/entities/post/api"
 
@@ -11,12 +11,9 @@ const searchQueryAtom = atom(queryParams.get("search") || "")
 const sortByAtom = atom<SortBy | undefined>(queryParams.get("sortBy") as SortBy | undefined)
 const sortOrderAtom = atom<SortOrder | undefined>(queryParams.get("sortOrder") as SortOrder | undefined)
 
-// @FIXME: Route 라이브러리로 교체할거라서 일단 주석처리
-export const usePage = () => {
+export const usePostRouteParams = () => {
   const navigate = useNavigate()
-  const location = useLocation()
 
-  // const queryParams = new URLSearchParams(location.search)
   const [skip, setSkip] = useAtom(skipAtom)
   const [limit, setLimit] = useAtom(limitAtom)
   const [searchQuery, setSearchQuery] = useAtom(searchQueryAtom)
@@ -36,17 +33,6 @@ export const usePage = () => {
     if (selectedTag) params.set("tag", selectedTag)
     navigate(`?${params.toString()}`)
   }, [navigate, selectedTag, skip, limit, searchQuery, sortBy, sortOrder])
-
-  // @FIXME:
-  // useEffect(() => {
-  //   const params = new URLSearchParams(location.search)
-  //   setSkip(parseInt(params.get("skip") || "0"))
-  //   setLimit(parseInt(params.get("limit") || "10"))
-  //   setSearchQuery(params.get("search") || "")
-  //   setSortBy(params.get("sortBy") || "")
-  //   setSortOrder(params.get("sortOrder") || "asc")
-  //   setSelectedTag(params.get("tag") || "")
-  // }, [location.search, setLimit, setSearchQuery, setSelectedTag, setSkip, setSortBy, setSortOrder])
 
   return new (class {
     skip = skip

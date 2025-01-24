@@ -2,8 +2,8 @@ import { QueryClientProvider } from "@tanstack/react-query"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { queryClient } from "@/app/config/tanstack.query"
 import { BrowserRouter as Router } from "react-router-dom"
-import Footer from "@/modules/@ui/Footer.tsx"
-import Header from "@/modules/@ui/Header.tsx"
+import Footer from "@/app/ui/Footer.tsx"
+import Header from "@/app/ui/Header.tsx"
 import PostsManagerPage from "./pages/PostsManagerPage.tsx"
 
 const App = () => {
