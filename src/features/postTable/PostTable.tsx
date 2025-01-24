@@ -1,5 +1,5 @@
 import { Button, HighlightText, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../shared/ui"
-import { Edit2, MessageSquare, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react"
+import { Edit2, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react"
 import { usePostTableStore } from "./model/store"
 import { useGetPosts } from "../../entities/post/api/hooks/usePostQueries"
 import { useGetUsers } from "../../entities/user/api/hooks/useUserQueries"

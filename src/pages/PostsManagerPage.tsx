@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Edit2, Plus, Search, Trash2 } from "lucide-react"
+import { Edit2, Plus, Search } from "lucide-react"
 import { useLocation, useNavigate } from "react-router-dom"
 import {
   Button,
@@ -28,6 +28,7 @@ import { PostTable } from "../features/postTable/PostTable"
 import { LikeCommentButton } from "../features/postTable/ui/LikeCommentButton"
 import { Comment } from "../entities/comments/model/types"
 import { DeleteCommentButton } from "../features/postTable/ui/DeleteCommentButton"
+import { EditCommentDialog } from "../features/postTable/ui/EditCommentDialog"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -264,41 +265,6 @@ const PostsManager = () => {
     }
   }
 
-  // 댓글 삭제
-  const deleteComment = async (id: Comment["id"], postId: Post["id"]) => {
-    try {
-      await fetch(`/api/comments/${id}`, {
-        method: "DELETE",
-      })
-      setComments((prev) => ({
-        ...prev,
-        [postId]: prev[postId].filter((comment) => comment.id !== id),
-      }))
-    } catch (error) {
-      console.error("댓글 삭제 오류:", error)
-    }
-  }
-
-  // 댓글 좋아요
-  const likeComment = async (id: Comment["id"], postId: Post["id"]) => {
-    try {
-      const response = await fetch(`/api/comments/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ likes: (comments[postId].find((c) => c.id === id)?.likes ?? 0) + 1 }),
-      })
-      const data = await response.json()
-      setComments((prev) => ({
-        ...prev,
-        [postId]: prev[postId].map((comment) =>
-          comment.id === data.id ? { ...data, likes: comment.likes + 1 } : comment,
-        ),
-      }))
-    } catch (error) {
-      console.error("댓글 좋아요 오류:", error)
-    }
-  }
-
   // 게시물 상세 보기
   const openPostDetail = (post: Post) => {
     setSelectedPost(post)
@@ -370,18 +336,7 @@ const PostsManager = () => {
             </div>
             <div className="flex items-center space-x-1">
               <LikeCommentButton comment={comment} postId={postId} />
-
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  setSelectedComment(comment)
-                  setShowEditCommentDialog(true)
-                }}
-              >
-                <Edit2 className="w-3 h-3" />
-              </Button>
-
+              <EditCommentDialog comment={comment} />
               <DeleteCommentButton comment={comment} postId={postId} />
             </div>
           </div>
@@ -553,26 +508,6 @@ const PostsManager = () => {
               onChange={(e) => setNewComment({ ...newComment, body: e.target.value })}
             />
             <Button onClick={addComment}>댓글 추가</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* 댓글 수정 대화상자 */}
-      <Dialog open={showEditCommentDialog} onOpenChange={setShowEditCommentDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>댓글 수정</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <Textarea
-              placeholder="댓글 내용"
-              value={selectedComment?.body || ""}
-              onChange={(e) => {
-                if (!selectedComment) return
-                setSelectedComment({ ...selectedComment, body: e.target.value })
-              }}
-            />
-            <Button onClick={updateComment}>댓글 업데이트</Button>
           </div>
         </DialogContent>
       </Dialog>
