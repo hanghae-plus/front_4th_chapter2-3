@@ -1,9 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
+import { CommentResponse } from "@/types/comment.ts";
 
 // 댓글 목록 가져오기
 export const useFetchPostCommentsQuery = (postId: string) => {
-  return useQuery({
+  return useQuery<CommentResponse>({
     queryKey: ["comments", postId],
     queryFn: () => axios.get(`/api/comments/post/${postId}`).then((res) => res.data),
     enabled: !!postId,

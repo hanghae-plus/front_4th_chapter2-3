@@ -38,19 +38,18 @@ export const useAddPostQuery = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (newPost: Partial<Post>) => axios.post("/api/posts/add", newPost),
+    mutationFn: (newPost: Partial<Post>) => axios.post<Post>("/api/posts/add", newPost).then((res) => res.data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["posts"] }),
   });
 };
+
 // 게시글 업데이트하기
 export const useUpdatePostQuery = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (post: Post) => axios.put(`/api/posts/${post.id}`, post).then((res) => res.data),
-    meta: {
-      invalidates: queryClient.invalidateQueries({ queryKey: ["posts"] }),
-    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["posts"] }),
   });
 };
 
@@ -60,8 +59,6 @@ export const useDeletePostQuery = () => {
 
   return useMutation({
     mutationFn: (postId: number) => axios.delete(`/api/posts/${postId}`).then((res) => res.data),
-    meta: {
-      invalidates: queryClient.invalidateQueries({ queryKey: ["posts"] }),
-    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["posts"] }),
   });
 };

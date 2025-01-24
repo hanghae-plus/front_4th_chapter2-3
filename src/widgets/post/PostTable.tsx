@@ -5,11 +5,19 @@ import { usePostFilter } from "@features/posts/model/usePostFilter.ts";
 import { HighlightMatch } from "@shared/hightlight/ui/HighlightMatch.tsx";
 import { usePostStore } from "@core/store/usePostStore.ts";
 import { usePost } from "@entities/post/model/usePost.ts";
+import { useDialog } from "@shared/dialog/model/useDialog.ts";
+import PostDetailDialog from "@features/dialog/ui/PostDetailDialog.tsx";
+import { Post } from "@/types/post.ts";
 
 function PostTable() {
   const { posts, filters } = usePostStore();
   const { handleTagSelect } = usePostFilter();
   const { handleDeletePost } = usePost();
+  const { open } = useDialog();
+
+  const handleOpenPostDetailDialog = (selectedPost: Post) => {
+    open(<PostDetailDialog selectedPost={selectedPost} />);
+  };
 
   return (
     <Table>
@@ -65,7 +73,7 @@ function PostTable() {
             <TableCell>
               <div className="flex items-center gap-2">
                 <Button variant="ghost" size="sm">
-                  <MessageSquare className="w-4 h-4" />
+                  <MessageSquare className="w-4 h-4" onClick={() => handleOpenPostDetailDialog(post)} />
                 </Button>
                 <Button variant="ghost" size="sm">
                   <Edit2 className="w-4 h-4" />
