@@ -4,7 +4,7 @@ import { usePostsFilter } from "../../features/post/model/usePostFilter"
 import { usePostActions } from "../../features/post/model/usePostActions"
 
 export const SearchAndFilter = ({ tags }) => {
-  const { searchPosts, fetchPostsByTag } = usePostActions()
+  const { searchPosts } = usePostActions()
   const {
     updateURL,
     searchQuery,
@@ -39,7 +39,7 @@ export const SearchAndFilter = ({ tags }) => {
         value={selectedTag}
         onValueChange={(value) => {
           setSelectedTag(value)
-          fetchPostsByTag(value)
+
           updateURL()
         }}
       >

@@ -13,8 +13,8 @@ export const postKeys = {
 
 export const usePostActions = () => {
   const [total, setTotal] = useState(0)
-  const { skip, limit } = usePostsFilter()
-  const { posts, setPosts, setNewPost } = usePostStore()
+  const { skip, limit, searchQuery } = usePostsFilter()
+  const { newPost, posts, setPosts, setNewPost } = usePostStore()
   const { setShowAddDialog, setShowEditDialog } = useDialogStore()
 
   const queryClient = useQueryClient()
@@ -31,13 +31,35 @@ export const usePostActions = () => {
     }
   }, [data])
 
+  const searchMutation = useMutation({
+    mutationFn: (query: string) => postApi.searchPosts(query),
+    onSuccess: (data) => {
+      setPosts(data.posts)
+      setTotal(data.total)
+    },
+  })
+
+  const searchPosts = async (query?: string) => {
+    const searchValue = query || searchQuery
+
+    if (!searchValue) {
+      const data = await queryClient.invalidateQueries(postKeys.list({ limit, skip }))
+      setPosts(data.posts)
+      setTotal(data.total)
+      return
+    }
+
+    searchMutation.mutate(searchValue)
+  }
+
   const addMutation = useMutation({
-    mutationFn: postApi.addPost,
-    onSuccess: (newPost) => {
-      queryClient.invalidateQueries(postKeys.lists())
-      setPosts((prev) => [newPost, ...prev])
+    mutationFn: () => postApi.addPost(newPost),
+    onSuccess: (data) => {
+      setPosts([data, ...posts])
+      setTotal((prev) => prev + 1)
       setNewPost({ title: "", body: "", userId: 1 })
       setShowAddDialog(false)
+      queryClient.invalidateQueries(postKeys.lists())
     },
   })
 
@@ -62,6 +84,7 @@ export const usePostActions = () => {
     isLoading,
     posts,
     total,
+    searchPosts,
     addPost: addMutation.mutate,
     updatePost: updateMutation.mutate,
     deletePost: deleteMutation.mutate,

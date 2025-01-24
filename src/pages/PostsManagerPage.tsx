@@ -9,10 +9,42 @@ import { PostEditDialog } from "../features/post/ui/PostEditDialog"
 import { PostAddDialog } from "../features/post/ui/PostAddDialog"
 import { Pagination } from "../shared/ui/Pagination"
 import { SearchAndFilter } from "../widgets/ui/Search"
-import { usePostsManager } from "../features/post/model/usePostManager"
+
+import { useDialogStore } from "../shared/model/useDialogStore"
+import { useEffect, useState } from "react"
+import { usePostsFilter } from "../features/post/model/usePostFilter"
+import { usePostActions } from "../features/post/model/usePostActions"
 
 const PostsManager: React.FC = () => {
-  const { tags, isLoading, setShowAddDialog } = usePostsManager()
+  const { setShowAddDialog } = useDialogStore()
+  const [tags, setTags] = useState<Tag[]>([])
+  const { updateURL, sortBy, sortOrder, selectedTag } = usePostsFilter()
+  const { isLoading, posts } = usePostActions()
+
+  const fetchTags = async () => {
+    try {
+      const response = await fetch("/api/posts/tags")
+      const data = await response.json()
+      setTags(data)
+      console.log("태그:", data)
+    } catch (error) {
+      console.error("태그 가져오기 오류:", error)
+    }
+  }
+  console.log("posts:", posts)
+  useEffect(() => {
+    // if (selectedTag) {
+    //   fetchPostsByTag(selectedTag)
+    // } else {
+    // fetchPost()
+    // }
+    updateURL()
+  }, [sortBy, sortOrder, selectedTag])
+
+  useEffect(() => {
+    fetchTags()
+  }, [])
+
   return (
     <Card className="w-full max-w-6xl mx-auto">
       <CardHeader>
