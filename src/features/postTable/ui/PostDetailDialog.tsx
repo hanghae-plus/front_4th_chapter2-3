@@ -10,6 +10,7 @@ import {
 import { MessageSquare } from "lucide-react"
 import { usePostSearchStore } from "../../postSearch/model/store"
 import { Post } from "../../../entities/post/model/types"
+import { Comments } from "./Comments"
 
 interface PostDetailDialogProps {
   post: Post
@@ -37,7 +38,7 @@ export const PostDetailDialog = ({ post }: PostDetailDialogProps) => {
           <p>
             <HighlightText text={post?.body || ""} highlight={searchQuery} />
           </p>
-          {post && "코멘트 영역"}
+          {post && <Comments postId={post.id} />}
         </div>
       </DialogContent>
     </Dialog>

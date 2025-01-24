@@ -25,11 +25,8 @@ import { Header } from "./ui/Header"
 import { Post } from "../entities/post/model/types"
 import { PostWithUser } from "../features/postTable/model/types"
 import { PostTable } from "../features/postTable/PostTable"
-import { LikeCommentButton } from "../features/postTable/ui/LikeCommentButton"
 import { Comment } from "../entities/comments/model/types"
-import { DeleteCommentButton } from "../features/postTable/ui/DeleteCommentButton"
-import { EditCommentDialog } from "../features/postTable/ui/EditCommentDialog"
-import { AddCommentDialog } from "../features/postTable/ui/AddCommentDialog"
+import { Comments } from "../features/postTable/ui/Comments"
 
 const PostsManager = () => {
   const navigate = useNavigate()
@@ -52,14 +49,6 @@ const PostsManager = () => {
   const [tags, setTags] = useState<Tag[]>([])
   const [selectedTag, setSelectedTag] = useState(queryParams.get("tag") || "")
   const [comments, setComments] = useState<Record<Post["id"], Comment[]>>({})
-  const [selectedComment, setSelectedComment] = useState<Comment | null>(null)
-  const [newComment, setNewComment] = useState<{
-    body: string
-    postId: number | null
-    userId: number
-  }>({ body: "", postId: null, userId: 1 })
-  const [showAddCommentDialog, setShowAddCommentDialog] = useState(false)
-  const [showEditCommentDialog, setShowEditCommentDialog] = useState(false)
   const [showPostDetailDialog, setShowPostDetailDialog] = useState(false)
   const [showUserModal, setShowUserModal] = useState(false)
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
@@ -225,47 +214,6 @@ const PostsManager = () => {
     }
   }
 
-  // 댓글 추가
-  const addComment = async () => {
-    try {
-      const response = await fetch("/api/comments/add", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newComment),
-      })
-      const data = await response.json()
-      setComments((prev) => ({
-        ...prev,
-        [data.postId]: [...(prev[data.postId] || []), data],
-      }))
-      setShowAddCommentDialog(false)
-      setNewComment({ body: "", postId: null, userId: 1 })
-    } catch (error) {
-      console.error("댓글 추가 오류:", error)
-    }
-  }
-
-  // 댓글 업데이트
-  const updateComment = async () => {
-    if (!selectedComment) return
-
-    try {
-      const response = await fetch(`/api/comments/${selectedComment.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ body: selectedComment.body }),
-      })
-      const data = await response.json()
-      setComments((prev) => ({
-        ...prev,
-        [data.postId]: prev[data.postId].map((comment) => (comment.id === data.id ? data : comment)),
-      }))
-      setShowEditCommentDialog(false)
-    } catch (error) {
-      console.error("댓글 업데이트 오류:", error)
-    }
-  }
-
   // 게시물 상세 보기
   const openPostDetail = (post: Post) => {
     setSelectedPost(post)
@@ -307,35 +255,6 @@ const PostsManager = () => {
     setSortOrder(params.get("sortOrder") || "asc")
     setSelectedTag(params.get("tag") || "")
   }, [location.search])
-
-  // 하이라이트 함수 추가
-
-  // 댓글 렌더링
-  const renderComments = (postId: Post["id"]) => (
-    <div className="mt-2">
-      <div className="flex items-center justify-between mb-2">
-        <h3 className="text-sm font-semibold">댓글</h3>
-        <AddCommentDialog postId={postId} />
-      </div>
-      <div className="space-y-1">
-        {comments[postId]?.map((comment) => (
-          <div key={comment.id} className="flex items-center justify-between text-sm border-b pb-1">
-            <div className="flex items-center space-x-2 overflow-hidden">
-              <span className="font-medium truncate">{comment.user.username}:</span>
-              <span className="truncate">
-                <HighlightText text={comment.body} highlight={searchQuery} />
-              </span>
-            </div>
-            <div className="flex items-center space-x-1">
-              <LikeCommentButton comment={comment} postId={postId} />
-              <EditCommentDialog comment={comment} />
-              <DeleteCommentButton comment={comment} postId={postId} />
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
 
   return (
     <Card className="w-full max-w-6xl mx-auto">
@@ -499,7 +418,7 @@ const PostsManager = () => {
             <p>
               <HighlightText text={selectedPost?.body || ""} highlight={searchQuery} />
             </p>
-            {selectedPost && renderComments(selectedPost?.id)}
+            {selectedPost && <Comments postId={selectedPost.id} />}
           </div>
         </DialogContent>
       </Dialog>

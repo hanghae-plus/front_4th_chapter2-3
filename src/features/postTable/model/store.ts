@@ -5,7 +5,6 @@ import { PostWithUser } from "./types"
 
 interface PostTableStore {
   postsWithUsers: PostWithUser[]
-  selectedPost: Post | null
   limit: number
   skip: number
 }
@@ -16,7 +15,6 @@ interface PostTableActions {
 
 export const usePostTableStore = create<PostTableStore & PostTableActions>((set) => ({
   postsWithUsers: [],
-  selectedPost: null,
   limit: 10,
   skip: 0,
   addAuthorToPosts: (posts, users) => {
