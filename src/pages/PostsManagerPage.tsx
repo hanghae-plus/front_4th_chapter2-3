@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "../shared/ui"
 import { PostsFilter } from "../components/posts/PostsFilter"
 import { PostsTable } from "../components/posts/PostsTable"
@@ -10,11 +11,13 @@ import { usePostsStore } from "../stores/usePostsStore"
 import { useEffect } from "react"
 
 const PostsManagerPage = () => {
-  const { loading, fetchPosts } = usePostsStore()
+  const { loading, total, fetchPosts } = usePostsStore()
+  const [skip, setSkip] = useState(0)
+  const [limit, setLimit] = useState(10)
 
   useEffect(() => {
-    fetchPosts(0, 10)
-  }, [])
+    fetchPosts(skip, limit)
+  }, [skip, limit])
 
   return (
     <Card className="w-full max-w-6xl mx-auto">
@@ -25,7 +28,19 @@ const PostsManagerPage = () => {
         <div className="flex flex-col gap-4">
           <PostsFilter />
           {loading ? <div className="flex justify-center p-4">로딩 중...</div> : <PostsTable />}
-          <PostsPagination />
+          <PostsPagination
+            total={total}
+            skip={skip}
+            limit={limit}
+            onLimitChange={(newLimit) => {
+              setLimit(newLimit)
+              fetchPosts(skip, newLimit)
+            }}
+            onSkipChange={(newSkip) => {
+              setSkip(newSkip)
+              fetchPosts(newSkip, limit)
+            }}
+          />
         </div>
         <PostDetailDialog />
         <PostEditDialog />
