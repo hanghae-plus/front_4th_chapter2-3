@@ -1,6 +1,6 @@
 import { Edit2, MessageSquare, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react"
-import { Button, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../shared/ui"
-import { usePostsStore } from "../../stores/usePostsStore"
+import { Button, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../shared/ui"
+import { usePostsStore } from "../model/postsStore"
 
 export const PostsTable = () => {
   const {

@@ -1,5 +1,5 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, Button, Textarea } from "../../shared/ui"
-import { usePostsStore } from "../../stores/usePostsStore"
+import { usePostsStore } from "../../entities/post/model/postsStore"
 import { useState, useEffect } from "react"
 
 export const CommentEditDialog = () => {

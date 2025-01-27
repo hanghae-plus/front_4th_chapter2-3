@@ -1,6 +1,6 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../shared/ui"
-import { PostComments } from "./PostComments"
-import { usePostsStore } from "../../stores/usePostsStore"
+import { PostComments } from "@/entities/comment/PostComments"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/shared/ui"
+import { usePostsStore } from "@/entities/post/model/postsStore"
 
 export const PostDetailDialog = () => {
   const {

@@ -1,18 +1,18 @@
 import { create } from "zustand"
 import { devtools } from "zustand/middleware"
-import { Post, Comment, User, Tag } from "../types/posts"
-import { fetchPosts } from "../features/posts/api/fetchPosts"
-import { fetchTags } from "../features/posts/api/fetchTags"
-import { updatePost, deletePost, likePost, dislikePost } from "../features/posts/api/postActions"
-import { updateComment, deleteComment, likeComment } from "../features/comments/api/commentActions"
-import { fetchUser } from "../features/users/api/fetchUser"
-import { filterPostsBySearch, filterPostsByTag, sortPosts } from "../features/posts/lib/postTransformers"
+import { Post, Comment, User, Tag } from "../../../types/posts"
+import { fetchPosts } from "../../../features/posts/api/fetchPosts"
+import { fetchTags } from "../../../features/posts/api/fetchTags"
+import { updatePost, deletePost, likePost, dislikePost } from "../../../features/posts/api/postActions"
+import { updateComment, deleteComment, likeComment } from "../../../features/comments/api/commentActions"
+import { fetchUser } from "../../../features/users/api/fetchUser"
+import { filterPostsBySearch, filterPostsByTag, sortPosts } from "../../../features/posts/lib/postTransformers"
 import {
   updatePostComments,
   removePostComment,
   updatePostCommentLikes,
-} from "../features/comments/lib/commentTransformers"
-import { validatePost, normalizeTags } from "../features/posts/lib/postValidators"
+} from "../../../features/comments/lib/commentTransformers"
+import { validatePost, normalizeTags } from "../../../features/posts/lib/postValidators"
 
 interface PostsState {
   posts: Post[]
@@ -116,9 +116,10 @@ export const usePostsStore = create<PostsState>()(
           setPosts(transformedPosts)
           setTotal(total)
         } catch (error) {
-          console.error(error)
+          console.error("Failed to fetch posts:", error)
+        } finally {
+          setLoading(false)
         }
-        setLoading(false)
       },
 
       handlePostDetail: (post) => {

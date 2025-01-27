@@ -1,8 +1,7 @@
 import { useEffect } from "react"
 import { Search } from "lucide-react"
 import { Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../shared/ui"
-import { usePostsStore } from "../../stores/usePostsStore"
-import { PostsPagination } from "./PostsPagination"
+import { usePostsStore } from "../../entities/post/model/postsStore"
 
 export const PostsFilter = () => {
   const {
@@ -17,7 +16,6 @@ export const PostsFilter = () => {
     setSortOrder,
     fetchPosts,
     fetchTags,
-    total,
   } = usePostsStore()
 
   useEffect(() => {
