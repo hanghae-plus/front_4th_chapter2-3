@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import { PostResponse, UserResponse } from "./useGetPostList"
-import { QUERY_KEYS } from "../../../shared/config/QueryKeys"
+import { QUERY_KEYS } from "@shared/config/QueryKeys"
 
 export const useGetPostListByTag = (tag: string) => {
   return useQuery<Omit<PostResponse, "skip" | "limit">>({

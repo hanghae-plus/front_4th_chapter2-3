@@ -1,6 +1,6 @@
 import { useState } from "react"
-import { useDialog } from "../../../widgets/dialog/model/useDialog"
 import { usePostComment } from "../api/usePostComment"
+import { useDialog } from "@widgets/dialog/model/useDialog"
 
 export const useAddComment = () => {
   const { isOpen, open, close } = useDialog()

@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogContent, DialogHeader, DialogTitle, Input, Textarea } from "../../../shared/ui"
+import { Button, Dialog, DialogContent, DialogHeader, DialogTitle, Input, Textarea } from "@shared/ui"
 import { Post } from "../model/types"
 
 interface Props {

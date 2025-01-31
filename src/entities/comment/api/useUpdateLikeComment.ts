@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { QUERY_KEYS } from "../../../shared/config/QueryKeys"
 import { Comment } from "../model/types"
 import { Post } from "../../post/model/types"
+import { QUERY_KEYS } from "@shared/config/QueryKeys"
 
 export const useLikeComment = () => {
   const queryClient = useQueryClient()

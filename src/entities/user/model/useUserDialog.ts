@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { useDialog } from "../../../widgets/dialog/model/useDialog"
+import { useDialog } from "@widgets/dialog/model/useDialog"
 import { useGetUser } from "../api/useGetUser"
 
 export const useUserDialog = () => {

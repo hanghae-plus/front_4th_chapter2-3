@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { useDialog } from "../../../widgets/dialog/model/useDialog"
+import { useDialog } from "@widgets/dialog/model/useDialog"
 import { useUpdatePost } from "../api/useUpdatePost"
 import { Post } from "./types"
 

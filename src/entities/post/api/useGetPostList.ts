@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import { QUERY_KEYS } from "../../../shared/config/QueryKeys"
+import { QUERY_KEYS } from "@shared/config/QueryKeys"
 import { Post } from "../model/types"
 import { User } from "../../user/model/types"
 

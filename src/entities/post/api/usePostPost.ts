@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Post } from "../model/types"
-import { QUERY_KEYS } from "../../../shared/config/QueryKeys"
+import { QUERY_KEYS } from "@shared/config/QueryKeys"
 
 export const usePostPost = () => {
   const queryClient = useQueryClient()

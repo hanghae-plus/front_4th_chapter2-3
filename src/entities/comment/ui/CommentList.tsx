@@ -1,8 +1,8 @@
 import { Edit2, Plus, ThumbsUp, Trash2 } from "lucide-react"
-import { Button } from "../../../shared/ui"
-import { Post } from "../../post/model/types"
-import { highlightText } from "../../../shared/lib/highlightText"
+import { Button } from "@shared/ui"
+import { highlightText } from "@shared/lib/highlightText"
 import { Comment } from "../model/types"
+import { Post } from "@entities/post/model/types"
 
 interface Props {
   comments: Comment[]

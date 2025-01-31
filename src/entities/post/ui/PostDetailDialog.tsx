@@ -1,5 +1,5 @@
 import { highlightText } from "../../../shared/lib/highlightText"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../../shared/ui"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@shared/ui"
 import { Post } from "../model/types"
 
 interface Props {

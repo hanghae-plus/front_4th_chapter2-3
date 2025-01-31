@@ -1,4 +1,4 @@
-import { Post } from "../../entities/post/model/types"
+import { Post } from "@entities/post/model/types"
 
 export const QUERY_KEYS = {
   USER: {

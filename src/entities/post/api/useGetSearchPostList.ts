@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import { QUERY_KEYS } from "../../../shared/config/QueryKeys"
+import { QUERY_KEYS } from "@shared/config/QueryKeys"
 import { PostResponse } from "./useGetPostList"
 
 export const useGetSearchPostList = (searchQuery: string) => {
