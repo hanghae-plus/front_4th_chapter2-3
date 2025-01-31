@@ -1,0 +1,5 @@
+export { DialogRoot as Dialog } from "./DialogRoot"
+export { DialogTrigger } from "@radix-ui/react-dialog"
+export { DialogContent, DialogPortal, DialogOverlay } from "./DialogContent"
+export { DialogHeader } from "./DialogHeader"
+export { DialogTitle } from "./DialogTitle"
