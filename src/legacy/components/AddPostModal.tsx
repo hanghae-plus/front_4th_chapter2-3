@@ -1,15 +1,14 @@
 import { DialogHeader, Input, Textarea, Button, Dialog, DialogContent, DialogTitle } from '../../shared/ui'
-import { Dispatch, SetStateAction } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { NewPost } from '../models/types'
 import { useCreatePost } from '../queries/post.query'
 
 type AddPostModalProps = {
   showAddDialog: boolean
   setShowAddDialog: Dispatch<SetStateAction<boolean>>
-  newPost: NewPost
-  setNewPost: Dispatch<SetStateAction<NewPost>>
 }
-export const AddPostModal = ({ showAddDialog, setShowAddDialog, newPost, setNewPost }: AddPostModalProps) => {
+export const AddPostModal = ({ showAddDialog, setShowAddDialog }: AddPostModalProps) => {
+  const [newPost, setNewPost] = useState<NewPost>({ title: '', body: '', userId: 1 })
   const { mutate: addPostMutation } = useCreatePost()
 
   const handleAddPost = () => {

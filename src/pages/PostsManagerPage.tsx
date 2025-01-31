@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../shared/ui'
-import { Post, User, Comment, NewComment, NewPost } from '../legacy/models/types'
+import { Post, User, Comment, NewComment } from '../legacy/models/types'
 import { deleteComment, getComments, patchComment, postComment, putComment } from '../legacy/service/comments.service'
 import { getUser } from '../legacy/service/user.service'
 import { usePost } from '../legacy/hooks/usePost'
@@ -39,14 +39,15 @@ const PostsManager = () => {
   const [selectedPost, setSelectedPost] = useState<Post | null>(null)
   const [showAddDialog, setShowAddDialog] = useState(false)
   const [showEditDialog, setShowEditDialog] = useState(false)
-  const [newPost, setNewPost] = useState<NewPost>({ title: '', body: '', userId: 1 })
-  const [comments, setComments] = useState<Record<number, Comment[]>>({})
-  const [selectedComment, setSelectedComment] = useState<Comment | null>(null)
-  const [newComment, setNewComment] = useState<NewComment>({ body: '', postId: null, userId: 1 })
   const [showAddCommentDialog, setShowAddCommentDialog] = useState(false)
   const [showEditCommentDialog, setShowEditCommentDialog] = useState(false)
   const [showPostDetailDialog, setShowPostDetailDialog] = useState(false)
   const [showUserModal, setShowUserModal] = useState(false)
+
+  const [comments, setComments] = useState<Record<number, Comment[]>>({})
+  const [selectedComment, setSelectedComment] = useState<Comment | null>(null)
+  const [newComment, setNewComment] = useState<NewComment>({ body: '', postId: null, userId: 1 })
+
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
 
   // 커스텀 hook으로 분리
@@ -212,12 +213,7 @@ const PostsManager = () => {
         </div>
       </CardContent>
 
-      <AddPostModal
-        showAddDialog={showAddDialog}
-        setShowAddDialog={setShowAddDialog}
-        newPost={newPost}
-        setNewPost={setNewPost}
-      />
+      <AddPostModal showAddDialog={showAddDialog} setShowAddDialog={setShowAddDialog} />
 
       <EditPostModal
         showEditDialog={showEditDialog}

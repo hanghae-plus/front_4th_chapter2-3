@@ -13,7 +13,6 @@ export const usePost = () => {
 
   const { data: users } = useGetUserList()
   const { data: postList, isFetching: isPostListFetching } = useGetPostList(limit, skip)
-  console.log('🚀 ~ usePost ~ postList:', postList)
   const { data: postListByTag, isFetching: isPostListByTagFetching } = useGetPostListByTag(selectedTag)
   const { data: postListBySearch, isFetching: isSearchFetching } = useGetPostListBySearch(searchQuery)
 
