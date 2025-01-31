@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from '../shared/ui'
 import { Post, User, Comment, NewComment } from '../legacy/models/types'
-import { deleteComment, getComments, patchComment, postComment, putComment } from '../legacy/service/comments.service'
+import { deleteComment, patchComment, postComment, putComment } from '../legacy/service/comments.service'
 import { getUser } from '../legacy/service/user.service'
 import { usePost } from '../legacy/hooks/usePost'
 import { PostTable } from '../legacy/components/PostTable'
@@ -30,7 +30,7 @@ import { SearchPostInput } from '../legacy/components/Searchbar'
 import { useLimitParam, useSkipParam, useSortByParam, useSortOrderParam } from '../legacy/hooks/useQueryParams'
 
 const PostsManager = () => {
-  // 상태 관리
+  // searchParams 관리
   const [skip, setSkip] = useSkipParam()
   const [limit, setLimit] = useLimitParam()
   const [sortBy, setSortBy] = useSortByParam()
@@ -53,18 +53,6 @@ const PostsManager = () => {
   // 커스텀 hook으로 분리
   // posts가 전체 posts
   const { posts, loading, total } = usePost()
-
-  // 댓글 가져오기
-  const fetchComments = async (postId: number) => {
-    if (comments[postId]) return // 이미 불러온 댓글이 있으면 다시 불러오지 않음
-
-    try {
-      const data = await getComments(postId)
-      setComments((prev) => ({ ...prev, [postId]: data.comments }))
-    } catch (error) {
-      console.error('댓글 가져오기 오류:', error)
-    }
-  }
 
   // 댓글 추가
   const addComment = async () => {
@@ -132,7 +120,6 @@ const PostsManager = () => {
   // 게시물 상세 보기
   const openPostDetail = (post: Post) => {
     setSelectedPost(post)
-    fetchComments(post.id)
     setShowPostDetailDialog(true)
   }
 
@@ -242,7 +229,6 @@ const PostsManager = () => {
         showPostDetailDialog={showPostDetailDialog}
         setShowPostDetailDialog={setShowPostDetailDialog}
         selectedPost={selectedPost}
-        comments={comments}
         setNewComment={setNewComment}
         setShowAddCommentDialog={setShowAddCommentDialog}
         setSelectedComment={setSelectedComment}

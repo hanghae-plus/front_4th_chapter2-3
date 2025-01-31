@@ -4,12 +4,12 @@ import { Comment, NewComment, Post } from '../models/types'
 import { highlightText } from '../utils/highligtText'
 import { Comments } from './Comments'
 import { useSearchParam } from '../hooks/useQueryParams'
+import { useGetComments } from '../queries/comments.query'
 
 type PostDetailModalProps = {
   showPostDetailDialog: boolean
   setShowPostDetailDialog: Dispatch<SetStateAction<boolean>>
   selectedPost: Post | null
-  comments: Record<number, Comment[]>
   setNewComment: Dispatch<SetStateAction<NewComment>>
   setShowAddCommentDialog: Dispatch<SetStateAction<boolean>>
   setSelectedComment: Dispatch<SetStateAction<Comment | null>>
@@ -22,7 +22,6 @@ export const PostDetailModal = ({
   showPostDetailDialog,
   setShowPostDetailDialog,
   selectedPost,
-  comments,
   setNewComment,
   setShowAddCommentDialog,
   setSelectedComment,
@@ -31,6 +30,9 @@ export const PostDetailModal = ({
   likeComment,
 }: PostDetailModalProps) => {
   const [searchQuery] = useSearchParam()
+
+  const { data } = useGetComments(selectedPost?.id)
+
   return (
     <Dialog open={showPostDetailDialog} onOpenChange={setShowPostDetailDialog}>
       <DialogContent className="max-w-3xl">
@@ -41,7 +43,7 @@ export const PostDetailModal = ({
           <p>{selectedPost?.body ? highlightText(selectedPost.body, searchQuery) : ''}</p>
           {selectedPost?.id ? (
             <Comments
-              comments={comments[selectedPost.id]}
+              comments={data?.comments}
               postId={selectedPost.id}
               searchQuery={searchQuery}
               setNewComment={setNewComment}

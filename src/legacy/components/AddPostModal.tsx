@@ -3,19 +3,21 @@ import { Dispatch, SetStateAction, useState } from 'react'
 import { NewPost } from '../models/types'
 import { useCreatePost } from '../queries/post.query'
 
+const INITIAL_POST: NewPost = { title: '', body: '', userId: 1 }
+
 type AddPostModalProps = {
   showAddDialog: boolean
   setShowAddDialog: Dispatch<SetStateAction<boolean>>
 }
 export const AddPostModal = ({ showAddDialog, setShowAddDialog }: AddPostModalProps) => {
-  const [newPost, setNewPost] = useState<NewPost>({ title: '', body: '', userId: 1 })
+  const [newPost, setNewPost] = useState<NewPost>(INITIAL_POST)
   const { mutate: addPostMutation } = useCreatePost()
 
   const handleAddPost = () => {
     addPostMutation(newPost, {
       onSuccess: () => {
         setShowAddDialog(false)
-        setNewPost({ title: '', body: '', userId: 1 })
+        setNewPost(INITIAL_POST)
       },
     })
   }

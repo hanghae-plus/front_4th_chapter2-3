@@ -4,18 +4,19 @@ import * as CommentsService from '../service/comments.service'
 
 export const commentKeys = {
   all: ['comments'],
-  list: (postId: number) => [...commentKeys.all, 'list', postId],
+  list: (postId?: number) => [...commentKeys.all, 'list', postId],
 }
 
 export const commentQuery = {
-  list: (postId: number) =>
+  list: (postId?: number) =>
     queryOptions({
       queryKey: commentKeys.list(postId),
-      queryFn: () => CommentsService.getComments(postId),
+      queryFn: () => CommentsService.getComments(postId as number),
+      enabled: !!postId,
     }),
 }
 
-export const useGetComments = (postId: number) => useQuery(commentQuery.list(postId))
+export const useGetComments = (postId?: number) => useQuery(commentQuery.list(postId))
 
 export const useCreateComment = () =>
   useMutation({
