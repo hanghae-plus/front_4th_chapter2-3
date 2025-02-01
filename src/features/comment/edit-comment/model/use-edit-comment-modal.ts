@@ -5,7 +5,7 @@ import { commentMutations, commentQueries } from "../../../../entities/comment/a
 import { Comment, useSelectedComment } from "../../../../entities/comment/model"
 import { ToggleKey } from "../../../../pages/main/model"
 import { queryClient } from "../../../../shared/api"
-import { useToggleState } from "../../../../shared/model/toggle-state.model"
+import { useToggleState } from "../../../../shared/model/ToggleStateContext"
 
 export const useEditCommentModal = (postId: number | undefined) => {
   const { selectedComment, setSelectedComment } = useSelectedComment()

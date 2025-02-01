@@ -3,7 +3,7 @@ import { useState } from "react"
 
 import { userQueries } from "../../../../entities/user/api"
 import { ToggleKey } from "../../../../pages/main/model"
-import { useToggleState } from "../../../../shared/model/toggle-state.model"
+import { useToggleState } from "../../../../shared/model/ToggleStateContext"
 
 export const useViewUserProfile = () => {
   const { onOpen } = useToggleState<ToggleKey>()

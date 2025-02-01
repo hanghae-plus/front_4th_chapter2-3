@@ -1,7 +1,7 @@
 import { User } from "../../../../entities/user/model"
 import { UserProfile } from "../../../../entities/user/ui"
 import { ToggleKey } from "../../../../pages/main/model"
-import { useToggleState } from "../../../../shared/model/toggle-state.model"
+import { useToggleState } from "../../../../shared/model/ToggleStateContext"
 import { Modal } from "../../../../shared/ui"
 
 interface UserProfileModalProps {

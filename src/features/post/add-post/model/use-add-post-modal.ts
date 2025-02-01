@@ -4,7 +4,7 @@ import { useState } from "react"
 import { postMutations } from "../../../../entities/post/api"
 import { ToggleKey } from "../../../../pages/main/model"
 import { queryClient } from "../../../../shared/api"
-import { useToggleState } from "../../../../shared/model/toggle-state.model"
+import { useToggleState } from "../../../../shared/model/ToggleStateContext"
 
 export const useAddPostModal = () => {
   const { onClose } = useToggleState<ToggleKey>()

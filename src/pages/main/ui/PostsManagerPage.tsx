@@ -27,7 +27,7 @@ import { usePagination } from "../../../widgets/pagination/model"
 import { Pagination } from "../../../widgets/pagination/ui"
 import { PostsTable } from "../../../widgets/posts-table/ui"
 
-import { useToggleState } from "../../../shared/model/toggle-state.model"
+import { useToggleState } from "../../../shared/model/ToggleStateContext"
 import { ToggleKey } from "../model"
 
 export const PostsManagerPage = () => {

@@ -1,8 +1,6 @@
-"use client"
-
 import { PropsWithChildren, useCallback, useState } from "react"
 
-import { type ToggleState, ToggleStateContext } from "../../shared/model/toggle-state.model"
+import { type ToggleState, ToggleStateContext } from "../../shared/model/ToggleStateContext"
 
 export const ToggleStateProvider = <T extends string>({
   children,

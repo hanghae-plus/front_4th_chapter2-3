@@ -4,7 +4,7 @@ import { useState } from "react"
 import { commentQueries } from "../../../../entities/comment/api"
 import { postQueries } from "../../../../entities/post/api"
 import { ToggleKey } from "../../../../pages/main/model"
-import { useToggleState } from "../../../../shared/model/toggle-state.model"
+import { useToggleState } from "../../../../shared/model/ToggleStateContext"
 
 export const useDetailPostModal = () => {
   const { isOpen, onOpen, onClose } = useToggleState<ToggleKey>()

@@ -1,6 +1,6 @@
 import { Modal, DialogHeader, Textarea, Button, DialogContent, DialogTitle } from "../../../../shared/ui"
 import { ToggleKey } from "../../../../pages/main/model"
-import { useToggleState } from "../../../../shared/model/toggle-state.model"
+import { useToggleState } from "../../../../shared/model/ToggleStateContext"
 
 interface CommentAddModalProps {
   post?: Comment

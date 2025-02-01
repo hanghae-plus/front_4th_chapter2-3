@@ -1,7 +1,7 @@
 import { Modal } from "../../../../shared/ui"
 import { PostForm } from "../../../../entities/post/ui"
 import { ToggleKey } from "../../../../pages/main/model"
-import { useToggleState } from "../../../../shared/model/toggle-state.model"
+import { useToggleState } from "../../../../shared/model/ToggleStateContext"
 interface PostAddModalProps {
   formData: {
     title: string

@@ -5,7 +5,7 @@ import { postMutations, postQueries } from "../../../../entities/post/api"
 import { Post } from "../../../../entities/post/model"
 import { ToggleKey } from "../../../../pages/main/model"
 import { queryClient } from "../../../../shared/api"
-import { useToggleState } from "../../../../shared/model/toggle-state.model"
+import { useToggleState } from "../../../../shared/model/ToggleStateContext"
 
 export const useEditPostModal = () => {
   const { isOpen, onOpen } = useToggleState<ToggleKey>()

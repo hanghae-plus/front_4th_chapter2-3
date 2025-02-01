@@ -3,7 +3,7 @@ import { useState } from "react"
 
 import { commentMutations, commentQueries } from "../../../../entities/comment/api"
 import { queryClient } from "../../../../shared/api"
-import { useToggleState } from "../../../../shared/model/toggle-state.model"
+import { useToggleState } from "../../../../shared/model/ToggleStateContext"
 import { Comment } from "../../../../entities/comment/model"
 import { ToggleKey } from "../../../../pages/main/model"
 

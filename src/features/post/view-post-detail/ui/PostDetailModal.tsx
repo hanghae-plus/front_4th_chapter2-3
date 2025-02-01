@@ -5,7 +5,7 @@ import { Post } from "../../../../entities/post/model"
 import { highlightText } from "../../../../shared/lib"
 import { DialogHeader, Modal } from "../../../../shared/ui"
 import { ToggleKey } from "../../../../pages/main/model"
-import { useToggleState } from "../../../../shared/model/toggle-state.model"
+import { useToggleState } from "../../../../shared/model/ToggleStateContext"
 
 interface PostDetailModalProps {
   post?: Post

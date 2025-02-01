@@ -4,7 +4,7 @@ import { Footer } from "./widgets/footer/ui"
 import { PostsManagerPage } from "./pages/main/ui"
 import { SelectedCommentProvider } from "./entities/comment/model"
 import { ToggleKey } from "./pages/main/model"
-import { ToggleStateProvider } from "./shared/model/toggle-state.model"
+import { ToggleStateProvider } from "./shared/model/ToggleStateContext"
 const App = () => {
   return (
     <Router>
