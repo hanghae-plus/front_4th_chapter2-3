@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from '../shared/ui'
 import { Post, User, Comment, NewComment } from '../legacy/models/types'
-import { deleteComment, patchComment, postComment, putComment } from '../legacy/service/comments.service'
+import { putComment } from '../legacy/service/comments.service'
 import { getUser } from '../legacy/service/user.service'
 import { usePost } from '../legacy/hooks/usePost'
 import { PostTable } from '../legacy/components/PostTable'
@@ -54,22 +54,6 @@ const PostsManager = () => {
   // posts가 전체 posts
   const { posts, loading, total } = usePost()
 
-  // 댓글 추가
-  const addComment = async () => {
-    try {
-      const data: Comment = await postComment(newComment)
-
-      setComments((prev) => ({
-        ...prev,
-        [data.postId as number]: [...(prev[data.postId as number] || []), data],
-      }))
-      setShowAddCommentDialog(false)
-      setNewComment({ body: '', postId: null, userId: 1 })
-    } catch (error) {
-      console.error('댓글 추가 오류:', error)
-    }
-  }
-
   // 댓글 업데이트
   const updateComment = async () => {
     try {
@@ -85,35 +69,6 @@ const PostsManager = () => {
       setShowEditCommentDialog(false)
     } catch (error) {
       console.error('댓글 업데이트 오류:', error)
-    }
-  }
-
-  // 댓글 삭제
-  const deletedComment = async (id: number, postId: number) => {
-    try {
-      await deleteComment(id)
-
-      setComments((prev) => ({
-        ...prev,
-        [postId]: prev[postId].filter((comment) => comment.id !== id),
-      }))
-    } catch (error) {
-      console.error('댓글 삭제 오류:', error)
-    }
-  }
-
-  // 댓글 좋아요
-  const likeComment = async (id: number, postId: number) => {
-    try {
-      const data = await patchComment(id, comments[postId]?.find((c) => c.id === id)?.likes ?? 0 + 1)
-      setComments((prev) => ({
-        ...prev,
-        [postId]: prev[postId].map((comment) =>
-          comment.id === data.id ? { ...data, likes: comment.likes + 1 } : comment,
-        ),
-      }))
-    } catch (error) {
-      console.error('댓글 좋아요 오류:', error)
     }
   }
 
@@ -214,7 +169,7 @@ const PostsManager = () => {
         setShowAddCommentDialog={setShowAddCommentDialog}
         newComment={newComment}
         setNewComment={setNewComment}
-        addComment={addComment}
+        selectedPostId={selectedPost?.id ?? 0}
       />
 
       <EditCommentModal
@@ -233,8 +188,6 @@ const PostsManager = () => {
         setShowAddCommentDialog={setShowAddCommentDialog}
         setSelectedComment={setSelectedComment}
         setShowEditCommentDialog={setShowEditCommentDialog}
-        deletedComment={deletedComment}
-        likeComment={likeComment}
       />
 
       <UserModal showUserModal={showUserModal} setShowUserModal={setShowUserModal} selectedUser={selectedUser} />

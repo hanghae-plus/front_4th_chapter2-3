@@ -14,8 +14,6 @@ type PostDetailModalProps = {
   setShowAddCommentDialog: Dispatch<SetStateAction<boolean>>
   setSelectedComment: Dispatch<SetStateAction<Comment | null>>
   setShowEditCommentDialog: Dispatch<SetStateAction<boolean>>
-  deletedComment: (id: number, postId: number) => void
-  likeComment: (id: number, postId: number) => void
 }
 
 export const PostDetailModal = ({
@@ -26,8 +24,6 @@ export const PostDetailModal = ({
   setShowAddCommentDialog,
   setSelectedComment,
   setShowEditCommentDialog,
-  deletedComment,
-  likeComment,
 }: PostDetailModalProps) => {
   const [searchQuery] = useSearchParam()
 
@@ -50,8 +46,6 @@ export const PostDetailModal = ({
               setShowAddCommentDialog={setShowAddCommentDialog}
               setSelectedComment={setSelectedComment}
               setShowEditCommentDialog={setShowEditCommentDialog}
-              deletedComment={deletedComment}
-              likeComment={likeComment}
             />
           ) : (
             ''

@@ -4,16 +4,15 @@ import { NewComment } from '../models/types'
 import { highlightText } from '../utils/highligtText'
 import { Dispatch, SetStateAction } from 'react'
 import { Comment } from '../models/types'
+import { useDeleteComment, useUpdateCommentLikes } from '../queries/comments.query'
 type CommentsProps = {
   comments: Comment[] | undefined
   postId: number
   searchQuery: string
   setNewComment: Dispatch<SetStateAction<NewComment>>
   setShowAddCommentDialog: Dispatch<SetStateAction<boolean>>
-  likeComment: (commentId: number, postId: number) => void
   setSelectedComment: Dispatch<SetStateAction<Comment | null>>
   setShowEditCommentDialog: Dispatch<SetStateAction<boolean>>
-  deletedComment: (commentId: number, postId: number) => void
 }
 export const Comments = ({
   comments,
@@ -21,11 +20,16 @@ export const Comments = ({
   searchQuery,
   setNewComment,
   setShowAddCommentDialog,
-  likeComment,
   setSelectedComment,
   setShowEditCommentDialog,
-  deletedComment,
 }: CommentsProps) => {
+  const { mutate: updateLikes } = useUpdateCommentLikes()
+  const { mutate: deleteComment } = useDeleteComment()
+
+  const handleLikeComment = (commentId: number, commentLikes: number) => {
+    updateLikes({ id: commentId, likes: commentLikes + 1 })
+  }
+
   if (!comments || !Array.isArray(comments)) return null
 
   return (
@@ -51,7 +55,7 @@ export const Comments = ({
               <span className="truncate">{highlightText(comment.body, searchQuery)}</span>
             </div>
             <div className="flex items-center space-x-1">
-              <Button variant="ghost" size="sm" onClick={() => likeComment(comment.id, postId)}>
+              <Button variant="ghost" size="sm" onClick={() => handleLikeComment(comment.id, comment.likes)}>
                 <ThumbsUp className="w-3 h-3" />
                 <span className="ml-1 text-xs">{comment.likes}</span>
               </Button>
@@ -65,7 +69,7 @@ export const Comments = ({
               >
                 <Edit2 className="w-3 h-3" />
               </Button>
-              <Button variant="ghost" size="sm" onClick={() => deletedComment(comment.id, postId)}>
+              <Button variant="ghost" size="sm" onClick={() => deleteComment(comment.id)}>
                 <Trash2 className="w-3 h-3" />
               </Button>
             </div>
